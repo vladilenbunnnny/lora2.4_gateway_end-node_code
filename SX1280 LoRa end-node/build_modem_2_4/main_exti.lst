@@ -1,0 +1,1111 @@
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc2W06zE.s 			page 1
+
+
+   1              		.cpu cortex-m0plus
+   2              		.eabi_attribute 23, 1
+   3              		.eabi_attribute 24, 1
+   4              		.eabi_attribute 25, 1
+   5              		.eabi_attribute 26, 1
+   6              		.eabi_attribute 30, 4
+   7              		.eabi_attribute 34, 0
+   8              		.eabi_attribute 18, 4
+   9              		.file	"main_exti.c"
+  10              		.text
+  11              	.Ltext0:
+  12              		.cfi_sections	.debug_frame
+  13              		.section	.rodata.get_event.str1.1,"aMS",%progbits,1
+  14              	.LC0:
+  15 0000 1B5B303B 		.ascii	"\033[0;34m\000"
+  15      33346D00 
+  16              	.LC2:
+  17 0008 6765745F 		.ascii	"get_event () callback\012\000"
+  17      6576656E 
+  17      74202829 
+  17      2063616C 
+  17      6C626163 
+  18              	.LC4:
+  19 001f 1B5B306D 		.ascii	"\033[0m\000"
+  19      00
+  20              	.LC6:
+  21 0024 1B5B303B 		.ascii	"\033[0;33m\000"
+  21      33336D00 
+  22              	.LC8:
+  23 002c 5741524E 		.ascii	"WARN : \000"
+  23      203A2000 
+  24              	.LC10:
+  25 0034 4576656E 		.ascii	"Event %u\302\240\012\000"
+  25      74202575 
+  25      C2A00A00 
+  26              	.LC12:
+  27 0040 1B5B303B 		.ascii	"\033[0;32m\000"
+  27      33326D00 
+  28              	.LC14:
+  29 0048 494E464F 		.ascii	"INFO : \000"
+  29      203A2000 
+  30              	.LC16:
+  31 0050 4D6F6465 		.ascii	"Modem is join \012\000"
+  31      6D206973 
+  31      206A6F69 
+  31      6E200A00 
+  32              	.LC18:
+  33 0060 54582064 		.ascii	"TX done \012\000"
+  33      6F6E6520 
+  33      0A00
+  34              	.LC22:
+  35 006a 44617461 		.ascii	"Data received on port %u\012\000"
+  35      20726563 
+  35      65697665 
+  35      64206F6E 
+  35      20706F72 
+  36              	.LC24:
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc2W06zE.s 			page 2
+
+
+  37 0084 444F574E 		.ascii	"DOWNDATA\000"
+  37      44415441 
+  37      00
+  38              	.LC26:
+  39 008d 2573202D 		.ascii	"%s - (%lu bytes):\012\000"
+  39      2028256C 
+  39      75206279 
+  39      74657329 
+  39      3A0A00
+  40              	.LC28:
+  41 00a0 0A00     		.ascii	"\012\000"
+  42              	.LC30:
+  43 00a2 20253032 		.ascii	" %02X\000"
+  43      5800
+  44              	.LC32:
+  45 00a8 1B5B303B 		.ascii	"\033[0;31m\000"
+  45      33316D00 
+  46              	.LC34:
+  47 00b0 4552524F 		.ascii	"ERROR: \000"
+  47      523A2000 
+  48              	.LC36:
+  49 00b8 556E6B6E 		.ascii	"Unknown event %u\012\000"
+  49      6F776E20 
+  49      6576656E 
+  49      74202575 
+  49      0A00
+  50              		.section	.text.get_event,"ax",%progbits
+  51              		.align	1
+  52              		.arch armv6s-m
+  53              		.syntax unified
+  54              		.code	16
+  55              		.thumb_func
+  56              		.fpu softvfp
+  58              	get_event:
+  59              	.LFB11:
+  60              		.file 1 "user_app/main_exti.c"
+   1:user_app/main_exti.c **** /*!
+   2:user_app/main_exti.c ****  * \file      main_exti.c
+   3:user_app/main_exti.c ****  *
+   4:user_app/main_exti.c ****  * \brief     main program for exti example
+   5:user_app/main_exti.c ****  *
+   6:user_app/main_exti.c ****  * Revised BSD License
+   7:user_app/main_exti.c ****  * Copyright Semtech Corporation 2020. All rights reserved.
+   8:user_app/main_exti.c ****  *
+   9:user_app/main_exti.c ****  * Redistribution and use in source and binary forms, with or without
+  10:user_app/main_exti.c ****  * modification, are permitted provided that the following conditions are met:
+  11:user_app/main_exti.c ****  *     * Redistributions of source code must retain the above copyright
+  12:user_app/main_exti.c ****  *       notice, this list of conditions and the following disclaimer.
+  13:user_app/main_exti.c ****  *     * Redistributions in binary form must reproduce the above copyright
+  14:user_app/main_exti.c ****  *       notice, this list of conditions and the following disclaimer in the
+  15:user_app/main_exti.c ****  *       documentation and/or other materials provided with the distribution.
+  16:user_app/main_exti.c ****  *     * Neither the name of the Semtech corporation nor the
+  17:user_app/main_exti.c ****  *       names of its contributors may be used to endorse or promote products
+  18:user_app/main_exti.c ****  *       derived from this software without specific prior written permission.
+  19:user_app/main_exti.c ****  *
+  20:user_app/main_exti.c ****  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+  21:user_app/main_exti.c ****  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc2W06zE.s 			page 3
+
+
+  22:user_app/main_exti.c ****  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+  23:user_app/main_exti.c ****  * ARE DISCLAIMED. IN NO EVENT SHALL SEMTECH CORPORATION BE LIABLE FOR ANY DIRECT,
+  24:user_app/main_exti.c ****  * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+  25:user_app/main_exti.c ****  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+  26:user_app/main_exti.c ****  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+  27:user_app/main_exti.c ****  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  28:user_app/main_exti.c ****  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+  29:user_app/main_exti.c ****  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  30:user_app/main_exti.c ****  */
+  31:user_app/main_exti.c **** 
+  32:user_app/main_exti.c **** /*
+  33:user_app/main_exti.c ****  * -----------------------------------------------------------------------------
+  34:user_app/main_exti.c ****  * --- DEPENDENCIES ------------------------------------------------------------
+  35:user_app/main_exti.c ****  */
+  36:user_app/main_exti.c **** #include <stdint.h>   // C99 types
+  37:user_app/main_exti.c **** #include <stdbool.h>  // bool type
+  38:user_app/main_exti.c **** 
+  39:user_app/main_exti.c **** #include "smtc_bsp.h"
+  40:user_app/main_exti.c **** #include "modem_api.h"
+  41:user_app/main_exti.c **** #include "device_management_defs.h"
+  42:user_app/main_exti.c **** 
+  43:user_app/main_exti.c **** /*
+  44:user_app/main_exti.c ****  * -----------------------------------------------------------------------------
+  45:user_app/main_exti.c ****  * --- PRIVATE CONSTANTS -------------------------------------------------------
+  46:user_app/main_exti.c ****  */
+  47:user_app/main_exti.c **** 
+  48:user_app/main_exti.c **** /*
+  49:user_app/main_exti.c ****  * -----------------------------------------------------------------------------
+  50:user_app/main_exti.c ****  * --- PRIVATE TYPES -----------------------------------------------------------
+  51:user_app/main_exti.c ****  */
+  52:user_app/main_exti.c **** 
+  53:user_app/main_exti.c **** /*
+  54:user_app/main_exti.c ****  * -----------------------------------------------------------------------------
+  55:user_app/main_exti.c ****  * --- PRIVATE VARIABLES -------------------------------------------------------
+  56:user_app/main_exti.c ****  */
+  57:user_app/main_exti.c **** static volatile bool user_button_is_press = false;  // Flag for button status
+  58:user_app/main_exti.c **** static uint8_t       rx_payload[255]      = { 0 };  // Buffer for rx payload
+  59:user_app/main_exti.c **** static uint8_t       rx_payload_size      = 0;      // Size of the payload in the rx_payload buffer
+  60:user_app/main_exti.c **** 
+  61:user_app/main_exti.c **** /*
+  62:user_app/main_exti.c ****  * -----------------------------------------------------------------------------
+  63:user_app/main_exti.c ****  * --- PRIVATE FUNCTIONS DECLARATION -------------------------------------------
+  64:user_app/main_exti.c ****  */
+  65:user_app/main_exti.c **** static uint8_t is_joined( void );
+  66:user_app/main_exti.c **** static void    get_event( void );
+  67:user_app/main_exti.c **** static void    user_button_callback( void* context );
+  68:user_app/main_exti.c **** 
+  69:user_app/main_exti.c **** /*
+  70:user_app/main_exti.c ****  * -----------------------------------------------------------------------------
+  71:user_app/main_exti.c ****  * --- PUBLIC FUNCTIONS DEFINITION ---------------------------------------------
+  72:user_app/main_exti.c ****  */
+  73:user_app/main_exti.c **** 
+  74:user_app/main_exti.c **** /**
+  75:user_app/main_exti.c ****  * @brief Example to send a user payload on an external event
+  76:user_app/main_exti.c ****  *
+  77:user_app/main_exti.c ****  * @param user_dev_eui  LoRaWAN dev EUI
+  78:user_app/main_exti.c ****  * @param user_join_eui LoRaWAN join EUI
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc2W06zE.s 			page 4
+
+
+  79:user_app/main_exti.c ****  * @param user_app_key  LoRaWAN app Key
+  80:user_app/main_exti.c ****  */
+  81:user_app/main_exti.c **** void main_exti( uint8_t* user_dev_eui, uint8_t* user_join_eui, uint8_t* user_app_key )
+  82:user_app/main_exti.c **** {
+  83:user_app/main_exti.c ****     // Disable IRQ to avoid unwanted behaviour during init
+  84:user_app/main_exti.c ****     bsp_disable_irq( );
+  85:user_app/main_exti.c **** 
+  86:user_app/main_exti.c ****     // Init the modem and use get_event as event callback, please note that the callback will be
+  87:user_app/main_exti.c ****     // called immediatly after the first call to modem_run_engine because of the reset detection
+  88:user_app/main_exti.c ****     modem_init( &get_event );
+  89:user_app/main_exti.c **** 
+  90:user_app/main_exti.c ****     // Configure Nucleo blue button as EXTI
+  91:user_app/main_exti.c ****     bsp_gpio_irq_t nucleo_blue_button = {
+  92:user_app/main_exti.c ****         .context  = NULL,                  // context pass to the callback - not used in this examp
+  93:user_app/main_exti.c ****         .callback = user_button_callback,  // callback called when EXTI is triggered
+  94:user_app/main_exti.c ****     };
+  95:user_app/main_exti.c ****     bsp_gpio_init_in( PC_13, BSP_GPIO_PULL_MODE_NONE, BSP_GPIO_IRQ_MODE_FALLING, &nucleo_blue_butto
+  96:user_app/main_exti.c **** 
+  97:user_app/main_exti.c ****     // Re-enable IRQ
+  98:user_app/main_exti.c ****     bsp_enable_irq( );
+  99:user_app/main_exti.c **** 
+ 100:user_app/main_exti.c ****     // Set euis and keys - (If the credentials have already been configured, the device will reload
+ 101:user_app/main_exti.c ****     // it's not a mandatory action)
+ 102:user_app/main_exti.c ****     modem_set_deveui( user_dev_eui );
+ 103:user_app/main_exti.c ****     modem_set_joineui( user_join_eui );
+ 104:user_app/main_exti.c ****     modem_set_nwkkey( user_app_key );
+ 105:user_app/main_exti.c **** 
+ 106:user_app/main_exti.c ****     // Join LoRaWAN network
+ 107:user_app/main_exti.c ****     modem_join( );
+ 108:user_app/main_exti.c **** 
+ 109:user_app/main_exti.c ****     BSP_DBG_TRACE_INFO( "EXTI exemple is starting \n" );
+ 110:user_app/main_exti.c **** 
+ 111:user_app/main_exti.c ****     while( 1 )
+ 112:user_app/main_exti.c ****     {
+ 113:user_app/main_exti.c ****         // Execute modem runtime, this function must be recalled in sleep_time_ms (max value, can b
+ 114:user_app/main_exti.c ****         uint32_t sleep_time_ms = modem_run_engine( );
+ 115:user_app/main_exti.c **** 
+ 116:user_app/main_exti.c ****         // Check if a button has been pressed
+ 117:user_app/main_exti.c ****         if( user_button_is_press == true )
+ 118:user_app/main_exti.c ****         {
+ 119:user_app/main_exti.c ****             // Clear button flag
+ 120:user_app/main_exti.c ****             user_button_is_press = false;
+ 121:user_app/main_exti.c **** 
+ 122:user_app/main_exti.c ****             // Check if the device has already joined a network
+ 123:user_app/main_exti.c **** //            if( is_joined( ) != 0 )
+ 124:user_app/main_exti.c **** //            {
+ 125:user_app/main_exti.c **** //                // Send MCU temperature on port 102
+ 126:user_app/main_exti.c **** //                uint8_t temperature = ( uint8_t ) bsp_mcu_get_mcu_temperature( );
+ 127:user_app/main_exti.c **** //                BSP_DBG_TRACE_INFO( "MCU temperature : %d \n", temperature );
+ 128:user_app/main_exti.c **** //                modem_request_tx( 102, TX_UNCONFIRMED, &temperature, 1 );
+ 129:user_app/main_exti.c ****                          uint8_t c;
+ 130:user_app/main_exti.c ****                         memmove(&c, "Hello Corno!", 19);
+ 131:user_app/main_exti.c ****                         modem_request_tx( 102, TX_UNCONFIRMED, &c, 19 );
+ 132:user_app/main_exti.c **** //            }
+ 133:user_app/main_exti.c ****         }
+ 134:user_app/main_exti.c ****         else
+ 135:user_app/main_exti.c ****         {
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc2W06zE.s 			page 5
+
+
+ 136:user_app/main_exti.c ****             // nothing to process, go to sleep (if low power is enabled)
+ 137:user_app/main_exti.c ****             bsp_mcu_set_sleep_for_ms( sleep_time_ms );
+ 138:user_app/main_exti.c ****         }
+ 139:user_app/main_exti.c ****     }
+ 140:user_app/main_exti.c **** }
+ 141:user_app/main_exti.c **** 
+ 142:user_app/main_exti.c **** /*
+ 143:user_app/main_exti.c ****  * -----------------------------------------------------------------------------
+ 144:user_app/main_exti.c ****  * --- PRIVATE FUNCTIONS DEFINITION --------------------------------------------
+ 145:user_app/main_exti.c ****  */
+ 146:user_app/main_exti.c **** 
+ 147:user_app/main_exti.c **** /**
+ 148:user_app/main_exti.c ****  * @brief Join status of the product
+ 149:user_app/main_exti.c ****  *
+ 150:user_app/main_exti.c ****  * @return Return 1 if the device is joined else 0
+ 151:user_app/main_exti.c ****  */
+ 152:user_app/main_exti.c **** static uint8_t is_joined( void )
+ 153:user_app/main_exti.c **** {
+ 154:user_app/main_exti.c ****     uint8_t status = 0;
+ 155:user_app/main_exti.c ****     modem_get_status( &status );
+ 156:user_app/main_exti.c ****     return ( ( status >> modem_status_joined ) & 0x01 );
+ 157:user_app/main_exti.c **** }
+ 158:user_app/main_exti.c **** 
+ 159:user_app/main_exti.c **** /**
+ 160:user_app/main_exti.c ****  * @brief User callback for modem event
+ 161:user_app/main_exti.c ****  *
+ 162:user_app/main_exti.c ****  *  This callback is called every time an event ( see modem_rsp_event_t ) appears in the modem.
+ 163:user_app/main_exti.c ****  *  Several events may have to be read from the modem when this callback is called.
+ 164:user_app/main_exti.c ****  */
+ 165:user_app/main_exti.c **** static void get_event( void )
+ 166:user_app/main_exti.c **** {
+  61              		.loc 1 166 1 view -0
+  62              		.cfi_startproc
+  63              		@ args = 0, pretend = 0, frame = 264
+  64              		@ frame_needed = 0, uses_anonymous_args = 0
+ 167:user_app/main_exti.c ****     BSP_DBG_TRACE_MSG_COLOR( "get_event () callback\n", BSP_DBG_TRACE_COLOR_BLUE );
+  65              		.loc 1 167 5 view .LVU1
+  66              		.loc 1 167 5 view .LVU2
+ 166:user_app/main_exti.c ****     BSP_DBG_TRACE_MSG_COLOR( "get_event () callback\n", BSP_DBG_TRACE_COLOR_BLUE );
+  67              		.loc 1 166 1 is_stmt 0 view .LVU3
+  68 0000 F0B5     		push	{r4, r5, r6, r7, lr}
+  69              		.cfi_def_cfa_offset 20
+  70              		.cfi_offset 4, -20
+  71              		.cfi_offset 5, -16
+  72              		.cfi_offset 6, -12
+  73              		.cfi_offset 7, -8
+  74              		.cfi_offset 14, -4
+  75              		.loc 1 167 5 view .LVU4
+  76 0002 4848     		ldr	r0, .L20
+ 166:user_app/main_exti.c ****     BSP_DBG_TRACE_MSG_COLOR( "get_event () callback\n", BSP_DBG_TRACE_COLOR_BLUE );
+  77              		.loc 1 166 1 view .LVU5
+  78 0004 C5B0     		sub	sp, sp, #276
+  79              		.cfi_def_cfa_offset 296
+  80              		.loc 1 167 5 view .LVU6
+  81 0006 FFF7FEFF 		bl	bsp_trace_print
+  82              	.LVL0:
+  83              		.loc 1 167 5 is_stmt 1 view .LVU7
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc2W06zE.s 			page 6
+
+
+  84 000a 4748     		ldr	r0, .L20+4
+  85 000c FFF7FEFF 		bl	bsp_trace_print
+  86              	.LVL1:
+  87              		.loc 1 167 5 view .LVU8
+  88 0010 464E     		ldr	r6, .L20+8
+ 168:user_app/main_exti.c **** 
+ 169:user_app/main_exti.c ****     modem_rsp_event_t type                   = RSP_NUMBER;
+ 170:user_app/main_exti.c ****     uint8_t           count                  = 0;
+  89              		.loc 1 170 23 is_stmt 0 view .LVU9
+  90 0012 0025     		movs	r5, #0
+ 167:user_app/main_exti.c **** 
+  91              		.loc 1 167 5 view .LVU10
+  92 0014 3000     		movs	r0, r6
+  93              		.loc 1 170 23 view .LVU11
+  94 0016 0D27     		movs	r7, #13
+ 167:user_app/main_exti.c **** 
+  95              		.loc 1 167 5 view .LVU12
+  96 0018 FFF7FEFF 		bl	bsp_trace_print
+  97              	.LVL2:
+ 167:user_app/main_exti.c **** 
+  98              		.loc 1 167 5 is_stmt 1 view .LVU13
+ 167:user_app/main_exti.c **** 
+  99              		.loc 1 167 83 view .LVU14
+ 169:user_app/main_exti.c ****     uint8_t           count                  = 0;
+ 100              		.loc 1 169 5 view .LVU15
+ 169:user_app/main_exti.c ****     uint8_t           count                  = 0;
+ 101              		.loc 1 169 23 is_stmt 0 view .LVU16
+ 102 001c 0B23     		movs	r3, #11
+ 171:user_app/main_exti.c ****     uint8_t           event_data[255]        = { 0 };
+ 103              		.loc 1 171 23 view .LVU17
+ 104 001e FB22     		movs	r2, #251
+ 105 0020 2900     		movs	r1, r5
+ 169:user_app/main_exti.c ****     uint8_t           count                  = 0;
+ 106              		.loc 1 169 23 view .LVU18
+ 107 0022 03AC     		add	r4, sp, #12
+ 170:user_app/main_exti.c ****     uint8_t           event_data[255]        = { 0 };
+ 108              		.loc 1 170 23 view .LVU19
+ 109 0024 6F44     		add	r7, r7, sp
+ 110              		.loc 1 171 23 view .LVU20
+ 111 0026 05A8     		add	r0, sp, #20
+ 169:user_app/main_exti.c ****     uint8_t           count                  = 0;
+ 112              		.loc 1 169 23 view .LVU21
+ 113 0028 2370     		strb	r3, [r4]
+ 170:user_app/main_exti.c ****     uint8_t           event_data[255]        = { 0 };
+ 114              		.loc 1 170 5 is_stmt 1 view .LVU22
+ 170:user_app/main_exti.c ****     uint8_t           event_data[255]        = { 0 };
+ 115              		.loc 1 170 23 is_stmt 0 view .LVU23
+ 116 002a 3D70     		strb	r5, [r7]
+ 117              		.loc 1 171 5 is_stmt 1 view .LVU24
+ 118              		.loc 1 171 23 is_stmt 0 view .LVU25
+ 119 002c 0495     		str	r5, [sp, #16]
+ 120 002e FFF7FEFF 		bl	memset
+ 121              	.LVL3:
+ 172:user_app/main_exti.c ****     uint8_t           event_data_length      = 0;
+ 122              		.loc 1 172 5 is_stmt 1 view .LVU26
+ 123              		.loc 1 172 23 is_stmt 0 view .LVU27
+ 124 0032 6B46     		mov	r3, sp
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc2W06zE.s 			page 7
+
+
+ 125 0034 9D73     		strb	r5, [r3, #14]
+ 173:user_app/main_exti.c ****     uint8_t           asynchronous_msgnumber = 0;
+ 126              		.loc 1 173 5 is_stmt 1 view .LVU28
+ 127              		.loc 1 173 23 is_stmt 0 view .LVU29
+ 128 0036 0F23     		movs	r3, #15
+ 129 0038 6B44     		add	r3, r3, sp
+ 130 003a 1D70     		strb	r5, [r3]
+ 174:user_app/main_exti.c **** 
+ 175:user_app/main_exti.c ****     // Read modem event type and number
+ 176:user_app/main_exti.c ****     modem_get_event( &type, &count, event_data, &event_data_length, &asynchronous_msgnumber );
+ 131              		.loc 1 176 5 is_stmt 1 view .LVU30
+ 132              	.L18:
+ 177:user_app/main_exti.c **** 
+ 178:user_app/main_exti.c ****     // Continue to read modem event until all event has been processed
+ 179:user_app/main_exti.c ****     while( asynchronous_msgnumber > 0 )
+ 180:user_app/main_exti.c ****     {
+ 181:user_app/main_exti.c ****         BSP_DBG_TRACE_WARNING( "Event %u \n", type );
+ 182:user_app/main_exti.c ****         switch( type )
+ 183:user_app/main_exti.c ****         {
+ 184:user_app/main_exti.c ****         case RSP_RESET:
+ 185:user_app/main_exti.c ****             break;
+ 186:user_app/main_exti.c **** 
+ 187:user_app/main_exti.c ****         case RSP_ALARM:
+ 188:user_app/main_exti.c ****             break;
+ 189:user_app/main_exti.c **** 
+ 190:user_app/main_exti.c ****         case RSP_JOINED:
+ 191:user_app/main_exti.c ****             BSP_DBG_TRACE_INFO( "Modem is join \n" );
+ 192:user_app/main_exti.c ****             break;
+ 193:user_app/main_exti.c **** 
+ 194:user_app/main_exti.c ****         case RSP_TXDONE:
+ 195:user_app/main_exti.c ****             BSP_DBG_TRACE_INFO( "TX done \n" );
+ 196:user_app/main_exti.c ****             break;
+ 197:user_app/main_exti.c **** 
+ 198:user_app/main_exti.c ****         case RSP_DOWNDATA:
+ 199:user_app/main_exti.c ****             rx_payload_size = event_data_length - 4;
+ 200:user_app/main_exti.c ****             memcpy( rx_payload, &event_data[4], rx_payload_size );
+ 201:user_app/main_exti.c ****             BSP_DBG_TRACE_PRINTF( "Data received on port %u\n", event_data[3] );
+ 202:user_app/main_exti.c ****             BSP_DBG_TRACE_ARRAY( "DOWNDATA", rx_payload, rx_payload_size );
+ 203:user_app/main_exti.c ****             break;
+ 204:user_app/main_exti.c **** 
+ 205:user_app/main_exti.c ****         case RSP_FILEDONE:
+ 206:user_app/main_exti.c ****             break;
+ 207:user_app/main_exti.c **** 
+ 208:user_app/main_exti.c ****         case RSP_SETCONF:
+ 209:user_app/main_exti.c ****             break;
+ 210:user_app/main_exti.c **** 
+ 211:user_app/main_exti.c ****         case RSP_MUTE:
+ 212:user_app/main_exti.c ****             break;
+ 213:user_app/main_exti.c **** 
+ 214:user_app/main_exti.c ****         case RSP_LINKSTATUS:
+ 215:user_app/main_exti.c ****             break;
+ 216:user_app/main_exti.c **** 
+ 217:user_app/main_exti.c ****         default:
+ 218:user_app/main_exti.c ****             BSP_DBG_TRACE_ERROR( "Unknown event %u\n", type );
+ 219:user_app/main_exti.c ****             break;
+ 220:user_app/main_exti.c ****         }
+ 221:user_app/main_exti.c **** 
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc2W06zE.s 			page 8
+
+
+ 222:user_app/main_exti.c ****         modem_get_event( &type, &count, event_data, &event_data_length, &asynchronous_msgnumber );
+ 133              		.loc 1 222 9 is_stmt 0 view .LVU31
+ 134 003c 0093     		str	r3, [sp]
+ 135 003e 0E23     		movs	r3, #14
+ 136 0040 3900     		movs	r1, r7
+ 137 0042 6B44     		add	r3, r3, sp
+ 138 0044 2000     		movs	r0, r4
+ 139 0046 04AA     		add	r2, sp, #16
+ 140 0048 FFF7FEFF 		bl	modem_get_event
+ 141              	.LVL4:
+ 179:user_app/main_exti.c ****     {
+ 142              		.loc 1 179 10 is_stmt 1 view .LVU32
+ 179:user_app/main_exti.c ****     {
+ 143              		.loc 1 179 35 is_stmt 0 view .LVU33
+ 144 004c 0F23     		movs	r3, #15
+ 145 004e 6B44     		add	r3, r3, sp
+ 179:user_app/main_exti.c ****     {
+ 146              		.loc 1 179 10 view .LVU34
+ 147 0050 1B78     		ldrb	r3, [r3]
+ 148 0052 002B     		cmp	r3, #0
+ 149 0054 01D1     		bne	.L12
+ 223:user_app/main_exti.c ****     }
+ 224:user_app/main_exti.c **** }
+ 150              		.loc 1 224 1 view .LVU35
+ 151 0056 45B0     		add	sp, sp, #276
+ 152              		@ sp needed
+ 153 0058 F0BD     		pop	{r4, r5, r6, r7, pc}
+ 154              	.L12:
+ 181:user_app/main_exti.c ****         switch( type )
+ 155              		.loc 1 181 9 is_stmt 1 view .LVU36
+ 181:user_app/main_exti.c ****         switch( type )
+ 156              		.loc 1 181 9 view .LVU37
+ 157 005a 3548     		ldr	r0, .L20+12
+ 158 005c FFF7FEFF 		bl	bsp_trace_print
+ 159              	.LVL5:
+ 181:user_app/main_exti.c ****         switch( type )
+ 160              		.loc 1 181 9 view .LVU38
+ 161 0060 3448     		ldr	r0, .L20+16
+ 162 0062 FFF7FEFF 		bl	bsp_trace_print
+ 163              	.LVL6:
+ 181:user_app/main_exti.c ****         switch( type )
+ 164              		.loc 1 181 9 view .LVU39
+ 165 0066 2178     		ldrb	r1, [r4]
+ 166 0068 3348     		ldr	r0, .L20+20
+ 167 006a FFF7FEFF 		bl	bsp_trace_print
+ 168              	.LVL7:
+ 181:user_app/main_exti.c ****         switch( type )
+ 169              		.loc 1 181 9 view .LVU40
+ 170 006e 3000     		movs	r0, r6
+ 171 0070 FFF7FEFF 		bl	bsp_trace_print
+ 172              	.LVL8:
+ 181:user_app/main_exti.c ****         switch( type )
+ 173              		.loc 1 181 9 view .LVU41
+ 181:user_app/main_exti.c ****         switch( type )
+ 174              		.loc 1 181 54 view .LVU42
+ 182:user_app/main_exti.c ****         {
+ 175              		.loc 1 182 9 view .LVU43
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc2W06zE.s 			page 9
+
+
+ 176 0074 2078     		ldrb	r0, [r4]
+ 177 0076 0928     		cmp	r0, #9
+ 178 0078 48D8     		bhi	.L3
+ 179 007a FFF7FEFF 		bl	__gnu_thumb1_case_uqi
+ 180              	.L5:
+ 181 007e 35       		.byte	(.L4-.L5)/2
+ 182 007f 35       		.byte	(.L4-.L5)/2
+ 183 0080 05       		.byte	(.L8-.L5)/2
+ 184 0081 10       		.byte	(.L7-.L5)/2
+ 185 0082 18       		.byte	(.L6-.L5)/2
+ 186 0083 35       		.byte	(.L4-.L5)/2
+ 187 0084 35       		.byte	(.L4-.L5)/2
+ 188 0085 35       		.byte	(.L4-.L5)/2
+ 189 0086 47       		.byte	(.L3-.L5)/2
+ 190 0087 35       		.byte	(.L4-.L5)/2
+ 191              		.p2align 1
+ 192              	.L8:
+ 191:user_app/main_exti.c ****             break;
+ 193              		.loc 1 191 13 view .LVU44
+ 191:user_app/main_exti.c ****             break;
+ 194              		.loc 1 191 13 view .LVU45
+ 195 0088 2C48     		ldr	r0, .L20+24
+ 196 008a FFF7FEFF 		bl	bsp_trace_print
+ 197              	.LVL9:
+ 191:user_app/main_exti.c ****             break;
+ 198              		.loc 1 191 13 view .LVU46
+ 199 008e 2C48     		ldr	r0, .L20+28
+ 200 0090 FFF7FEFF 		bl	bsp_trace_print
+ 201              	.LVL10:
+ 191:user_app/main_exti.c ****             break;
+ 202              		.loc 1 191 13 view .LVU47
+ 203 0094 2B48     		ldr	r0, .L20+32
+ 204              	.L19:
+ 195:user_app/main_exti.c ****             break;
+ 205              		.loc 1 195 13 is_stmt 0 view .LVU48
+ 206 0096 FFF7FEFF 		bl	bsp_trace_print
+ 207              	.LVL11:
+ 195:user_app/main_exti.c ****             break;
+ 208              		.loc 1 195 13 is_stmt 1 view .LVU49
+ 209              	.L16:
+ 218:user_app/main_exti.c ****             break;
+ 210              		.loc 1 218 13 view .LVU50
+ 211 009a 3000     		movs	r0, r6
+ 212 009c 22E0     		b	.L17
+ 213              	.L7:
+ 195:user_app/main_exti.c ****             break;
+ 214              		.loc 1 195 13 view .LVU51
+ 195:user_app/main_exti.c ****             break;
+ 215              		.loc 1 195 13 view .LVU52
+ 216 009e 2748     		ldr	r0, .L20+24
+ 217 00a0 FFF7FEFF 		bl	bsp_trace_print
+ 218              	.LVL12:
+ 195:user_app/main_exti.c ****             break;
+ 219              		.loc 1 195 13 view .LVU53
+ 220 00a4 2648     		ldr	r0, .L20+28
+ 221 00a6 FFF7FEFF 		bl	bsp_trace_print
+ 222              	.LVL13:
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc2W06zE.s 			page 10
+
+
+ 195:user_app/main_exti.c ****             break;
+ 223              		.loc 1 195 13 view .LVU54
+ 224 00aa 2748     		ldr	r0, .L20+36
+ 225 00ac F3E7     		b	.L19
+ 226              	.L6:
+ 199:user_app/main_exti.c ****             memcpy( rx_payload, &event_data[4], rx_payload_size );
+ 227              		.loc 1 199 13 view .LVU55
+ 199:user_app/main_exti.c ****             memcpy( rx_payload, &event_data[4], rx_payload_size );
+ 228              		.loc 1 199 49 is_stmt 0 view .LVU56
+ 229 00ae 6B46     		mov	r3, sp
+ 230 00b0 9A7B     		ldrb	r2, [r3, #14]
+ 199:user_app/main_exti.c ****             memcpy( rx_payload, &event_data[4], rx_payload_size );
+ 231              		.loc 1 199 29 view .LVU57
+ 232 00b2 264B     		ldr	r3, .L20+40
+ 199:user_app/main_exti.c ****             memcpy( rx_payload, &event_data[4], rx_payload_size );
+ 233              		.loc 1 199 49 view .LVU58
+ 234 00b4 043A     		subs	r2, r2, #4
+ 235 00b6 D2B2     		uxtb	r2, r2
+ 200:user_app/main_exti.c ****             BSP_DBG_TRACE_PRINTF( "Data received on port %u\n", event_data[3] );
+ 236              		.loc 1 200 13 view .LVU59
+ 237 00b8 05A9     		add	r1, sp, #20
+ 238 00ba 2548     		ldr	r0, .L20+44
+ 199:user_app/main_exti.c ****             memcpy( rx_payload, &event_data[4], rx_payload_size );
+ 239              		.loc 1 199 29 view .LVU60
+ 240 00bc 1A70     		strb	r2, [r3]
+ 200:user_app/main_exti.c ****             BSP_DBG_TRACE_PRINTF( "Data received on port %u\n", event_data[3] );
+ 241              		.loc 1 200 13 is_stmt 1 view .LVU61
+ 242 00be FFF7FEFF 		bl	memcpy
+ 243              	.LVL14:
+ 201:user_app/main_exti.c ****             BSP_DBG_TRACE_ARRAY( "DOWNDATA", rx_payload, rx_payload_size );
+ 244              		.loc 1 201 13 view .LVU62
+ 245 00c2 04AB     		add	r3, sp, #16
+ 246 00c4 D978     		ldrb	r1, [r3, #3]
+ 247 00c6 2348     		ldr	r0, .L20+48
+ 248 00c8 FFF7FEFF 		bl	bsp_trace_print
+ 249              	.LVL15:
+ 202:user_app/main_exti.c ****             break;
+ 250              		.loc 1 202 13 view .LVU63
+ 202:user_app/main_exti.c ****             break;
+ 251              		.loc 1 202 13 view .LVU64
+ 252 00cc 1F4B     		ldr	r3, .L20+40
+ 253 00ce 2249     		ldr	r1, .L20+52
+ 254 00d0 1A78     		ldrb	r2, [r3]
+ 255 00d2 2248     		ldr	r0, .L20+56
+ 256 00d4 FFF7FEFF 		bl	bsp_trace_print
+ 257              	.LVL16:
+ 202:user_app/main_exti.c ****             break;
+ 258              		.loc 1 202 13 view .LVU65
+ 259              	.LBB2:
+ 202:user_app/main_exti.c ****             break;
+ 260              		.loc 1 202 13 view .LVU66
+ 202:user_app/main_exti.c ****             break;
+ 261              		.loc 1 202 13 is_stmt 0 view .LVU67
+ 262 00d8 0025     		movs	r5, #0
+ 263              	.LVL17:
+ 264              	.L9:
+ 202:user_app/main_exti.c ****             break;
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc2W06zE.s 			page 11
+
+
+ 265              		.loc 1 202 13 is_stmt 1 discriminator 7 view .LVU68
+ 266 00da 1C4B     		ldr	r3, .L20+40
+ 267 00dc 1B78     		ldrb	r3, [r3]
+ 268 00de AB42     		cmp	r3, r5
+ 269 00e0 05D8     		bhi	.L11
+ 270              	.LBE2:
+ 202:user_app/main_exti.c ****             break;
+ 271              		.loc 1 202 13 discriminator 9 view .LVU69
+ 272 00e2 1F48     		ldr	r0, .L20+60
+ 273              	.LVL18:
+ 274              	.L17:
+ 218:user_app/main_exti.c ****             break;
+ 275              		.loc 1 218 13 is_stmt 0 view .LVU70
+ 276 00e4 FFF7FEFF 		bl	bsp_trace_print
+ 277              	.LVL19:
+ 218:user_app/main_exti.c ****             break;
+ 278              		.loc 1 218 13 is_stmt 1 view .LVU71
+ 218:user_app/main_exti.c ****             break;
+ 279              		.loc 1 218 62 view .LVU72
+ 219:user_app/main_exti.c ****         }
+ 280              		.loc 1 219 13 view .LVU73
+ 281              	.L4:
+ 222:user_app/main_exti.c ****     }
+ 282              		.loc 1 222 9 view .LVU74
+ 283 00e8 0F23     		movs	r3, #15
+ 284 00ea 6B44     		add	r3, r3, sp
+ 285 00ec A6E7     		b	.L18
+ 286              	.LVL20:
+ 287              	.L11:
+ 288              	.LBB3:
+ 202:user_app/main_exti.c ****             break;
+ 289              		.loc 1 202 13 discriminator 8 view .LVU75
+ 290 00ee 0F23     		movs	r3, #15
+ 291 00f0 1D42     		tst	r5, r3
+ 292 00f2 04D1     		bne	.L10
+ 202:user_app/main_exti.c ****             break;
+ 293              		.loc 1 202 13 is_stmt 0 discriminator 2 view .LVU76
+ 294 00f4 002D     		cmp	r5, #0
+ 295 00f6 02D0     		beq	.L10
+ 202:user_app/main_exti.c ****             break;
+ 296              		.loc 1 202 13 is_stmt 1 discriminator 4 view .LVU77
+ 297 00f8 1948     		ldr	r0, .L20+60
+ 298 00fa FFF7FEFF 		bl	bsp_trace_print
+ 299              	.LVL21:
+ 300              	.L10:
+ 202:user_app/main_exti.c ****             break;
+ 301              		.loc 1 202 13 discriminator 6 view .LVU78
+ 302 00fe 144B     		ldr	r3, .L20+44
+ 303 0100 1848     		ldr	r0, .L20+64
+ 304 0102 595D     		ldrb	r1, [r3, r5]
+ 305 0104 FFF7FEFF 		bl	bsp_trace_print
+ 306              	.LVL22:
+ 202:user_app/main_exti.c ****             break;
+ 307              		.loc 1 202 13 discriminator 6 view .LVU79
+ 308 0108 0135     		adds	r5, r5, #1
+ 309              	.LVL23:
+ 202:user_app/main_exti.c ****             break;
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc2W06zE.s 			page 12
+
+
+ 310              		.loc 1 202 13 is_stmt 0 discriminator 6 view .LVU80
+ 311 010a E6E7     		b	.L9
+ 312              	.LVL24:
+ 313              	.L3:
+ 202:user_app/main_exti.c ****             break;
+ 314              		.loc 1 202 13 discriminator 6 view .LVU81
+ 315              	.LBE3:
+ 218:user_app/main_exti.c ****             break;
+ 316              		.loc 1 218 13 is_stmt 1 view .LVU82
+ 218:user_app/main_exti.c ****             break;
+ 317              		.loc 1 218 13 view .LVU83
+ 318 010c 1648     		ldr	r0, .L20+68
+ 319 010e FFF7FEFF 		bl	bsp_trace_print
+ 320              	.LVL25:
+ 218:user_app/main_exti.c ****             break;
+ 321              		.loc 1 218 13 view .LVU84
+ 322 0112 1648     		ldr	r0, .L20+72
+ 323 0114 FFF7FEFF 		bl	bsp_trace_print
+ 324              	.LVL26:
+ 218:user_app/main_exti.c ****             break;
+ 325              		.loc 1 218 13 view .LVU85
+ 326 0118 2178     		ldrb	r1, [r4]
+ 327 011a 1548     		ldr	r0, .L20+76
+ 328 011c FFF7FEFF 		bl	bsp_trace_print
+ 329              	.LVL27:
+ 330 0120 BBE7     		b	.L16
+ 331              	.L21:
+ 332 0122 C046     		.align	2
+ 333              	.L20:
+ 334 0124 00000000 		.word	.LC0
+ 335 0128 08000000 		.word	.LC2
+ 336 012c 1F000000 		.word	.LC4
+ 337 0130 24000000 		.word	.LC6
+ 338 0134 2C000000 		.word	.LC8
+ 339 0138 34000000 		.word	.LC10
+ 340 013c 40000000 		.word	.LC12
+ 341 0140 48000000 		.word	.LC14
+ 342 0144 50000000 		.word	.LC16
+ 343 0148 60000000 		.word	.LC18
+ 344 014c 00000000 		.word	.LANCHOR0
+ 345 0150 00000000 		.word	rx_payload
+ 346 0154 6A000000 		.word	.LC22
+ 347 0158 84000000 		.word	.LC24
+ 348 015c 8D000000 		.word	.LC26
+ 349 0160 A0000000 		.word	.LC28
+ 350 0164 A2000000 		.word	.LC30
+ 351 0168 A8000000 		.word	.LC32
+ 352 016c B0000000 		.word	.LC34
+ 353 0170 B8000000 		.word	.LC36
+ 354              		.cfi_endproc
+ 355              	.LFE11:
+ 357              		.section	.text.user_button_callback,"ax",%progbits
+ 358              		.align	1
+ 359              		.syntax unified
+ 360              		.code	16
+ 361              		.thumb_func
+ 362              		.fpu softvfp
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc2W06zE.s 			page 13
+
+
+ 364              	user_button_callback:
+ 365              	.LVL28:
+ 366              	.LFB12:
+ 225:user_app/main_exti.c **** 
+ 226:user_app/main_exti.c **** /**
+ 227:user_app/main_exti.c ****  * @brief User callback for button EXTI
+ 228:user_app/main_exti.c ****  *
+ 229:user_app/main_exti.c ****  * @param context Define by the user at the init
+ 230:user_app/main_exti.c ****  */
+ 231:user_app/main_exti.c **** static void user_button_callback( void* context )
+ 232:user_app/main_exti.c **** {
+ 367              		.loc 1 232 1 view -0
+ 368              		.cfi_startproc
+ 369              		@ args = 0, pretend = 0, frame = 0
+ 370              		@ frame_needed = 0, uses_anonymous_args = 0
+ 233:user_app/main_exti.c ****     ( void ) context;  // Not used in the example - avoid warning
+ 371              		.loc 1 233 5 view .LVU87
+ 234:user_app/main_exti.c **** 
+ 235:user_app/main_exti.c ****     static uint32_t last_press_timestamp_ms = 0;
+ 372              		.loc 1 235 5 view .LVU88
+ 236:user_app/main_exti.c **** 
+ 237:user_app/main_exti.c ****     // Debounce the button press, avoid multiple triggers
+ 238:user_app/main_exti.c ****     if( ( int32_t )( bsp_rtc_get_time_ms( ) - last_press_timestamp_ms ) > 500 )
+ 373              		.loc 1 238 5 view .LVU89
+ 232:user_app/main_exti.c ****     ( void ) context;  // Not used in the example - avoid warning
+ 374              		.loc 1 232 1 is_stmt 0 view .LVU90
+ 375 0000 10B5     		push	{r4, lr}
+ 376              		.cfi_def_cfa_offset 8
+ 377              		.cfi_offset 4, -8
+ 378              		.cfi_offset 14, -4
+ 379              		.loc 1 238 22 view .LVU91
+ 380 0002 FFF7FEFF 		bl	bsp_rtc_get_time_ms
+ 381              	.LVL29:
+ 382              		.loc 1 238 45 view .LVU92
+ 383 0006 084C     		ldr	r4, .L24
+ 384 0008 2368     		ldr	r3, [r4]
+ 385 000a C01A     		subs	r0, r0, r3
+ 386              		.loc 1 238 7 view .LVU93
+ 387 000c FA23     		movs	r3, #250
+ 388 000e 5B00     		lsls	r3, r3, #1
+ 389 0010 9842     		cmp	r0, r3
+ 390 0012 07DD     		ble	.L22
+ 391              	.LBB6:
+ 392              	.LBI6:
+ 231:user_app/main_exti.c **** {
+ 393              		.loc 1 231 13 is_stmt 1 view .LVU94
+ 394              	.LVL30:
+ 395              	.LBB7:
+ 239:user_app/main_exti.c ****     {
+ 240:user_app/main_exti.c ****         last_press_timestamp_ms = bsp_rtc_get_time_ms( );
+ 396              		.loc 1 240 9 view .LVU95
+ 397              		.loc 1 240 35 is_stmt 0 view .LVU96
+ 398 0014 FFF7FEFF 		bl	bsp_rtc_get_time_ms
+ 399              	.LVL31:
+ 241:user_app/main_exti.c ****         user_button_is_press    = true;
+ 400              		.loc 1 241 33 view .LVU97
+ 401 0018 0122     		movs	r2, #1
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc2W06zE.s 			page 14
+
+
+ 402 001a 044B     		ldr	r3, .L24+4
+ 240:user_app/main_exti.c ****         user_button_is_press    = true;
+ 403              		.loc 1 240 33 view .LVU98
+ 404 001c 2060     		str	r0, [r4]
+ 405              		.loc 1 241 9 is_stmt 1 view .LVU99
+ 406              		.loc 1 241 33 is_stmt 0 view .LVU100
+ 407 001e 1A70     		strb	r2, [r3]
+ 242:user_app/main_exti.c **** 
+ 243:user_app/main_exti.c ****         // When the button is pressed, the device is likely to be in low power mode. In this low po
+ 244:user_app/main_exti.c ****         // implementation, low power needs to be disabled once to leave the low power loop and proc
+ 245:user_app/main_exti.c ****         // action.
+ 246:user_app/main_exti.c ****         bsp_mcu_disable_once_low_power_wait( );
+ 408              		.loc 1 246 9 is_stmt 1 view .LVU101
+ 409 0020 FFF7FEFF 		bl	bsp_mcu_disable_once_low_power_wait
+ 410              	.LVL32:
+ 411              	.L22:
+ 412              		.loc 1 246 9 is_stmt 0 view .LVU102
+ 413              	.LBE7:
+ 414              	.LBE6:
+ 247:user_app/main_exti.c ****     }
+ 248:user_app/main_exti.c **** }
+ 415              		.loc 1 248 1 view .LVU103
+ 416              		@ sp needed
+ 417 0024 10BD     		pop	{r4, pc}
+ 418              	.L25:
+ 419 0026 C046     		.align	2
+ 420              	.L24:
+ 421 0028 00000000 		.word	.LANCHOR1
+ 422 002c 00000000 		.word	.LANCHOR2
+ 423              		.cfi_endproc
+ 424              	.LFE12:
+ 426              		.section	.rodata.main_exti.str1.1,"aMS",%progbits,1
+ 427              	.LC44:
+ 428 0000 45585449 		.ascii	"EXTI exemple is starting \012\000"
+ 428      20657865 
+ 428      6D706C65 
+ 428      20697320 
+ 428      73746172 
+ 429              	.LC48:
+ 430 001b 48656C6C 		.ascii	"Hello Corno!\000"
+ 430      6F20436F 
+ 430      726E6F21 
+ 430      00
+ 431              		.section	.text.main_exti,"ax",%progbits
+ 432              		.align	1
+ 433              		.global	main_exti
+ 434              		.syntax unified
+ 435              		.code	16
+ 436              		.thumb_func
+ 437              		.fpu softvfp
+ 439              	main_exti:
+ 440              	.LVL33:
+ 441              	.LFB9:
+  82:user_app/main_exti.c ****     // Disable IRQ to avoid unwanted behaviour during init
+ 442              		.loc 1 82 1 is_stmt 1 view -0
+ 443              		.cfi_startproc
+ 444              		@ args = 0, pretend = 0, frame = 16
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc2W06zE.s 			page 15
+
+
+ 445              		@ frame_needed = 0, uses_anonymous_args = 0
+  84:user_app/main_exti.c **** 
+ 446              		.loc 1 84 5 view .LVU105
+  82:user_app/main_exti.c ****     // Disable IRQ to avoid unwanted behaviour during init
+ 447              		.loc 1 82 1 is_stmt 0 view .LVU106
+ 448 0000 7FB5     		push	{r0, r1, r2, r3, r4, r5, r6, lr}
+ 449              		.cfi_def_cfa_offset 32
+ 450              		.cfi_offset 0, -32
+ 451              		.cfi_offset 1, -28
+ 452              		.cfi_offset 2, -24
+ 453              		.cfi_offset 3, -20
+ 454              		.cfi_offset 4, -16
+ 455              		.cfi_offset 5, -12
+ 456              		.cfi_offset 6, -8
+ 457              		.cfi_offset 14, -4
+  82:user_app/main_exti.c ****     // Disable IRQ to avoid unwanted behaviour during init
+ 458              		.loc 1 82 1 view .LVU107
+ 459 0002 0600     		movs	r6, r0
+ 460 0004 0D00     		movs	r5, r1
+ 461 0006 1400     		movs	r4, r2
+  84:user_app/main_exti.c **** 
+ 462              		.loc 1 84 5 view .LVU108
+ 463 0008 FFF7FEFF 		bl	bsp_disable_irq
+ 464              	.LVL34:
+  88:user_app/main_exti.c **** 
+ 465              		.loc 1 88 5 is_stmt 1 view .LVU109
+ 466 000c 2048     		ldr	r0, .L30
+ 467 000e FFF7FEFF 		bl	modem_init
+ 468              	.LVL35:
+  91:user_app/main_exti.c ****         .context  = NULL,                  // context pass to the callback - not used in this examp
+ 469              		.loc 1 91 5 view .LVU110
+  91:user_app/main_exti.c ****         .context  = NULL,                  // context pass to the callback - not used in this examp
+ 470              		.loc 1 91 20 is_stmt 0 view .LVU111
+ 471 0012 0822     		movs	r2, #8
+ 472 0014 0021     		movs	r1, #0
+ 473 0016 01A8     		add	r0, sp, #4
+ 474 0018 FFF7FEFF 		bl	memset
+ 475              	.LVL36:
+ 476 001c 1D4B     		ldr	r3, .L30+4
+  95:user_app/main_exti.c **** 
+ 477              		.loc 1 95 5 view .LVU112
+ 478 001e 0222     		movs	r2, #2
+ 479 0020 0021     		movs	r1, #0
+ 480 0022 2D20     		movs	r0, #45
+  91:user_app/main_exti.c ****         .context  = NULL,                  // context pass to the callback - not used in this examp
+ 481              		.loc 1 91 20 view .LVU113
+ 482 0024 0393     		str	r3, [sp, #12]
+  95:user_app/main_exti.c **** 
+ 483              		.loc 1 95 5 is_stmt 1 view .LVU114
+ 484 0026 01AB     		add	r3, sp, #4
+ 485 0028 FFF7FEFF 		bl	bsp_gpio_init_in
+ 486              	.LVL37:
+  98:user_app/main_exti.c **** 
+ 487              		.loc 1 98 5 view .LVU115
+ 488 002c FFF7FEFF 		bl	bsp_enable_irq
+ 489              	.LVL38:
+ 102:user_app/main_exti.c ****     modem_set_joineui( user_join_eui );
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc2W06zE.s 			page 16
+
+
+ 490              		.loc 1 102 5 view .LVU116
+ 491 0030 3000     		movs	r0, r6
+ 492 0032 FFF7FEFF 		bl	modem_set_deveui
+ 493              	.LVL39:
+ 103:user_app/main_exti.c ****     modem_set_nwkkey( user_app_key );
+ 494              		.loc 1 103 5 view .LVU117
+ 495 0036 2800     		movs	r0, r5
+ 496 0038 FFF7FEFF 		bl	modem_set_joineui
+ 497              	.LVL40:
+ 104:user_app/main_exti.c **** 
+ 498              		.loc 1 104 5 view .LVU118
+ 499 003c 2000     		movs	r0, r4
+ 500 003e FFF7FEFF 		bl	modem_set_nwkkey
+ 501              	.LVL41:
+ 107:user_app/main_exti.c **** 
+ 502              		.loc 1 107 5 view .LVU119
+ 503 0042 FFF7FEFF 		bl	modem_join
+ 504              	.LVL42:
+ 109:user_app/main_exti.c **** 
+ 505              		.loc 1 109 5 view .LVU120
+ 109:user_app/main_exti.c **** 
+ 506              		.loc 1 109 5 view .LVU121
+ 507 0046 1448     		ldr	r0, .L30+8
+ 508 0048 FFF7FEFF 		bl	bsp_trace_print
+ 509              	.LVL43:
+ 109:user_app/main_exti.c **** 
+ 510              		.loc 1 109 5 view .LVU122
+ 511 004c 1348     		ldr	r0, .L30+12
+ 512 004e FFF7FEFF 		bl	bsp_trace_print
+ 513              	.LVL44:
+ 109:user_app/main_exti.c **** 
+ 514              		.loc 1 109 5 view .LVU123
+ 515 0052 1348     		ldr	r0, .L30+16
+ 516 0054 FFF7FEFF 		bl	bsp_trace_print
+ 517              	.LVL45:
+ 109:user_app/main_exti.c **** 
+ 518              		.loc 1 109 5 view .LVU124
+ 519 0058 1248     		ldr	r0, .L30+20
+ 520 005a FFF7FEFF 		bl	bsp_trace_print
+ 521              	.LVL46:
+ 522              	.L27:
+ 109:user_app/main_exti.c **** 
+ 523              		.loc 1 109 5 discriminator 1 view .LVU125
+ 109:user_app/main_exti.c **** 
+ 524              		.loc 1 109 56 discriminator 1 view .LVU126
+ 111:user_app/main_exti.c ****     {
+ 525              		.loc 1 111 5 discriminator 1 view .LVU127
+ 526              	.LBB8:
+ 114:user_app/main_exti.c **** 
+ 527              		.loc 1 114 9 discriminator 1 view .LVU128
+ 114:user_app/main_exti.c **** 
+ 528              		.loc 1 114 34 is_stmt 0 discriminator 1 view .LVU129
+ 529 005e FFF7FEFF 		bl	modem_run_engine
+ 530              	.LVL47:
+ 117:user_app/main_exti.c ****         {
+ 531              		.loc 1 117 9 is_stmt 1 discriminator 1 view .LVU130
+ 117:user_app/main_exti.c ****         {
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc2W06zE.s 			page 17
+
+
+ 532              		.loc 1 117 34 is_stmt 0 discriminator 1 view .LVU131
+ 533 0062 114B     		ldr	r3, .L30+24
+ 534 0064 1A78     		ldrb	r2, [r3]
+ 117:user_app/main_exti.c ****         {
+ 535              		.loc 1 117 11 discriminator 1 view .LVU132
+ 536 0066 002A     		cmp	r2, #0
+ 537 0068 0FD0     		beq	.L28
+ 538              	.LBB9:
+ 120:user_app/main_exti.c **** 
+ 539              		.loc 1 120 13 is_stmt 1 view .LVU133
+ 120:user_app/main_exti.c **** 
+ 540              		.loc 1 120 34 is_stmt 0 view .LVU134
+ 541 006a 0024     		movs	r4, #0
+ 542 006c 1C70     		strb	r4, [r3]
+ 129:user_app/main_exti.c ****                         memmove(&c, "Hello Corno!", 19);
+ 543              		.loc 1 129 26 is_stmt 1 view .LVU135
+ 130:user_app/main_exti.c ****                         modem_request_tx( 102, TX_UNCONFIRMED, &c, 19 );
+ 544              		.loc 1 130 25 view .LVU136
+ 545 006e 6B46     		mov	r3, sp
+ 546 0070 1322     		movs	r2, #19
+ 547 0072 0E49     		ldr	r1, .L30+28
+ 548 0074 D81C     		adds	r0, r3, #3
+ 549              	.LVL48:
+ 130:user_app/main_exti.c ****                         modem_request_tx( 102, TX_UNCONFIRMED, &c, 19 );
+ 550              		.loc 1 130 25 is_stmt 0 view .LVU137
+ 551 0076 FFF7FEFF 		bl	memmove
+ 552              	.LVL49:
+ 131:user_app/main_exti.c **** //            }
+ 553              		.loc 1 131 25 is_stmt 1 view .LVU138
+ 554 007a 6A46     		mov	r2, sp
+ 555 007c 1323     		movs	r3, #19
+ 556 007e 2100     		movs	r1, r4
+ 557 0080 0332     		adds	r2, r2, #3
+ 558 0082 6620     		movs	r0, #102
+ 559 0084 FFF7FEFF 		bl	modem_request_tx
+ 560              	.LVL50:
+ 561              	.LBE9:
+ 562 0088 E9E7     		b	.L27
+ 563              	.LVL51:
+ 564              	.L28:
+ 137:user_app/main_exti.c ****         }
+ 565              		.loc 1 137 13 view .LVU139
+ 566 008a FFF7FEFF 		bl	bsp_mcu_set_sleep_for_ms
+ 567              	.LVL52:
+ 137:user_app/main_exti.c ****         }
+ 568              		.loc 1 137 13 is_stmt 0 view .LVU140
+ 569 008e E6E7     		b	.L27
+ 570              	.L31:
+ 571              		.align	2
+ 572              	.L30:
+ 573 0090 00000000 		.word	get_event
+ 574 0094 00000000 		.word	user_button_callback
+ 575 0098 40000000 		.word	.LC12
+ 576 009c 48000000 		.word	.LC14
+ 577 00a0 00000000 		.word	.LC44
+ 578 00a4 1F000000 		.word	.LC4
+ 579 00a8 00000000 		.word	.LANCHOR2
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc2W06zE.s 			page 18
+
+
+ 580 00ac 1B000000 		.word	.LC48
+ 581              	.LBE8:
+ 582              		.cfi_endproc
+ 583              	.LFE9:
+ 585              		.section	.bss.last_press_timestamp_ms.6473,"aw",%nobits
+ 586              		.align	2
+ 587              		.set	.LANCHOR1,. + 0
+ 590              	last_press_timestamp_ms.6473:
+ 591 0000 00000000 		.space	4
+ 592              		.section	.bss.rx_payload,"aw",%nobits
+ 593              		.align	2
+ 596              	rx_payload:
+ 597 0000 00000000 		.space	255
+ 597      00000000 
+ 597      00000000 
+ 597      00000000 
+ 597      00000000 
+ 598              		.section	.bss.rx_payload_size,"aw",%nobits
+ 599              		.set	.LANCHOR0,. + 0
+ 602              	rx_payload_size:
+ 603 0000 00       		.space	1
+ 604              		.section	.bss.user_button_is_press,"aw",%nobits
+ 605              		.set	.LANCHOR2,. + 0
+ 608              	user_button_is_press:
+ 609 0000 00       		.space	1
+ 610              		.text
+ 611              	.Letext0:
+ 612              		.file 2 "/Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.external
+ 613              		.file 3 "/Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.external
+ 614              		.file 4 "smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio_pin_names.h"
+ 615              		.file 5 "/Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.external
+ 616              		.file 6 "/Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.external
+ 617              		.file 7 "/Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.external
+ 618              		.file 8 "/Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.external
+ 619              		.file 9 "smtc_bsp/smtc_bsp_gpio.h"
+ 620              		.file 10 "smtc_modem_core/device_management/device_management_defs.h"
+ 621              		.file 11 "smtc_ral/src/ral_defs.h"
+ 622              		.file 12 "lr1mac/src/lr1mac_defs.h"
+ 623              		.file 13 "smtc_modem_core/modem_api.h"
+ 624              		.file 14 "smtc_bsp/smtc_bsp_mcu.h"
+ 625              		.file 15 "/Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.externa
+ 626              		.file 16 "smtc_bsp/smtc_bsp_rtc.h"
+ 627              		.file 17 "<built-in>"
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc2W06zE.s 			page 19
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 main_exti.c
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc2W06zE.s:51     .text.get_event:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc2W06zE.s:58     .text.get_event:0000000000000000 get_event
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc2W06zE.s:181    .text.get_event:000000000000007e $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc2W06zE.s:191    .text.get_event:0000000000000088 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc2W06zE.s:334    .text.get_event:0000000000000124 $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc2W06zE.s:596    .bss.rx_payload:0000000000000000 rx_payload
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc2W06zE.s:358    .text.user_button_callback:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc2W06zE.s:364    .text.user_button_callback:0000000000000000 user_button_callback
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc2W06zE.s:421    .text.user_button_callback:0000000000000028 $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc2W06zE.s:432    .text.main_exti:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc2W06zE.s:439    .text.main_exti:0000000000000000 main_exti
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc2W06zE.s:573    .text.main_exti:0000000000000090 $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc2W06zE.s:586    .bss.last_press_timestamp_ms.6473:0000000000000000 $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc2W06zE.s:590    .bss.last_press_timestamp_ms.6473:0000000000000000 last_press_timestamp_ms.6473
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc2W06zE.s:593    .bss.rx_payload:0000000000000000 $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc2W06zE.s:602    .bss.rx_payload_size:0000000000000000 rx_payload_size
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc2W06zE.s:603    .bss.rx_payload_size:0000000000000000 $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc2W06zE.s:608    .bss.user_button_is_press:0000000000000000 user_button_is_press
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc2W06zE.s:609    .bss.user_button_is_press:0000000000000000 $d
+
+UNDEFINED SYMBOLS
+bsp_trace_print
+memset
+modem_get_event
+__gnu_thumb1_case_uqi
+memcpy
+bsp_rtc_get_time_ms
+bsp_mcu_disable_once_low_power_wait
+bsp_disable_irq
+modem_init
+bsp_gpio_init_in
+bsp_enable_irq
+modem_set_deveui
+modem_set_joineui
+modem_set_nwkkey
+modem_join
+modem_run_engine
+memmove
+modem_request_tx
+bsp_mcu_set_sleep_for_ms

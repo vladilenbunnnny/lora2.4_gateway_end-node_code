@@ -1,0 +1,1573 @@
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccPk6JPb.s 			page 1
+
+
+   1              		.cpu cortex-m0plus
+   2              		.eabi_attribute 23, 1
+   3              		.eabi_attribute 24, 1
+   4              		.eabi_attribute 25, 1
+   5              		.eabi_attribute 26, 1
+   6              		.eabi_attribute 30, 4
+   7              		.eabi_attribute 34, 0
+   8              		.eabi_attribute 18, 4
+   9              		.file	"smtc_bsp_rtc.c"
+  10              		.text
+  11              	.Ltext0:
+  12              		.cfi_sections	.debug_frame
+  13              		.section	.text.rtc_get_timestamp_in_ticks,"ax",%progbits
+  14              		.align	1
+  15              		.arch armv6s-m
+  16              		.syntax unified
+  17              		.code	16
+  18              		.thumb_func
+  19              		.fpu softvfp
+  21              	rtc_get_timestamp_in_ticks:
+  22              	.LVL0:
+  23              	.LFB255:
+  24              		.file 1 "smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c"
+   1:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** /*!
+   2:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****  * \file      bsp_rtc.c
+   3:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****  *
+   4:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****  * \brief     Implements the spi BSP functions.
+   5:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****  *
+   6:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****  * Revised BSD License
+   7:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****  * Copyright Semtech Corporation 2020. All rights reserved.
+   8:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****  *
+   9:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****  * Redistribution and use in source and binary forms, with or without
+  10:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****  * modification, are permitted provided that the following conditions are met:
+  11:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****  *     * Redistributions of source code must retain the above copyright
+  12:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****  *       notice, this list of conditions and the following disclaimer.
+  13:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****  *     * Redistributions in binary form must reproduce the above copyright
+  14:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****  *       notice, this list of conditions and the following disclaimer in the
+  15:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****  *       documentation and/or other materials provided with the distribution.
+  16:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****  *     * Neither the name of the Semtech corporation nor the
+  17:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****  *       names of its contributors may be used to endorse or promote products
+  18:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****  *       derived from this software without specific prior written permission.
+  19:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****  *
+  20:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+  21:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+  22:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+  23:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****  * ARE DISCLAIMED. IN NO EVENT SHALL SEMTECH CORPORATION BE LIABLE FOR ANY DIRECT,
+  24:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****  * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+  25:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+  26:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+  27:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  28:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+  29:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  30:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****  */
+  31:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** #include <time.h>
+  32:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** #include "stm32l0xx_hal.h"
+  33:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** #include "stm32l0xx_ll_rtc.h"
+  34:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** #include "smtc_bsp_mcu.h"
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccPk6JPb.s 			page 2
+
+
+  35:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** #include "smtc_bsp_rtc.h"
+  36:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+  37:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** // clang-format off
+  38:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+  39:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** // MCU Wake Up Time
+  40:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** #define MIN_ALARM_DELAY_IN_TICKS       3U              // in ticks
+  41:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+  42:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** // sub-second number of bits
+  43:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** #define N_PREDIV_S                     10U
+  44:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+  45:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** // Synchronous prediv
+  46:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** #define PREDIV_S                       ( ( 1U << N_PREDIV_S ) - 1U )
+  47:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+  48:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** // Asynchronous prediv
+  49:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** #define PREDIV_A                       ( ( 1U << ( 15U - N_PREDIV_S ) ) - 1U )
+  50:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+  51:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** // Sub-second mask definition
+  52:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** #define ALARM_SUBSECOND_MASK           ( N_PREDIV_S << RTC_ALRMASSR_MASKSS_Pos )
+  53:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+  54:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** // RTC Time base in us
+  55:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** #define USEC_NUMBER                    1000000U
+  56:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** #define MSEC_NUMBER                    ( USEC_NUMBER / 1000 )
+  57:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+  58:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** #define COMMON_FACTOR                  3U
+  59:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** #define CONV_NUMER                     ( MSEC_NUMBER >> COMMON_FACTOR )
+  60:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** #define CONV_DENOM                     ( 1U << ( N_PREDIV_S - COMMON_FACTOR ) )
+  61:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+  62:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** /*!
+  63:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****  * Days, Hours, Minutes and seconds
+  64:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****  */
+  65:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** #define DAYS_IN_LEAP_YEAR              ( ( uint32_t ) 366U )
+  66:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** #define DAYS_IN_YEAR                   ( ( uint32_t ) 365U )
+  67:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** #define SECONDS_IN_1DAY                ( ( uint32_t ) 86400U )
+  68:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** #define SECONDS_IN_1HOUR               ( ( uint32_t ) 3600U )
+  69:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** #define SECONDS_IN_1MINUTE             ( ( uint32_t ) 60U )
+  70:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** #define MINUTES_IN_1HOUR               ( ( uint32_t ) 60U )
+  71:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** #define HOURS_IN_1DAY                  ( ( uint32_t ) 24U )
+  72:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+  73:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** /*!
+  74:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****  * Correction factors
+  75:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****  */
+  76:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** #define DAYS_IN_MONTH_CORRECTION_NORM  ( ( uint32_t ) 0x99AAA0 )
+  77:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** #define DAYS_IN_MONTH_CORRECTION_LEAP  ( ( uint32_t ) 0x445550 )
+  78:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+  79:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** /*!
+  80:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****  * Calculates ceiling( X / N )
+  81:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****  */
+  82:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** #define DIVC( X, N )                   ( ( ( X ) + ( N ) -1 ) / ( N ) )
+  83:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+  84:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** // clang-format on
+  85:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+  86:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** /*!
+  87:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****  * RTC timer context
+  88:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****  */
+  89:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** typedef struct
+  90:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** {
+  91:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     uint32_t        time_ref_in_ticks;  // Reference time
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccPk6JPb.s 			page 3
+
+
+  92:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     RTC_TimeTypeDef calendar_time;      // Reference time in calendar format
+  93:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     RTC_DateTypeDef calendar_date;      // Reference date in calendar format
+  94:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** } rtc_context_t;
+  95:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+  96:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** typedef struct bsp_rtc_s
+  97:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** {
+  98:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     RTC_HandleTypeDef handle;
+  99:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     /*!
+ 100:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****      * Keep the value of the RTC timer when the RTC alarm is set
+ 101:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****      * Set with the \ref bsp_rtc_set_context function
+ 102:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****      * Value is kept as a Reference to calculate alarm
+ 103:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****      */
+ 104:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     rtc_context_t context;
+ 105:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** } bsp_rtc_t;
+ 106:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+ 107:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** static bsp_rtc_t bsp_rtc;
+ 108:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+ 109:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** /*!
+ 110:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****  * Set the RTC time reference in ticks
+ 111:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****  *
+ 112:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****  * \retval time_ref_in_ticks RTC time reference in ticks
+ 113:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****  */
+ 114:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** static uint32_t bsp_rtc_set_time_ref_in_ticks( void );
+ 115:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+ 116:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** /*!
+ 117:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****  * Converts time in ms to time in ticks
+ 118:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****  *
+ 119:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****  * \param[IN] milliseconds Time in milliseconds
+ 120:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****  * \retval ticks Time in timer ticks
+ 121:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****  */
+ 122:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** static uint32_t bsp_rtc_ms_2_tick( const uint32_t milliseconds );
+ 123:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+ 124:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** /*!
+ 125:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****  * Converts time in ms to time in wake up timer ticks
+ 126:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****  * Assuming WUCKSEL[2:0] = 000: RTCCLK/16 clock is selected
+ 127:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****  *
+ 128:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****  * \param[IN] milliseconds Time in milliseconds
+ 129:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****  * \retval ticks Time in wake up timer ticks
+ 130:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****  */
+ 131:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** static uint32_t bsp_rtc_ms_2_wakeup_timer_tick( const uint32_t milliseconds );
+ 132:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+ 133:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** /*!
+ 134:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****  * Converts time in s to time in wake up timer ticks
+ 135:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****  * When RTCCLK = 32768 Hz and ck_spre (Synchronous prescaler output clock) is
+ 136:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****  * adjusted to 1 Hz
+ 137:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****  *
+ 138:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****  * \param[IN] seconds Time in seconds
+ 139:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****  * \retval ticks Time in wake up timer ticks
+ 140:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****  */
+ 141:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** static uint32_t bsp_rtc_s_2_wakeup_timer_tick( const uint32_t seconds );
+ 142:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+ 143:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** /*!
+ 144:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****  * Converts time in ticks to time in ms
+ 145:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****  *
+ 146:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****  * \param[IN] ticks Time in timer ticks
+ 147:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****  * \retval milliseconds Time in milliseconds
+ 148:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****  */
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccPk6JPb.s 			page 4
+
+
+ 149:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** static uint32_t bsp_rtc_tick_2_ms( const uint32_t tick );
+ 150:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+ 151:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** /*!
+ 152:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****  * Get the elapsed time in seconds and milliseconds since RTC initialization
+ 153:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****  *
+ 154:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****  * \param [OUT] milliseconds Number of milliseconds elapsed since RTC
+ 155:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****  *                           initialization
+ 156:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****  * \retval seconds           Number of seconds elapsed since RTC initialization
+ 157:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****  */
+ 158:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** static uint32_t bsp_rtc_get_calendar_time( uint16_t* milliseconds );
+ 159:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+ 160:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** /*!
+ 161:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****  * Get current full resolution RTC timestamp in ticks
+ 162:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****  *
+ 163:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****  * \retval timestamp_in_ticks Current timestamp in ticks
+ 164:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****  */
+ 165:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** static uint64_t rtc_get_timestamp_in_ticks( RTC_DateTypeDef* date, RTC_TimeTypeDef* time );
+ 166:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+ 167:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** void bsp_rtc_init( void )
+ 168:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** {
+ 169:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     RTC_TimeTypeDef time;
+ 170:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     RTC_DateTypeDef date;
+ 171:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+ 172:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     bsp_rtc.handle.Instance            = RTC;
+ 173:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     bsp_rtc.handle.Init.HourFormat     = RTC_HOURFORMAT_24;
+ 174:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     bsp_rtc.handle.Init.AsynchPrediv   = PREDIV_A;
+ 175:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     bsp_rtc.handle.Init.SynchPrediv    = PREDIV_S;
+ 176:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     bsp_rtc.handle.Init.OutPut         = RTC_OUTPUT_DISABLE;
+ 177:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     bsp_rtc.handle.Init.OutPutRemap    = RTC_OUTPUT_REMAP_NONE;
+ 178:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     bsp_rtc.handle.Init.OutPutPolarity = RTC_OUTPUT_POLARITY_HIGH;
+ 179:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     bsp_rtc.handle.Init.OutPutType     = RTC_OUTPUT_TYPE_OPENDRAIN;
+ 180:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+ 181:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     if( HAL_RTC_Init( &bsp_rtc.handle ) != HAL_OK )
+ 182:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     {
+ 183:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****         bsp_mcu_panic( );
+ 184:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     }
+ 185:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+ 186:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     // Initialize RTC counter to 0
+ 187:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     date.Year    = 0;
+ 188:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     date.Month   = RTC_MONTH_JANUARY;
+ 189:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     date.Date    = 1;
+ 190:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     date.WeekDay = RTC_WEEKDAY_MONDAY;
+ 191:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     HAL_RTC_SetDate( &bsp_rtc.handle, &date, RTC_FORMAT_BIN );
+ 192:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+ 193:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     /*at 0:0:0*/
+ 194:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     time.Hours          = 0;
+ 195:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     time.Minutes        = 0;
+ 196:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     time.Seconds        = 0;
+ 197:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     time.SubSeconds     = 0;
+ 198:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     time.TimeFormat     = 0;
+ 199:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     time.StoreOperation = RTC_DAYLIGHTSAVING_NONE;
+ 200:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     time.DayLightSaving = RTC_STOREOPERATION_RESET;
+ 201:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     HAL_RTC_SetTime( &bsp_rtc.handle, &time, RTC_FORMAT_BIN );
+ 202:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+ 203:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     // Enable Direct Read of the calendar registers (not through Shadow
+ 204:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     // registers)
+ 205:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     HAL_RTCEx_EnableBypassShadow( &bsp_rtc.handle );
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccPk6JPb.s 			page 5
+
+
+ 206:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+ 207:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     bsp_rtc_set_time_ref_in_ticks( );
+ 208:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** }
+ 209:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+ 210:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** uint32_t bsp_rtc_get_time_s( void )
+ 211:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** {
+ 212:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     uint16_t milliseconds = 0;
+ 213:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     return bsp_rtc_get_calendar_time( &milliseconds );
+ 214:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** }
+ 215:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+ 216:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** uint32_t bsp_rtc_get_time_ms( void )
+ 217:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** {
+ 218:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     uint32_t seconds      = 0;
+ 219:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     uint16_t milliseconds = 0;
+ 220:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+ 221:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     seconds = bsp_rtc_get_calendar_time( &milliseconds );
+ 222:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+ 223:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     return seconds * 1000 + milliseconds;
+ 224:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** }
+ 225:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+ 226:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** void bsp_rtc_delay_in_ms( const uint32_t milliseconds )
+ 227:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** {
+ 228:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     RTC_TimeTypeDef time;
+ 229:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     RTC_DateTypeDef date;
+ 230:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+ 231:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     uint64_t delay_in_ticks     = 0;
+ 232:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     uint64_t ref_delay_in_ticks = rtc_get_timestamp_in_ticks( &date, &time );
+ 233:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+ 234:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     delay_in_ticks = bsp_rtc_ms_2_tick( milliseconds );
+ 235:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+ 236:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     // Wait delay ms
+ 237:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     while( ( ( rtc_get_timestamp_in_ticks( &date, &time ) - ref_delay_in_ticks ) ) < delay_in_ticks
+ 238:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     {
+ 239:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****         __NOP( );
+ 240:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     }
+ 241:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** }
+ 242:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+ 243:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** void bsp_rtc_wakeup_timer_set_s( const int32_t seconds )
+ 244:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** {
+ 245:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     uint32_t delay_s_2_tick = bsp_rtc_s_2_wakeup_timer_tick( seconds );
+ 246:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+ 247:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     HAL_RTCEx_SetWakeUpTimer_IT( &bsp_rtc.handle, delay_s_2_tick, RTC_WAKEUPCLOCK_CK_SPRE_16BITS );
+ 248:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** }
+ 249:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+ 250:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** void bsp_rtc_wakeup_timer_set_ms( const int32_t milliseconds )
+ 251:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** {
+ 252:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     uint32_t delay_ms_2_tick = bsp_rtc_ms_2_wakeup_timer_tick( milliseconds );
+ 253:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+ 254:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     HAL_RTCEx_DeactivateWakeUpTimer( &bsp_rtc.handle );
+ 255:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     HAL_RTCEx_SetWakeUpTimer_IT( &bsp_rtc.handle, delay_ms_2_tick, RTC_WAKEUPCLOCK_RTCCLK_DIV16 );
+ 256:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** }
+ 257:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+ 258:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** static uint32_t bsp_rtc_set_time_ref_in_ticks( void )
+ 259:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** {
+ 260:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     bsp_rtc.context.time_ref_in_ticks =
+ 261:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****         ( uint32_t ) rtc_get_timestamp_in_ticks( &bsp_rtc.context.calendar_date, &bsp_rtc.context.c
+ 262:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     return bsp_rtc.context.time_ref_in_ticks;
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccPk6JPb.s 			page 6
+
+
+ 263:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** }
+ 264:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+ 265:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** static uint32_t bsp_rtc_ms_2_tick( const uint32_t milliseconds )
+ 266:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** {
+ 267:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     return ( uint32_t )( ( ( ( uint64_t ) milliseconds ) * CONV_DENOM ) / CONV_NUMER );
+ 268:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** }
+ 269:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+ 270:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** static uint32_t bsp_rtc_tick_2_ms( const uint32_t tick )
+ 271:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** {
+ 272:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     uint32_t seconds    = tick >> N_PREDIV_S;
+ 273:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     uint32_t local_tick = tick & PREDIV_S;
+ 274:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+ 275:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     return ( uint32_t )( ( seconds * 1000 ) + ( ( local_tick * 1000 ) >> N_PREDIV_S ) );
+ 276:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** }
+ 277:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+ 278:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** static uint32_t bsp_rtc_ms_2_wakeup_timer_tick( const uint32_t milliseconds )
+ 279:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** {
+ 280:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     uint32_t nb_tick = 0;
+ 281:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     // Compute is done for LSE @ 32.768kHz
+ 282:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     // Assuming that RTC_WAKEUPCLOCK_RTCCLK_DIV16 is used => tick is 488.281µs
+ 283:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     nb_tick = milliseconds * 2 + ( ( 6 * milliseconds ) >> 7 );
+ 284:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     return nb_tick;
+ 285:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** }
+ 286:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+ 287:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** static uint32_t bsp_rtc_s_2_wakeup_timer_tick( const uint32_t seconds )
+ 288:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** {
+ 289:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     uint32_t nb_tick = 0;
+ 290:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     // Compute is done for LSE @ 32.768kHz
+ 291:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     // Assuming that RTC_WAKEUPCLOCK_CK_SPRE_16BITS is used => tick is 1s
+ 292:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     nb_tick = seconds;
+ 293:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     return nb_tick;
+ 294:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** }
+ 295:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+ 296:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** static uint32_t bsp_rtc_get_calendar_time( uint16_t* milliseconds )
+ 297:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** {
+ 298:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     RTC_TimeTypeDef time;
+ 299:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     RTC_DateTypeDef date;
+ 300:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     uint32_t        ticks;
+ 301:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+ 302:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     uint64_t timestamp_in_ticks = rtc_get_timestamp_in_ticks( &date, &time );
+ 303:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+ 304:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     uint32_t seconds = ( uint32_t )( timestamp_in_ticks >> N_PREDIV_S );
+ 305:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+ 306:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     ticks = ( uint32_t ) timestamp_in_ticks & PREDIV_S;
+ 307:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+ 308:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     *milliseconds = bsp_rtc_tick_2_ms( ticks );
+ 309:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+ 310:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     return seconds;
+ 311:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** }
+ 312:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+ 313:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** static uint64_t rtc_get_timestamp_in_ticks( RTC_DateTypeDef* date, RTC_TimeTypeDef* time )
+ 314:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** {
+  25              		.loc 1 314 1 view -0
+  26              		.cfi_startproc
+  27              		@ args = 0, pretend = 0, frame = 8
+  28              		@ frame_needed = 0, uses_anonymous_args = 0
+  29              		.loc 1 314 1 is_stmt 0 view .LVU1
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccPk6JPb.s 			page 7
+
+
+  30 0000 F7B5     		push	{r0, r1, r2, r4, r5, r6, r7, lr}
+  31              		.cfi_def_cfa_offset 32
+  32              		.cfi_offset 0, -32
+  33              		.cfi_offset 1, -28
+  34              		.cfi_offset 2, -24
+  35              		.cfi_offset 4, -20
+  36              		.cfi_offset 5, -16
+  37              		.cfi_offset 6, -12
+  38              		.cfi_offset 7, -8
+  39              		.cfi_offset 14, -4
+  40 0002 0500     		movs	r5, r0
+  41 0004 0C00     		movs	r4, r1
+ 315:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     uint64_t timestamp_in_ticks = 0;
+  42              		.loc 1 315 5 is_stmt 1 view .LVU2
+  43              	.LVL1:
+  44              	.L2:
+ 316:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     uint32_t correction;
+  45              		.loc 1 316 5 discriminator 1 view .LVU3
+ 317:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     uint32_t seconds;
+  46              		.loc 1 317 5 discriminator 1 view .LVU4
+ 318:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+ 319:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     // Make sure it is correct due to asynchronous nature of RTC
+ 320:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     volatile uint32_t ssr;
+  47              		.loc 1 320 5 discriminator 1 view .LVU5
+ 321:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+ 322:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     do
+  48              		.loc 1 322 5 discriminator 1 view .LVU6
+ 323:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     {
+ 324:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****         ssr = RTC->SSR;
+  49              		.loc 1 324 9 discriminator 1 view .LVU7
+  50              		.loc 1 324 18 is_stmt 0 discriminator 1 view .LVU8
+  51 0006 234E     		ldr	r6, .L6
+ 325:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****         HAL_RTC_GetDate( &bsp_rtc.handle, date, RTC_FORMAT_BIN );
+  52              		.loc 1 325 9 discriminator 1 view .LVU9
+  53 0008 234F     		ldr	r7, .L6+4
+ 324:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****         HAL_RTC_GetDate( &bsp_rtc.handle, date, RTC_FORMAT_BIN );
+  54              		.loc 1 324 18 discriminator 1 view .LVU10
+  55 000a B36A     		ldr	r3, [r6, #40]
+  56              		.loc 1 325 9 discriminator 1 view .LVU11
+  57 000c 0022     		movs	r2, #0
+  58 000e 2900     		movs	r1, r5
+  59 0010 3800     		movs	r0, r7
+ 324:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****         HAL_RTC_GetDate( &bsp_rtc.handle, date, RTC_FORMAT_BIN );
+  60              		.loc 1 324 13 discriminator 1 view .LVU12
+  61 0012 0193     		str	r3, [sp, #4]
+  62              		.loc 1 325 9 is_stmt 1 discriminator 1 view .LVU13
+  63 0014 FFF7FEFF 		bl	HAL_RTC_GetDate
+  64              	.LVL2:
+ 326:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****         HAL_RTC_GetTime( &bsp_rtc.handle, time, RTC_FORMAT_BIN );
+  65              		.loc 1 326 9 discriminator 1 view .LVU14
+  66 0018 0022     		movs	r2, #0
+  67 001a 2100     		movs	r1, r4
+  68 001c 3800     		movs	r0, r7
+  69 001e FFF7FEFF 		bl	HAL_RTC_GetTime
+  70              	.LVL3:
+ 327:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     } while( ssr != RTC->SSR );
+  71              		.loc 1 327 12 discriminator 1 view .LVU15
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccPk6JPb.s 			page 8
+
+
+  72              		.loc 1 327 24 is_stmt 0 discriminator 1 view .LVU16
+  73 0022 B26A     		ldr	r2, [r6, #40]
+  74              		.loc 1 327 18 discriminator 1 view .LVU17
+  75 0024 019B     		ldr	r3, [sp, #4]
+  76              		.loc 1 327 5 discriminator 1 view .LVU18
+  77 0026 9A42     		cmp	r2, r3
+  78 0028 EDD1     		bne	.L2
+ 328:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+ 329:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     // Calculate amount of elapsed days since 01/01/2000
+ 330:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     seconds = DIVC( ( DAYS_IN_YEAR * 3 + DAYS_IN_LEAP_YEAR ) * date->Year, 4 );
+  79              		.loc 1 330 5 is_stmt 1 view .LVU19
+ 331:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+ 332:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     correction = ( ( date->Year % 4 ) == 0 ) ? DAYS_IN_MONTH_CORRECTION_LEAP : DAYS_IN_MONTH_CORREC
+  80              		.loc 1 332 39 is_stmt 0 view .LVU20
+  81 002a 0321     		movs	r1, #3
+ 330:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+  82              		.loc 1 330 15 view .LVU21
+  83 002c EA78     		ldrb	r2, [r5, #3]
+  84 002e 1B48     		ldr	r0, .L6+8
+ 333:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+ 334:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     seconds +=
+ 335:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****         ( DIVC( ( date->Month - 1 ) * ( 30 + 31 ), 2 ) - ( ( ( correction >> ( ( date->Month - 1 ) 
+  85              		.loc 1 335 11 view .LVU22
+  86 0030 6E78     		ldrb	r6, [r5, #1]
+ 330:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+  87              		.loc 1 330 15 view .LVU23
+  88 0032 5043     		muls	r0, r2
+ 332:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+  89              		.loc 1 332 78 view .LVU24
+  90 0034 0A40     		ands	r2, r1
+  91 0036 5342     		rsbs	r3, r2, #0
+  92 0038 5341     		adcs	r3, r3, r2
+  93 003a 194A     		ldr	r2, .L6+12
+  94 003c 5B42     		rsbs	r3, r3, #0
+  95 003e 1340     		ands	r3, r2
+  96 0040 184A     		ldr	r2, .L6+16
+  97              		.loc 1 335 11 view .LVU25
+  98 0042 013E     		subs	r6, r6, #1
+ 332:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+  99              		.loc 1 332 78 view .LVU26
+ 100 0044 9B18     		adds	r3, r3, r2
+ 101              		.loc 1 335 11 view .LVU27
+ 102 0046 3D22     		movs	r2, #61
+ 103 0048 7243     		muls	r2, r6
+ 104              		.loc 1 335 100 view .LVU28
+ 105 004a 7600     		lsls	r6, r6, #1
+ 106              		.loc 1 335 75 view .LVU29
+ 107 004c F340     		lsrs	r3, r3, r6
+ 336:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+ 337:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     seconds += ( date->Date - 1 );
+ 108              		.loc 1 337 13 view .LVU30
+ 109 004e AD78     		ldrb	r5, [r5, #2]
+ 110              	.LVL4:
+ 335:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+ 111              		.loc 1 335 11 view .LVU31
+ 112 0050 0132     		adds	r2, r2, #1
+ 113 0052 D70F     		lsrs	r7, r2, #31
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccPk6JPb.s 			page 9
+
+
+ 330:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+ 114              		.loc 1 330 15 view .LVU32
+ 115 0054 0330     		adds	r0, r0, #3
+ 335:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+ 116              		.loc 1 335 11 view .LVU33
+ 117 0056 BA18     		adds	r2, r7, r2
+ 118 0058 013D     		subs	r5, r5, #1
+ 330:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+ 119              		.loc 1 330 13 view .LVU34
+ 120 005a 8008     		lsrs	r0, r0, #2
+ 121              	.LVL5:
+ 332:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+ 122              		.loc 1 332 5 is_stmt 1 view .LVU35
+ 334:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****         ( DIVC( ( date->Month - 1 ) * ( 30 + 31 ), 2 ) - ( ( ( correction >> ( ( date->Month - 1 ) 
+ 123              		.loc 1 334 5 view .LVU36
+ 124              		.loc 1 337 5 view .LVU37
+ 335:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+ 125              		.loc 1 335 11 is_stmt 0 view .LVU38
+ 126 005c 5210     		asrs	r2, r2, #1
+ 127 005e 2818     		adds	r0, r5, r0
+ 128 0060 1018     		adds	r0, r2, r0
+ 335:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+ 129              		.loc 1 335 108 view .LVU39
+ 130 0062 0B40     		ands	r3, r1
+ 131              		.loc 1 337 13 view .LVU40
+ 132 0064 C31A     		subs	r3, r0, r3
+ 133              	.LVL6:
+ 338:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+ 339:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     // Convert from days to seconds
+ 340:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     seconds *= SECONDS_IN_1DAY;
+ 134              		.loc 1 340 5 is_stmt 1 view .LVU41
+ 135              		.loc 1 340 13 is_stmt 0 view .LVU42
+ 136 0066 1048     		ldr	r0, .L6+20
+ 341:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+ 342:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     seconds += ( ( uint32_t ) time->Seconds + ( ( uint32_t ) time->Minutes * SECONDS_IN_1MINUTE ) +
+ 343:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****                  ( ( uint32_t ) time->Hours * SECONDS_IN_1HOUR ) );
+ 137              		.loc 1 343 20 view .LVU43
+ 138 0068 2278     		ldrb	r2, [r4]
+ 340:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+ 139              		.loc 1 340 13 view .LVU44
+ 140 006a 5843     		muls	r0, r3
+ 141              	.LVL7:
+ 342:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****                  ( ( uint32_t ) time->Hours * SECONDS_IN_1HOUR ) );
+ 142              		.loc 1 342 5 is_stmt 1 view .LVU45
+ 344:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+ 345:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     timestamp_in_ticks = ( ( ( uint64_t ) seconds ) << N_PREDIV_S ) + ( PREDIV_S - time->SubSeconds
+ 143              		.loc 1 345 5 view .LVU46
+ 346:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+ 347:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     return timestamp_in_ticks;
+ 144              		.loc 1 347 5 view .LVU47
+ 343:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+ 145              		.loc 1 343 45 is_stmt 0 view .LVU48
+ 146 006c E123     		movs	r3, #225
+ 147 006e 1B01     		lsls	r3, r3, #4
+ 148 0070 5343     		muls	r3, r2
+ 342:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****                  ( ( uint32_t ) time->Hours * SECONDS_IN_1HOUR ) );
+ 149              		.loc 1 342 76 view .LVU49
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccPk6JPb.s 			page 10
+
+
+ 150 0072 3C22     		movs	r2, #60
+ 151              	.LVL8:
+ 342:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****                  ( ( uint32_t ) time->Hours * SECONDS_IN_1HOUR ) );
+ 152              		.loc 1 342 49 view .LVU50
+ 153 0074 6178     		ldrb	r1, [r4, #1]
+ 154              	.LVL9:
+ 345:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+ 155              		.loc 1 345 82 view .LVU51
+ 156 0076 0D4D     		ldr	r5, .L6+24
+ 342:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****                  ( ( uint32_t ) time->Hours * SECONDS_IN_1HOUR ) );
+ 157              		.loc 1 342 76 view .LVU52
+ 158 0078 4A43     		muls	r2, r1
+ 342:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****                  ( ( uint32_t ) time->Hours * SECONDS_IN_1HOUR ) );
+ 159              		.loc 1 342 99 view .LVU53
+ 160 007a 9B18     		adds	r3, r3, r2
+ 342:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****                  ( ( uint32_t ) time->Hours * SECONDS_IN_1HOUR ) );
+ 161              		.loc 1 342 18 view .LVU54
+ 162 007c A278     		ldrb	r2, [r4, #2]
+ 345:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+ 163              		.loc 1 345 82 view .LVU55
+ 164 007e 6468     		ldr	r4, [r4, #4]
+ 165              	.LVL10:
+ 342:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****                  ( ( uint32_t ) time->Hours * SECONDS_IN_1HOUR ) );
+ 166              		.loc 1 342 99 view .LVU56
+ 167 0080 9B18     		adds	r3, r3, r2
+ 342:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****                  ( ( uint32_t ) time->Hours * SECONDS_IN_1HOUR ) );
+ 168              		.loc 1 342 13 view .LVU57
+ 169 0082 1B18     		adds	r3, r3, r0
+ 345:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+ 170              		.loc 1 345 53 view .LVU58
+ 171 0084 990D     		lsrs	r1, r3, #22
+ 172              	.LVL11:
+ 345:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+ 173              		.loc 1 345 53 view .LVU59
+ 174 0086 9802     		lsls	r0, r3, #10
+ 175              	.LVL12:
+ 345:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+ 176              		.loc 1 345 82 view .LVU60
+ 177 0088 0023     		movs	r3, #0
+ 178 008a 2A1B     		subs	r2, r5, r4
+ 179              	.LVL13:
+ 345:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+ 180              		.loc 1 345 24 view .LVU61
+ 181 008c 8018     		adds	r0, r0, r2
+ 182 008e 5941     		adcs	r1, r1, r3
+ 348:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** }
+ 183              		.loc 1 348 1 view .LVU62
+ 184 0090 03B0     		add	sp, sp, #12
+ 185              		@ sp needed
+ 186              	.LVL14:
+ 187              	.LVL15:
+ 188              		.loc 1 348 1 view .LVU63
+ 189 0092 F0BD     		pop	{r4, r5, r6, r7, pc}
+ 190              	.L7:
+ 191              		.align	2
+ 192              	.L6:
+ 193 0094 00280040 		.word	1073752064
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccPk6JPb.s 			page 11
+
+
+ 194 0098 00000000 		.word	.LANCHOR0
+ 195 009c B5050000 		.word	1461
+ 196 00a0 B0AAAAFF 		.word	-5592400
+ 197 00a4 A0AA9900 		.word	10070688
+ 198 00a8 80510100 		.word	86400
+ 199 00ac FF030000 		.word	1023
+ 200              		.cfi_endproc
+ 201              	.LFE255:
+ 203              		.section	.text.bsp_rtc_get_calendar_time.constprop.0,"ax",%progbits
+ 204              		.align	1
+ 205              		.syntax unified
+ 206              		.code	16
+ 207              		.thumb_func
+ 208              		.fpu softvfp
+ 210              	bsp_rtc_get_calendar_time.constprop.0:
+ 211              	.LVL16:
+ 212              	.LFB259:
+ 296:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** {
+ 213              		.loc 1 296 17 is_stmt 1 view -0
+ 214              		.cfi_startproc
+ 215              		@ args = 0, pretend = 0, frame = 24
+ 216              		@ frame_needed = 0, uses_anonymous_args = 0
+ 298:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     RTC_DateTypeDef date;
+ 217              		.loc 1 298 5 view .LVU65
+ 299:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     uint32_t        ticks;
+ 218              		.loc 1 299 5 view .LVU66
+ 300:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+ 219              		.loc 1 300 5 view .LVU67
+ 302:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+ 220              		.loc 1 302 5 view .LVU68
+ 296:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** {
+ 221              		.loc 1 296 17 is_stmt 0 view .LVU69
+ 222 0000 10B5     		push	{r4, lr}
+ 223              		.cfi_def_cfa_offset 8
+ 224              		.cfi_offset 4, -8
+ 225              		.cfi_offset 14, -4
+ 226 0002 86B0     		sub	sp, sp, #24
+ 227              		.cfi_def_cfa_offset 32
+ 296:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** {
+ 228              		.loc 1 296 17 view .LVU70
+ 229 0004 0400     		movs	r4, r0
+ 302:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+ 230              		.loc 1 302 35 view .LVU71
+ 231 0006 01A9     		add	r1, sp, #4
+ 232 0008 6846     		mov	r0, sp
+ 233              	.LVL17:
+ 302:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+ 234              		.loc 1 302 35 view .LVU72
+ 235 000a FFF7FEFF 		bl	rtc_get_timestamp_in_ticks
+ 236              	.LVL18:
+ 304:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+ 237              		.loc 1 304 5 is_stmt 1 view .LVU73
+ 306:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+ 238              		.loc 1 306 5 view .LVU74
+ 308:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+ 239              		.loc 1 308 5 view .LVU75
+ 240              	.LBB8:
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccPk6JPb.s 			page 12
+
+
+ 241              	.LBI8:
+ 270:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** {
+ 242              		.loc 1 270 17 view .LVU76
+ 243              	.LBB9:
+ 272:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     uint32_t local_tick = tick & PREDIV_S;
+ 244              		.loc 1 272 5 view .LVU77
+ 273:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+ 245              		.loc 1 273 5 view .LVU78
+ 275:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** }
+ 246              		.loc 1 275 5 view .LVU79
+ 275:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** }
+ 247              		.loc 1 275 62 is_stmt 0 view .LVU80
+ 248 000e FA23     		movs	r3, #250
+ 249              	.LBE9:
+ 250              	.LBE8:
+ 306:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+ 251              		.loc 1 306 11 view .LVU81
+ 252 0010 8205     		lsls	r2, r0, #22
+ 253 0012 920D     		lsrs	r2, r2, #22
+ 254              	.LBB12:
+ 255              	.LBB10:
+ 275:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** }
+ 256              		.loc 1 275 62 view .LVU82
+ 257 0014 9B00     		lsls	r3, r3, #2
+ 258 0016 5343     		muls	r3, r2
+ 259              	.LBE10:
+ 260              	.LBE12:
+ 304:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+ 261              		.loc 1 304 57 view .LVU83
+ 262 0018 8905     		lsls	r1, r1, #22
+ 263              	.LVL19:
+ 304:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+ 264              		.loc 1 304 57 view .LVU84
+ 265 001a 800A     		lsrs	r0, r0, #10
+ 266              	.LVL20:
+ 267              	.LBB13:
+ 268              	.LBB11:
+ 275:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** }
+ 269              		.loc 1 275 71 view .LVU85
+ 270 001c 9B0A     		lsrs	r3, r3, #10
+ 271              	.LBE11:
+ 272              	.LBE13:
+ 304:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+ 273              		.loc 1 304 57 view .LVU86
+ 274 001e 0843     		orrs	r0, r1
+ 308:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+ 275              		.loc 1 308 19 view .LVU87
+ 276 0020 2380     		strh	r3, [r4]
+ 310:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** }
+ 277              		.loc 1 310 5 is_stmt 1 view .LVU88
+ 311:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+ 278              		.loc 1 311 1 is_stmt 0 view .LVU89
+ 279 0022 06B0     		add	sp, sp, #24
+ 280              		@ sp needed
+ 281              	.LVL21:
+ 311:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+ 282              		.loc 1 311 1 view .LVU90
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccPk6JPb.s 			page 13
+
+
+ 283 0024 10BD     		pop	{r4, pc}
+ 284              		.cfi_endproc
+ 285              	.LFE259:
+ 287              		.section	.text.bsp_rtc_init,"ax",%progbits
+ 288              		.align	1
+ 289              		.global	bsp_rtc_init
+ 290              		.syntax unified
+ 291              		.code	16
+ 292              		.thumb_func
+ 293              		.fpu softvfp
+ 295              	bsp_rtc_init:
+ 296              	.LFB243:
+ 168:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     RTC_TimeTypeDef time;
+ 297              		.loc 1 168 1 is_stmt 1 view -0
+ 298              		.cfi_startproc
+ 299              		@ args = 0, pretend = 0, frame = 24
+ 300              		@ frame_needed = 0, uses_anonymous_args = 0
+ 169:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     RTC_DateTypeDef date;
+ 301              		.loc 1 169 5 view .LVU92
+ 170:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+ 302              		.loc 1 170 5 view .LVU93
+ 172:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     bsp_rtc.handle.Init.HourFormat     = RTC_HOURFORMAT_24;
+ 303              		.loc 1 172 5 view .LVU94
+ 168:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     RTC_TimeTypeDef time;
+ 304              		.loc 1 168 1 is_stmt 0 view .LVU95
+ 305 0000 10B5     		push	{r4, lr}
+ 306              		.cfi_def_cfa_offset 8
+ 307              		.cfi_offset 4, -8
+ 308              		.cfi_offset 14, -4
+ 174:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     bsp_rtc.handle.Init.SynchPrediv    = PREDIV_S;
+ 309              		.loc 1 174 40 view .LVU96
+ 310 0002 1F22     		movs	r2, #31
+ 172:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     bsp_rtc.handle.Init.HourFormat     = RTC_HOURFORMAT_24;
+ 311              		.loc 1 172 40 view .LVU97
+ 312 0004 174C     		ldr	r4, .L14
+ 313 0006 184B     		ldr	r3, .L14+4
+ 174:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     bsp_rtc.handle.Init.SynchPrediv    = PREDIV_S;
+ 314              		.loc 1 174 40 view .LVU98
+ 315 0008 A260     		str	r2, [r4, #8]
+ 172:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     bsp_rtc.handle.Init.HourFormat     = RTC_HOURFORMAT_24;
+ 316              		.loc 1 172 40 view .LVU99
+ 317 000a 2360     		str	r3, [r4]
+ 173:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     bsp_rtc.handle.Init.AsynchPrediv   = PREDIV_A;
+ 318              		.loc 1 173 5 is_stmt 1 view .LVU100
+ 173:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     bsp_rtc.handle.Init.AsynchPrediv   = PREDIV_A;
+ 319              		.loc 1 173 40 is_stmt 0 view .LVU101
+ 320 000c 0023     		movs	r3, #0
+ 175:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     bsp_rtc.handle.Init.OutPut         = RTC_OUTPUT_DISABLE;
+ 321              		.loc 1 175 40 view .LVU102
+ 322 000e 174A     		ldr	r2, .L14+8
+ 168:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     RTC_TimeTypeDef time;
+ 323              		.loc 1 168 1 view .LVU103
+ 324 0010 86B0     		sub	sp, sp, #24
+ 325              		.cfi_def_cfa_offset 32
+ 181:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     {
+ 326              		.loc 1 181 9 view .LVU104
+ 327 0012 2000     		movs	r0, r4
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccPk6JPb.s 			page 14
+
+
+ 173:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     bsp_rtc.handle.Init.AsynchPrediv   = PREDIV_A;
+ 328              		.loc 1 173 40 view .LVU105
+ 329 0014 6360     		str	r3, [r4, #4]
+ 174:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     bsp_rtc.handle.Init.SynchPrediv    = PREDIV_S;
+ 330              		.loc 1 174 5 is_stmt 1 view .LVU106
+ 175:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     bsp_rtc.handle.Init.OutPut         = RTC_OUTPUT_DISABLE;
+ 331              		.loc 1 175 5 view .LVU107
+ 175:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     bsp_rtc.handle.Init.OutPut         = RTC_OUTPUT_DISABLE;
+ 332              		.loc 1 175 40 is_stmt 0 view .LVU108
+ 333 0016 E260     		str	r2, [r4, #12]
+ 176:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     bsp_rtc.handle.Init.OutPutRemap    = RTC_OUTPUT_REMAP_NONE;
+ 334              		.loc 1 176 5 is_stmt 1 view .LVU109
+ 176:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     bsp_rtc.handle.Init.OutPutRemap    = RTC_OUTPUT_REMAP_NONE;
+ 335              		.loc 1 176 40 is_stmt 0 view .LVU110
+ 336 0018 2361     		str	r3, [r4, #16]
+ 177:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     bsp_rtc.handle.Init.OutPutPolarity = RTC_OUTPUT_POLARITY_HIGH;
+ 337              		.loc 1 177 5 is_stmt 1 view .LVU111
+ 177:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     bsp_rtc.handle.Init.OutPutPolarity = RTC_OUTPUT_POLARITY_HIGH;
+ 338              		.loc 1 177 40 is_stmt 0 view .LVU112
+ 339 001a 6361     		str	r3, [r4, #20]
+ 178:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     bsp_rtc.handle.Init.OutPutType     = RTC_OUTPUT_TYPE_OPENDRAIN;
+ 340              		.loc 1 178 5 is_stmt 1 view .LVU113
+ 178:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     bsp_rtc.handle.Init.OutPutType     = RTC_OUTPUT_TYPE_OPENDRAIN;
+ 341              		.loc 1 178 40 is_stmt 0 view .LVU114
+ 342 001c A361     		str	r3, [r4, #24]
+ 179:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+ 343              		.loc 1 179 5 is_stmt 1 view .LVU115
+ 179:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+ 344              		.loc 1 179 40 is_stmt 0 view .LVU116
+ 345 001e E361     		str	r3, [r4, #28]
+ 181:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     {
+ 346              		.loc 1 181 5 is_stmt 1 view .LVU117
+ 181:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     {
+ 347              		.loc 1 181 9 is_stmt 0 view .LVU118
+ 348 0020 FFF7FEFF 		bl	HAL_RTC_Init
+ 349              	.LVL22:
+ 181:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     {
+ 350              		.loc 1 181 7 view .LVU119
+ 351 0024 0028     		cmp	r0, #0
+ 352 0026 01D0     		beq	.L10
+ 183:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     }
+ 353              		.loc 1 183 9 is_stmt 1 view .LVU120
+ 354 0028 FFF7FEFF 		bl	bsp_mcu_panic
+ 355              	.LVL23:
+ 356              	.L10:
+ 187:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     date.Month   = RTC_MONTH_JANUARY;
+ 357              		.loc 1 187 5 view .LVU121
+ 188:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     date.Date    = 1;
+ 358              		.loc 1 188 5 view .LVU122
+ 189:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     date.WeekDay = RTC_WEEKDAY_MONDAY;
+ 359              		.loc 1 189 5 view .LVU123
+ 190:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     HAL_RTC_SetDate( &bsp_rtc.handle, &date, RTC_FORMAT_BIN );
+ 360              		.loc 1 190 5 view .LVU124
+ 190:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     HAL_RTC_SetDate( &bsp_rtc.handle, &date, RTC_FORMAT_BIN );
+ 361              		.loc 1 190 18 is_stmt 0 view .LVU125
+ 362 002c 104B     		ldr	r3, .L14+12
+ 191:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccPk6JPb.s 			page 15
+
+
+ 363              		.loc 1 191 5 view .LVU126
+ 364 002e 6946     		mov	r1, sp
+ 365 0030 0022     		movs	r2, #0
+ 366 0032 2000     		movs	r0, r4
+ 190:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     HAL_RTC_SetDate( &bsp_rtc.handle, &date, RTC_FORMAT_BIN );
+ 367              		.loc 1 190 18 view .LVU127
+ 368 0034 0093     		str	r3, [sp]
+ 191:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+ 369              		.loc 1 191 5 is_stmt 1 view .LVU128
+ 370 0036 FFF7FEFF 		bl	HAL_RTC_SetDate
+ 371              	.LVL24:
+ 194:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     time.Minutes        = 0;
+ 372              		.loc 1 194 5 view .LVU129
+ 195:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     time.Seconds        = 0;
+ 373              		.loc 1 195 5 view .LVU130
+ 196:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     time.SubSeconds     = 0;
+ 374              		.loc 1 196 5 view .LVU131
+ 197:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     time.TimeFormat     = 0;
+ 375              		.loc 1 197 5 view .LVU132
+ 197:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     time.TimeFormat     = 0;
+ 376              		.loc 1 197 25 is_stmt 0 view .LVU133
+ 377 003a 0022     		movs	r2, #0
+ 201:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+ 378              		.loc 1 201 5 view .LVU134
+ 379 003c 01A9     		add	r1, sp, #4
+ 380 003e 2000     		movs	r0, r4
+ 197:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     time.TimeFormat     = 0;
+ 381              		.loc 1 197 25 view .LVU135
+ 382 0040 0292     		str	r2, [sp, #8]
+ 198:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     time.StoreOperation = RTC_DAYLIGHTSAVING_NONE;
+ 383              		.loc 1 198 5 is_stmt 1 view .LVU136
+ 194:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     time.Minutes        = 0;
+ 384              		.loc 1 194 25 is_stmt 0 view .LVU137
+ 385 0042 0192     		str	r2, [sp, #4]
+ 199:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     time.DayLightSaving = RTC_STOREOPERATION_RESET;
+ 386              		.loc 1 199 5 is_stmt 1 view .LVU138
+ 200:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     HAL_RTC_SetTime( &bsp_rtc.handle, &time, RTC_FORMAT_BIN );
+ 387              		.loc 1 200 5 view .LVU139
+ 200:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     HAL_RTC_SetTime( &bsp_rtc.handle, &time, RTC_FORMAT_BIN );
+ 388              		.loc 1 200 25 is_stmt 0 view .LVU140
+ 389 0044 0492     		str	r2, [sp, #16]
+ 390 0046 0592     		str	r2, [sp, #20]
+ 201:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+ 391              		.loc 1 201 5 is_stmt 1 view .LVU141
+ 392 0048 FFF7FEFF 		bl	HAL_RTC_SetTime
+ 393              	.LVL25:
+ 205:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+ 394              		.loc 1 205 5 view .LVU142
+ 395 004c 2000     		movs	r0, r4
+ 396 004e FFF7FEFF 		bl	HAL_RTCEx_EnableBypassShadow
+ 397              	.LVL26:
+ 207:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** }
+ 398              		.loc 1 207 5 view .LVU143
+ 399              	.LBB16:
+ 400              	.LBI16:
+ 258:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** {
+ 401              		.loc 1 258 17 view .LVU144
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccPk6JPb.s 			page 16
+
+
+ 402              	.LBB17:
+ 260:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****         ( uint32_t ) rtc_get_timestamp_in_ticks( &bsp_rtc.context.calendar_date, &bsp_rtc.context.c
+ 403              		.loc 1 260 5 view .LVU145
+ 261:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     return bsp_rtc.context.time_ref_in_ticks;
+ 404              		.loc 1 261 22 is_stmt 0 view .LVU146
+ 405 0052 2100     		movs	r1, r4
+ 406 0054 2000     		movs	r0, r4
+ 407 0056 2831     		adds	r1, r1, #40
+ 408 0058 3C30     		adds	r0, r0, #60
+ 409 005a FFF7FEFF 		bl	rtc_get_timestamp_in_ticks
+ 410              	.LVL27:
+ 261:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     return bsp_rtc.context.time_ref_in_ticks;
+ 411              		.loc 1 261 9 view .LVU147
+ 412 005e 6062     		str	r0, [r4, #36]
+ 262:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** }
+ 413              		.loc 1 262 5 is_stmt 1 view .LVU148
+ 414              	.LBE17:
+ 415              	.LBE16:
+ 208:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+ 416              		.loc 1 208 1 is_stmt 0 view .LVU149
+ 417 0060 06B0     		add	sp, sp, #24
+ 418              		@ sp needed
+ 419 0062 10BD     		pop	{r4, pc}
+ 420              	.L15:
+ 421              		.align	2
+ 422              	.L14:
+ 423 0064 00000000 		.word	.LANCHOR0
+ 424 0068 00280040 		.word	1073752064
+ 425 006c FF030000 		.word	1023
+ 426 0070 01010100 		.word	65793
+ 427              		.cfi_endproc
+ 428              	.LFE243:
+ 430              		.section	.text.bsp_rtc_get_time_s,"ax",%progbits
+ 431              		.align	1
+ 432              		.global	bsp_rtc_get_time_s
+ 433              		.syntax unified
+ 434              		.code	16
+ 435              		.thumb_func
+ 436              		.fpu softvfp
+ 438              	bsp_rtc_get_time_s:
+ 439              	.LFB244:
+ 211:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     uint16_t milliseconds = 0;
+ 440              		.loc 1 211 1 is_stmt 1 view -0
+ 441              		.cfi_startproc
+ 442              		@ args = 0, pretend = 0, frame = 8
+ 443              		@ frame_needed = 0, uses_anonymous_args = 0
+ 212:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     return bsp_rtc_get_calendar_time( &milliseconds );
+ 444              		.loc 1 212 5 view .LVU151
+ 211:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     uint16_t milliseconds = 0;
+ 445              		.loc 1 211 1 is_stmt 0 view .LVU152
+ 446 0000 07B5     		push	{r0, r1, r2, lr}
+ 447              		.cfi_def_cfa_offset 16
+ 448              		.cfi_offset 0, -16
+ 449              		.cfi_offset 1, -12
+ 450              		.cfi_offset 2, -8
+ 451              		.cfi_offset 14, -4
+ 212:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     return bsp_rtc_get_calendar_time( &milliseconds );
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccPk6JPb.s 			page 17
+
+
+ 452              		.loc 1 212 14 view .LVU153
+ 453 0002 6B46     		mov	r3, sp
+ 454 0004 981D     		adds	r0, r3, #6
+ 455 0006 0023     		movs	r3, #0
+ 214:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+ 456              		.loc 1 214 1 view .LVU154
+ 457              		@ sp needed
+ 212:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     return bsp_rtc_get_calendar_time( &milliseconds );
+ 458              		.loc 1 212 14 view .LVU155
+ 459 0008 0380     		strh	r3, [r0]
+ 213:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** }
+ 460              		.loc 1 213 5 is_stmt 1 view .LVU156
+ 213:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** }
+ 461              		.loc 1 213 12 is_stmt 0 view .LVU157
+ 462 000a FFF7FEFF 		bl	bsp_rtc_get_calendar_time.constprop.0
+ 463              	.LVL28:
+ 214:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+ 464              		.loc 1 214 1 view .LVU158
+ 465 000e 0EBD     		pop	{r1, r2, r3, pc}
+ 466              		.cfi_endproc
+ 467              	.LFE244:
+ 469              		.section	.text.bsp_rtc_get_time_ms,"ax",%progbits
+ 470              		.align	1
+ 471              		.global	bsp_rtc_get_time_ms
+ 472              		.syntax unified
+ 473              		.code	16
+ 474              		.thumb_func
+ 475              		.fpu softvfp
+ 477              	bsp_rtc_get_time_ms:
+ 478              	.LFB245:
+ 217:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     uint32_t seconds      = 0;
+ 479              		.loc 1 217 1 is_stmt 1 view -0
+ 480              		.cfi_startproc
+ 481              		@ args = 0, pretend = 0, frame = 8
+ 482              		@ frame_needed = 0, uses_anonymous_args = 0
+ 218:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     uint16_t milliseconds = 0;
+ 483              		.loc 1 218 5 view .LVU160
+ 484              	.LVL29:
+ 219:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+ 485              		.loc 1 219 5 view .LVU161
+ 217:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     uint32_t seconds      = 0;
+ 486              		.loc 1 217 1 is_stmt 0 view .LVU162
+ 487 0000 07B5     		push	{r0, r1, r2, lr}
+ 488              		.cfi_def_cfa_offset 16
+ 489              		.cfi_offset 0, -16
+ 490              		.cfi_offset 1, -12
+ 491              		.cfi_offset 2, -8
+ 492              		.cfi_offset 14, -4
+ 219:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+ 493              		.loc 1 219 14 view .LVU163
+ 494 0002 6A46     		mov	r2, sp
+ 495 0004 0023     		movs	r3, #0
+ 221:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+ 496              		.loc 1 221 15 view .LVU164
+ 497 0006 901D     		adds	r0, r2, #6
+ 219:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+ 498              		.loc 1 219 14 view .LVU165
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccPk6JPb.s 			page 18
+
+
+ 499 0008 D380     		strh	r3, [r2, #6]
+ 221:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+ 500              		.loc 1 221 5 is_stmt 1 view .LVU166
+ 221:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+ 501              		.loc 1 221 15 is_stmt 0 view .LVU167
+ 502 000a FFF7FEFF 		bl	bsp_rtc_get_calendar_time.constprop.0
+ 503              	.LVL30:
+ 223:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** }
+ 504              		.loc 1 223 5 is_stmt 1 view .LVU168
+ 223:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** }
+ 505              		.loc 1 223 20 is_stmt 0 view .LVU169
+ 506 000e FA23     		movs	r3, #250
+ 507 0010 9B00     		lsls	r3, r3, #2
+ 508 0012 5843     		muls	r0, r3
+ 509              	.LVL31:
+ 223:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** }
+ 510              		.loc 1 223 27 view .LVU170
+ 511 0014 6B46     		mov	r3, sp
+ 512 0016 DB88     		ldrh	r3, [r3, #6]
+ 224:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+ 513              		.loc 1 224 1 view .LVU171
+ 514              		@ sp needed
+ 223:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** }
+ 515              		.loc 1 223 27 view .LVU172
+ 516 0018 C018     		adds	r0, r0, r3
+ 224:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+ 517              		.loc 1 224 1 view .LVU173
+ 518 001a 0EBD     		pop	{r1, r2, r3, pc}
+ 519              		.cfi_endproc
+ 520              	.LFE245:
+ 522              		.global	__aeabi_uldivmod
+ 523              		.global	__aeabi_ldivmod
+ 524              		.section	.text.bsp_rtc_delay_in_ms,"ax",%progbits
+ 525              		.align	1
+ 526              		.global	bsp_rtc_delay_in_ms
+ 527              		.syntax unified
+ 528              		.code	16
+ 529              		.thumb_func
+ 530              		.fpu softvfp
+ 532              	bsp_rtc_delay_in_ms:
+ 533              	.LVL32:
+ 534              	.LFB246:
+ 227:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     RTC_TimeTypeDef time;
+ 535              		.loc 1 227 1 is_stmt 1 view -0
+ 536              		.cfi_startproc
+ 537              		@ args = 0, pretend = 0, frame = 24
+ 538              		@ frame_needed = 0, uses_anonymous_args = 0
+ 228:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     RTC_DateTypeDef date;
+ 539              		.loc 1 228 5 view .LVU175
+ 229:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+ 540              		.loc 1 229 5 view .LVU176
+ 231:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     uint64_t ref_delay_in_ticks = rtc_get_timestamp_in_ticks( &date, &time );
+ 541              		.loc 1 231 5 view .LVU177
+ 232:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+ 542              		.loc 1 232 5 view .LVU178
+ 227:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     RTC_TimeTypeDef time;
+ 543              		.loc 1 227 1 is_stmt 0 view .LVU179
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccPk6JPb.s 			page 19
+
+
+ 544 0000 F0B5     		push	{r4, r5, r6, r7, lr}
+ 545              		.cfi_def_cfa_offset 20
+ 546              		.cfi_offset 4, -20
+ 547              		.cfi_offset 5, -16
+ 548              		.cfi_offset 6, -12
+ 549              		.cfi_offset 7, -8
+ 550              		.cfi_offset 14, -4
+ 551 0002 87B0     		sub	sp, sp, #28
+ 552              		.cfi_def_cfa_offset 48
+ 227:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     RTC_TimeTypeDef time;
+ 553              		.loc 1 227 1 view .LVU180
+ 554 0004 0400     		movs	r4, r0
+ 232:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+ 555              		.loc 1 232 35 view .LVU181
+ 556 0006 01A9     		add	r1, sp, #4
+ 557 0008 6846     		mov	r0, sp
+ 558              	.LVL33:
+ 232:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+ 559              		.loc 1 232 35 view .LVU182
+ 560 000a FFF7FEFF 		bl	rtc_get_timestamp_in_ticks
+ 561              	.LVL34:
+ 562              	.LBB18:
+ 563              	.LBB19:
+ 267:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** }
+ 564              		.loc 1 267 73 view .LVU183
+ 565 000e 7D22     		movs	r2, #125
+ 566              	.LBE19:
+ 567              	.LBE18:
+ 232:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+ 568              		.loc 1 232 35 view .LVU184
+ 569 0010 0600     		movs	r6, r0
+ 570 0012 0F00     		movs	r7, r1
+ 571              	.LVL35:
+ 234:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+ 572              		.loc 1 234 5 is_stmt 1 view .LVU185
+ 573              	.LBB21:
+ 574              	.LBI18:
+ 265:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** {
+ 575              		.loc 1 265 17 view .LVU186
+ 576              	.LBB20:
+ 267:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** }
+ 577              		.loc 1 267 5 view .LVU187
+ 267:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** }
+ 578              		.loc 1 267 58 is_stmt 0 view .LVU188
+ 579 0014 E001     		lsls	r0, r4, #7
+ 580 0016 610E     		lsrs	r1, r4, #25
+ 267:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** }
+ 581              		.loc 1 267 73 view .LVU189
+ 582 0018 0023     		movs	r3, #0
+ 583 001a FFF7FEFF 		bl	__aeabi_uldivmod
+ 584              	.LVL36:
+ 585 001e 0025     		movs	r5, #0
+ 586 0020 0400     		movs	r4, r0
+ 587              	.LVL37:
+ 267:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** }
+ 588              		.loc 1 267 73 view .LVU190
+ 589              	.LBE20:
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccPk6JPb.s 			page 20
+
+
+ 590              	.LBE21:
+ 237:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     {
+ 591              		.loc 1 237 5 is_stmt 1 view .LVU191
+ 592              	.L19:
+ 237:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     {
+ 593              		.loc 1 237 10 view .LVU192
+ 237:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     {
+ 594              		.loc 1 237 16 is_stmt 0 view .LVU193
+ 595 0022 6846     		mov	r0, sp
+ 596 0024 01A9     		add	r1, sp, #4
+ 597 0026 FFF7FEFF 		bl	rtc_get_timestamp_in_ticks
+ 598              	.LVL38:
+ 237:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     {
+ 599              		.loc 1 237 59 view .LVU194
+ 600 002a 801B     		subs	r0, r0, r6
+ 601 002c B941     		sbcs	r1, r1, r7
+ 237:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     {
+ 602              		.loc 1 237 10 view .LVU195
+ 603 002e 8D42     		cmp	r5, r1
+ 604 0030 01D1     		bne	.L18
+ 605 0032 8442     		cmp	r4, r0
+ 606 0034 01D8     		bhi	.L20
+ 607              	.L18:
+ 241:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+ 608              		.loc 1 241 1 view .LVU196
+ 609 0036 07B0     		add	sp, sp, #28
+ 610              		@ sp needed
+ 611              	.LVL39:
+ 612              	.LVL40:
+ 241:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+ 613              		.loc 1 241 1 view .LVU197
+ 614 0038 F0BD     		pop	{r4, r5, r6, r7, pc}
+ 615              	.LVL41:
+ 616              	.L20:
+ 239:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     }
+ 617              		.loc 1 239 9 is_stmt 1 view .LVU198
+ 618              		.syntax divided
+ 619              	@ 239 "smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c" 1
+ 620 003a C046     		nop
+ 621              	@ 0 "" 2
+ 622              		.thumb
+ 623              		.syntax unified
+ 624 003c F1E7     		b	.L19
+ 625              		.cfi_endproc
+ 626              	.LFE246:
+ 628              		.section	.text.bsp_rtc_wakeup_timer_set_s,"ax",%progbits
+ 629              		.align	1
+ 630              		.global	bsp_rtc_wakeup_timer_set_s
+ 631              		.syntax unified
+ 632              		.code	16
+ 633              		.thumb_func
+ 634              		.fpu softvfp
+ 636              	bsp_rtc_wakeup_timer_set_s:
+ 637              	.LVL42:
+ 638              	.LFB247:
+ 244:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     uint32_t delay_s_2_tick = bsp_rtc_s_2_wakeup_timer_tick( seconds );
+ 639              		.loc 1 244 1 view -0
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccPk6JPb.s 			page 21
+
+
+ 640              		.cfi_startproc
+ 641              		@ args = 0, pretend = 0, frame = 0
+ 642              		@ frame_needed = 0, uses_anonymous_args = 0
+ 245:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+ 643              		.loc 1 245 5 view .LVU200
+ 244:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     uint32_t delay_s_2_tick = bsp_rtc_s_2_wakeup_timer_tick( seconds );
+ 644              		.loc 1 244 1 is_stmt 0 view .LVU201
+ 645 0000 10B5     		push	{r4, lr}
+ 646              		.cfi_def_cfa_offset 8
+ 647              		.cfi_offset 4, -8
+ 648              		.cfi_offset 14, -4
+ 244:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     uint32_t delay_s_2_tick = bsp_rtc_s_2_wakeup_timer_tick( seconds );
+ 649              		.loc 1 244 1 view .LVU202
+ 650 0002 0100     		movs	r1, r0
+ 651              	.LVL43:
+ 289:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     // Compute is done for LSE @ 32.768kHz
+ 652              		.loc 1 289 5 is_stmt 1 view .LVU203
+ 292:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     return nb_tick;
+ 653              		.loc 1 292 5 view .LVU204
+ 293:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** }
+ 654              		.loc 1 293 5 view .LVU205
+ 247:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** }
+ 655              		.loc 1 247 5 view .LVU206
+ 656 0004 0422     		movs	r2, #4
+ 657 0006 0248     		ldr	r0, .L23
+ 658              	.LVL44:
+ 247:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** }
+ 659              		.loc 1 247 5 is_stmt 0 view .LVU207
+ 660 0008 FFF7FEFF 		bl	HAL_RTCEx_SetWakeUpTimer_IT
+ 661              	.LVL45:
+ 248:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+ 662              		.loc 1 248 1 view .LVU208
+ 663              		@ sp needed
+ 664 000c 10BD     		pop	{r4, pc}
+ 665              	.L24:
+ 666 000e C046     		.align	2
+ 667              	.L23:
+ 668 0010 00000000 		.word	.LANCHOR0
+ 669              		.cfi_endproc
+ 670              	.LFE247:
+ 672              		.section	.text.bsp_rtc_wakeup_timer_set_ms,"ax",%progbits
+ 673              		.align	1
+ 674              		.global	bsp_rtc_wakeup_timer_set_ms
+ 675              		.syntax unified
+ 676              		.code	16
+ 677              		.thumb_func
+ 678              		.fpu softvfp
+ 680              	bsp_rtc_wakeup_timer_set_ms:
+ 681              	.LVL46:
+ 682              	.LFB248:
+ 251:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     uint32_t delay_ms_2_tick = bsp_rtc_ms_2_wakeup_timer_tick( milliseconds );
+ 683              		.loc 1 251 1 is_stmt 1 view -0
+ 684              		.cfi_startproc
+ 685              		@ args = 0, pretend = 0, frame = 0
+ 686              		@ frame_needed = 0, uses_anonymous_args = 0
+ 252:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+ 687              		.loc 1 252 5 view .LVU210
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccPk6JPb.s 			page 22
+
+
+ 688              	.LBB24:
+ 689              	.LBI24:
+ 278:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** {
+ 690              		.loc 1 278 17 view .LVU211
+ 691              	.LBB25:
+ 280:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     // Compute is done for LSE @ 32.768kHz
+ 692              		.loc 1 280 5 view .LVU212
+ 283:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     return nb_tick;
+ 693              		.loc 1 283 5 view .LVU213
+ 694              	.LBE25:
+ 695              	.LBE24:
+ 251:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     uint32_t delay_ms_2_tick = bsp_rtc_ms_2_wakeup_timer_tick( milliseconds );
+ 696              		.loc 1 251 1 is_stmt 0 view .LVU214
+ 697 0000 70B5     		push	{r4, r5, r6, lr}
+ 698              		.cfi_def_cfa_offset 16
+ 699              		.cfi_offset 4, -16
+ 700              		.cfi_offset 5, -12
+ 701              		.cfi_offset 6, -8
+ 702              		.cfi_offset 14, -4
+ 703              	.LBB28:
+ 704              	.LBB26:
+ 283:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     return nb_tick;
+ 705              		.loc 1 283 40 view .LVU215
+ 706 0002 0624     		movs	r4, #6
+ 707 0004 4443     		muls	r4, r0
+ 708              	.LBE26:
+ 709              	.LBE28:
+ 254:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     HAL_RTCEx_SetWakeUpTimer_IT( &bsp_rtc.handle, delay_ms_2_tick, RTC_WAKEUPCLOCK_RTCCLK_DIV16 );
+ 710              		.loc 1 254 5 view .LVU216
+ 711 0006 064D     		ldr	r5, .L26
+ 712              	.LBB29:
+ 713              	.LBB27:
+ 283:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     return nb_tick;
+ 714              		.loc 1 283 28 view .LVU217
+ 715 0008 4000     		lsls	r0, r0, #1
+ 716              	.LVL47:
+ 283:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     return nb_tick;
+ 717              		.loc 1 283 57 view .LVU218
+ 718 000a E409     		lsrs	r4, r4, #7
+ 283:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     return nb_tick;
+ 719              		.loc 1 283 13 view .LVU219
+ 720 000c 2418     		adds	r4, r4, r0
+ 721              	.LVL48:
+ 284:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** }
+ 722              		.loc 1 284 5 is_stmt 1 view .LVU220
+ 284:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** }
+ 723              		.loc 1 284 5 is_stmt 0 view .LVU221
+ 724              	.LBE27:
+ 725              	.LBE29:
+ 254:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     HAL_RTCEx_SetWakeUpTimer_IT( &bsp_rtc.handle, delay_ms_2_tick, RTC_WAKEUPCLOCK_RTCCLK_DIV16 );
+ 726              		.loc 1 254 5 is_stmt 1 view .LVU222
+ 727 000e 2800     		movs	r0, r5
+ 728 0010 FFF7FEFF 		bl	HAL_RTCEx_DeactivateWakeUpTimer
+ 729              	.LVL49:
+ 255:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** }
+ 730              		.loc 1 255 5 view .LVU223
+ 731 0014 2800     		movs	r0, r5
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccPk6JPb.s 			page 23
+
+
+ 732 0016 0022     		movs	r2, #0
+ 733 0018 2100     		movs	r1, r4
+ 734 001a FFF7FEFF 		bl	HAL_RTCEx_SetWakeUpTimer_IT
+ 735              	.LVL50:
+ 256:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+ 736              		.loc 1 256 1 is_stmt 0 view .LVU224
+ 737              		@ sp needed
+ 738              	.LVL51:
+ 256:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+ 739              		.loc 1 256 1 view .LVU225
+ 740 001e 70BD     		pop	{r4, r5, r6, pc}
+ 741              	.L27:
+ 742              		.align	2
+ 743              	.L26:
+ 744 0020 00000000 		.word	.LANCHOR0
+ 745              		.cfi_endproc
+ 746              	.LFE248:
+ 748              		.section	.text.RTC_IRQHandler,"ax",%progbits
+ 749              		.align	1
+ 750              		.global	RTC_IRQHandler
+ 751              		.syntax unified
+ 752              		.code	16
+ 753              		.thumb_func
+ 754              		.fpu softvfp
+ 756              	RTC_IRQHandler:
+ 757              	.LFB256:
+ 349:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+ 350:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** void RTC_IRQHandler( void )
+ 351:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** {
+ 758              		.loc 1 351 1 is_stmt 1 view -0
+ 759              		.cfi_startproc
+ 760              		@ args = 0, pretend = 0, frame = 0
+ 761              		@ frame_needed = 0, uses_anonymous_args = 0
+ 352:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     HAL_RTCEx_WakeUpTimerIRQHandler( &bsp_rtc.handle );
+ 762              		.loc 1 352 5 view .LVU227
+ 351:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     HAL_RTCEx_WakeUpTimerIRQHandler( &bsp_rtc.handle );
+ 763              		.loc 1 351 1 is_stmt 0 view .LVU228
+ 764 0000 10B5     		push	{r4, lr}
+ 765              		.cfi_def_cfa_offset 8
+ 766              		.cfi_offset 4, -8
+ 767              		.cfi_offset 14, -4
+ 768              		.loc 1 352 5 view .LVU229
+ 769 0002 0248     		ldr	r0, .L29
+ 770 0004 FFF7FEFF 		bl	HAL_RTCEx_WakeUpTimerIRQHandler
+ 771              	.LVL52:
+ 353:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** }
+ 772              		.loc 1 353 1 view .LVU230
+ 773              		@ sp needed
+ 774 0008 10BD     		pop	{r4, pc}
+ 775              	.L30:
+ 776 000a C046     		.align	2
+ 777              	.L29:
+ 778 000c 00000000 		.word	.LANCHOR0
+ 779              		.cfi_endproc
+ 780              	.LFE256:
+ 782              		.section	.text.HAL_RTC_MspInit,"ax",%progbits
+ 783              		.align	1
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccPk6JPb.s 			page 24
+
+
+ 784              		.global	HAL_RTC_MspInit
+ 785              		.syntax unified
+ 786              		.code	16
+ 787              		.thumb_func
+ 788              		.fpu softvfp
+ 790              	HAL_RTC_MspInit:
+ 791              	.LVL53:
+ 792              	.LFB257:
+ 354:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+ 355:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** void HAL_RTC_MspInit( RTC_HandleTypeDef* rtc_handle )
+ 356:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** {
+ 793              		.loc 1 356 1 is_stmt 1 view -0
+ 794              		.cfi_startproc
+ 795              		@ args = 0, pretend = 0, frame = 0
+ 796              		@ frame_needed = 0, uses_anonymous_args = 0
+ 357:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     __HAL_RCC_RTC_ENABLE( );
+ 797              		.loc 1 357 5 view .LVU232
+ 798 0000 8023     		movs	r3, #128
+ 799 0002 074A     		ldr	r2, .L32
+ 800 0004 DB02     		lsls	r3, r3, #11
+ 801 0006 116D     		ldr	r1, [r2, #80]
+ 356:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     __HAL_RCC_RTC_ENABLE( );
+ 802              		.loc 1 356 1 is_stmt 0 view .LVU233
+ 803 0008 10B5     		push	{r4, lr}
+ 804              		.cfi_def_cfa_offset 8
+ 805              		.cfi_offset 4, -8
+ 806              		.cfi_offset 14, -4
+ 807              		.loc 1 357 5 view .LVU234
+ 808 000a 0B43     		orrs	r3, r1
+ 809 000c 1365     		str	r3, [r2, #80]
+ 358:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     HAL_NVIC_SetPriority( RTC_IRQn, 0, 0 );
+ 810              		.loc 1 358 5 is_stmt 1 view .LVU235
+ 811 000e 0022     		movs	r2, #0
+ 812 0010 0220     		movs	r0, #2
+ 813              	.LVL54:
+ 814              		.loc 1 358 5 is_stmt 0 view .LVU236
+ 815 0012 1100     		movs	r1, r2
+ 816 0014 FFF7FEFF 		bl	HAL_NVIC_SetPriority
+ 817              	.LVL55:
+ 359:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     HAL_NVIC_EnableIRQ( RTC_IRQn );
+ 818              		.loc 1 359 5 is_stmt 1 view .LVU237
+ 819 0018 0220     		movs	r0, #2
+ 820 001a FFF7FEFF 		bl	HAL_NVIC_EnableIRQ
+ 821              	.LVL56:
+ 360:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** }
+ 822              		.loc 1 360 1 is_stmt 0 view .LVU238
+ 823              		@ sp needed
+ 824 001e 10BD     		pop	{r4, pc}
+ 825              	.L33:
+ 826              		.align	2
+ 827              	.L32:
+ 828 0020 00100240 		.word	1073876992
+ 829              		.cfi_endproc
+ 830              	.LFE257:
+ 832              		.section	.text.HAL_RTC_MspDeInit,"ax",%progbits
+ 833              		.align	1
+ 834              		.global	HAL_RTC_MspDeInit
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccPk6JPb.s 			page 25
+
+
+ 835              		.syntax unified
+ 836              		.code	16
+ 837              		.thumb_func
+ 838              		.fpu softvfp
+ 840              	HAL_RTC_MspDeInit:
+ 841              	.LVL57:
+ 842              	.LFB258:
+ 361:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** 
+ 362:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** void HAL_RTC_MspDeInit( RTC_HandleTypeDef* rtc_handle )
+ 363:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** {
+ 843              		.loc 1 363 1 is_stmt 1 view -0
+ 844              		.cfi_startproc
+ 845              		@ args = 0, pretend = 0, frame = 0
+ 846              		@ frame_needed = 0, uses_anonymous_args = 0
+ 364:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     __HAL_RCC_RTC_DISABLE( );
+ 847              		.loc 1 364 5 view .LVU240
+ 848 0000 044A     		ldr	r2, .L35
+ 363:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     __HAL_RCC_RTC_DISABLE( );
+ 849              		.loc 1 363 1 is_stmt 0 view .LVU241
+ 850 0002 10B5     		push	{r4, lr}
+ 851              		.cfi_def_cfa_offset 8
+ 852              		.cfi_offset 4, -8
+ 853              		.cfi_offset 14, -4
+ 854              		.loc 1 364 5 view .LVU242
+ 855 0004 136D     		ldr	r3, [r2, #80]
+ 856 0006 0449     		ldr	r1, .L35+4
+ 365:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     HAL_NVIC_DisableIRQ( RTC_IRQn );
+ 857              		.loc 1 365 5 view .LVU243
+ 858 0008 0220     		movs	r0, #2
+ 859              	.LVL58:
+ 364:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c ****     __HAL_RCC_RTC_DISABLE( );
+ 860              		.loc 1 364 5 view .LVU244
+ 861 000a 0B40     		ands	r3, r1
+ 862 000c 1365     		str	r3, [r2, #80]
+ 863              		.loc 1 365 5 is_stmt 1 view .LVU245
+ 864 000e FFF7FEFF 		bl	HAL_NVIC_DisableIRQ
+ 865              	.LVL59:
+ 366:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_rtc.c **** }
+ 866              		.loc 1 366 1 is_stmt 0 view .LVU246
+ 867              		@ sp needed
+ 868 0012 10BD     		pop	{r4, pc}
+ 869              	.L36:
+ 870              		.align	2
+ 871              	.L35:
+ 872 0014 00100240 		.word	1073876992
+ 873 0018 FFFFFBFF 		.word	-262145
+ 874              		.cfi_endproc
+ 875              	.LFE258:
+ 877              		.section	.bss.bsp_rtc,"aw",%nobits
+ 878              		.align	2
+ 879              		.set	.LANCHOR0,. + 0
+ 882              	bsp_rtc:
+ 883 0000 00000000 		.space	64
+ 883      00000000 
+ 883      00000000 
+ 883      00000000 
+ 883      00000000 
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccPk6JPb.s 			page 26
+
+
+ 884              		.text
+ 885              	.Letext0:
+ 886              		.file 2 "/Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.external
+ 887              		.file 3 "/Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.external
+ 888              		.file 4 "/Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.external
+ 889              		.file 5 "/Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.external
+ 890              		.file 6 "/Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.external
+ 891              		.file 7 "/Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.external
+ 892              		.file 8 "/Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.external
+ 893              		.file 9 "user_app/mcu_core/system_stm32l0xx.h"
+ 894              		.file 10 "user_app/mcu_core/stm32l073xx.h"
+ 895              		.file 11 "smtc_bsp/arm/stm32/stm32_hal/STM32L0xx_HAL_Driver/Inc/stm32l0xx_hal_def.h"
+ 896              		.file 12 "smtc_bsp/arm/stm32/stm32_hal/STM32L0xx_HAL_Driver/Inc/stm32l0xx_hal_rtc.h"
+ 897              		.file 13 "smtc_bsp/arm/stm32/stm32_hal/STM32L0xx_HAL_Driver/Inc/stm32l0xx_hal.h"
+ 898              		.file 14 "smtc_bsp/arm/stm32/stm32_hal/STM32L0xx_HAL_Driver/Inc/stm32l0xx_hal_cortex.h"
+ 899              		.file 15 "smtc_bsp/arm/stm32/stm32_hal/STM32L0xx_HAL_Driver/Inc/stm32l0xx_hal_rtc_ex.h"
+ 900              		.file 16 "smtc_bsp/smtc_bsp_mcu.h"
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccPk6JPb.s 			page 27
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 smtc_bsp_rtc.c
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccPk6JPb.s:14     .text.rtc_get_timestamp_in_ticks:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccPk6JPb.s:21     .text.rtc_get_timestamp_in_ticks:0000000000000000 rtc_get_timestamp_in_ticks
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccPk6JPb.s:193    .text.rtc_get_timestamp_in_ticks:0000000000000094 $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccPk6JPb.s:204    .text.bsp_rtc_get_calendar_time.constprop.0:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccPk6JPb.s:210    .text.bsp_rtc_get_calendar_time.constprop.0:0000000000000000 bsp_rtc_get_calendar_time.constprop.0
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccPk6JPb.s:288    .text.bsp_rtc_init:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccPk6JPb.s:295    .text.bsp_rtc_init:0000000000000000 bsp_rtc_init
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccPk6JPb.s:423    .text.bsp_rtc_init:0000000000000064 $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccPk6JPb.s:431    .text.bsp_rtc_get_time_s:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccPk6JPb.s:438    .text.bsp_rtc_get_time_s:0000000000000000 bsp_rtc_get_time_s
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccPk6JPb.s:470    .text.bsp_rtc_get_time_ms:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccPk6JPb.s:477    .text.bsp_rtc_get_time_ms:0000000000000000 bsp_rtc_get_time_ms
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccPk6JPb.s:525    .text.bsp_rtc_delay_in_ms:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccPk6JPb.s:532    .text.bsp_rtc_delay_in_ms:0000000000000000 bsp_rtc_delay_in_ms
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccPk6JPb.s:629    .text.bsp_rtc_wakeup_timer_set_s:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccPk6JPb.s:636    .text.bsp_rtc_wakeup_timer_set_s:0000000000000000 bsp_rtc_wakeup_timer_set_s
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccPk6JPb.s:668    .text.bsp_rtc_wakeup_timer_set_s:0000000000000010 $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccPk6JPb.s:673    .text.bsp_rtc_wakeup_timer_set_ms:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccPk6JPb.s:680    .text.bsp_rtc_wakeup_timer_set_ms:0000000000000000 bsp_rtc_wakeup_timer_set_ms
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccPk6JPb.s:744    .text.bsp_rtc_wakeup_timer_set_ms:0000000000000020 $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccPk6JPb.s:749    .text.RTC_IRQHandler:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccPk6JPb.s:756    .text.RTC_IRQHandler:0000000000000000 RTC_IRQHandler
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccPk6JPb.s:778    .text.RTC_IRQHandler:000000000000000c $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccPk6JPb.s:783    .text.HAL_RTC_MspInit:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccPk6JPb.s:790    .text.HAL_RTC_MspInit:0000000000000000 HAL_RTC_MspInit
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccPk6JPb.s:828    .text.HAL_RTC_MspInit:0000000000000020 $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccPk6JPb.s:833    .text.HAL_RTC_MspDeInit:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccPk6JPb.s:840    .text.HAL_RTC_MspDeInit:0000000000000000 HAL_RTC_MspDeInit
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccPk6JPb.s:872    .text.HAL_RTC_MspDeInit:0000000000000014 $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccPk6JPb.s:878    .bss.bsp_rtc:0000000000000000 $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccPk6JPb.s:882    .bss.bsp_rtc:0000000000000000 bsp_rtc
+
+UNDEFINED SYMBOLS
+HAL_RTC_GetDate
+HAL_RTC_GetTime
+HAL_RTC_Init
+bsp_mcu_panic
+HAL_RTC_SetDate
+HAL_RTC_SetTime
+HAL_RTCEx_EnableBypassShadow
+__aeabi_uldivmod
+__aeabi_ldivmod
+HAL_RTCEx_SetWakeUpTimer_IT
+HAL_RTCEx_DeactivateWakeUpTimer
+HAL_RTCEx_WakeUpTimerIRQHandler
+HAL_NVIC_SetPriority
+HAL_NVIC_EnableIRQ
+HAL_NVIC_DisableIRQ

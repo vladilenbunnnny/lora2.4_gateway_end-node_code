@@ -1,0 +1,1301 @@
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cczvnpjS.s 			page 1
+
+
+   1              		.cpu cortex-m0plus
+   2              		.eabi_attribute 23, 1
+   3              		.eabi_attribute 24, 1
+   4              		.eabi_attribute 25, 1
+   5              		.eabi_attribute 26, 1
+   6              		.eabi_attribute 30, 4
+   7              		.eabi_attribute 34, 0
+   8              		.eabi_attribute 18, 4
+   9              		.file	"smtc_bsp_uart.c"
+  10              		.text
+  11              	.Ltext0:
+  12              		.cfi_sections	.debug_frame
+  13              		.section	.text.bsp_uart1_init,"ax",%progbits
+  14              		.align	1
+  15              		.global	bsp_uart1_init
+  16              		.arch armv6s-m
+  17              		.syntax unified
+  18              		.code	16
+  19              		.thumb_func
+  20              		.fpu softvfp
+  22              	bsp_uart1_init:
+  23              	.LFB47:
+  24              		.file 1 "smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c"
+   1:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c **** /*!
+   2:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****  * \file      smtc_bsp_uart.c
+   3:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****  *
+   4:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****  * \brief     Board specific package UART API implementation.
+   5:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****  *
+   6:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****  * Revised BSD License
+   7:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****  * Copyright Semtech Corporation 2020. All rights reserved.
+   8:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****  *
+   9:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****  * Redistribution and use in source and binary forms, with or without
+  10:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****  * modification, are permitted provided that the following conditions are met:
+  11:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****  *     * Redistributions of source code must retain the above copyright
+  12:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****  *       notice, this list of conditions and the following disclaimer.
+  13:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****  *     * Redistributions in binary form must reproduce the above copyright
+  14:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****  *       notice, this list of conditions and the following disclaimer in the
+  15:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****  *       documentation and/or other materials provided with the distribution.
+  16:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****  *     * Neither the name of the Semtech corporation nor the
+  17:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****  *       names of its contributors may be used to endorse or promote products
+  18:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****  *       derived from this software without specific prior written permission.
+  19:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****  *
+  20:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+  21:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+  22:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+  23:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****  * ARE DISCLAIMED. IN NO EVENT SHALL SEMTECH CORPORATION BE LIABLE FOR ANY DIRECT,
+  24:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****  * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+  25:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+  26:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+  27:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  28:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+  29:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  30:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****  */
+  31:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c **** 
+  32:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c **** /*
+  33:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****  * -----------------------------------------------------------------------------
+  34:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****  * --- DEPENDENCIES ------------------------------------------------------------
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cczvnpjS.s 			page 2
+
+
+  35:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****  */
+  36:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c **** 
+  37:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c **** #include <stdint.h>   // C99 types
+  38:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c **** #include <stdbool.h>  // bool type
+  39:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c **** 
+  40:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c **** #include "stm32l0xx_hal.h"
+  41:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c **** #include "smtc_bsp_gpio_pin_names.h"
+  42:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c **** #include "smtc_bsp_mcu.h"
+  43:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c **** #include "smtc_bsp_uart.h"
+  44:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c **** #include "smtc_bsp_options.h"
+  45:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c **** 
+  46:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c **** /*
+  47:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****  * -----------------------------------------------------------------------------
+  48:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****  * --- PRIVATE MACROS-----------------------------------------------------------
+  49:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****  */
+  50:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c **** 
+  51:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c **** /*
+  52:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****  * -----------------------------------------------------------------------------
+  53:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****  * --- PRIVATE CONSTANTS -------------------------------------------------------
+  54:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****  */
+  55:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c **** 
+  56:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c **** /*
+  57:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****  * -----------------------------------------------------------------------------
+  58:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****  * --- PRIVATE TYPES -----------------------------------------------------------
+  59:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****  */
+  60:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c **** 
+  61:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c **** /*
+  62:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****  * -----------------------------------------------------------------------------
+  63:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****  * --- PRIVATE VARIABLES -------------------------------------------------------
+  64:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****  */
+  65:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c **** 
+  66:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c **** static DMA_HandleTypeDef hdma_usart1_rx;
+  67:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c **** 
+  68:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c **** static UART_HandleTypeDef huart2;
+  69:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c **** static UART_HandleTypeDef huart1;
+  70:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c **** 
+  71:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c **** /*
+  72:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****  * -----------------------------------------------------------------------------
+  73:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****  * --- PRIVATE FUNCTIONS DECLARATION -------------------------------------------
+  74:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****  */
+  75:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c **** 
+  76:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c **** /*
+  77:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****  * -----------------------------------------------------------------------------
+  78:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****  * --- PUBLIC FUNCTIONS DEFINITION ---------------------------------------------
+  79:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****  */
+  80:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c **** 
+  81:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c **** void bsp_uart1_init( void )
+  82:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c **** {
+  25              		.loc 1 82 1 view -0
+  26              		.cfi_startproc
+  27              		@ args = 0, pretend = 0, frame = 8
+  28              		@ frame_needed = 0, uses_anonymous_args = 0
+  83:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****     __HAL_RCC_DMA1_CLK_ENABLE( );
+  29              		.loc 1 83 5 view .LVU1
+  30              	.LBB2:
+  31              		.loc 1 83 5 view .LVU2
+  32              		.loc 1 83 5 view .LVU3
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cczvnpjS.s 			page 3
+
+
+  33              	.LBE2:
+  82:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****     __HAL_RCC_DMA1_CLK_ENABLE( );
+  34              		.loc 1 82 1 is_stmt 0 view .LVU4
+  35 0000 07B5     		push	{r0, r1, r2, lr}
+  36              		.cfi_def_cfa_offset 16
+  37              		.cfi_offset 0, -16
+  38              		.cfi_offset 1, -12
+  39              		.cfi_offset 2, -8
+  40              		.cfi_offset 14, -4
+  41              	.LBB3:
+  42              		.loc 1 83 5 view .LVU5
+  43 0002 0120     		movs	r0, #1
+  44 0004 134A     		ldr	r2, .L6
+  45 0006 116B     		ldr	r1, [r2, #48]
+  46 0008 0143     		orrs	r1, r0
+  47 000a 1163     		str	r1, [r2, #48]
+  48              		.loc 1 83 5 is_stmt 1 view .LVU6
+  49 000c 136B     		ldr	r3, [r2, #48]
+  50              	.LBE3:
+  84:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****     HAL_NVIC_SetPriority( DMA1_Channel2_3_IRQn, 0, 0 );
+  51              		.loc 1 84 5 is_stmt 0 view .LVU7
+  52 000e 0022     		movs	r2, #0
+  53              	.LBB4:
+  83:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****     __HAL_RCC_DMA1_CLK_ENABLE( );
+  54              		.loc 1 83 5 view .LVU8
+  55 0010 0340     		ands	r3, r0
+  56              	.LBE4:
+  57              		.loc 1 84 5 view .LVU9
+  58 0012 1100     		movs	r1, r2
+  59              	.LBB5:
+  83:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****     __HAL_RCC_DMA1_CLK_ENABLE( );
+  60              		.loc 1 83 5 view .LVU10
+  61 0014 0193     		str	r3, [sp, #4]
+  83:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****     __HAL_RCC_DMA1_CLK_ENABLE( );
+  62              		.loc 1 83 5 is_stmt 1 view .LVU11
+  63              	.LBE5:
+  64              		.loc 1 84 5 is_stmt 0 view .LVU12
+  65 0016 0930     		adds	r0, r0, #9
+  66              	.LBB6:
+  83:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****     __HAL_RCC_DMA1_CLK_ENABLE( );
+  67              		.loc 1 83 5 view .LVU13
+  68 0018 019B     		ldr	r3, [sp, #4]
+  69              	.LBE6:
+  83:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****     __HAL_RCC_DMA1_CLK_ENABLE( );
+  70              		.loc 1 83 5 is_stmt 1 view .LVU14
+  71              		.loc 1 84 5 view .LVU15
+  72 001a FFF7FEFF 		bl	HAL_NVIC_SetPriority
+  73              	.LVL0:
+  85:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****     HAL_NVIC_EnableIRQ( DMA1_Channel2_3_IRQn );
+  74              		.loc 1 85 5 view .LVU16
+  75 001e 0A20     		movs	r0, #10
+  76 0020 FFF7FEFF 		bl	HAL_NVIC_EnableIRQ
+  77              	.LVL1:
+  86:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c **** 
+  87:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****     huart1.Instance                    = USART1;
+  78              		.loc 1 87 5 view .LVU17
+  79              		.loc 1 87 40 is_stmt 0 view .LVU18
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cczvnpjS.s 			page 4
+
+
+  80 0024 0C48     		ldr	r0, .L6+4
+  81 0026 0D4B     		ldr	r3, .L6+8
+  88:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****     huart1.Init.BaudRate               = 115200;
+  89:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****     huart1.Init.WordLength             = UART_WORDLENGTH_8B;
+  90:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****     huart1.Init.StopBits               = UART_STOPBITS_1;
+  91:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****     huart1.Init.Parity                 = UART_PARITY_NONE;
+  92:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****     huart1.Init.Mode                   = UART_MODE_TX_RX;
+  82              		.loc 1 92 40 view .LVU19
+  83 0028 0C22     		movs	r2, #12
+  87:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****     huart1.Init.BaudRate               = 115200;
+  84              		.loc 1 87 40 view .LVU20
+  85 002a 0360     		str	r3, [r0]
+  88:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****     huart1.Init.BaudRate               = 115200;
+  86              		.loc 1 88 5 is_stmt 1 view .LVU21
+  88:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****     huart1.Init.BaudRate               = 115200;
+  87              		.loc 1 88 40 is_stmt 0 view .LVU22
+  88 002c E123     		movs	r3, #225
+  89 002e 5B02     		lsls	r3, r3, #9
+  90 0030 4360     		str	r3, [r0, #4]
+  89:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****     huart1.Init.StopBits               = UART_STOPBITS_1;
+  91              		.loc 1 89 5 is_stmt 1 view .LVU23
+  89:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****     huart1.Init.StopBits               = UART_STOPBITS_1;
+  92              		.loc 1 89 40 is_stmt 0 view .LVU24
+  93 0032 0023     		movs	r3, #0
+  94              		.loc 1 92 40 view .LVU25
+  95 0034 4261     		str	r2, [r0, #20]
+  89:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****     huart1.Init.StopBits               = UART_STOPBITS_1;
+  96              		.loc 1 89 40 view .LVU26
+  97 0036 8360     		str	r3, [r0, #8]
+  90:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****     huart1.Init.Parity                 = UART_PARITY_NONE;
+  98              		.loc 1 90 5 is_stmt 1 view .LVU27
+  90:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****     huart1.Init.Parity                 = UART_PARITY_NONE;
+  99              		.loc 1 90 40 is_stmt 0 view .LVU28
+ 100 0038 C360     		str	r3, [r0, #12]
+  91:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****     huart1.Init.Mode                   = UART_MODE_TX_RX;
+ 101              		.loc 1 91 5 is_stmt 1 view .LVU29
+  91:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****     huart1.Init.Mode                   = UART_MODE_TX_RX;
+ 102              		.loc 1 91 40 is_stmt 0 view .LVU30
+ 103 003a 0361     		str	r3, [r0, #16]
+ 104              		.loc 1 92 5 is_stmt 1 view .LVU31
+  93:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****     huart1.Init.HwFlowCtl              = UART_HWCONTROL_NONE;
+ 105              		.loc 1 93 5 view .LVU32
+ 106              		.loc 1 93 40 is_stmt 0 view .LVU33
+ 107 003c 8361     		str	r3, [r0, #24]
+  94:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****     huart1.Init.OverSampling           = UART_OVERSAMPLING_16;
+ 108              		.loc 1 94 5 is_stmt 1 view .LVU34
+ 109              		.loc 1 94 40 is_stmt 0 view .LVU35
+ 110 003e C361     		str	r3, [r0, #28]
+  95:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****     huart1.Init.OneBitSampling         = UART_ONE_BIT_SAMPLE_DISABLE;
+ 111              		.loc 1 95 5 is_stmt 1 view .LVU36
+ 112              		.loc 1 95 40 is_stmt 0 view .LVU37
+ 113 0040 0362     		str	r3, [r0, #32]
+  96:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****     huart1.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
+ 114              		.loc 1 96 5 is_stmt 1 view .LVU38
+ 115              		.loc 1 96 40 is_stmt 0 view .LVU39
+ 116 0042 4362     		str	r3, [r0, #36]
+  97:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****     if( HAL_UART_Init( &huart1 ) != HAL_OK )
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cczvnpjS.s 			page 5
+
+
+ 117              		.loc 1 97 5 is_stmt 1 view .LVU40
+ 118              		.loc 1 97 9 is_stmt 0 view .LVU41
+ 119 0044 FFF7FEFF 		bl	HAL_UART_Init
+ 120              	.LVL2:
+ 121              		.loc 1 97 7 view .LVU42
+ 122 0048 0028     		cmp	r0, #0
+ 123 004a 01D0     		beq	.L1
+  98:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****     {
+  99:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****         bsp_mcu_panic( );
+ 124              		.loc 1 99 9 is_stmt 1 view .LVU43
+ 125 004c FFF7FEFF 		bl	bsp_mcu_panic
+ 126              	.LVL3:
+ 127              	.L1:
+ 100:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****     }
+ 101:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c **** }
+ 128              		.loc 1 101 1 is_stmt 0 view .LVU44
+ 129              		@ sp needed
+ 130 0050 07BD     		pop	{r0, r1, r2, pc}
+ 131              	.L7:
+ 132 0052 C046     		.align	2
+ 133              	.L6:
+ 134 0054 00100240 		.word	1073876992
+ 135 0058 00000000 		.word	huart1
+ 136 005c 00380140 		.word	1073821696
+ 137              		.cfi_endproc
+ 138              	.LFE47:
+ 140              		.section	.text.bsp_uart1_deinit,"ax",%progbits
+ 141              		.align	1
+ 142              		.global	bsp_uart1_deinit
+ 143              		.syntax unified
+ 144              		.code	16
+ 145              		.thumb_func
+ 146              		.fpu softvfp
+ 148              	bsp_uart1_deinit:
+ 149              	.LFB48:
+ 102:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c **** 
+ 103:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c **** void bsp_uart1_deinit( void )
+ 104:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c **** {
+ 150              		.loc 1 104 1 is_stmt 1 view -0
+ 151              		.cfi_startproc
+ 152              		@ args = 0, pretend = 0, frame = 0
+ 153              		@ frame_needed = 0, uses_anonymous_args = 0
+ 105:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****     HAL_UART_DeInit( &huart1 );
+ 154              		.loc 1 105 5 view .LVU46
+ 104:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****     HAL_UART_DeInit( &huart1 );
+ 155              		.loc 1 104 1 is_stmt 0 view .LVU47
+ 156 0000 10B5     		push	{r4, lr}
+ 157              		.cfi_def_cfa_offset 8
+ 158              		.cfi_offset 4, -8
+ 159              		.cfi_offset 14, -4
+ 160              		.loc 1 105 5 view .LVU48
+ 161 0002 0248     		ldr	r0, .L9
+ 162 0004 FFF7FEFF 		bl	HAL_UART_DeInit
+ 163              	.LVL4:
+ 106:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c **** }
+ 164              		.loc 1 106 1 view .LVU49
+ 165              		@ sp needed
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cczvnpjS.s 			page 6
+
+
+ 166 0008 10BD     		pop	{r4, pc}
+ 167              	.L10:
+ 168 000a C046     		.align	2
+ 169              	.L9:
+ 170 000c 00000000 		.word	huart1
+ 171              		.cfi_endproc
+ 172              	.LFE48:
+ 174              		.section	.text.bsp_uart2_init,"ax",%progbits
+ 175              		.align	1
+ 176              		.global	bsp_uart2_init
+ 177              		.syntax unified
+ 178              		.code	16
+ 179              		.thumb_func
+ 180              		.fpu softvfp
+ 182              	bsp_uart2_init:
+ 183              	.LFB49:
+ 107:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c **** 
+ 108:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c **** void bsp_uart2_init( void )
+ 109:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c **** {
+ 184              		.loc 1 109 1 is_stmt 1 view -0
+ 185              		.cfi_startproc
+ 186              		@ args = 0, pretend = 0, frame = 0
+ 187              		@ frame_needed = 0, uses_anonymous_args = 0
+ 110:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****     huart2.Instance                    = USART2;
+ 188              		.loc 1 110 5 view .LVU51
+ 189              		.loc 1 110 40 is_stmt 0 view .LVU52
+ 190 0000 0B48     		ldr	r0, .L16
+ 191 0002 0C4B     		ldr	r3, .L16+4
+ 109:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****     huart2.Instance                    = USART2;
+ 192              		.loc 1 109 1 view .LVU53
+ 193 0004 10B5     		push	{r4, lr}
+ 194              		.cfi_def_cfa_offset 8
+ 195              		.cfi_offset 4, -8
+ 196              		.cfi_offset 14, -4
+ 197              		.loc 1 110 40 view .LVU54
+ 198 0006 0360     		str	r3, [r0]
+ 111:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****     huart2.Init.BaudRate               = 115200;
+ 199              		.loc 1 111 5 is_stmt 1 view .LVU55
+ 200              		.loc 1 111 40 is_stmt 0 view .LVU56
+ 201 0008 E123     		movs	r3, #225
+ 202 000a 5B02     		lsls	r3, r3, #9
+ 112:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****     huart2.Init.WordLength             = UART_WORDLENGTH_8B;
+ 113:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****     huart2.Init.StopBits               = UART_STOPBITS_1;
+ 114:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****     huart2.Init.Parity                 = UART_PARITY_NONE;
+ 115:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****     huart2.Init.Mode                   = UART_MODE_TX;
+ 203              		.loc 1 115 40 view .LVU57
+ 204 000c 0822     		movs	r2, #8
+ 111:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****     huart2.Init.BaudRate               = 115200;
+ 205              		.loc 1 111 40 view .LVU58
+ 206 000e 4360     		str	r3, [r0, #4]
+ 112:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****     huart2.Init.WordLength             = UART_WORDLENGTH_8B;
+ 207              		.loc 1 112 5 is_stmt 1 view .LVU59
+ 112:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****     huart2.Init.WordLength             = UART_WORDLENGTH_8B;
+ 208              		.loc 1 112 40 is_stmt 0 view .LVU60
+ 209 0010 0023     		movs	r3, #0
+ 210              		.loc 1 115 40 view .LVU61
+ 211 0012 4261     		str	r2, [r0, #20]
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cczvnpjS.s 			page 7
+
+
+ 112:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****     huart2.Init.WordLength             = UART_WORDLENGTH_8B;
+ 212              		.loc 1 112 40 view .LVU62
+ 213 0014 8360     		str	r3, [r0, #8]
+ 113:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****     huart2.Init.Parity                 = UART_PARITY_NONE;
+ 214              		.loc 1 113 5 is_stmt 1 view .LVU63
+ 113:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****     huart2.Init.Parity                 = UART_PARITY_NONE;
+ 215              		.loc 1 113 40 is_stmt 0 view .LVU64
+ 216 0016 C360     		str	r3, [r0, #12]
+ 114:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****     huart2.Init.Mode                   = UART_MODE_TX;
+ 217              		.loc 1 114 5 is_stmt 1 view .LVU65
+ 114:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****     huart2.Init.Mode                   = UART_MODE_TX;
+ 218              		.loc 1 114 40 is_stmt 0 view .LVU66
+ 219 0018 0361     		str	r3, [r0, #16]
+ 220              		.loc 1 115 5 is_stmt 1 view .LVU67
+ 116:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****     huart2.Init.HwFlowCtl              = UART_HWCONTROL_NONE;
+ 221              		.loc 1 116 5 view .LVU68
+ 222              		.loc 1 116 40 is_stmt 0 view .LVU69
+ 223 001a 8361     		str	r3, [r0, #24]
+ 117:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****     huart2.Init.OverSampling           = UART_OVERSAMPLING_16;
+ 224              		.loc 1 117 5 is_stmt 1 view .LVU70
+ 225              		.loc 1 117 40 is_stmt 0 view .LVU71
+ 226 001c C361     		str	r3, [r0, #28]
+ 118:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****     huart2.Init.OneBitSampling         = UART_ONE_BIT_SAMPLE_DISABLE;
+ 227              		.loc 1 118 5 is_stmt 1 view .LVU72
+ 228              		.loc 1 118 40 is_stmt 0 view .LVU73
+ 229 001e 0362     		str	r3, [r0, #32]
+ 119:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****     huart2.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
+ 230              		.loc 1 119 5 is_stmt 1 view .LVU74
+ 231              		.loc 1 119 40 is_stmt 0 view .LVU75
+ 232 0020 4362     		str	r3, [r0, #36]
+ 120:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c **** 
+ 121:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****     if( HAL_UART_Init( &huart2 ) != HAL_OK )
+ 233              		.loc 1 121 5 is_stmt 1 view .LVU76
+ 234              		.loc 1 121 9 is_stmt 0 view .LVU77
+ 235 0022 FFF7FEFF 		bl	HAL_UART_Init
+ 236              	.LVL5:
+ 237              		.loc 1 121 7 view .LVU78
+ 238 0026 0028     		cmp	r0, #0
+ 239 0028 01D0     		beq	.L11
+ 122:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****     {
+ 123:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****         bsp_mcu_panic( );
+ 240              		.loc 1 123 9 is_stmt 1 view .LVU79
+ 241 002a FFF7FEFF 		bl	bsp_mcu_panic
+ 242              	.LVL6:
+ 243              	.L11:
+ 124:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****     }
+ 125:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c **** }
+ 244              		.loc 1 125 1 is_stmt 0 view .LVU80
+ 245              		@ sp needed
+ 246 002e 10BD     		pop	{r4, pc}
+ 247              	.L17:
+ 248              		.align	2
+ 249              	.L16:
+ 250 0030 00000000 		.word	huart2
+ 251 0034 00440040 		.word	1073759232
+ 252              		.cfi_endproc
+ 253              	.LFE49:
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cczvnpjS.s 			page 8
+
+
+ 255              		.section	.text.bsp_uart2_deinit,"ax",%progbits
+ 256              		.align	1
+ 257              		.global	bsp_uart2_deinit
+ 258              		.syntax unified
+ 259              		.code	16
+ 260              		.thumb_func
+ 261              		.fpu softvfp
+ 263              	bsp_uart2_deinit:
+ 264              	.LFB50:
+ 126:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c **** 
+ 127:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c **** void bsp_uart2_deinit( void )
+ 128:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c **** {
+ 265              		.loc 1 128 1 is_stmt 1 view -0
+ 266              		.cfi_startproc
+ 267              		@ args = 0, pretend = 0, frame = 0
+ 268              		@ frame_needed = 0, uses_anonymous_args = 0
+ 129:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****     HAL_UART_DeInit( &huart2 );
+ 269              		.loc 1 129 5 view .LVU82
+ 128:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****     HAL_UART_DeInit( &huart2 );
+ 270              		.loc 1 128 1 is_stmt 0 view .LVU83
+ 271 0000 10B5     		push	{r4, lr}
+ 272              		.cfi_def_cfa_offset 8
+ 273              		.cfi_offset 4, -8
+ 274              		.cfi_offset 14, -4
+ 275              		.loc 1 129 5 view .LVU84
+ 276 0002 0248     		ldr	r0, .L19
+ 277 0004 FFF7FEFF 		bl	HAL_UART_DeInit
+ 278              	.LVL7:
+ 130:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c **** }
+ 279              		.loc 1 130 1 view .LVU85
+ 280              		@ sp needed
+ 281 0008 10BD     		pop	{r4, pc}
+ 282              	.L20:
+ 283 000a C046     		.align	2
+ 284              	.L19:
+ 285 000c 00000000 		.word	huart2
+ 286              		.cfi_endproc
+ 287              	.LFE50:
+ 289              		.section	.text.bsp_uart1_dma_start_rx,"ax",%progbits
+ 290              		.align	1
+ 291              		.global	bsp_uart1_dma_start_rx
+ 292              		.syntax unified
+ 293              		.code	16
+ 294              		.thumb_func
+ 295              		.fpu softvfp
+ 297              	bsp_uart1_dma_start_rx:
+ 298              	.LVL8:
+ 299              	.LFB51:
+ 131:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c **** 
+ 132:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c **** void bsp_uart1_dma_start_rx( uint8_t* buff, uint16_t size )
+ 133:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c **** {
+ 300              		.loc 1 133 1 is_stmt 1 view -0
+ 301              		.cfi_startproc
+ 302              		@ args = 0, pretend = 0, frame = 0
+ 303              		@ frame_needed = 0, uses_anonymous_args = 0
+ 134:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****     HAL_UART_DMAStop( &huart1 );
+ 304              		.loc 1 134 5 view .LVU87
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cczvnpjS.s 			page 9
+
+
+ 133:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****     HAL_UART_DMAStop( &huart1 );
+ 305              		.loc 1 133 1 is_stmt 0 view .LVU88
+ 306 0000 70B5     		push	{r4, r5, r6, lr}
+ 307              		.cfi_def_cfa_offset 16
+ 308              		.cfi_offset 4, -16
+ 309              		.cfi_offset 5, -12
+ 310              		.cfi_offset 6, -8
+ 311              		.cfi_offset 14, -4
+ 133:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****     HAL_UART_DMAStop( &huart1 );
+ 312              		.loc 1 133 1 view .LVU89
+ 313 0002 0D00     		movs	r5, r1
+ 314 0004 0400     		movs	r4, r0
+ 315              		.loc 1 134 5 view .LVU90
+ 316 0006 054E     		ldr	r6, .L22
+ 135:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****     HAL_UART_Receive_DMA( &huart1, buff, size );
+ 136:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c **** }
+ 317              		.loc 1 136 1 view .LVU91
+ 318              		@ sp needed
+ 134:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****     HAL_UART_Receive_DMA( &huart1, buff, size );
+ 319              		.loc 1 134 5 view .LVU92
+ 320 0008 3000     		movs	r0, r6
+ 321              	.LVL9:
+ 134:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****     HAL_UART_Receive_DMA( &huart1, buff, size );
+ 322              		.loc 1 134 5 view .LVU93
+ 323 000a FFF7FEFF 		bl	HAL_UART_DMAStop
+ 324              	.LVL10:
+ 135:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****     HAL_UART_Receive_DMA( &huart1, buff, size );
+ 325              		.loc 1 135 5 is_stmt 1 view .LVU94
+ 326 000e 2A00     		movs	r2, r5
+ 327 0010 3000     		movs	r0, r6
+ 328 0012 2100     		movs	r1, r4
+ 329 0014 FFF7FEFF 		bl	HAL_UART_Receive_DMA
+ 330              	.LVL11:
+ 331              	.LVL12:
+ 332              		.loc 1 136 1 is_stmt 0 view .LVU95
+ 333 0018 70BD     		pop	{r4, r5, r6, pc}
+ 334              	.L23:
+ 335 001a C046     		.align	2
+ 336              	.L22:
+ 337 001c 00000000 		.word	huart1
+ 338              		.cfi_endproc
+ 339              	.LFE51:
+ 341              		.section	.text.bsp_uart1_dma_stop_rx,"ax",%progbits
+ 342              		.align	1
+ 343              		.global	bsp_uart1_dma_stop_rx
+ 344              		.syntax unified
+ 345              		.code	16
+ 346              		.thumb_func
+ 347              		.fpu softvfp
+ 349              	bsp_uart1_dma_stop_rx:
+ 350              	.LFB52:
+ 137:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c **** 
+ 138:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c **** void bsp_uart1_dma_stop_rx( void )
+ 139:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c **** {
+ 351              		.loc 1 139 1 is_stmt 1 view -0
+ 352              		.cfi_startproc
+ 353              		@ args = 0, pretend = 0, frame = 0
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cczvnpjS.s 			page 10
+
+
+ 354              		@ frame_needed = 0, uses_anonymous_args = 0
+ 140:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****     HAL_UART_DMAStop( &huart1 );
+ 355              		.loc 1 140 5 view .LVU97
+ 139:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****     HAL_UART_DMAStop( &huart1 );
+ 356              		.loc 1 139 1 is_stmt 0 view .LVU98
+ 357 0000 10B5     		push	{r4, lr}
+ 358              		.cfi_def_cfa_offset 8
+ 359              		.cfi_offset 4, -8
+ 360              		.cfi_offset 14, -4
+ 361              		.loc 1 140 5 view .LVU99
+ 362 0002 0248     		ldr	r0, .L25
+ 363 0004 FFF7FEFF 		bl	HAL_UART_DMAStop
+ 364              	.LVL13:
+ 141:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c **** }
+ 365              		.loc 1 141 1 view .LVU100
+ 366              		@ sp needed
+ 367 0008 10BD     		pop	{r4, pc}
+ 368              	.L26:
+ 369 000a C046     		.align	2
+ 370              	.L25:
+ 371 000c 00000000 		.word	huart1
+ 372              		.cfi_endproc
+ 373              	.LFE52:
+ 375              		.section	.text.bsp_uart1_tx,"ax",%progbits
+ 376              		.align	1
+ 377              		.global	bsp_uart1_tx
+ 378              		.syntax unified
+ 379              		.code	16
+ 380              		.thumb_func
+ 381              		.fpu softvfp
+ 383              	bsp_uart1_tx:
+ 384              	.LVL14:
+ 385              	.LFB53:
+ 142:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c **** 
+ 143:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c **** void bsp_uart1_tx( uint8_t* buff, uint8_t len )
+ 144:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c **** {
+ 386              		.loc 1 144 1 is_stmt 1 view -0
+ 387              		.cfi_startproc
+ 388              		@ args = 0, pretend = 0, frame = 0
+ 389              		@ frame_needed = 0, uses_anonymous_args = 0
+ 145:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****     HAL_UART_Transmit( &huart1, ( uint8_t* ) buff, len, 0xffffff );
+ 390              		.loc 1 145 5 view .LVU102
+ 144:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****     HAL_UART_Transmit( &huart1, ( uint8_t* ) buff, len, 0xffffff );
+ 391              		.loc 1 144 1 is_stmt 0 view .LVU103
+ 392 0000 10B5     		push	{r4, lr}
+ 393              		.cfi_def_cfa_offset 8
+ 394              		.cfi_offset 4, -8
+ 395              		.cfi_offset 14, -4
+ 396              		.loc 1 145 5 view .LVU104
+ 397 0002 0A00     		movs	r2, r1
+ 398 0004 024B     		ldr	r3, .L28
+ 399 0006 0100     		movs	r1, r0
+ 400              	.LVL15:
+ 401              		.loc 1 145 5 view .LVU105
+ 402 0008 0248     		ldr	r0, .L28+4
+ 403              	.LVL16:
+ 404              		.loc 1 145 5 view .LVU106
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cczvnpjS.s 			page 11
+
+
+ 405 000a FFF7FEFF 		bl	HAL_UART_Transmit
+ 406              	.LVL17:
+ 146:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c **** }
+ 407              		.loc 1 146 1 view .LVU107
+ 408              		@ sp needed
+ 409 000e 10BD     		pop	{r4, pc}
+ 410              	.L29:
+ 411              		.align	2
+ 412              	.L28:
+ 413 0010 FFFFFF00 		.word	16777215
+ 414 0014 00000000 		.word	huart1
+ 415              		.cfi_endproc
+ 416              	.LFE53:
+ 418              		.section	.text.bsp_uart2_tx,"ax",%progbits
+ 419              		.align	1
+ 420              		.global	bsp_uart2_tx
+ 421              		.syntax unified
+ 422              		.code	16
+ 423              		.thumb_func
+ 424              		.fpu softvfp
+ 426              	bsp_uart2_tx:
+ 427              	.LVL18:
+ 428              	.LFB54:
+ 147:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c **** 
+ 148:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c **** void bsp_uart2_tx( uint8_t* buff, uint8_t len )
+ 149:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c **** {
+ 429              		.loc 1 149 1 is_stmt 1 view -0
+ 430              		.cfi_startproc
+ 431              		@ args = 0, pretend = 0, frame = 0
+ 432              		@ frame_needed = 0, uses_anonymous_args = 0
+ 150:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****     HAL_UART_Transmit( &huart2, ( uint8_t* ) buff, len, 0xffffff );
+ 433              		.loc 1 150 5 view .LVU109
+ 149:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****     HAL_UART_Transmit( &huart2, ( uint8_t* ) buff, len, 0xffffff );
+ 434              		.loc 1 149 1 is_stmt 0 view .LVU110
+ 435 0000 10B5     		push	{r4, lr}
+ 436              		.cfi_def_cfa_offset 8
+ 437              		.cfi_offset 4, -8
+ 438              		.cfi_offset 14, -4
+ 439              		.loc 1 150 5 view .LVU111
+ 440 0002 0A00     		movs	r2, r1
+ 441 0004 024B     		ldr	r3, .L31
+ 442 0006 0100     		movs	r1, r0
+ 443              	.LVL19:
+ 444              		.loc 1 150 5 view .LVU112
+ 445 0008 0248     		ldr	r0, .L31+4
+ 446              	.LVL20:
+ 447              		.loc 1 150 5 view .LVU113
+ 448 000a FFF7FEFF 		bl	HAL_UART_Transmit
+ 449              	.LVL21:
+ 151:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c **** }
+ 450              		.loc 1 151 1 view .LVU114
+ 451              		@ sp needed
+ 452 000e 10BD     		pop	{r4, pc}
+ 453              	.L32:
+ 454              		.align	2
+ 455              	.L31:
+ 456 0010 FFFFFF00 		.word	16777215
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cczvnpjS.s 			page 12
+
+
+ 457 0014 00000000 		.word	huart2
+ 458              		.cfi_endproc
+ 459              	.LFE54:
+ 461              		.section	.text.HAL_UART_MspInit,"ax",%progbits
+ 462              		.align	1
+ 463              		.global	HAL_UART_MspInit
+ 464              		.syntax unified
+ 465              		.code	16
+ 466              		.thumb_func
+ 467              		.fpu softvfp
+ 469              	HAL_UART_MspInit:
+ 470              	.LVL22:
+ 471              	.LFB55:
+ 152:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c **** 
+ 153:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c **** void HAL_UART_MspInit( UART_HandleTypeDef* huart )
+ 154:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c **** {
+ 472              		.loc 1 154 1 is_stmt 1 view -0
+ 473              		.cfi_startproc
+ 474              		@ args = 0, pretend = 0, frame = 32
+ 475              		@ frame_needed = 0, uses_anonymous_args = 0
+ 155:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****     GPIO_InitTypeDef GPIO_InitStruct;
+ 476              		.loc 1 155 5 view .LVU116
+ 156:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****     if( huart->Instance == USART1 )
+ 477              		.loc 1 156 5 view .LVU117
+ 154:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****     GPIO_InitTypeDef GPIO_InitStruct;
+ 478              		.loc 1 154 1 is_stmt 0 view .LVU118
+ 479 0000 30B5     		push	{r4, r5, lr}
+ 480              		.cfi_def_cfa_offset 12
+ 481              		.cfi_offset 4, -12
+ 482              		.cfi_offset 5, -8
+ 483              		.cfi_offset 14, -4
+ 484              		.loc 1 156 14 view .LVU119
+ 485 0002 0368     		ldr	r3, [r0]
+ 486              		.loc 1 156 7 view .LVU120
+ 487 0004 2B4A     		ldr	r2, .L41
+ 154:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****     GPIO_InitTypeDef GPIO_InitStruct;
+ 488              		.loc 1 154 1 view .LVU121
+ 489 0006 0500     		movs	r5, r0
+ 490 0008 89B0     		sub	sp, sp, #36
+ 491              		.cfi_def_cfa_offset 48
+ 492              		.loc 1 156 7 view .LVU122
+ 493 000a 9342     		cmp	r3, r2
+ 494 000c 2ED1     		bne	.L34
+ 157:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****     {
+ 158:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****         __HAL_RCC_USART1_CLK_ENABLE( );
+ 495              		.loc 1 158 9 is_stmt 1 view .LVU123
+ 496 000e 8023     		movs	r3, #128
+ 497 0010 294A     		ldr	r2, .L41+4
+ 498 0012 DB01     		lsls	r3, r3, #7
+ 499 0014 516B     		ldr	r1, [r2, #52]
+ 159:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c **** 
+ 160:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****         GPIO_InitStruct.Alternate = GPIO_AF4_USART1;
+ 161:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****         GPIO_InitStruct.Pin       = ( 1 << ( HW_MODEM_RX_LINE & 0x0F ) ) | ( 1 << ( HW_MODEM_TX_LIN
+ 162:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****         GPIO_InitStruct.Mode      = GPIO_MODE_AF_PP;
+ 163:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****         GPIO_InitStruct.Pull      = GPIO_NOPULL;
+ 164:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****         GPIO_InitStruct.Speed     = GPIO_SPEED_FREQ_VERY_HIGH;
+ 165:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****         HAL_GPIO_Init( GPIOA, &GPIO_InitStruct );
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cczvnpjS.s 			page 13
+
+
+ 500              		.loc 1 165 9 is_stmt 0 view .LVU124
+ 501 0016 A020     		movs	r0, #160
+ 502              	.LVL23:
+ 158:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c **** 
+ 503              		.loc 1 158 9 view .LVU125
+ 504 0018 0B43     		orrs	r3, r1
+ 505 001a 5363     		str	r3, [r2, #52]
+ 160:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****         GPIO_InitStruct.Pin       = ( 1 << ( HW_MODEM_RX_LINE & 0x0F ) ) | ( 1 << ( HW_MODEM_TX_LIN
+ 506              		.loc 1 160 9 is_stmt 1 view .LVU126
+ 160:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****         GPIO_InitStruct.Pin       = ( 1 << ( HW_MODEM_RX_LINE & 0x0F ) ) | ( 1 << ( HW_MODEM_TX_LIN
+ 507              		.loc 1 160 35 is_stmt 0 view .LVU127
+ 508 001c 0423     		movs	r3, #4
+ 161:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****         GPIO_InitStruct.Mode      = GPIO_MODE_AF_PP;
+ 509              		.loc 1 161 35 view .LVU128
+ 510 001e C022     		movs	r2, #192
+ 160:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****         GPIO_InitStruct.Pin       = ( 1 << ( HW_MODEM_RX_LINE & 0x0F ) ) | ( 1 << ( HW_MODEM_TX_LIN
+ 511              		.loc 1 160 35 view .LVU129
+ 512 0020 0693     		str	r3, [sp, #24]
+ 161:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****         GPIO_InitStruct.Mode      = GPIO_MODE_AF_PP;
+ 513              		.loc 1 161 9 is_stmt 1 view .LVU130
+ 162:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****         GPIO_InitStruct.Pull      = GPIO_NOPULL;
+ 514              		.loc 1 162 9 view .LVU131
+ 163:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****         GPIO_InitStruct.Speed     = GPIO_SPEED_FREQ_VERY_HIGH;
+ 515              		.loc 1 163 9 view .LVU132
+ 164:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****         HAL_GPIO_Init( GPIOA, &GPIO_InitStruct );
+ 516              		.loc 1 164 9 view .LVU133
+ 161:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****         GPIO_InitStruct.Mode      = GPIO_MODE_AF_PP;
+ 517              		.loc 1 161 35 is_stmt 0 view .LVU134
+ 518 0022 0223     		movs	r3, #2
+ 519 0024 D200     		lsls	r2, r2, #3
+ 520 0026 0292     		str	r2, [sp, #8]
+ 521 0028 0393     		str	r3, [sp, #12]
+ 522 002a 0022     		movs	r2, #0
+ 523 002c 0323     		movs	r3, #3
+ 524              		.loc 1 165 9 view .LVU135
+ 525 002e C005     		lsls	r0, r0, #23
+ 526 0030 02A9     		add	r1, sp, #8
+ 161:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****         GPIO_InitStruct.Mode      = GPIO_MODE_AF_PP;
+ 527              		.loc 1 161 35 view .LVU136
+ 528 0032 0492     		str	r2, [sp, #16]
+ 529 0034 0593     		str	r3, [sp, #20]
+ 530              		.loc 1 165 9 is_stmt 1 view .LVU137
+ 531 0036 FFF7FEFF 		bl	HAL_GPIO_Init
+ 532              	.LVL24:
+ 166:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c **** 
+ 167:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****         hdma_usart1_rx.Instance                 = DMA1_Channel3;
+ 533              		.loc 1 167 9 view .LVU138
+ 534              		.loc 1 167 49 is_stmt 0 view .LVU139
+ 535 003a 204C     		ldr	r4, .L41+8
+ 536 003c 204B     		ldr	r3, .L41+12
+ 168:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****         hdma_usart1_rx.Init.Request             = DMA_REQUEST_3;
+ 169:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****         hdma_usart1_rx.Init.Direction           = DMA_PERIPH_TO_MEMORY;
+ 170:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****         hdma_usart1_rx.Init.PeriphInc           = DMA_PINC_DISABLE;
+ 171:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****         hdma_usart1_rx.Init.MemInc              = DMA_MINC_ENABLE;
+ 537              		.loc 1 171 49 view .LVU140
+ 538 003e 8022     		movs	r2, #128
+ 167:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****         hdma_usart1_rx.Init.Request             = DMA_REQUEST_3;
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cczvnpjS.s 			page 14
+
+
+ 539              		.loc 1 167 49 view .LVU141
+ 540 0040 2360     		str	r3, [r4]
+ 168:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****         hdma_usart1_rx.Init.Request             = DMA_REQUEST_3;
+ 541              		.loc 1 168 9 is_stmt 1 view .LVU142
+ 168:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****         hdma_usart1_rx.Init.Request             = DMA_REQUEST_3;
+ 542              		.loc 1 168 49 is_stmt 0 view .LVU143
+ 543 0042 0323     		movs	r3, #3
+ 544 0044 6360     		str	r3, [r4, #4]
+ 169:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****         hdma_usart1_rx.Init.PeriphInc           = DMA_PINC_DISABLE;
+ 545              		.loc 1 169 9 is_stmt 1 view .LVU144
+ 169:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****         hdma_usart1_rx.Init.PeriphInc           = DMA_PINC_DISABLE;
+ 546              		.loc 1 169 49 is_stmt 0 view .LVU145
+ 547 0046 0023     		movs	r3, #0
+ 172:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****         hdma_usart1_rx.Init.PeriphDataAlignment = DMA_PDATAALIGN_BYTE;
+ 173:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****         hdma_usart1_rx.Init.MemDataAlignment    = DMA_MDATAALIGN_BYTE;
+ 174:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****         hdma_usart1_rx.Init.Mode                = DMA_NORMAL;
+ 175:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****         hdma_usart1_rx.Init.Priority            = DMA_PRIORITY_LOW;
+ 176:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c **** 
+ 177:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****         if( HAL_DMA_Init( &hdma_usart1_rx ) != HAL_OK )
+ 548              		.loc 1 177 13 view .LVU146
+ 549 0048 2000     		movs	r0, r4
+ 169:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****         hdma_usart1_rx.Init.PeriphInc           = DMA_PINC_DISABLE;
+ 550              		.loc 1 169 49 view .LVU147
+ 551 004a A360     		str	r3, [r4, #8]
+ 170:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****         hdma_usart1_rx.Init.MemInc              = DMA_MINC_ENABLE;
+ 552              		.loc 1 170 9 is_stmt 1 view .LVU148
+ 170:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****         hdma_usart1_rx.Init.MemInc              = DMA_MINC_ENABLE;
+ 553              		.loc 1 170 49 is_stmt 0 view .LVU149
+ 554 004c E360     		str	r3, [r4, #12]
+ 171:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****         hdma_usart1_rx.Init.PeriphDataAlignment = DMA_PDATAALIGN_BYTE;
+ 555              		.loc 1 171 9 is_stmt 1 view .LVU150
+ 171:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****         hdma_usart1_rx.Init.PeriphDataAlignment = DMA_PDATAALIGN_BYTE;
+ 556              		.loc 1 171 49 is_stmt 0 view .LVU151
+ 557 004e 2261     		str	r2, [r4, #16]
+ 172:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****         hdma_usart1_rx.Init.PeriphDataAlignment = DMA_PDATAALIGN_BYTE;
+ 558              		.loc 1 172 9 is_stmt 1 view .LVU152
+ 172:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****         hdma_usart1_rx.Init.PeriphDataAlignment = DMA_PDATAALIGN_BYTE;
+ 559              		.loc 1 172 49 is_stmt 0 view .LVU153
+ 560 0050 6361     		str	r3, [r4, #20]
+ 173:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****         hdma_usart1_rx.Init.Mode                = DMA_NORMAL;
+ 561              		.loc 1 173 9 is_stmt 1 view .LVU154
+ 173:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****         hdma_usart1_rx.Init.Mode                = DMA_NORMAL;
+ 562              		.loc 1 173 49 is_stmt 0 view .LVU155
+ 563 0052 A361     		str	r3, [r4, #24]
+ 174:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****         hdma_usart1_rx.Init.Priority            = DMA_PRIORITY_LOW;
+ 564              		.loc 1 174 9 is_stmt 1 view .LVU156
+ 174:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****         hdma_usart1_rx.Init.Priority            = DMA_PRIORITY_LOW;
+ 565              		.loc 1 174 49 is_stmt 0 view .LVU157
+ 566 0054 E361     		str	r3, [r4, #28]
+ 175:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c **** 
+ 567              		.loc 1 175 9 is_stmt 1 view .LVU158
+ 175:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c **** 
+ 568              		.loc 1 175 49 is_stmt 0 view .LVU159
+ 569 0056 2362     		str	r3, [r4, #32]
+ 570              		.loc 1 177 9 is_stmt 1 view .LVU160
+ 571              		.loc 1 177 13 is_stmt 0 view .LVU161
+ 572 0058 FFF7FEFF 		bl	HAL_DMA_Init
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cczvnpjS.s 			page 15
+
+
+ 573              	.LVL25:
+ 574              		.loc 1 177 11 view .LVU162
+ 575 005c 0028     		cmp	r0, #0
+ 576 005e 01D0     		beq	.L35
+ 178:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****         {
+ 179:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****             bsp_mcu_panic( );
+ 577              		.loc 1 179 13 is_stmt 1 view .LVU163
+ 578 0060 FFF7FEFF 		bl	bsp_mcu_panic
+ 579              	.LVL26:
+ 580              	.L35:
+ 180:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****         }
+ 181:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****         __HAL_LINKDMA( huart, hdmarx, hdma_usart1_rx );
+ 581              		.loc 1 181 9 view .LVU164
+ 582              		.loc 1 181 9 view .LVU165
+ 583 0064 EC66     		str	r4, [r5, #108]
+ 584              		.loc 1 181 9 view .LVU166
+ 585 0066 A562     		str	r5, [r4, #40]
+ 586              		.loc 1 181 9 view .LVU167
+ 587              	.L33:
+ 182:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****     }
+ 183:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****     else if( huart->Instance == USART2 )
+ 184:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****     {
+ 185:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****         __HAL_RCC_USART2_CLK_ENABLE( );
+ 186:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c **** 
+ 187:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****         GPIO_InitStruct.Alternate = GPIO_AF4_USART2;
+ 188:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****         GPIO_InitStruct.Pin       = ( 1 << ( DEBUG_UART_TX & 0x0F ) ) | ( 1 << ( DEBUG_UART_RX & 0x
+ 189:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****         GPIO_InitStruct.Mode      = GPIO_MODE_AF_PP;
+ 190:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****         GPIO_InitStruct.Pull      = GPIO_NOPULL;
+ 191:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****         GPIO_InitStruct.Speed     = GPIO_SPEED_FREQ_VERY_HIGH;
+ 192:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c **** 
+ 193:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****         __HAL_RCC_GPIOA_CLK_ENABLE( );
+ 194:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****         HAL_GPIO_Init( GPIOA, &GPIO_InitStruct );
+ 195:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****     }
+ 196:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****     else
+ 197:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****     {
+ 198:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****         bsp_mcu_panic( );
+ 199:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****     }
+ 200:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c **** }
+ 588              		.loc 1 200 1 is_stmt 0 view .LVU168
+ 589 0068 09B0     		add	sp, sp, #36
+ 590              		@ sp needed
+ 591              	.LVL27:
+ 592              		.loc 1 200 1 view .LVU169
+ 593 006a 30BD     		pop	{r4, r5, pc}
+ 594              	.LVL28:
+ 595              	.L34:
+ 183:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****     {
+ 596              		.loc 1 183 10 is_stmt 1 view .LVU170
+ 183:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****     {
+ 597              		.loc 1 183 12 is_stmt 0 view .LVU171
+ 598 006c 154A     		ldr	r2, .L41+16
+ 599 006e 9342     		cmp	r3, r2
+ 600 0070 1DD1     		bne	.L37
+ 185:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c **** 
+ 601              		.loc 1 185 9 is_stmt 1 view .LVU172
+ 602 0072 8022     		movs	r2, #128
+ 603 0074 104B     		ldr	r3, .L41+4
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cczvnpjS.s 			page 16
+
+
+ 604 0076 9202     		lsls	r2, r2, #10
+ 605 0078 996B     		ldr	r1, [r3, #56]
+ 188:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****         GPIO_InitStruct.Mode      = GPIO_MODE_AF_PP;
+ 606              		.loc 1 188 35 is_stmt 0 view .LVU173
+ 607 007a 0C20     		movs	r0, #12
+ 608              	.LVL29:
+ 185:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c **** 
+ 609              		.loc 1 185 9 view .LVU174
+ 610 007c 0A43     		orrs	r2, r1
+ 188:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****         GPIO_InitStruct.Mode      = GPIO_MODE_AF_PP;
+ 611              		.loc 1 188 35 view .LVU175
+ 612 007e 0221     		movs	r1, #2
+ 185:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c **** 
+ 613              		.loc 1 185 9 view .LVU176
+ 614 0080 9A63     		str	r2, [r3, #56]
+ 187:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****         GPIO_InitStruct.Pin       = ( 1 << ( DEBUG_UART_TX & 0x0F ) ) | ( 1 << ( DEBUG_UART_RX & 0x
+ 615              		.loc 1 187 9 is_stmt 1 view .LVU177
+ 188:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****         GPIO_InitStruct.Mode      = GPIO_MODE_AF_PP;
+ 616              		.loc 1 188 35 is_stmt 0 view .LVU178
+ 617 0082 0290     		str	r0, [sp, #8]
+ 618 0084 0391     		str	r1, [sp, #12]
+ 619 0086 0020     		movs	r0, #0
+ 620 0088 0321     		movs	r1, #3
+ 187:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****         GPIO_InitStruct.Pin       = ( 1 << ( DEBUG_UART_TX & 0x0F ) ) | ( 1 << ( DEBUG_UART_RX & 0x
+ 621              		.loc 1 187 35 view .LVU179
+ 622 008a 0422     		movs	r2, #4
+ 188:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****         GPIO_InitStruct.Mode      = GPIO_MODE_AF_PP;
+ 623              		.loc 1 188 35 view .LVU180
+ 624 008c 0490     		str	r0, [sp, #16]
+ 625 008e 0591     		str	r1, [sp, #20]
+ 626              	.LBB7:
+ 193:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****         HAL_GPIO_Init( GPIOA, &GPIO_InitStruct );
+ 627              		.loc 1 193 9 view .LVU181
+ 628 0090 0121     		movs	r1, #1
+ 629              	.LBE7:
+ 194:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****     }
+ 630              		.loc 1 194 9 view .LVU182
+ 631 0092 A020     		movs	r0, #160
+ 187:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****         GPIO_InitStruct.Pin       = ( 1 << ( DEBUG_UART_TX & 0x0F ) ) | ( 1 << ( DEBUG_UART_RX & 0x
+ 632              		.loc 1 187 35 view .LVU183
+ 633 0094 0692     		str	r2, [sp, #24]
+ 188:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****         GPIO_InitStruct.Mode      = GPIO_MODE_AF_PP;
+ 634              		.loc 1 188 9 is_stmt 1 view .LVU184
+ 189:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****         GPIO_InitStruct.Pull      = GPIO_NOPULL;
+ 635              		.loc 1 189 9 view .LVU185
+ 190:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****         GPIO_InitStruct.Speed     = GPIO_SPEED_FREQ_VERY_HIGH;
+ 636              		.loc 1 190 9 view .LVU186
+ 191:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c **** 
+ 637              		.loc 1 191 9 view .LVU187
+ 193:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****         HAL_GPIO_Init( GPIOA, &GPIO_InitStruct );
+ 638              		.loc 1 193 9 view .LVU188
+ 639              	.LBB8:
+ 193:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****         HAL_GPIO_Init( GPIOA, &GPIO_InitStruct );
+ 640              		.loc 1 193 9 view .LVU189
+ 193:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****         HAL_GPIO_Init( GPIOA, &GPIO_InitStruct );
+ 641              		.loc 1 193 9 view .LVU190
+ 642 0096 DA6A     		ldr	r2, [r3, #44]
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cczvnpjS.s 			page 17
+
+
+ 643              	.LBE8:
+ 194:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****     }
+ 644              		.loc 1 194 9 is_stmt 0 view .LVU191
+ 645 0098 C005     		lsls	r0, r0, #23
+ 646              	.LBB9:
+ 193:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****         HAL_GPIO_Init( GPIOA, &GPIO_InitStruct );
+ 647              		.loc 1 193 9 view .LVU192
+ 648 009a 0A43     		orrs	r2, r1
+ 649 009c DA62     		str	r2, [r3, #44]
+ 193:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****         HAL_GPIO_Init( GPIOA, &GPIO_InitStruct );
+ 650              		.loc 1 193 9 is_stmt 1 view .LVU193
+ 651 009e DB6A     		ldr	r3, [r3, #44]
+ 652 00a0 0B40     		ands	r3, r1
+ 653 00a2 0193     		str	r3, [sp, #4]
+ 193:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****         HAL_GPIO_Init( GPIOA, &GPIO_InitStruct );
+ 654              		.loc 1 193 9 view .LVU194
+ 655              	.LBE9:
+ 194:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****     }
+ 656              		.loc 1 194 9 is_stmt 0 view .LVU195
+ 657 00a4 02A9     		add	r1, sp, #8
+ 658              	.LBB10:
+ 193:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****         HAL_GPIO_Init( GPIOA, &GPIO_InitStruct );
+ 659              		.loc 1 193 9 view .LVU196
+ 660 00a6 019B     		ldr	r3, [sp, #4]
+ 661              	.LBE10:
+ 193:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****         HAL_GPIO_Init( GPIOA, &GPIO_InitStruct );
+ 662              		.loc 1 193 9 is_stmt 1 view .LVU197
+ 194:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****     }
+ 663              		.loc 1 194 9 view .LVU198
+ 664 00a8 FFF7FEFF 		bl	HAL_GPIO_Init
+ 665              	.LVL30:
+ 666 00ac DCE7     		b	.L33
+ 667              	.LVL31:
+ 668              	.L37:
+ 198:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****     }
+ 669              		.loc 1 198 9 view .LVU199
+ 670 00ae FFF7FEFF 		bl	bsp_mcu_panic
+ 671              	.LVL32:
+ 672              		.loc 1 200 1 is_stmt 0 view .LVU200
+ 673 00b2 D9E7     		b	.L33
+ 674              	.L42:
+ 675              		.align	2
+ 676              	.L41:
+ 677 00b4 00380140 		.word	1073821696
+ 678 00b8 00100240 		.word	1073876992
+ 679 00bc 00000000 		.word	.LANCHOR0
+ 680 00c0 30000240 		.word	1073872944
+ 681 00c4 00440040 		.word	1073759232
+ 682              		.cfi_endproc
+ 683              	.LFE55:
+ 685              		.section	.text.HAL_UART_MspDeInit,"ax",%progbits
+ 686              		.align	1
+ 687              		.global	HAL_UART_MspDeInit
+ 688              		.syntax unified
+ 689              		.code	16
+ 690              		.thumb_func
+ 691              		.fpu softvfp
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cczvnpjS.s 			page 18
+
+
+ 693              	HAL_UART_MspDeInit:
+ 694              	.LVL33:
+ 695              	.LFB56:
+ 201:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c **** 
+ 202:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c **** void HAL_UART_MspDeInit( UART_HandleTypeDef* huart )
+ 203:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c **** {
+ 696              		.loc 1 203 1 is_stmt 1 view -0
+ 697              		.cfi_startproc
+ 698              		@ args = 0, pretend = 0, frame = 0
+ 699              		@ frame_needed = 0, uses_anonymous_args = 0
+ 204:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****     if( huart->Instance == USART1 )
+ 700              		.loc 1 204 5 view .LVU202
+ 701              		.loc 1 204 7 is_stmt 0 view .LVU203
+ 702 0000 184B     		ldr	r3, .L46
+ 703 0002 0268     		ldr	r2, [r0]
+ 203:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****     if( huart->Instance == USART1 )
+ 704              		.loc 1 203 1 view .LVU204
+ 705 0004 70B5     		push	{r4, r5, r6, lr}
+ 706              		.cfi_def_cfa_offset 16
+ 707              		.cfi_offset 4, -16
+ 708              		.cfi_offset 5, -12
+ 709              		.cfi_offset 6, -8
+ 710              		.cfi_offset 14, -4
+ 203:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****     if( huart->Instance == USART1 )
+ 711              		.loc 1 203 1 view .LVU205
+ 712 0006 0400     		movs	r4, r0
+ 713              		.loc 1 204 7 view .LVU206
+ 714 0008 9A42     		cmp	r2, r3
+ 715 000a 17D1     		bne	.L44
+ 205:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****     {
+ 206:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****         __HAL_RCC_USART1_CLK_DISABLE( );
+ 716              		.loc 1 206 9 is_stmt 1 view .LVU207
+ 207:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****         HAL_GPIO_DeInit( GPIOA, ( 1 << ( HW_MODEM_TX_LINE & 0x0F ) ) );
+ 717              		.loc 1 207 9 is_stmt 0 view .LVU208
+ 718 000c 8021     		movs	r1, #128
+ 719 000e A020     		movs	r0, #160
+ 720              	.LVL34:
+ 206:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****         HAL_GPIO_DeInit( GPIOA, ( 1 << ( HW_MODEM_TX_LINE & 0x0F ) ) );
+ 721              		.loc 1 206 9 view .LVU209
+ 722 0010 154D     		ldr	r5, .L46+4
+ 723 0012 164A     		ldr	r2, .L46+8
+ 724 0014 6B6B     		ldr	r3, [r5, #52]
+ 725              		.loc 1 207 9 view .LVU210
+ 726 0016 8900     		lsls	r1, r1, #2
+ 206:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****         HAL_GPIO_DeInit( GPIOA, ( 1 << ( HW_MODEM_TX_LINE & 0x0F ) ) );
+ 727              		.loc 1 206 9 view .LVU211
+ 728 0018 1340     		ands	r3, r2
+ 729 001a 6B63     		str	r3, [r5, #52]
+ 730              		.loc 1 207 9 is_stmt 1 view .LVU212
+ 731 001c C005     		lsls	r0, r0, #23
+ 732 001e FFF7FEFF 		bl	HAL_GPIO_DeInit
+ 733              	.LVL35:
+ 208:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****         HAL_GPIO_DeInit( GPIOA, ( 1 << ( HW_MODEM_RX_LINE & 0x0F ) ) );
+ 734              		.loc 1 208 9 view .LVU213
+ 735 0022 8021     		movs	r1, #128
+ 736 0024 A020     		movs	r0, #160
+ 737 0026 C900     		lsls	r1, r1, #3
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cczvnpjS.s 			page 19
+
+
+ 738 0028 C005     		lsls	r0, r0, #23
+ 739 002a FFF7FEFF 		bl	HAL_GPIO_DeInit
+ 740              	.LVL36:
+ 209:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c **** 
+ 210:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****         HAL_DMA_DeInit( &hdma_usart1_rx );
+ 741              		.loc 1 210 9 view .LVU214
+ 742 002e 1048     		ldr	r0, .L46+12
+ 743 0030 FFF7FEFF 		bl	HAL_DMA_DeInit
+ 744              	.LVL37:
+ 211:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c **** 
+ 212:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****         __HAL_RCC_DMA1_CLK_DISABLE( );
+ 745              		.loc 1 212 9 view .LVU215
+ 746 0034 0122     		movs	r2, #1
+ 747 0036 2B6B     		ldr	r3, [r5, #48]
+ 748 0038 9343     		bics	r3, r2
+ 749 003a 2B63     		str	r3, [r5, #48]
+ 750              	.L44:
+ 213:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****     }
+ 214:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****     if( huart->Instance == USART2 )
+ 751              		.loc 1 214 5 view .LVU216
+ 752              		.loc 1 214 7 is_stmt 0 view .LVU217
+ 753 003c 0D4B     		ldr	r3, .L46+16
+ 754 003e 2268     		ldr	r2, [r4]
+ 755 0040 9A42     		cmp	r2, r3
+ 756 0042 0ED1     		bne	.L43
+ 215:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****     {
+ 216:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****         __HAL_RCC_USART2_CLK_DISABLE( );
+ 757              		.loc 1 216 9 is_stmt 1 view .LVU218
+ 217:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****         HAL_GPIO_DeInit( GPIOA, ( 1 << ( DEBUG_UART_TX & 0x0F ) ) );
+ 758              		.loc 1 217 9 is_stmt 0 view .LVU219
+ 759 0044 A020     		movs	r0, #160
+ 216:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****         HAL_GPIO_DeInit( GPIOA, ( 1 << ( DEBUG_UART_TX & 0x0F ) ) );
+ 760              		.loc 1 216 9 view .LVU220
+ 761 0046 084A     		ldr	r2, .L46+4
+ 762 0048 0B49     		ldr	r1, .L46+20
+ 763 004a 936B     		ldr	r3, [r2, #56]
+ 764              		.loc 1 217 9 view .LVU221
+ 765 004c C005     		lsls	r0, r0, #23
+ 216:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****         HAL_GPIO_DeInit( GPIOA, ( 1 << ( DEBUG_UART_TX & 0x0F ) ) );
+ 766              		.loc 1 216 9 view .LVU222
+ 767 004e 0B40     		ands	r3, r1
+ 768 0050 9363     		str	r3, [r2, #56]
+ 769              		.loc 1 217 9 is_stmt 1 view .LVU223
+ 770 0052 0421     		movs	r1, #4
+ 771 0054 FFF7FEFF 		bl	HAL_GPIO_DeInit
+ 772              	.LVL38:
+ 218:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****         HAL_GPIO_DeInit( GPIOA, ( 1 << ( DEBUG_UART_RX & 0x0F ) ) );
+ 773              		.loc 1 218 9 view .LVU224
+ 774 0058 A020     		movs	r0, #160
+ 775 005a 0821     		movs	r1, #8
+ 776 005c C005     		lsls	r0, r0, #23
+ 777 005e FFF7FEFF 		bl	HAL_GPIO_DeInit
+ 778              	.LVL39:
+ 779              	.L43:
+ 219:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****     }
+ 220:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c **** }
+ 780              		.loc 1 220 1 is_stmt 0 view .LVU225
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cczvnpjS.s 			page 20
+
+
+ 781              		@ sp needed
+ 782              	.LVL40:
+ 783              		.loc 1 220 1 view .LVU226
+ 784 0062 70BD     		pop	{r4, r5, r6, pc}
+ 785              	.L47:
+ 786              		.align	2
+ 787              	.L46:
+ 788 0064 00380140 		.word	1073821696
+ 789 0068 00100240 		.word	1073876992
+ 790 006c FFBFFFFF 		.word	-16385
+ 791 0070 00000000 		.word	.LANCHOR0
+ 792 0074 00440040 		.word	1073759232
+ 793 0078 FFFFFDFF 		.word	-131073
+ 794              		.cfi_endproc
+ 795              	.LFE56:
+ 797              		.section	.text.DMA1_Channel2_3_IRQHandler,"ax",%progbits
+ 798              		.align	1
+ 799              		.global	DMA1_Channel2_3_IRQHandler
+ 800              		.syntax unified
+ 801              		.code	16
+ 802              		.thumb_func
+ 803              		.fpu softvfp
+ 805              	DMA1_Channel2_3_IRQHandler:
+ 806              	.LFB57:
+ 221:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c **** 
+ 222:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c **** void DMA1_Channel2_3_IRQHandler( void )
+ 223:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c **** {
+ 807              		.loc 1 223 1 is_stmt 1 view -0
+ 808              		.cfi_startproc
+ 809              		@ args = 0, pretend = 0, frame = 0
+ 810              		@ frame_needed = 0, uses_anonymous_args = 0
+ 224:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****     HAL_DMA_IRQHandler( huart1.hdmarx );
+ 811              		.loc 1 224 5 view .LVU228
+ 223:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****     HAL_DMA_IRQHandler( huart1.hdmarx );
+ 812              		.loc 1 223 1 is_stmt 0 view .LVU229
+ 813 0000 10B5     		push	{r4, lr}
+ 814              		.cfi_def_cfa_offset 8
+ 815              		.cfi_offset 4, -8
+ 816              		.cfi_offset 14, -4
+ 817              		.loc 1 224 5 view .LVU230
+ 818 0002 024B     		ldr	r3, .L49
+ 225:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c **** }
+ 819              		.loc 1 225 1 view .LVU231
+ 820              		@ sp needed
+ 224:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_uart.c ****     HAL_DMA_IRQHandler( huart1.hdmarx );
+ 821              		.loc 1 224 5 view .LVU232
+ 822 0004 D86E     		ldr	r0, [r3, #108]
+ 823 0006 FFF7FEFF 		bl	HAL_DMA_IRQHandler
+ 824              	.LVL41:
+ 825              		.loc 1 225 1 view .LVU233
+ 826 000a 10BD     		pop	{r4, pc}
+ 827              	.L50:
+ 828              		.align	2
+ 829              	.L49:
+ 830 000c 00000000 		.word	huart1
+ 831              		.cfi_endproc
+ 832              	.LFE57:
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cczvnpjS.s 			page 21
+
+
+ 834              		.section	.bss.hdma_usart1_rx,"aw",%nobits
+ 835              		.align	2
+ 836              		.set	.LANCHOR0,. + 0
+ 839              	hdma_usart1_rx:
+ 840 0000 00000000 		.space	72
+ 840      00000000 
+ 840      00000000 
+ 840      00000000 
+ 840      00000000 
+ 841              		.section	.bss.huart1,"aw",%nobits
+ 842              		.align	2
+ 845              	huart1:
+ 846 0000 00000000 		.space	128
+ 846      00000000 
+ 846      00000000 
+ 846      00000000 
+ 846      00000000 
+ 847              		.section	.bss.huart2,"aw",%nobits
+ 848              		.align	2
+ 851              	huart2:
+ 852 0000 00000000 		.space	128
+ 852      00000000 
+ 852      00000000 
+ 852      00000000 
+ 852      00000000 
+ 853              		.text
+ 854              	.Letext0:
+ 855              		.file 2 "/Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.external
+ 856              		.file 3 "/Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.external
+ 857              		.file 4 "user_app/mcu_core/system_stm32l0xx.h"
+ 858              		.file 5 "user_app/mcu_core/stm32l073xx.h"
+ 859              		.file 6 "smtc_bsp/arm/stm32/stm32_hal/STM32L0xx_HAL_Driver/Inc/stm32l0xx_hal_def.h"
+ 860              		.file 7 "smtc_bsp/arm/stm32/stm32_hal/STM32L0xx_HAL_Driver/Inc/stm32l0xx_hal_gpio.h"
+ 861              		.file 8 "smtc_bsp/arm/stm32/stm32_hal/STM32L0xx_HAL_Driver/Inc/stm32l0xx_hal_dma.h"
+ 862              		.file 9 "smtc_bsp/arm/stm32/stm32_hal/STM32L0xx_HAL_Driver/Inc/stm32l0xx_hal_uart.h"
+ 863              		.file 10 "smtc_bsp/arm/stm32/stm32_hal/STM32L0xx_HAL_Driver/Inc/stm32l0xx_hal.h"
+ 864              		.file 11 "smtc_bsp/smtc_bsp_mcu.h"
+ 865              		.file 12 "smtc_bsp/arm/stm32/stm32_hal/STM32L0xx_HAL_Driver/Inc/stm32l0xx_hal_cortex.h"
+ 866              		.file 13 "smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio_pin_names.h"
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cczvnpjS.s 			page 22
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 smtc_bsp_uart.c
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cczvnpjS.s:14     .text.bsp_uart1_init:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cczvnpjS.s:22     .text.bsp_uart1_init:0000000000000000 bsp_uart1_init
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cczvnpjS.s:134    .text.bsp_uart1_init:0000000000000054 $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cczvnpjS.s:845    .bss.huart1:0000000000000000 huart1
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cczvnpjS.s:141    .text.bsp_uart1_deinit:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cczvnpjS.s:148    .text.bsp_uart1_deinit:0000000000000000 bsp_uart1_deinit
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cczvnpjS.s:170    .text.bsp_uart1_deinit:000000000000000c $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cczvnpjS.s:175    .text.bsp_uart2_init:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cczvnpjS.s:182    .text.bsp_uart2_init:0000000000000000 bsp_uart2_init
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cczvnpjS.s:250    .text.bsp_uart2_init:0000000000000030 $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cczvnpjS.s:851    .bss.huart2:0000000000000000 huart2
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cczvnpjS.s:256    .text.bsp_uart2_deinit:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cczvnpjS.s:263    .text.bsp_uart2_deinit:0000000000000000 bsp_uart2_deinit
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cczvnpjS.s:285    .text.bsp_uart2_deinit:000000000000000c $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cczvnpjS.s:290    .text.bsp_uart1_dma_start_rx:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cczvnpjS.s:297    .text.bsp_uart1_dma_start_rx:0000000000000000 bsp_uart1_dma_start_rx
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cczvnpjS.s:337    .text.bsp_uart1_dma_start_rx:000000000000001c $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cczvnpjS.s:342    .text.bsp_uart1_dma_stop_rx:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cczvnpjS.s:349    .text.bsp_uart1_dma_stop_rx:0000000000000000 bsp_uart1_dma_stop_rx
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cczvnpjS.s:371    .text.bsp_uart1_dma_stop_rx:000000000000000c $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cczvnpjS.s:376    .text.bsp_uart1_tx:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cczvnpjS.s:383    .text.bsp_uart1_tx:0000000000000000 bsp_uart1_tx
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cczvnpjS.s:413    .text.bsp_uart1_tx:0000000000000010 $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cczvnpjS.s:419    .text.bsp_uart2_tx:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cczvnpjS.s:426    .text.bsp_uart2_tx:0000000000000000 bsp_uart2_tx
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cczvnpjS.s:456    .text.bsp_uart2_tx:0000000000000010 $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cczvnpjS.s:462    .text.HAL_UART_MspInit:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cczvnpjS.s:469    .text.HAL_UART_MspInit:0000000000000000 HAL_UART_MspInit
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cczvnpjS.s:677    .text.HAL_UART_MspInit:00000000000000b4 $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cczvnpjS.s:686    .text.HAL_UART_MspDeInit:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cczvnpjS.s:693    .text.HAL_UART_MspDeInit:0000000000000000 HAL_UART_MspDeInit
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cczvnpjS.s:788    .text.HAL_UART_MspDeInit:0000000000000064 $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cczvnpjS.s:798    .text.DMA1_Channel2_3_IRQHandler:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cczvnpjS.s:805    .text.DMA1_Channel2_3_IRQHandler:0000000000000000 DMA1_Channel2_3_IRQHandler
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cczvnpjS.s:830    .text.DMA1_Channel2_3_IRQHandler:000000000000000c $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cczvnpjS.s:835    .bss.hdma_usart1_rx:0000000000000000 $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cczvnpjS.s:839    .bss.hdma_usart1_rx:0000000000000000 hdma_usart1_rx
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cczvnpjS.s:842    .bss.huart1:0000000000000000 $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cczvnpjS.s:848    .bss.huart2:0000000000000000 $d
+
+UNDEFINED SYMBOLS
+HAL_NVIC_SetPriority
+HAL_NVIC_EnableIRQ
+HAL_UART_Init
+bsp_mcu_panic
+HAL_UART_DeInit
+HAL_UART_DMAStop
+HAL_UART_Receive_DMA
+HAL_UART_Transmit
+HAL_GPIO_Init
+HAL_DMA_Init
+HAL_GPIO_DeInit
+HAL_DMA_DeInit
+HAL_DMA_IRQHandler

@@ -1,0 +1,372 @@
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccFJP519.s 			page 1
+
+
+   1              		.cpu cortex-m0plus
+   2              		.eabi_attribute 23, 1
+   3              		.eabi_attribute 24, 1
+   4              		.eabi_attribute 25, 1
+   5              		.eabi_attribute 26, 1
+   6              		.eabi_attribute 30, 4
+   7              		.eabi_attribute 34, 0
+   8              		.eabi_attribute 18, 4
+   9              		.file	"main.c"
+  10              		.text
+  11              	.Ltext0:
+  12              		.cfi_sections	.debug_frame
+  13              		.section	.text.startup.main,"ax",%progbits
+  14              		.align	1
+  15              		.global	main
+  16              		.arch armv6s-m
+  17              		.syntax unified
+  18              		.code	16
+  19              		.thumb_func
+  20              		.fpu softvfp
+  22              	main:
+  23              	.LFB9:
+  24              		.file 1 "user_app/main.c"
+   1:user_app/main.c **** /*!
+   2:user_app/main.c ****  * \file      main.c
+   3:user_app/main.c ****  *
+   4:user_app/main.c ****  * \brief     main program
+   5:user_app/main.c ****  *
+   6:user_app/main.c ****  * Revised BSD License
+   7:user_app/main.c ****  * Copyright Semtech Corporation 2020. All rights reserved.
+   8:user_app/main.c ****  *
+   9:user_app/main.c ****  * Redistribution and use in source and binary forms, with or without
+  10:user_app/main.c ****  * modification, are permitted provided that the following conditions are met:
+  11:user_app/main.c ****  *     * Redistributions of source code must retain the above copyright
+  12:user_app/main.c ****  *       notice, this list of conditions and the following disclaimer.
+  13:user_app/main.c ****  *     * Redistributions in binary form must reproduce the above copyright
+  14:user_app/main.c ****  *       notice, this list of conditions and the following disclaimer in the
+  15:user_app/main.c ****  *       documentation and/or other materials provided with the distribution.
+  16:user_app/main.c ****  *     * Neither the name of the Semtech corporation nor the
+  17:user_app/main.c ****  *       names of its contributors may be used to endorse or promote products
+  18:user_app/main.c ****  *       derived from this software without specific prior written permission.
+  19:user_app/main.c ****  *
+  20:user_app/main.c ****  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+  21:user_app/main.c ****  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+  22:user_app/main.c ****  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+  23:user_app/main.c ****  * ARE DISCLAIMED. IN NO EVENT SHALL SEMTECH CORPORATION BE LIABLE FOR ANY DIRECT,
+  24:user_app/main.c ****  * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+  25:user_app/main.c ****  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+  26:user_app/main.c ****  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+  27:user_app/main.c ****  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  28:user_app/main.c ****  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+  29:user_app/main.c ****  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  30:user_app/main.c ****  */
+  31:user_app/main.c **** 
+  32:user_app/main.c **** /*
+  33:user_app/main.c ****  * -----------------------------------------------------------------------------
+  34:user_app/main.c ****  * --- DEPENDENCIES ------------------------------------------------------------
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccFJP519.s 			page 2
+
+
+  35:user_app/main.c ****  */
+  36:user_app/main.c **** 
+  37:user_app/main.c **** #define MAIN_EXAMPLE_EXTI
+  38:user_app/main.c **** //#define MAIN_EXAMPLE_ALARM_FILE_UPLOAD
+  39:user_app/main.c **** 
+  40:user_app/main.c **** #include <stdint.h>   // C99 types
+  41:user_app/main.c **** #include <stdbool.h>  // bool type
+  42:user_app/main.c **** 
+  43:user_app/main.c **** #include "git_version.h"
+  44:user_app/main.c **** #include "smtc_bsp.h"
+  45:user_app/main.c **** #include "modem_api.h"
+  46:user_app/main.c **** 
+  47:user_app/main.c **** #if defined( HW_MODEM_ENABLED )
+  48:user_app/main.c **** #include "hw_modem.h"
+  49:user_app/main.c **** #endif
+  50:user_app/main.c **** 
+  51:user_app/main.c **** // Prototype of main example used in this example
+  52:user_app/main.c **** extern void main_exti( uint8_t* user_dev_eui, uint8_t* user_join_eui, uint8_t* user_app_key );
+  53:user_app/main.c **** extern void main_alarm_file_upload( uint8_t* user_dev_eui, uint8_t* user_join_eui, uint8_t* user_ap
+  54:user_app/main.c **** 
+  55:user_app/main.c **** /*
+  56:user_app/main.c ****  * -----------------------------------------------------------------------------
+  57:user_app/main.c ****  * --- PRIVATE CONSTANTS -------------------------------------------------------
+  58:user_app/main.c ****  */
+  59:user_app/main.c **** 
+  60:user_app/main.c **** /*
+  61:user_app/main.c ****  * -----------------------------------------------------------------------------
+  62:user_app/main.c ****  * --- PRIVATE TYPES -----------------------------------------------------------
+  63:user_app/main.c ****  */
+  64:user_app/main.c **** 
+  65:user_app/main.c **** /*
+  66:user_app/main.c ****  * -----------------------------------------------------------------------------
+  67:user_app/main.c ****  * --- PRIVATE VARIABLES -------------------------------------------------------
+  68:user_app/main.c ****  */
+  69:user_app/main.c **** 
+  70:user_app/main.c **** /*
+  71:user_app/main.c ****  * -----------------------------------------------------------------------------
+  72:user_app/main.c ****  * --- PRIVATE FUNCTIONS DECLARATION -------------------------------------------
+  73:user_app/main.c ****  */
+  74:user_app/main.c **** 
+  75:user_app/main.c **** /*
+  76:user_app/main.c ****  * -----------------------------------------------------------------------------
+  77:user_app/main.c ****  * --- PUBLIC FUNCTIONS DEFINITION ---------------------------------------------
+  78:user_app/main.c ****  */
+  79:user_app/main.c **** 
+  80:user_app/main.c **** #if !defined( HW_MODEM_ENABLED )
+  81:user_app/main.c **** 
+  82:user_app/main.c **** /**
+  83:user_app/main.c ****  * @brief Main function of the project
+  84:user_app/main.c ****  */
+  85:user_app/main.c **** int main( void )
+  86:user_app/main.c **** {
+  25              		.loc 1 86 1 view -0
+  26              		.cfi_startproc
+  27              		@ args = 0, pretend = 0, frame = 32
+  28              		@ frame_needed = 0, uses_anonymous_args = 0
+  87:user_app/main.c ****     // Disable IRQ to avoid unwanted behaviour during init
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccFJP519.s 			page 3
+
+
+  88:user_app/main.c ****     bsp_disable_irq( );
+  29              		.loc 1 88 5 view .LVU1
+  86:user_app/main.c ****     // Disable IRQ to avoid unwanted behaviour during init
+  30              		.loc 1 86 1 is_stmt 0 view .LVU2
+  31 0000 10B5     		push	{r4, lr}
+  32              		.cfi_def_cfa_offset 8
+  33              		.cfi_offset 4, -8
+  34              		.cfi_offset 14, -4
+  89:user_app/main.c **** 
+  90:user_app/main.c ****     // Configure all the µC periph (clock, gpio, timer, ...)
+  91:user_app/main.c ****     bsp_mcu_init( );
+  92:user_app/main.c **** 
+  93:user_app/main.c ****     // Re-enable IRQ
+  94:user_app/main.c ****     bsp_enable_irq( );
+  95:user_app/main.c **** 
+  96:user_app/main.c ****     // Define your own LoRaWAN credential
+  97:user_app/main.c ****     uint8_t user_dev_eui[8]  = { 0 };
+  35              		.loc 1 97 13 view .LVU3
+  36 0002 0024     		movs	r4, #0
+  86:user_app/main.c ****     // Disable IRQ to avoid unwanted behaviour during init
+  37              		.loc 1 86 1 view .LVU4
+  38 0004 88B0     		sub	sp, sp, #32
+  39              		.cfi_def_cfa_offset 40
+  88:user_app/main.c **** 
+  40              		.loc 1 88 5 view .LVU5
+  41 0006 FFF7FEFF 		bl	bsp_disable_irq
+  42              	.LVL0:
+  91:user_app/main.c **** 
+  43              		.loc 1 91 5 is_stmt 1 view .LVU6
+  44 000a FFF7FEFF 		bl	bsp_mcu_init
+  45              	.LVL1:
+  94:user_app/main.c **** 
+  46              		.loc 1 94 5 view .LVU7
+  47 000e FFF7FEFF 		bl	bsp_enable_irq
+  48              	.LVL2:
+  49              		.loc 1 97 5 view .LVU8
+  98:user_app/main.c ****     uint8_t user_join_eui[8] = { 0 };
+  99:user_app/main.c ****     uint8_t user_app_key[16] = { 0 };
+  50              		.loc 1 99 13 is_stmt 0 view .LVU9
+  51 0012 2100     		movs	r1, r4
+  52 0014 0C22     		movs	r2, #12
+  53 0016 05A8     		add	r0, sp, #20
+  97:user_app/main.c ****     uint8_t user_join_eui[8] = { 0 };
+  54              		.loc 1 97 13 view .LVU10
+  55 0018 0094     		str	r4, [sp]
+  56 001a 0194     		str	r4, [sp, #4]
+  98:user_app/main.c ****     uint8_t user_join_eui[8] = { 0 };
+  57              		.loc 1 98 5 is_stmt 1 view .LVU11
+  98:user_app/main.c ****     uint8_t user_join_eui[8] = { 0 };
+  58              		.loc 1 98 13 is_stmt 0 view .LVU12
+  59 001c 0294     		str	r4, [sp, #8]
+  60 001e 0394     		str	r4, [sp, #12]
+  61              		.loc 1 99 5 is_stmt 1 view .LVU13
+  62              		.loc 1 99 13 is_stmt 0 view .LVU14
+  63 0020 0494     		str	r4, [sp, #16]
+  64 0022 FFF7FEFF 		bl	memset
+  65              	.LVL3:
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccFJP519.s 			page 4
+
+
+ 100:user_app/main.c **** 
+ 101:user_app/main.c **** #if defined( MAIN_EXAMPLE_EXTI )
+ 102:user_app/main.c **** 
+ 103:user_app/main.c ****     // This exemple show how to send data on an external event.
+ 104:user_app/main.c ****     main_exti( user_dev_eui, user_join_eui, user_app_key );
+  66              		.loc 1 104 5 is_stmt 1 view .LVU15
+  67 0026 6846     		mov	r0, sp
+  68 0028 04AA     		add	r2, sp, #16
+  69 002a 02A9     		add	r1, sp, #8
+  70 002c FFF7FEFF 		bl	main_exti
+  71              	.LVL4:
+ 105:user_app/main.c **** 
+ 106:user_app/main.c **** #elif defined( MAIN_EXAMPLE_ALARM_FILE_UPLOAD )
+ 107:user_app/main.c **** 
+ 108:user_app/main.c ****     // This exemple show how to configure an alarm and start a file upload.
+ 109:user_app/main.c ****     main_alarm_file_upload( user_dev_eui, user_join_eui, user_app_key );
+ 110:user_app/main.c **** 
+ 111:user_app/main.c **** #else
+ 112:user_app/main.c **** #error "Choose at least one example - see define at top of the file"
+ 113:user_app/main.c **** #endif
+ 114:user_app/main.c **** }
+  72              		.loc 1 114 1 is_stmt 0 view .LVU16
+  73 0030 2000     		movs	r0, r4
+  74 0032 08B0     		add	sp, sp, #32
+  75              		@ sp needed
+  76 0034 10BD     		pop	{r4, pc}
+  77              		.cfi_endproc
+  78              	.LFE9:
+  80              		.section	.rodata.HardFault_Handler.str1.1,"aMS",%progbits,1
+  81              	.LC0:
+  82 0000 1B5B303B 		.ascii	"\033[0;31m\000"
+  82      33316D00 
+  83              	.LC2:
+  84 0008 4552524F 		.ascii	"ERROR: \000"
+  84      523A2000 
+  85              	.LC4:
+  86 0010 48617264 		.ascii	"HardFault_Handler\012\000"
+  86      4661756C 
+  86      745F4861 
+  86      6E646C65 
+  86      720A00
+  87              	.LC6:
+  88 0023 1B5B306D 		.ascii	"\033[0m\000"
+  88      00
+  89              		.section	.text.HardFault_Handler,"ax",%progbits
+  90              		.align	1
+  91              		.global	HardFault_Handler
+  92              		.syntax unified
+  93              		.code	16
+  94              		.thumb_func
+  95              		.fpu softvfp
+  97              	HardFault_Handler:
+  98              	.LFB10:
+ 115:user_app/main.c **** 
+ 116:user_app/main.c **** #else
+ 117:user_app/main.c **** 
+ 118:user_app/main.c **** /**
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccFJP519.s 			page 5
+
+
+ 119:user_app/main.c ****  * @brief Main function of the project
+ 120:user_app/main.c ****  */
+ 121:user_app/main.c **** int main( )
+ 122:user_app/main.c **** {
+ 123:user_app/main.c ****     uint32_t sleep_time;
+ 124:user_app/main.c **** 
+ 125:user_app/main.c ****     bsp_disable_irq( );
+ 126:user_app/main.c **** 
+ 127:user_app/main.c ****     bsp_mcu_init( );
+ 128:user_app/main.c **** 
+ 129:user_app/main.c ****     hw_modem_init( );
+ 130:user_app/main.c **** 
+ 131:user_app/main.c ****     bsp_enable_irq( );
+ 132:user_app/main.c **** 
+ 133:user_app/main.c ****     BSP_DBG_TRACE_INFO( "Modem is starting\n" );
+ 134:user_app/main.c ****     BSP_DBG_TRACE_PRINTF( "Version: %s\n", get_software_git_version( ) );
+ 135:user_app/main.c ****     BSP_DBG_TRACE_PRINTF( "Commit SHA1: %s\n", get_software_git_commit( ) );
+ 136:user_app/main.c ****     BSP_DBG_TRACE_PRINTF( "Commit date: %s\n", get_software_git_date( ) );
+ 137:user_app/main.c ****     BSP_DBG_TRACE_PRINTF( "Build date: %s\n", get_software_build_date( ) );
+ 138:user_app/main.c **** 
+ 139:user_app/main.c ****     while( 1 )
+ 140:user_app/main.c ****     {
+ 141:user_app/main.c ****         //
+ 142:user_app/main.c ****         if( hw_modem_is_a_cmd_available( ) == true )
+ 143:user_app/main.c ****         {
+ 144:user_app/main.c ****             hw_modem_process_cmd( );
+ 145:user_app/main.c ****         }
+ 146:user_app/main.c **** 
+ 147:user_app/main.c ****         sleep_time = modem_run_engine( );
+ 148:user_app/main.c **** 
+ 149:user_app/main.c ****         bsp_mcu_set_sleep_for_ms( sleep_time );
+ 150:user_app/main.c ****     }
+ 151:user_app/main.c **** }
+ 152:user_app/main.c **** 
+ 153:user_app/main.c **** #endif  // !HW_MODEM_ENABLED
+ 154:user_app/main.c **** 
+ 155:user_app/main.c **** /*
+ 156:user_app/main.c ****  * -----------------------------------------------------------------------------
+ 157:user_app/main.c ****  * --- PRIVATE FUNCTIONS DEFINITION --------------------------------------------
+ 158:user_app/main.c ****  */
+ 159:user_app/main.c **** 
+ 160:user_app/main.c **** /**
+ 161:user_app/main.c ****  * @brief This function handles Hard fault interrupt.
+ 162:user_app/main.c ****  */
+ 163:user_app/main.c **** void HardFault_Handler( void )
+ 164:user_app/main.c **** {
+  99              		.loc 1 164 1 is_stmt 1 view -0
+ 100              		.cfi_startproc
+ 101              		@ Volatile: function does not return.
+ 102              		@ args = 0, pretend = 0, frame = 0
+ 103              		@ frame_needed = 0, uses_anonymous_args = 0
+ 165:user_app/main.c ****     BSP_DBG_TRACE_ERROR( "HardFault_Handler\n" );
+ 104              		.loc 1 165 5 view .LVU18
+ 105              		.loc 1 165 5 view .LVU19
+ 164:user_app/main.c ****     BSP_DBG_TRACE_ERROR( "HardFault_Handler\n" );
+ 106              		.loc 1 164 1 is_stmt 0 view .LVU20
+ 107 0000 10B5     		push	{r4, lr}
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccFJP519.s 			page 6
+
+
+ 108              		.cfi_def_cfa_offset 8
+ 109              		.cfi_offset 4, -8
+ 110              		.cfi_offset 14, -4
+ 111              		.loc 1 165 5 view .LVU21
+ 112 0002 0648     		ldr	r0, .L4
+ 113 0004 FFF7FEFF 		bl	bsp_trace_print
+ 114              	.LVL5:
+ 115              		.loc 1 165 5 is_stmt 1 view .LVU22
+ 116 0008 0548     		ldr	r0, .L4+4
+ 117 000a FFF7FEFF 		bl	bsp_trace_print
+ 118              	.LVL6:
+ 119              		.loc 1 165 5 view .LVU23
+ 120 000e 0548     		ldr	r0, .L4+8
+ 121 0010 FFF7FEFF 		bl	bsp_trace_print
+ 122              	.LVL7:
+ 123              		.loc 1 165 5 view .LVU24
+ 124 0014 0448     		ldr	r0, .L4+12
+ 125 0016 FFF7FEFF 		bl	bsp_trace_print
+ 126              	.LVL8:
+ 127              	.L3:
+ 128              		.loc 1 165 5 discriminator 1 view .LVU25
+ 129              		.loc 1 165 49 discriminator 1 view .LVU26
+ 166:user_app/main.c ****     while( 1 )
+ 130              		.loc 1 166 5 discriminator 1 view .LVU27
+ 167:user_app/main.c ****     {
+ 168:user_app/main.c ****     }
+ 131              		.loc 1 168 5 discriminator 1 view .LVU28
+ 166:user_app/main.c ****     while( 1 )
+ 132              		.loc 1 166 10 discriminator 1 view .LVU29
+ 133 001a FEE7     		b	.L3
+ 134              	.L5:
+ 135              		.align	2
+ 136              	.L4:
+ 137 001c 00000000 		.word	.LC0
+ 138 0020 08000000 		.word	.LC2
+ 139 0024 10000000 		.word	.LC4
+ 140 0028 23000000 		.word	.LC6
+ 141              		.cfi_endproc
+ 142              	.LFE10:
+ 144              		.text
+ 145              	.Letext0:
+ 146              		.file 2 "/Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.external
+ 147              		.file 3 "/Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.external
+ 148              		.file 4 "/Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.external
+ 149              		.file 5 "/Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.external
+ 150              		.file 6 "/Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.external
+ 151              		.file 7 "/Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.external
+ 152              		.file 8 "smtc_modem_core/device_management/device_management_defs.h"
+ 153              		.file 9 "lr1mac/src/lr1mac_defs.h"
+ 154              		.file 10 "smtc_bsp/smtc_bsp_mcu.h"
+ 155              		.file 11 "<built-in>"
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccFJP519.s 			page 7
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 main.c
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccFJP519.s:14     .text.startup.main:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccFJP519.s:22     .text.startup.main:0000000000000000 main
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccFJP519.s:90     .text.HardFault_Handler:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccFJP519.s:97     .text.HardFault_Handler:0000000000000000 HardFault_Handler
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccFJP519.s:137    .text.HardFault_Handler:000000000000001c $d
+
+UNDEFINED SYMBOLS
+bsp_disable_irq
+bsp_mcu_init
+bsp_enable_irq
+memset
+main_exti
+bsp_trace_print

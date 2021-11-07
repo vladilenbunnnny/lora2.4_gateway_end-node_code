@@ -1,0 +1,966 @@
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccaUfoWd.s 			page 1
+
+
+   1              		.cpu cortex-m0plus
+   2              		.eabi_attribute 23, 1
+   3              		.eabi_attribute 24, 1
+   4              		.eabi_attribute 25, 1
+   5              		.eabi_attribute 26, 1
+   6              		.eabi_attribute 30, 4
+   7              		.eabi_attribute 34, 0
+   8              		.eabi_attribute 18, 4
+   9              		.file	"cmac.c"
+  10              		.text
+  11              	.Ltext0:
+  12              		.cfi_sections	.debug_frame
+  13              		.section	.text.AES_CMAC_Init,"ax",%progbits
+  14              		.align	1
+  15              		.global	AES_CMAC_Init
+  16              		.arch armv6s-m
+  17              		.syntax unified
+  18              		.code	16
+  19              		.thumb_func
+  20              		.fpu softvfp
+  22              	AES_CMAC_Init:
+  23              	.LVL0:
+  24              	.LFB1:
+  25              		.file 1 "smtc_crypto/src/cmac.c"
+   1:smtc_crypto/src/cmac.c **** /**************************************************************************
+   2:smtc_crypto/src/cmac.c **** Copyright (C) 2009 Lander Casado, Philippas Tsigas
+   3:smtc_crypto/src/cmac.c **** 
+   4:smtc_crypto/src/cmac.c **** All rights reserved.
+   5:smtc_crypto/src/cmac.c **** 
+   6:smtc_crypto/src/cmac.c **** Permission is hereby granted, free of charge, to any person obtaining
+   7:smtc_crypto/src/cmac.c **** a copy of this software and associated documentation files
+   8:smtc_crypto/src/cmac.c **** (the "Software"), to deal with the Software without restriction, including
+   9:smtc_crypto/src/cmac.c **** without limitation the rights to use, copy, modify, merge, publish,
+  10:smtc_crypto/src/cmac.c **** distribute, sublicense, and/or sell copies of the Software, and to
+  11:smtc_crypto/src/cmac.c **** permit persons to whom the Software is furnished to do so, subject to
+  12:smtc_crypto/src/cmac.c **** the following conditions:
+  13:smtc_crypto/src/cmac.c **** 
+  14:smtc_crypto/src/cmac.c **** Redistributions of source code must retain the above copyright notice,
+  15:smtc_crypto/src/cmac.c **** this list of conditions and the following disclaimers. Redistributions in
+  16:smtc_crypto/src/cmac.c **** binary form must reproduce the above copyright notice, this list of
+  17:smtc_crypto/src/cmac.c **** conditions and the following disclaimers in the documentation and/or
+  18:smtc_crypto/src/cmac.c **** other materials provided with the distribution.
+  19:smtc_crypto/src/cmac.c **** 
+  20:smtc_crypto/src/cmac.c **** In no event shall the authors or copyright holders be liable for any special,
+  21:smtc_crypto/src/cmac.c **** incidental, indirect or consequential damages of any kind, or any damages
+  22:smtc_crypto/src/cmac.c **** whatsoever resulting from loss of use, data or profits, whether or not
+  23:smtc_crypto/src/cmac.c **** advised of the possibility of damage, and on any theory of liability,
+  24:smtc_crypto/src/cmac.c **** arising out of or in connection with the use or performance of this software.
+  25:smtc_crypto/src/cmac.c **** 
+  26:smtc_crypto/src/cmac.c **** THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+  27:smtc_crypto/src/cmac.c **** OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  28:smtc_crypto/src/cmac.c **** FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  29:smtc_crypto/src/cmac.c **** CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  30:smtc_crypto/src/cmac.c **** LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+  31:smtc_crypto/src/cmac.c **** FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+  32:smtc_crypto/src/cmac.c **** DEALINGS WITH THE SOFTWARE
+  33:smtc_crypto/src/cmac.c **** 
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccaUfoWd.s 			page 2
+
+
+  34:smtc_crypto/src/cmac.c **** *****************************************************************************/
+  35:smtc_crypto/src/cmac.c **** //#include <sys/param.h>
+  36:smtc_crypto/src/cmac.c **** //#include <sys/systm.h>
+  37:smtc_crypto/src/cmac.c **** #include <stdint.h>
+  38:smtc_crypto/src/cmac.c **** #include "aes.h"
+  39:smtc_crypto/src/cmac.c **** #include "cmac.h"
+  40:smtc_crypto/src/cmac.c **** #include "lr1mac_utilities.h"
+  41:smtc_crypto/src/cmac.c **** 
+  42:smtc_crypto/src/cmac.c **** #define LSHIFT(v, r) do {                                       \
+  43:smtc_crypto/src/cmac.c ****   int32_t i;                                                  \
+  44:smtc_crypto/src/cmac.c ****            for (i = 0; i < 15; i++)                                \
+  45:smtc_crypto/src/cmac.c ****                     (r)[i] = (v)[i] << 1 | (v)[i + 1] >> 7;         \
+  46:smtc_crypto/src/cmac.c ****             (r)[15] = (v)[15] << 1;                                 \
+  47:smtc_crypto/src/cmac.c ****     } while (0)
+  48:smtc_crypto/src/cmac.c **** 
+  49:smtc_crypto/src/cmac.c **** #define XOR(v, r) do {                                          \
+  50:smtc_crypto/src/cmac.c ****             int32_t i;                                                  \
+  51:smtc_crypto/src/cmac.c ****             for (i = 0; i < 16; i++)     \
+  52:smtc_crypto/src/cmac.c ****         {   \
+  53:smtc_crypto/src/cmac.c ****                     (r)[i] = (r)[i] ^ (v)[i]; \
+  54:smtc_crypto/src/cmac.c ****         }                          \
+  55:smtc_crypto/src/cmac.c ****     } while (0) \
+  56:smtc_crypto/src/cmac.c **** 
+  57:smtc_crypto/src/cmac.c **** 
+  58:smtc_crypto/src/cmac.c **** void AES_CMAC_Init(AES_CMAC_CTX *ctx)
+  59:smtc_crypto/src/cmac.c **** {
+  26              		.loc 1 59 1 view -0
+  27              		.cfi_startproc
+  28              		@ args = 0, pretend = 0, frame = 0
+  29              		@ frame_needed = 0, uses_anonymous_args = 0
+  60:smtc_crypto/src/cmac.c ****             memset1(ctx->X, 0, sizeof ctx->X);
+  30              		.loc 1 60 13 view .LVU1
+  59:smtc_crypto/src/cmac.c ****             memset1(ctx->X, 0, sizeof ctx->X);
+  31              		.loc 1 59 1 is_stmt 0 view .LVU2
+  32 0000 10B5     		push	{r4, lr}
+  33              		.cfi_def_cfa_offset 8
+  34              		.cfi_offset 4, -8
+  35              		.cfi_offset 14, -4
+  59:smtc_crypto/src/cmac.c ****             memset1(ctx->X, 0, sizeof ctx->X);
+  36              		.loc 1 59 1 view .LVU3
+  37 0002 0400     		movs	r4, r0
+  38              		.loc 1 60 13 view .LVU4
+  39 0004 1022     		movs	r2, #16
+  40 0006 0021     		movs	r1, #0
+  41              		.loc 1 60 24 view .LVU5
+  42 0008 F130     		adds	r0, r0, #241
+  43              	.LVL1:
+  44              		.loc 1 60 13 view .LVU6
+  45 000a FFF7FEFF 		bl	memset1
+  46              	.LVL2:
+  61:smtc_crypto/src/cmac.c ****             ctx->M_n = 0;
+  47              		.loc 1 61 13 is_stmt 1 view .LVU7
+  48              		.loc 1 61 22 is_stmt 0 view .LVU8
+  49 000e 2300     		movs	r3, r4
+  50 0010 0021     		movs	r1, #0
+  51 0012 FC33     		adds	r3, r3, #252
+  62:smtc_crypto/src/cmac.c ****         memset1(ctx->rijndael.ksch, '\0', 240);
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccaUfoWd.s 			page 3
+
+
+  52              		.loc 1 62 9 view .LVU9
+  53 0014 F022     		movs	r2, #240
+  54 0016 2000     		movs	r0, r4
+  61:smtc_crypto/src/cmac.c ****             ctx->M_n = 0;
+  55              		.loc 1 61 22 view .LVU10
+  56 0018 9961     		str	r1, [r3, #24]
+  57              		.loc 1 62 9 is_stmt 1 view .LVU11
+  58 001a FFF7FEFF 		bl	memset1
+  59              	.LVL3:
+  63:smtc_crypto/src/cmac.c **** }
+  60              		.loc 1 63 1 is_stmt 0 view .LVU12
+  61              		@ sp needed
+  62              	.LVL4:
+  63              		.loc 1 63 1 view .LVU13
+  64 001e 10BD     		pop	{r4, pc}
+  65              		.cfi_endproc
+  66              	.LFE1:
+  68              		.section	.text.AES_CMAC_SetKey,"ax",%progbits
+  69              		.align	1
+  70              		.global	AES_CMAC_SetKey
+  71              		.syntax unified
+  72              		.code	16
+  73              		.thumb_func
+  74              		.fpu softvfp
+  76              	AES_CMAC_SetKey:
+  77              	.LVL5:
+  78              	.LFB2:
+  64:smtc_crypto/src/cmac.c **** 
+  65:smtc_crypto/src/cmac.c **** void AES_CMAC_SetKey(AES_CMAC_CTX *ctx, const uint8_t key[AES_CMAC_KEY_LENGTH])
+  66:smtc_crypto/src/cmac.c **** {
+  79              		.loc 1 66 1 is_stmt 1 view -0
+  80              		.cfi_startproc
+  81              		@ args = 0, pretend = 0, frame = 0
+  82              		@ frame_needed = 0, uses_anonymous_args = 0
+  67:smtc_crypto/src/cmac.c ****            //rijndael_set_key_enc_only(&ctx->rijndael, key, 128);
+  68:smtc_crypto/src/cmac.c ****        aes_set_key( key, AES_CMAC_KEY_LENGTH, &ctx->rijndael);
+  83              		.loc 1 68 8 view .LVU15
+  66:smtc_crypto/src/cmac.c ****            //rijndael_set_key_enc_only(&ctx->rijndael, key, 128);
+  84              		.loc 1 66 1 is_stmt 0 view .LVU16
+  85 0000 10B5     		push	{r4, lr}
+  86              		.cfi_def_cfa_offset 8
+  87              		.cfi_offset 4, -8
+  88              		.cfi_offset 14, -4
+  66:smtc_crypto/src/cmac.c ****            //rijndael_set_key_enc_only(&ctx->rijndael, key, 128);
+  89              		.loc 1 66 1 view .LVU17
+  90 0002 0200     		movs	r2, r0
+  91 0004 0800     		movs	r0, r1
+  92              	.LVL6:
+  93              		.loc 1 68 8 view .LVU18
+  94 0006 1021     		movs	r1, #16
+  95              	.LVL7:
+  96              		.loc 1 68 8 view .LVU19
+  97 0008 FFF7FEFF 		bl	aes_set_key
+  98              	.LVL8:
+  69:smtc_crypto/src/cmac.c **** }
+  99              		.loc 1 69 1 view .LVU20
+ 100              		@ sp needed
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccaUfoWd.s 			page 4
+
+
+ 101 000c 10BD     		pop	{r4, pc}
+ 102              		.cfi_endproc
+ 103              	.LFE2:
+ 105              		.section	.text.AES_CMAC_Update,"ax",%progbits
+ 106              		.align	1
+ 107              		.global	AES_CMAC_Update
+ 108              		.syntax unified
+ 109              		.code	16
+ 110              		.thumb_func
+ 111              		.fpu softvfp
+ 113              	AES_CMAC_Update:
+ 114              	.LVL9:
+ 115              	.LFB3:
+  70:smtc_crypto/src/cmac.c **** 
+  71:smtc_crypto/src/cmac.c **** void AES_CMAC_Update(AES_CMAC_CTX *ctx, const uint8_t *data, uint32_t len)
+  72:smtc_crypto/src/cmac.c **** {
+ 116              		.loc 1 72 1 is_stmt 1 view -0
+ 117              		.cfi_startproc
+ 118              		@ args = 0, pretend = 0, frame = 24
+ 119              		@ frame_needed = 0, uses_anonymous_args = 0
+  73:smtc_crypto/src/cmac.c ****             uint32_t mlen;
+ 120              		.loc 1 73 13 view .LVU22
+  74:smtc_crypto/src/cmac.c ****         uint8_t in[16];
+ 121              		.loc 1 74 9 view .LVU23
+  75:smtc_crypto/src/cmac.c **** 
+  76:smtc_crypto/src/cmac.c ****             if (ctx->M_n > 0) {
+ 122              		.loc 1 76 13 view .LVU24
+ 123              		.loc 1 76 20 is_stmt 0 view .LVU25
+ 124 0000 0300     		movs	r3, r0
+  72:smtc_crypto/src/cmac.c ****             uint32_t mlen;
+ 125              		.loc 1 72 1 view .LVU26
+ 126 0002 F0B5     		push	{r4, r5, r6, r7, lr}
+ 127              		.cfi_def_cfa_offset 20
+ 128              		.cfi_offset 4, -20
+ 129              		.cfi_offset 5, -16
+ 130              		.cfi_offset 6, -12
+ 131              		.cfi_offset 7, -8
+ 132              		.cfi_offset 14, -4
+ 133 0004 0400     		movs	r4, r0
+ 134              		.loc 1 76 20 view .LVU27
+ 135 0006 FC33     		adds	r3, r3, #252
+ 136 0008 9869     		ldr	r0, [r3, #24]
+ 137              	.LVL10:
+ 138              		.loc 1 76 20 view .LVU28
+ 139 000a A31C     		adds	r3, r4, #2
+  72:smtc_crypto/src/cmac.c ****             uint32_t mlen;
+ 140              		.loc 1 72 1 view .LVU29
+ 141 000c 87B0     		sub	sp, sp, #28
+ 142              		.cfi_def_cfa_offset 48
+ 143 000e FF33     		adds	r3, r3, #255
+  72:smtc_crypto/src/cmac.c ****             uint32_t mlen;
+ 144              		.loc 1 72 1 view .LVU30
+ 145 0010 0E00     		movs	r6, r1
+ 146 0012 1500     		movs	r5, r2
+ 147 0014 0193     		str	r3, [sp, #4]
+ 148              		.loc 1 76 16 view .LVU31
+ 149 0016 0028     		cmp	r0, #0
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccaUfoWd.s 			page 5
+
+
+ 150 0018 2AD0     		beq	.L10
+  77:smtc_crypto/src/cmac.c ****                   mlen = MIN(16 - ctx->M_n, len);
+ 151              		.loc 1 77 19 is_stmt 1 view .LVU32
+ 152              		.loc 1 77 26 is_stmt 0 view .LVU33
+ 153 001a 1027     		movs	r7, #16
+ 154 001c 3F1A     		subs	r7, r7, r0
+ 155              		.loc 1 77 24 view .LVU34
+ 156 001e 0097     		str	r7, [sp]
+ 157 0020 9742     		cmp	r7, r2
+ 158 0022 00D9     		bls	.L5
+ 159 0024 0092     		str	r2, [sp]
+ 160              	.L5:
+ 161              	.LVL11:
+  78:smtc_crypto/src/cmac.c ****                     memcpy1(ctx->M_last + ctx->M_n, data, mlen);
+ 162              		.loc 1 78 21 is_stmt 1 view .LVU35
+ 163 0026 6B46     		mov	r3, sp
+ 164 0028 1A88     		ldrh	r2, [r3]
+ 165              	.LVL12:
+ 166              		.loc 1 78 21 is_stmt 0 view .LVU36
+ 167 002a A31C     		adds	r3, r4, #2
+ 168 002c FF33     		adds	r3, r3, #255
+ 169 002e 3100     		movs	r1, r6
+ 170              	.LVL13:
+ 171              		.loc 1 78 21 view .LVU37
+ 172 0030 1818     		adds	r0, r3, r0
+ 173 0032 FFF7FEFF 		bl	memcpy1
+ 174              	.LVL14:
+  79:smtc_crypto/src/cmac.c ****                     ctx->M_n += mlen;
+ 175              		.loc 1 79 21 is_stmt 1 view .LVU38
+ 176              		.loc 1 79 30 is_stmt 0 view .LVU39
+ 177 0036 2200     		movs	r2, r4
+ 178 0038 FC32     		adds	r2, r2, #252
+ 179 003a 9169     		ldr	r1, [r2, #24]
+ 180 003c 009B     		ldr	r3, [sp]
+ 181 003e 5B18     		adds	r3, r3, r1
+ 182 0040 9361     		str	r3, [r2, #24]
+  80:smtc_crypto/src/cmac.c ****                     if (ctx->M_n < 16 || len == mlen)
+ 183              		.loc 1 80 21 is_stmt 1 view .LVU40
+ 184              		.loc 1 80 24 is_stmt 0 view .LVU41
+ 185 0042 0F2B     		cmp	r3, #15
+ 186 0044 1DD9     		bls	.L3
+ 187              		.loc 1 80 39 discriminator 1 view .LVU42
+ 188 0046 AF42     		cmp	r7, r5
+ 189 0048 1BD2     		bcs	.L3
+ 190 004a 2300     		movs	r3, r4
+ 191 004c F133     		adds	r3, r3, #241
+ 192 004e 1800     		movs	r0, r3
+ 193 0050 A11C     		adds	r1, r4, #2
+ 194 0052 FF31     		adds	r1, r1, #255
+ 195              	.L9:
+ 196              	.LVL15:
+ 197              	.LBB2:
+  81:smtc_crypto/src/cmac.c ****                             return;
+  82:smtc_crypto/src/cmac.c ****                    XOR(ctx->M_last, ctx->X);
+ 198              		.loc 1 82 20 is_stmt 1 discriminator 3 view .LVU43
+ 199 0054 1A78     		ldrb	r2, [r3]
+ 200 0056 1F7C     		ldrb	r7, [r3, #16]
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccaUfoWd.s 			page 6
+
+
+ 201 0058 7A40     		eors	r2, r7
+ 202 005a 1A70     		strb	r2, [r3]
+ 203              		.loc 1 82 20 discriminator 3 view .LVU44
+ 204              	.LVL16:
+ 205              		.loc 1 82 20 discriminator 3 view .LVU45
+ 206 005c 0133     		adds	r3, r3, #1
+ 207              	.LVL17:
+ 208              		.loc 1 82 20 is_stmt 0 discriminator 3 view .LVU46
+ 209 005e 8B42     		cmp	r3, r1
+ 210 0060 F8D1     		bne	.L9
+ 211              	.LBE2:
+ 212              		.loc 1 82 20 is_stmt 1 discriminator 4 view .LVU47
+  83:smtc_crypto/src/cmac.c ****                     //rijndael_encrypt(&ctx->rijndael, ctx->X, ctx->X);
+  84:smtc_crypto/src/cmac.c ****             aes_encrypt( ctx->X, ctx->X, &ctx->rijndael);
+ 213              		.loc 1 84 13 discriminator 4 view .LVU48
+ 214 0062 2200     		movs	r2, r4
+ 215 0064 0100     		movs	r1, r0
+ 216 0066 FFF7FEFF 		bl	aes_encrypt
+ 217              	.LVL18:
+  85:smtc_crypto/src/cmac.c ****                     data += mlen;
+ 218              		.loc 1 85 21 discriminator 4 view .LVU49
+ 219              		.loc 1 85 26 is_stmt 0 discriminator 4 view .LVU50
+ 220 006a 009B     		ldr	r3, [sp]
+ 221 006c F618     		adds	r6, r6, r3
+ 222              	.LVL19:
+  86:smtc_crypto/src/cmac.c ****                     len -= mlen;
+ 223              		.loc 1 86 21 is_stmt 1 discriminator 4 view .LVU51
+ 224              		.loc 1 86 25 is_stmt 0 discriminator 4 view .LVU52
+ 225 006e ED1A     		subs	r5, r5, r3
+ 226              	.LVL20:
+ 227              	.L10:
+  87:smtc_crypto/src/cmac.c ****             }
+  88:smtc_crypto/src/cmac.c ****             while (len > 16) {      /* not last block */
+ 228              		.loc 1 88 19 is_stmt 1 view .LVU53
+ 229 0070 102D     		cmp	r5, #16
+ 230 0072 08D8     		bhi	.L12
+  89:smtc_crypto/src/cmac.c **** 
+  90:smtc_crypto/src/cmac.c ****                     XOR(data, ctx->X);
+  91:smtc_crypto/src/cmac.c ****                     //rijndael_encrypt(&ctx->rijndael, ctx->X, ctx->X);
+  92:smtc_crypto/src/cmac.c **** 
+  93:smtc_crypto/src/cmac.c ****                     memcpy1(in, &ctx->X[0], 16); //Bestela ez du ondo iten
+  94:smtc_crypto/src/cmac.c ****             aes_encrypt( in, in, &ctx->rijndael);
+  95:smtc_crypto/src/cmac.c ****                     memcpy1(&ctx->X[0], in, 16);
+  96:smtc_crypto/src/cmac.c **** 
+  97:smtc_crypto/src/cmac.c ****                     data += 16;
+  98:smtc_crypto/src/cmac.c ****                     len -= 16;
+  99:smtc_crypto/src/cmac.c ****             }
+ 100:smtc_crypto/src/cmac.c ****             /* potential last block, save it */
+ 101:smtc_crypto/src/cmac.c ****             memcpy1(ctx->M_last, data, len);
+ 231              		.loc 1 101 13 view .LVU54
+ 232 0074 3100     		movs	r1, r6
+ 233 0076 0198     		ldr	r0, [sp, #4]
+ 234 0078 AAB2     		uxth	r2, r5
+ 102:smtc_crypto/src/cmac.c ****             ctx->M_n = len;
+ 235              		.loc 1 102 22 is_stmt 0 view .LVU55
+ 236 007a FC34     		adds	r4, r4, #252
+ 237              	.LVL21:
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccaUfoWd.s 			page 7
+
+
+ 101:smtc_crypto/src/cmac.c ****             ctx->M_n = len;
+ 238              		.loc 1 101 13 view .LVU56
+ 239 007c FFF7FEFF 		bl	memcpy1
+ 240              	.LVL22:
+ 241              		.loc 1 102 13 is_stmt 1 view .LVU57
+ 242              		.loc 1 102 22 is_stmt 0 view .LVU58
+ 243 0080 A561     		str	r5, [r4, #24]
+ 244              	.LVL23:
+ 245              	.L3:
+ 103:smtc_crypto/src/cmac.c **** }
+ 246              		.loc 1 103 1 view .LVU59
+ 247 0082 07B0     		add	sp, sp, #28
+ 248              		@ sp needed
+ 249              	.LVL24:
+ 250              	.LVL25:
+ 251              		.loc 1 103 1 view .LVU60
+ 252 0084 F0BD     		pop	{r4, r5, r6, r7, pc}
+ 253              	.LVL26:
+ 254              	.L12:
+ 255              		.loc 1 103 1 view .LVU61
+ 256 0086 2300     		movs	r3, r4
+ 257 0088 3200     		movs	r2, r6
+ 258 008a A01C     		adds	r0, r4, #2
+ 259 008c F133     		adds	r3, r3, #241
+ 260 008e FF30     		adds	r0, r0, #255
+ 261              	.L11:
+ 262              	.LVL27:
+ 263              	.LBB3:
+  90:smtc_crypto/src/cmac.c ****                     //rijndael_encrypt(&ctx->rijndael, ctx->X, ctx->X);
+ 264              		.loc 1 90 21 is_stmt 1 discriminator 3 view .LVU62
+ 265 0090 1978     		ldrb	r1, [r3]
+ 266 0092 1778     		ldrb	r7, [r2]
+ 267 0094 0132     		adds	r2, r2, #1
+ 268 0096 7940     		eors	r1, r7
+ 269 0098 1970     		strb	r1, [r3]
+  90:smtc_crypto/src/cmac.c ****                     //rijndael_encrypt(&ctx->rijndael, ctx->X, ctx->X);
+ 270              		.loc 1 90 21 discriminator 3 view .LVU63
+ 271              	.LVL28:
+  90:smtc_crypto/src/cmac.c ****                     //rijndael_encrypt(&ctx->rijndael, ctx->X, ctx->X);
+ 272              		.loc 1 90 21 discriminator 3 view .LVU64
+ 273 009a 0133     		adds	r3, r3, #1
+ 274              	.LVL29:
+  90:smtc_crypto/src/cmac.c ****                     //rijndael_encrypt(&ctx->rijndael, ctx->X, ctx->X);
+ 275              		.loc 1 90 21 is_stmt 0 discriminator 3 view .LVU65
+ 276 009c 8342     		cmp	r3, r0
+ 277 009e F7D1     		bne	.L11
+ 278              	.LBE3:
+  90:smtc_crypto/src/cmac.c ****                     //rijndael_encrypt(&ctx->rijndael, ctx->X, ctx->X);
+ 279              		.loc 1 90 21 is_stmt 1 discriminator 4 view .LVU66
+  93:smtc_crypto/src/cmac.c ****             aes_encrypt( in, in, &ctx->rijndael);
+ 280              		.loc 1 93 21 discriminator 4 view .LVU67
+ 281 00a0 2700     		movs	r7, r4
+ 282 00a2 F137     		adds	r7, r7, #241
+ 283 00a4 1022     		movs	r2, #16
+ 284 00a6 3900     		movs	r1, r7
+ 285 00a8 02A8     		add	r0, sp, #8
+ 286 00aa FFF7FEFF 		bl	memcpy1
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccaUfoWd.s 			page 8
+
+
+ 287              	.LVL30:
+  94:smtc_crypto/src/cmac.c ****                     memcpy1(&ctx->X[0], in, 16);
+ 288              		.loc 1 94 13 discriminator 4 view .LVU68
+ 289 00ae 02A9     		add	r1, sp, #8
+ 290 00b0 2200     		movs	r2, r4
+ 291 00b2 0800     		movs	r0, r1
+ 292 00b4 FFF7FEFF 		bl	aes_encrypt
+ 293              	.LVL31:
+  95:smtc_crypto/src/cmac.c **** 
+ 294              		.loc 1 95 21 discriminator 4 view .LVU69
+ 295 00b8 1022     		movs	r2, #16
+ 296 00ba 3800     		movs	r0, r7
+ 297 00bc 02A9     		add	r1, sp, #8
+ 298 00be FFF7FEFF 		bl	memcpy1
+ 299              	.LVL32:
+  97:smtc_crypto/src/cmac.c ****                     len -= 16;
+ 300              		.loc 1 97 21 discriminator 4 view .LVU70
+  97:smtc_crypto/src/cmac.c ****                     len -= 16;
+ 301              		.loc 1 97 26 is_stmt 0 discriminator 4 view .LVU71
+ 302 00c2 1036     		adds	r6, r6, #16
+ 303              	.LVL33:
+  98:smtc_crypto/src/cmac.c ****             }
+ 304              		.loc 1 98 21 is_stmt 1 discriminator 4 view .LVU72
+  98:smtc_crypto/src/cmac.c ****             }
+ 305              		.loc 1 98 25 is_stmt 0 discriminator 4 view .LVU73
+ 306 00c4 103D     		subs	r5, r5, #16
+ 307              	.LVL34:
+  98:smtc_crypto/src/cmac.c ****             }
+ 308              		.loc 1 98 25 discriminator 4 view .LVU74
+ 309 00c6 D3E7     		b	.L10
+ 310              		.cfi_endproc
+ 311              	.LFE3:
+ 313              		.section	.text.AES_CMAC_Final,"ax",%progbits
+ 314              		.align	1
+ 315              		.global	AES_CMAC_Final
+ 316              		.syntax unified
+ 317              		.code	16
+ 318              		.thumb_func
+ 319              		.fpu softvfp
+ 321              	AES_CMAC_Final:
+ 322              	.LVL35:
+ 323              	.LFB4:
+ 104:smtc_crypto/src/cmac.c **** 
+ 105:smtc_crypto/src/cmac.c **** void AES_CMAC_Final(uint8_t digest[AES_CMAC_DIGEST_LENGTH], AES_CMAC_CTX *ctx)
+ 106:smtc_crypto/src/cmac.c **** {
+ 324              		.loc 1 106 1 is_stmt 1 view -0
+ 325              		.cfi_startproc
+ 326              		@ args = 0, pretend = 0, frame = 32
+ 327              		@ frame_needed = 0, uses_anonymous_args = 0
+ 107:smtc_crypto/src/cmac.c ****             uint8_t K[16];
+ 328              		.loc 1 107 13 view .LVU76
+ 108:smtc_crypto/src/cmac.c ****         uint8_t in[16];
+ 329              		.loc 1 108 9 view .LVU77
+ 109:smtc_crypto/src/cmac.c ****             /* generate subkey K1 */
+ 110:smtc_crypto/src/cmac.c ****             memset1(K, '\0', 16);
+ 330              		.loc 1 110 13 view .LVU78
+ 106:smtc_crypto/src/cmac.c ****             uint8_t K[16];
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccaUfoWd.s 			page 9
+
+
+ 331              		.loc 1 106 1 is_stmt 0 view .LVU79
+ 332 0000 F0B5     		push	{r4, r5, r6, r7, lr}
+ 333              		.cfi_def_cfa_offset 20
+ 334              		.cfi_offset 4, -20
+ 335              		.cfi_offset 5, -16
+ 336              		.cfi_offset 6, -12
+ 337              		.cfi_offset 7, -8
+ 338              		.cfi_offset 14, -4
+ 339 0002 0C00     		movs	r4, r1
+ 340 0004 89B0     		sub	sp, sp, #36
+ 341              		.cfi_def_cfa_offset 56
+ 342              		.loc 1 110 13 view .LVU80
+ 343 0006 1022     		movs	r2, #16
+ 344 0008 0021     		movs	r1, #0
+ 345              	.LVL36:
+ 106:smtc_crypto/src/cmac.c ****             uint8_t K[16];
+ 346              		.loc 1 106 1 view .LVU81
+ 347 000a 0500     		movs	r5, r0
+ 348              		.loc 1 110 13 view .LVU82
+ 349 000c 6846     		mov	r0, sp
+ 350              	.LVL37:
+ 351              		.loc 1 110 13 view .LVU83
+ 352 000e FFF7FEFF 		bl	memset1
+ 353              	.LVL38:
+ 111:smtc_crypto/src/cmac.c **** 
+ 112:smtc_crypto/src/cmac.c ****             //rijndael_encrypt(&ctx->rijndael, K, K);
+ 113:smtc_crypto/src/cmac.c **** 
+ 114:smtc_crypto/src/cmac.c ****             aes_encrypt( K, K, &ctx->rijndael);
+ 354              		.loc 1 114 13 is_stmt 1 view .LVU84
+ 355 0012 2200     		movs	r2, r4
+ 356 0014 6946     		mov	r1, sp
+ 357 0016 6846     		mov	r0, sp
+ 358 0018 FFF7FEFF 		bl	aes_encrypt
+ 359              	.LVL39:
+ 115:smtc_crypto/src/cmac.c **** 
+ 116:smtc_crypto/src/cmac.c ****             if (K[0] & 0x80) {
+ 360              		.loc 1 116 13 view .LVU85
+ 361              		.loc 1 116 16 is_stmt 0 view .LVU86
+ 362 001c 6B46     		mov	r3, sp
+ 363 001e 1B78     		ldrb	r3, [r3]
+ 364 0020 7F2B     		cmp	r3, #127
+ 365 0022 40D9     		bls	.L19
+ 366 0024 6B46     		mov	r3, sp
+ 367              	.LBB4:
+ 117:smtc_crypto/src/cmac.c ****                     LSHIFT(K, K);
+ 368              		.loc 1 117 21 view .LVU87
+ 369 0026 0021     		movs	r1, #0
+ 370              	.L20:
+ 371              	.LVL40:
+ 372              		.loc 1 117 21 is_stmt 1 discriminator 3 view .LVU88
+ 373 0028 1A78     		ldrb	r2, [r3]
+ 374 002a 5878     		ldrb	r0, [r3, #1]
+ 375 002c 5200     		lsls	r2, r2, #1
+ 376 002e C009     		lsrs	r0, r0, #7
+ 377 0030 0243     		orrs	r2, r0
+ 378 0032 0131     		adds	r1, r1, #1
+ 379              	.LVL41:
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccaUfoWd.s 			page 10
+
+
+ 380              		.loc 1 117 21 is_stmt 0 discriminator 3 view .LVU89
+ 381 0034 1A70     		strb	r2, [r3]
+ 382              		.loc 1 117 21 is_stmt 1 discriminator 3 view .LVU90
+ 383              	.LVL42:
+ 384              		.loc 1 117 21 discriminator 3 view .LVU91
+ 385 0036 0133     		adds	r3, r3, #1
+ 386 0038 0F29     		cmp	r1, #15
+ 387 003a F5D1     		bne	.L20
+ 388              		.loc 1 117 21 discriminator 4 view .LVU92
+ 389              	.LBE4:
+ 390              		.loc 1 117 21 discriminator 4 view .LVU93
+ 118:smtc_crypto/src/cmac.c ****                    K[15] ^= 0x87;
+ 391              		.loc 1 118 20 discriminator 4 view .LVU94
+ 392              	.LBB5:
+ 117:smtc_crypto/src/cmac.c ****                     LSHIFT(K, K);
+ 393              		.loc 1 117 21 is_stmt 0 discriminator 4 view .LVU95
+ 394 003c 6B46     		mov	r3, sp
+ 395 003e DA7B     		ldrb	r2, [r3, #15]
+ 396              	.LBE5:
+ 397              		.loc 1 118 26 discriminator 4 view .LVU96
+ 398 0040 7923     		movs	r3, #121
+ 399              	.LBB6:
+ 117:smtc_crypto/src/cmac.c ****                     LSHIFT(K, K);
+ 400              		.loc 1 117 21 discriminator 4 view .LVU97
+ 401 0042 5200     		lsls	r2, r2, #1
+ 402              	.LBE6:
+ 403              		.loc 1 118 26 discriminator 4 view .LVU98
+ 404 0044 5B42     		rsbs	r3, r3, #0
+ 405 0046 5340     		eors	r3, r2
+ 406              	.LVL43:
+ 407              	.L43:
+ 119:smtc_crypto/src/cmac.c ****             } else
+ 120:smtc_crypto/src/cmac.c ****                     LSHIFT(K, K);
+ 121:smtc_crypto/src/cmac.c **** 
+ 122:smtc_crypto/src/cmac.c **** 
+ 123:smtc_crypto/src/cmac.c ****             if (ctx->M_n == 16) {
+ 408              		.loc 1 123 20 discriminator 4 view .LVU99
+ 409 0048 2000     		movs	r0, r4
+ 410              	.LBB7:
+ 120:smtc_crypto/src/cmac.c **** 
+ 411              		.loc 1 120 21 discriminator 4 view .LVU100
+ 412 004a 6A46     		mov	r2, sp
+ 413              	.LBE7:
+ 414              		.loc 1 123 20 discriminator 4 view .LVU101
+ 415 004c FC30     		adds	r0, r0, #252
+ 416 004e 8669     		ldr	r6, [r0, #24]
+ 417              	.LBB8:
+ 120:smtc_crypto/src/cmac.c **** 
+ 418              		.loc 1 120 21 discriminator 4 view .LVU102
+ 419 0050 D373     		strb	r3, [r2, #15]
+ 420              	.LBE8:
+ 120:smtc_crypto/src/cmac.c **** 
+ 421              		.loc 1 120 21 is_stmt 1 discriminator 4 view .LVU103
+ 422              		.loc 1 123 13 discriminator 4 view .LVU104
+ 423              		.loc 1 123 16 is_stmt 0 discriminator 4 view .LVU105
+ 424 0052 102E     		cmp	r6, #16
+ 425 0054 37D1     		bne	.L23
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccaUfoWd.s 			page 11
+
+
+ 426 0056 6A46     		mov	r2, sp
+ 427 0058 A31C     		adds	r3, r4, #2
+ 428 005a FF33     		adds	r3, r3, #255
+ 429 005c 1530     		adds	r0, r0, #21
+ 430              	.L24:
+ 431              	.LVL44:
+ 432              	.LBB9:
+ 124:smtc_crypto/src/cmac.c ****                     /* last block was a complete block */
+ 125:smtc_crypto/src/cmac.c ****                     XOR(K, ctx->M_last);
+ 433              		.loc 1 125 21 is_stmt 1 discriminator 3 view .LVU106
+ 434 005e 1978     		ldrb	r1, [r3]
+ 435 0060 1678     		ldrb	r6, [r2]
+ 436 0062 0132     		adds	r2, r2, #1
+ 437 0064 7140     		eors	r1, r6
+ 438 0066 1970     		strb	r1, [r3]
+ 439              		.loc 1 125 21 discriminator 3 view .LVU107
+ 440              	.LVL45:
+ 441              		.loc 1 125 21 discriminator 3 view .LVU108
+ 442 0068 0133     		adds	r3, r3, #1
+ 443              	.LVL46:
+ 444              		.loc 1 125 21 is_stmt 0 discriminator 3 view .LVU109
+ 445 006a 9842     		cmp	r0, r3
+ 446 006c F7D1     		bne	.L24
+ 447              	.LVL47:
+ 448              	.L35:
+ 449              		.loc 1 125 21 discriminator 3 view .LVU110
+ 450 006e 2300     		movs	r3, r4
+ 451 0070 F133     		adds	r3, r3, #241
+ 452 0072 1900     		movs	r1, r3
+ 453 0074 A01C     		adds	r0, r4, #2
+ 454 0076 FF30     		adds	r0, r0, #255
+ 455              	.L25:
+ 456              	.LVL48:
+ 457              		.loc 1 125 21 discriminator 3 view .LVU111
+ 458              	.LBE9:
+ 459              	.LBB10:
+ 126:smtc_crypto/src/cmac.c **** 
+ 127:smtc_crypto/src/cmac.c ****            } else {
+ 128:smtc_crypto/src/cmac.c ****                    /* generate subkey K2 */
+ 129:smtc_crypto/src/cmac.c ****                   if (K[0] & 0x80) {
+ 130:smtc_crypto/src/cmac.c ****                           LSHIFT(K, K);
+ 131:smtc_crypto/src/cmac.c ****                           K[15] ^= 0x87;
+ 132:smtc_crypto/src/cmac.c ****                   } else
+ 133:smtc_crypto/src/cmac.c ****                            LSHIFT(K, K);
+ 134:smtc_crypto/src/cmac.c **** 
+ 135:smtc_crypto/src/cmac.c ****                    /* padding(M_last) */
+ 136:smtc_crypto/src/cmac.c ****                    ctx->M_last[ctx->M_n] = 0x80;
+ 137:smtc_crypto/src/cmac.c ****                    while (++ctx->M_n < 16)
+ 138:smtc_crypto/src/cmac.c ****                          ctx->M_last[ctx->M_n] = 0;
+ 139:smtc_crypto/src/cmac.c **** 
+ 140:smtc_crypto/src/cmac.c ****                   XOR(K, ctx->M_last);
+ 141:smtc_crypto/src/cmac.c **** 
+ 142:smtc_crypto/src/cmac.c **** 
+ 143:smtc_crypto/src/cmac.c ****            }
+ 144:smtc_crypto/src/cmac.c ****            XOR(ctx->M_last, ctx->X);
+ 460              		.loc 1 144 12 is_stmt 1 discriminator 3 view .LVU112
+ 461 0078 1A78     		ldrb	r2, [r3]
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccaUfoWd.s 			page 12
+
+
+ 462 007a 1E7C     		ldrb	r6, [r3, #16]
+ 463 007c 7240     		eors	r2, r6
+ 464 007e 1A70     		strb	r2, [r3]
+ 465              		.loc 1 144 12 discriminator 3 view .LVU113
+ 466              	.LVL49:
+ 467              		.loc 1 144 12 discriminator 3 view .LVU114
+ 468 0080 0133     		adds	r3, r3, #1
+ 469              	.LVL50:
+ 470              		.loc 1 144 12 is_stmt 0 discriminator 3 view .LVU115
+ 471 0082 9842     		cmp	r0, r3
+ 472 0084 F8D1     		bne	.L25
+ 473              	.LBE10:
+ 474              		.loc 1 144 12 is_stmt 1 discriminator 4 view .LVU116
+ 145:smtc_crypto/src/cmac.c **** 
+ 146:smtc_crypto/src/cmac.c ****            //rijndael_encrypt(&ctx->rijndael, ctx->X, digest);
+ 147:smtc_crypto/src/cmac.c **** 
+ 148:smtc_crypto/src/cmac.c ****        memcpy1(in, &ctx->X[0], 16); //Bestela ez du ondo iten
+ 475              		.loc 1 148 8 discriminator 4 view .LVU117
+ 476 0086 04A8     		add	r0, sp, #16
+ 477 0088 1022     		movs	r2, #16
+ 478 008a FFF7FEFF 		bl	memcpy1
+ 479              	.LVL51:
+ 149:smtc_crypto/src/cmac.c ****        aes_encrypt(in, digest, &ctx->rijndael);
+ 480              		.loc 1 149 8 discriminator 4 view .LVU118
+ 481 008e 2200     		movs	r2, r4
+ 482 0090 2900     		movs	r1, r5
+ 483 0092 04A8     		add	r0, sp, #16
+ 484 0094 FFF7FEFF 		bl	aes_encrypt
+ 485              	.LVL52:
+ 150:smtc_crypto/src/cmac.c ****            memset1(K, 0, sizeof K);
+ 486              		.loc 1 150 12 discriminator 4 view .LVU119
+ 487 0098 1022     		movs	r2, #16
+ 488 009a 0021     		movs	r1, #0
+ 489 009c 6846     		mov	r0, sp
+ 490 009e FFF7FEFF 		bl	memset1
+ 491              	.LVL53:
+ 151:smtc_crypto/src/cmac.c **** 
+ 152:smtc_crypto/src/cmac.c **** }
+ 492              		.loc 1 152 1 is_stmt 0 discriminator 4 view .LVU120
+ 493 00a2 09B0     		add	sp, sp, #36
+ 494              		@ sp needed
+ 495              	.LVL54:
+ 496              	.LVL55:
+ 497              		.loc 1 152 1 discriminator 4 view .LVU121
+ 498 00a4 F0BD     		pop	{r4, r5, r6, r7, pc}
+ 499              	.LVL56:
+ 500              	.L19:
+ 501              		.loc 1 152 1 discriminator 4 view .LVU122
+ 502 00a6 6B46     		mov	r3, sp
+ 503              	.LBB11:
+ 120:smtc_crypto/src/cmac.c **** 
+ 504              		.loc 1 120 21 view .LVU123
+ 505 00a8 0021     		movs	r1, #0
+ 506              	.L22:
+ 507              	.LVL57:
+ 120:smtc_crypto/src/cmac.c **** 
+ 508              		.loc 1 120 21 is_stmt 1 discriminator 3 view .LVU124
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccaUfoWd.s 			page 13
+
+
+ 509 00aa 1A78     		ldrb	r2, [r3]
+ 510 00ac 5878     		ldrb	r0, [r3, #1]
+ 511 00ae 5200     		lsls	r2, r2, #1
+ 512 00b0 C009     		lsrs	r0, r0, #7
+ 513 00b2 0243     		orrs	r2, r0
+ 514 00b4 0131     		adds	r1, r1, #1
+ 515              	.LVL58:
+ 120:smtc_crypto/src/cmac.c **** 
+ 516              		.loc 1 120 21 is_stmt 0 discriminator 3 view .LVU125
+ 517 00b6 1A70     		strb	r2, [r3]
+ 120:smtc_crypto/src/cmac.c **** 
+ 518              		.loc 1 120 21 is_stmt 1 discriminator 3 view .LVU126
+ 519              	.LVL59:
+ 120:smtc_crypto/src/cmac.c **** 
+ 520              		.loc 1 120 21 discriminator 3 view .LVU127
+ 521 00b8 0133     		adds	r3, r3, #1
+ 522 00ba 0F29     		cmp	r1, #15
+ 523 00bc F5D1     		bne	.L22
+ 120:smtc_crypto/src/cmac.c **** 
+ 524              		.loc 1 120 21 discriminator 4 view .LVU128
+ 525 00be 6B46     		mov	r3, sp
+ 526 00c0 DB7B     		ldrb	r3, [r3, #15]
+ 527 00c2 5B00     		lsls	r3, r3, #1
+ 528 00c4 C0E7     		b	.L43
+ 529              	.LVL60:
+ 530              	.L23:
+ 120:smtc_crypto/src/cmac.c **** 
+ 531              		.loc 1 120 21 is_stmt 0 discriminator 4 view .LVU129
+ 532              	.LBE11:
+ 129:smtc_crypto/src/cmac.c ****                           LSHIFT(K, K);
+ 533              		.loc 1 129 19 is_stmt 1 view .LVU130
+ 129:smtc_crypto/src/cmac.c ****                           LSHIFT(K, K);
+ 534              		.loc 1 129 22 is_stmt 0 view .LVU131
+ 535 00c6 1378     		ldrb	r3, [r2]
+ 536 00c8 7F2B     		cmp	r3, #127
+ 537 00ca 32D9     		bls	.L26
+ 538 00cc 6B46     		mov	r3, sp
+ 539              	.LBB12:
+ 130:smtc_crypto/src/cmac.c ****                           K[15] ^= 0x87;
+ 540              		.loc 1 130 27 view .LVU132
+ 541 00ce 0021     		movs	r1, #0
+ 542              	.L27:
+ 543              	.LVL61:
+ 130:smtc_crypto/src/cmac.c ****                           K[15] ^= 0x87;
+ 544              		.loc 1 130 27 is_stmt 1 discriminator 3 view .LVU133
+ 545 00d0 1A78     		ldrb	r2, [r3]
+ 546 00d2 5F78     		ldrb	r7, [r3, #1]
+ 547 00d4 5200     		lsls	r2, r2, #1
+ 548 00d6 FF09     		lsrs	r7, r7, #7
+ 549 00d8 3A43     		orrs	r2, r7
+ 550 00da 0131     		adds	r1, r1, #1
+ 551              	.LVL62:
+ 130:smtc_crypto/src/cmac.c ****                           K[15] ^= 0x87;
+ 552              		.loc 1 130 27 is_stmt 0 discriminator 3 view .LVU134
+ 553 00dc 1A70     		strb	r2, [r3]
+ 130:smtc_crypto/src/cmac.c ****                           K[15] ^= 0x87;
+ 554              		.loc 1 130 27 is_stmt 1 discriminator 3 view .LVU135
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccaUfoWd.s 			page 14
+
+
+ 555              	.LVL63:
+ 130:smtc_crypto/src/cmac.c ****                           K[15] ^= 0x87;
+ 556              		.loc 1 130 27 discriminator 3 view .LVU136
+ 557 00de 0133     		adds	r3, r3, #1
+ 558 00e0 0F29     		cmp	r1, #15
+ 559 00e2 F5D1     		bne	.L27
+ 130:smtc_crypto/src/cmac.c ****                           K[15] ^= 0x87;
+ 560              		.loc 1 130 27 discriminator 4 view .LVU137
+ 561              	.LBE12:
+ 130:smtc_crypto/src/cmac.c ****                           K[15] ^= 0x87;
+ 562              		.loc 1 130 27 discriminator 4 view .LVU138
+ 131:smtc_crypto/src/cmac.c ****                   } else
+ 563              		.loc 1 131 27 discriminator 4 view .LVU139
+ 564              	.LBB13:
+ 130:smtc_crypto/src/cmac.c ****                           K[15] ^= 0x87;
+ 565              		.loc 1 130 27 is_stmt 0 discriminator 4 view .LVU140
+ 566 00e4 6B46     		mov	r3, sp
+ 567 00e6 DA7B     		ldrb	r2, [r3, #15]
+ 568              	.LBE13:
+ 131:smtc_crypto/src/cmac.c ****                   } else
+ 569              		.loc 1 131 33 discriminator 4 view .LVU141
+ 570 00e8 7923     		movs	r3, #121
+ 571              	.LBB14:
+ 130:smtc_crypto/src/cmac.c ****                           K[15] ^= 0x87;
+ 572              		.loc 1 130 27 discriminator 4 view .LVU142
+ 573 00ea 5200     		lsls	r2, r2, #1
+ 574              	.LBE14:
+ 131:smtc_crypto/src/cmac.c ****                   } else
+ 575              		.loc 1 131 33 discriminator 4 view .LVU143
+ 576 00ec 5B42     		rsbs	r3, r3, #0
+ 577 00ee 5340     		eors	r3, r2
+ 578              	.LVL64:
+ 579              	.L44:
+ 580              	.LBB15:
+ 133:smtc_crypto/src/cmac.c **** 
+ 581              		.loc 1 133 28 discriminator 4 view .LVU144
+ 582 00f0 6A46     		mov	r2, sp
+ 583 00f2 D373     		strb	r3, [r2, #15]
+ 584              	.LBE15:
+ 133:smtc_crypto/src/cmac.c **** 
+ 585              		.loc 1 133 28 is_stmt 1 discriminator 4 view .LVU145
+ 136:smtc_crypto/src/cmac.c ****                    while (++ctx->M_n < 16)
+ 586              		.loc 1 136 20 discriminator 4 view .LVU146
+ 136:smtc_crypto/src/cmac.c ****                    while (++ctx->M_n < 16)
+ 587              		.loc 1 136 42 is_stmt 0 discriminator 4 view .LVU147
+ 588 00f4 8022     		movs	r2, #128
+ 589 00f6 A319     		adds	r3, r4, r6
+ 590 00f8 FF33     		adds	r3, r3, #255
+ 591 00fa 771C     		adds	r7, r6, #1
+ 592 00fc 9A70     		strb	r2, [r3, #2]
+ 137:smtc_crypto/src/cmac.c ****                          ctx->M_last[ctx->M_n] = 0;
+ 593              		.loc 1 137 20 is_stmt 1 discriminator 4 view .LVU148
+ 137:smtc_crypto/src/cmac.c ****                          ctx->M_last[ctx->M_n] = 0;
+ 594              		.loc 1 137 26 is_stmt 0 discriminator 4 view .LVU149
+ 595 00fe 3900     		movs	r1, r7
+ 138:smtc_crypto/src/cmac.c **** 
+ 596              		.loc 1 138 48 discriminator 4 view .LVU150
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccaUfoWd.s 			page 15
+
+
+ 597 0100 0022     		movs	r2, #0
+ 598 0102 A31C     		adds	r3, r4, #2
+ 599 0104 FF33     		adds	r3, r3, #255
+ 600              	.L30:
+ 137:smtc_crypto/src/cmac.c ****                          ctx->M_last[ctx->M_n] = 0;
+ 601              		.loc 1 137 26 is_stmt 1 view .LVU151
+ 602 0106 0F29     		cmp	r1, #15
+ 603 0108 23D9     		bls	.L31
+ 604 010a 0022     		movs	r2, #0
+ 605 010c 102F     		cmp	r7, #16
+ 606 010e 01D8     		bhi	.L33
+ 607 0110 0F32     		adds	r2, r2, #15
+ 608 0112 921B     		subs	r2, r2, r6
+ 609              	.L33:
+ 610 0114 D219     		adds	r2, r2, r7
+ 611 0116 8261     		str	r2, [r0, #24]
+ 612 0118 2000     		movs	r0, r4
+ 613 011a 6A46     		mov	r2, sp
+ 614 011c 1230     		adds	r0, r0, #18
+ 615 011e FF30     		adds	r0, r0, #255
+ 616              	.L34:
+ 617              	.LVL65:
+ 618              	.LBB16:
+ 140:smtc_crypto/src/cmac.c **** 
+ 619              		.loc 1 140 19 discriminator 3 view .LVU152
+ 620 0120 1978     		ldrb	r1, [r3]
+ 621 0122 1678     		ldrb	r6, [r2]
+ 622 0124 0132     		adds	r2, r2, #1
+ 623 0126 7140     		eors	r1, r6
+ 624 0128 1970     		strb	r1, [r3]
+ 140:smtc_crypto/src/cmac.c **** 
+ 625              		.loc 1 140 19 discriminator 3 view .LVU153
+ 626              	.LVL66:
+ 140:smtc_crypto/src/cmac.c **** 
+ 627              		.loc 1 140 19 discriminator 3 view .LVU154
+ 628 012a 0133     		adds	r3, r3, #1
+ 629              	.LVL67:
+ 140:smtc_crypto/src/cmac.c **** 
+ 630              		.loc 1 140 19 is_stmt 0 discriminator 3 view .LVU155
+ 631 012c 9842     		cmp	r0, r3
+ 632 012e F7D1     		bne	.L34
+ 633 0130 9DE7     		b	.L35
+ 634              	.LVL68:
+ 635              	.L26:
+ 140:smtc_crypto/src/cmac.c **** 
+ 636              		.loc 1 140 19 discriminator 3 view .LVU156
+ 637 0132 6B46     		mov	r3, sp
+ 638              	.LBE16:
+ 639              	.LBB17:
+ 133:smtc_crypto/src/cmac.c **** 
+ 640              		.loc 1 133 28 view .LVU157
+ 641 0134 0021     		movs	r1, #0
+ 642              	.L29:
+ 643              	.LVL69:
+ 133:smtc_crypto/src/cmac.c **** 
+ 644              		.loc 1 133 28 is_stmt 1 discriminator 3 view .LVU158
+ 645 0136 1A78     		ldrb	r2, [r3]
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccaUfoWd.s 			page 16
+
+
+ 646 0138 5F78     		ldrb	r7, [r3, #1]
+ 647 013a 5200     		lsls	r2, r2, #1
+ 648 013c FF09     		lsrs	r7, r7, #7
+ 649 013e 3A43     		orrs	r2, r7
+ 650 0140 0131     		adds	r1, r1, #1
+ 651              	.LVL70:
+ 133:smtc_crypto/src/cmac.c **** 
+ 652              		.loc 1 133 28 is_stmt 0 discriminator 3 view .LVU159
+ 653 0142 1A70     		strb	r2, [r3]
+ 133:smtc_crypto/src/cmac.c **** 
+ 654              		.loc 1 133 28 is_stmt 1 discriminator 3 view .LVU160
+ 655              	.LVL71:
+ 133:smtc_crypto/src/cmac.c **** 
+ 656              		.loc 1 133 28 discriminator 3 view .LVU161
+ 657 0144 0133     		adds	r3, r3, #1
+ 658 0146 0F29     		cmp	r1, #15
+ 659 0148 F5D1     		bne	.L29
+ 133:smtc_crypto/src/cmac.c **** 
+ 660              		.loc 1 133 28 discriminator 4 view .LVU162
+ 661 014a 6B46     		mov	r3, sp
+ 662 014c DB7B     		ldrb	r3, [r3, #15]
+ 663 014e 5B00     		lsls	r3, r3, #1
+ 664 0150 CEE7     		b	.L44
+ 665              	.LVL72:
+ 666              	.L31:
+ 133:smtc_crypto/src/cmac.c **** 
+ 667              		.loc 1 133 28 is_stmt 0 discriminator 4 view .LVU163
+ 668              	.LBE17:
+ 138:smtc_crypto/src/cmac.c **** 
+ 669              		.loc 1 138 26 is_stmt 1 view .LVU164
+ 138:smtc_crypto/src/cmac.c **** 
+ 670              		.loc 1 138 48 is_stmt 0 view .LVU165
+ 671 0152 5A54     		strb	r2, [r3, r1]
+ 672 0154 0131     		adds	r1, r1, #1
+ 673 0156 D6E7     		b	.L30
+ 674              		.cfi_endproc
+ 675              	.LFE4:
+ 677              		.text
+ 678              	.Letext0:
+ 679              		.file 2 "/Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.external
+ 680              		.file 3 "/Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.external
+ 681              		.file 4 "smtc_crypto/src/aes.h"
+ 682              		.file 5 "smtc_crypto/src/cmac.h"
+ 683              		.file 6 "lr1mac/src/lr1mac_utilities.h"
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccaUfoWd.s 			page 17
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 cmac.c
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccaUfoWd.s:14     .text.AES_CMAC_Init:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccaUfoWd.s:22     .text.AES_CMAC_Init:0000000000000000 AES_CMAC_Init
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccaUfoWd.s:69     .text.AES_CMAC_SetKey:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccaUfoWd.s:76     .text.AES_CMAC_SetKey:0000000000000000 AES_CMAC_SetKey
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccaUfoWd.s:106    .text.AES_CMAC_Update:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccaUfoWd.s:113    .text.AES_CMAC_Update:0000000000000000 AES_CMAC_Update
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccaUfoWd.s:314    .text.AES_CMAC_Final:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccaUfoWd.s:321    .text.AES_CMAC_Final:0000000000000000 AES_CMAC_Final
+
+UNDEFINED SYMBOLS
+memset1
+aes_set_key
+memcpy1
+aes_encrypt

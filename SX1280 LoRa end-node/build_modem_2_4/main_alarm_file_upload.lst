@@ -1,0 +1,1942 @@
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccLtFHIM.s 			page 1
+
+
+   1              		.cpu cortex-m0plus
+   2              		.eabi_attribute 23, 1
+   3              		.eabi_attribute 24, 1
+   4              		.eabi_attribute 25, 1
+   5              		.eabi_attribute 26, 1
+   6              		.eabi_attribute 30, 4
+   7              		.eabi_attribute 34, 0
+   8              		.eabi_attribute 18, 4
+   9              		.file	"main_alarm_file_upload.c"
+  10              		.text
+  11              	.Ltext0:
+  12              		.cfi_sections	.debug_frame
+  13              		.section	.rodata.send_upload_file.constprop.0.str1.1,"aMS",%progbits,1
+  14              	.LC0:
+  15 0000 1B5B303B 		.ascii	"\033[0;33m\000"
+  15      33336D00 
+  16              	.LC2:
+  17 0008 5741524E 		.ascii	"WARN : \000"
+  17      203A2000 
+  18              	.LC4:
+  19 0010 53544152 		.ascii	"START A FILE UPLOAD (size:%d)\012\000"
+  19      54204120 
+  19      46494C45 
+  19      2055504C 
+  19      4F414420 
+  20              	.LC6:
+  21 002f 1B5B306D 		.ascii	"\033[0m\000"
+  21      00
+  22              		.section	.text.send_upload_file.constprop.0,"ax",%progbits
+  23              		.align	1
+  24              		.arch armv6s-m
+  25              		.syntax unified
+  26              		.code	16
+  27              		.thumb_func
+  28              		.fpu softvfp
+  30              	send_upload_file.constprop.0:
+  31              	.LVL0:
+  32              	.LFB12:
+  33              		.file 1 "user_app/main_alarm_file_upload.c"
+   1:user_app/main_alarm_file_upload.c **** /*!
+   2:user_app/main_alarm_file_upload.c ****  * \file      main_alarm_file_upload.c
+   3:user_app/main_alarm_file_upload.c ****  *
+   4:user_app/main_alarm_file_upload.c ****  * \brief     main program for alarm and file upload example
+   5:user_app/main_alarm_file_upload.c ****  *
+   6:user_app/main_alarm_file_upload.c ****  * Revised BSD License
+   7:user_app/main_alarm_file_upload.c ****  * Copyright Semtech Corporation 2020. All rights reserved.
+   8:user_app/main_alarm_file_upload.c ****  *
+   9:user_app/main_alarm_file_upload.c ****  * Redistribution and use in source and binary forms, with or without
+  10:user_app/main_alarm_file_upload.c ****  * modification, are permitted provided that the following conditions are met:
+  11:user_app/main_alarm_file_upload.c ****  *     * Redistributions of source code must retain the above copyright
+  12:user_app/main_alarm_file_upload.c ****  *       notice, this list of conditions and the following disclaimer.
+  13:user_app/main_alarm_file_upload.c ****  *     * Redistributions in binary form must reproduce the above copyright
+  14:user_app/main_alarm_file_upload.c ****  *       notice, this list of conditions and the following disclaimer in the
+  15:user_app/main_alarm_file_upload.c ****  *       documentation and/or other materials provided with the distribution.
+  16:user_app/main_alarm_file_upload.c ****  *     * Neither the name of the Semtech corporation nor the
+  17:user_app/main_alarm_file_upload.c ****  *       names of its contributors may be used to endorse or promote products
+  18:user_app/main_alarm_file_upload.c ****  *       derived from this software without specific prior written permission.
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccLtFHIM.s 			page 2
+
+
+  19:user_app/main_alarm_file_upload.c ****  *
+  20:user_app/main_alarm_file_upload.c ****  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+  21:user_app/main_alarm_file_upload.c ****  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+  22:user_app/main_alarm_file_upload.c ****  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+  23:user_app/main_alarm_file_upload.c ****  * ARE DISCLAIMED. IN NO EVENT SHALL SEMTECH CORPORATION BE LIABLE FOR ANY DIRECT,
+  24:user_app/main_alarm_file_upload.c ****  * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+  25:user_app/main_alarm_file_upload.c ****  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+  26:user_app/main_alarm_file_upload.c ****  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+  27:user_app/main_alarm_file_upload.c ****  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  28:user_app/main_alarm_file_upload.c ****  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+  29:user_app/main_alarm_file_upload.c ****  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  30:user_app/main_alarm_file_upload.c ****  */
+  31:user_app/main_alarm_file_upload.c **** 
+  32:user_app/main_alarm_file_upload.c **** /*
+  33:user_app/main_alarm_file_upload.c ****  * -----------------------------------------------------------------------------
+  34:user_app/main_alarm_file_upload.c ****  * --- DEPENDENCIES ------------------------------------------------------------
+  35:user_app/main_alarm_file_upload.c ****  */
+  36:user_app/main_alarm_file_upload.c **** #include <stdint.h>   // C99 types
+  37:user_app/main_alarm_file_upload.c **** #include <stdbool.h>  // bool type
+  38:user_app/main_alarm_file_upload.c **** 
+  39:user_app/main_alarm_file_upload.c **** #include "smtc_bsp.h"
+  40:user_app/main_alarm_file_upload.c **** #include "modem_api.h"
+  41:user_app/main_alarm_file_upload.c **** 
+  42:user_app/main_alarm_file_upload.c **** #include "device_management_defs.h"
+  43:user_app/main_alarm_file_upload.c **** #include "modem_utilities.h"
+  44:user_app/main_alarm_file_upload.c **** 
+  45:user_app/main_alarm_file_upload.c **** /*
+  46:user_app/main_alarm_file_upload.c ****  * -----------------------------------------------------------------------------
+  47:user_app/main_alarm_file_upload.c ****  * --- PRIVATE CONSTANTS -------------------------------------------------------
+  48:user_app/main_alarm_file_upload.c ****  */
+  49:user_app/main_alarm_file_upload.c **** 
+  50:user_app/main_alarm_file_upload.c **** /*
+  51:user_app/main_alarm_file_upload.c ****  * -----------------------------------------------------------------------------
+  52:user_app/main_alarm_file_upload.c ****  * --- PRIVATE TYPES -----------------------------------------------------------
+  53:user_app/main_alarm_file_upload.c ****  */
+  54:user_app/main_alarm_file_upload.c **** 
+  55:user_app/main_alarm_file_upload.c **** /*
+  56:user_app/main_alarm_file_upload.c ****  * -----------------------------------------------------------------------------
+  57:user_app/main_alarm_file_upload.c ****  * --- PRIVATE VARIABLES -------------------------------------------------------
+  58:user_app/main_alarm_file_upload.c ****  */
+  59:user_app/main_alarm_file_upload.c **** 
+  60:user_app/main_alarm_file_upload.c **** // First file that will be sent
+  61:user_app/main_alarm_file_upload.c **** static uint8_t file_0[] = {
+  62:user_app/main_alarm_file_upload.c ****     0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A, 0x00, 0x00, 0x00, 0x0D, 0x49, 0x48, 0x44, 0x52,
+  63:user_app/main_alarm_file_upload.c ****     0x3C, 0x00, 0x00, 0x00, 0x61, 0x04, 0x03, 0x00, 0x00, 0x00, 0x78, 0xC2, 0xDF, 0x68, 0x00, 0x00,
+  64:user_app/main_alarm_file_upload.c ****     0x52, 0x47, 0x42, 0x00, 0xAE, 0xCE, 0x1C, 0xE9, 0x00, 0x00, 0x00, 0x04, 0x67, 0x41, 0x4D, 0x41,
+  65:user_app/main_alarm_file_upload.c ****     0x8F, 0x0B, 0xFC, 0x61, 0x05, 0x00, 0x00, 0x00, 0x30, 0x50, 0x4C, 0x54, 0x45, 0x03, 0x6B, 0x66,
+  66:user_app/main_alarm_file_upload.c ****     0x38, 0x85, 0x7C, 0x4D, 0x86, 0x7C, 0x39, 0x8A, 0x80, 0x50, 0x8F, 0x8A, 0x5E, 0x9E, 0xA2, 0x5D,
+  67:user_app/main_alarm_file_upload.c ****     0xA9, 0xA0, 0x67, 0x9C, 0x98, 0x68, 0xA2, 0x9D, 0x71, 0xA9, 0xA6, 0x88, 0xB6, 0xB3, 0x97, 0xC2,
+  68:user_app/main_alarm_file_upload.c ****     0xCD, 0xF9, 0xFC, 0xFC, 0x85, 0xCC, 0x33, 0x9B, 0x00, 0x00, 0x00, 0x09, 0x70, 0x48, 0x59, 0x73,
+  69:user_app/main_alarm_file_upload.c ****     0xC3, 0x00, 0x00, 0x0E, 0xC3, 0x01, 0xC7, 0x6F, 0xA8, 0x64, 0x00, 0x00, 0x02, 0x10, 0x49, 0x44,
+  70:user_app/main_alarm_file_upload.c ****     0xC7, 0xB5, 0xD6, 0xBD, 0x4E, 0xC3, 0x30, 0x10, 0x07, 0xF0, 0x13, 0x28, 0x43, 0xD5, 0xAA, 0xCF,
+  71:user_app/main_alarm_file_upload.c ****     0x23, 0xF0, 0x0C, 0x11, 0x52, 0x07, 0x96, 0xF6, 0x15, 0x78, 0x04, 0x1E, 0xA1, 0x3B, 0x03, 0x66,
+  72:user_app/main_alarm_file_upload.c ****     0x0B, 0x13, 0x88, 0x74, 0x45, 0x88, 0x96, 0x9D, 0xA1, 0x11, 0xA8, 0x4C, 0xA8, 0x1E, 0x50, 0x55,
+  73:user_app/main_alarm_file_upload.c ****     0x76, 0xD2, 0xF8, 0x2B, 0x77, 0x86, 0x85, 0x4C, 0x88, 0x5F, 0xFE, 0xE7, 0x8B, 0xEB, 0x38, 0x06,
+  74:user_app/main_alarm_file_upload.c ****     0x3B, 0xC3, 0x67, 0xEF, 0x1F, 0x1E, 0xEF, 0x64, 0xB8, 0xF6, 0xD4, 0xE7, 0x11, 0x16, 0x29, 0xCF,
+  75:user_app/main_alarm_file_upload.c ****     0x60, 0xB9, 0x83, 0x38, 0x0F, 0x14, 0x4E, 0xCD, 0x5F, 0x89, 0xC4, 0xAF, 0x50, 0xC1, 0x56, 0xCB,
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccLtFHIM.s 			page 3
+
+
+  76:user_app/main_alarm_file_upload.c ****     0xB6, 0xF8, 0x61, 0x73, 0x60, 0x87, 0x13, 0x62, 0x60, 0x87, 0x33, 0xDC, 0x00, 0xCF, 0x5D, 0xB2,
+  77:user_app/main_alarm_file_upload.c ****     0x87, 0xB7, 0xDC, 0x67, 0xC2, 0x15, 0xAB, 0xBE, 0xD6, 0xC0, 0xB3, 0x0A, 0x8F, 0x79, 0x4E, 0xB8,
+  78:user_app/main_alarm_file_upload.c ****     0x6D, 0xE7, 0x0C, 0xEB, 0x39, 0x97, 0x88, 0x29, 0xC3, 0xD7, 0xE5, 0x2F, 0xC5, 0xD5, 0xD6, 0x3C,
+  79:user_app/main_alarm_file_upload.c ****     0x76, 0x6C, 0xF5, 0x54, 0xC1, 0x02, 0xF3, 0x58, 0x3D, 0x15, 0x0A, 0x9E, 0x55, 0x63, 0x6C, 0x67,
+  80:user_app/main_alarm_file_upload.c ****     0x4B, 0x9F, 0x0C, 0x34, 0xE7, 0x6C, 0x5A, 0xD7, 0xC6, 0x15, 0xC7, 0x57, 0x5A, 0xB1, 0x18, 0x32,
+  81:user_app/main_alarm_file_upload.c ****     0x37, 0x4C, 0x73, 0xB2, 0x62, 0x2C, 0x5E, 0x7A, 0x7B, 0x04, 0xA3, 0xBD, 0x8A, 0xC5, 0xC7, 0xED,
+  82:user_app/main_alarm_file_upload.c ****     0xF5, 0x4D, 0x8F, 0xBD, 0x08, 0x97, 0xB7, 0x3C, 0xA4, 0x31, 0x56, 0x37, 0xDC, 0x44, 0x19, 0xF1,
+  83:user_app/main_alarm_file_upload.c ****     0x4B, 0xC3, 0x73, 0xB9, 0xB4, 0x23, 0x5C, 0xD8, 0x59, 0x23, 0x2F, 0xF5, 0x43, 0x5D, 0xCC, 0x78,
+  84:user_app/main_alarm_file_upload.c ****     0x24, 0x93, 0xD8, 0xE8, 0x6A, 0x21, 0x1C, 0xDF, 0x3D, 0x2D, 0x24, 0xC9, 0x6F, 0xF5, 0x1B, 0x9A,
+  85:user_app/main_alarm_file_upload.c ****     0x0B, 0xA2, 0xBA, 0xBB, 0x8C, 0xF6, 0xD5, 0x3D, 0xBE, 0x43, 0xB8, 0xCA, 0xFC, 0x56, 0xA0, 0xF9,
+  86:user_app/main_alarm_file_upload.c ****     0x59, 0x6D, 0x33, 0x51, 0x6E, 0xC5, 0x19, 0xCE, 0xF9, 0xD6, 0xF4, 0xD5, 0x8E, 0x33, 0xFC, 0xC2,
+  87:user_app/main_alarm_file_upload.c ****     0xE2, 0x3C, 0xF8, 0x4F, 0xCE, 0xE2, 0x2C, 0xFF, 0xF6, 0xDC, 0x9B, 0xF8, 0xAC, 0x7D, 0x92, 0xDC,
+  88:user_app/main_alarm_file_upload.c ****     0x79, 0x5A, 0xF3, 0x98, 0xE2, 0xC4, 0x4C, 0x79, 0x4A, 0xB1, 0xA9, 0x5D, 0x00, 0xC5, 0xA6, 0xF6,
+  89:user_app/main_alarm_file_upload.c ****     0x41, 0x9B, 0xCE, 0x08, 0x36, 0x53, 0xA6, 0xF7, 0xCA, 0x06, 0xDB, 0xA5, 0xA2, 0xDF, 0x50, 0xC1,
+  90:user_app/main_alarm_file_upload.c ****     0xDB, 0x70, 0xB9, 0xD1, 0x0A, 0x36, 0x5C, 0xEE, 0xE2, 0x82, 0x0D, 0xEB, 0xA1, 0x43, 0x76, 0xC2,
+  91:user_app/main_alarm_file_upload.c ****     0xE1, 0xEA, 0xA3, 0xEA, 0xF3, 0x34, 0xA8, 0xED, 0x73, 0x07, 0x83, 0xDA, 0x3E, 0x3B, 0x23, 0x6F,
+  92:user_app/main_alarm_file_upload.c ****     0x77, 0x31, 0xAC, 0xED, 0xB1, 0xBB, 0xFF, 0xCC, 0x1B, 0xEC, 0x86, 0xEB, 0x2F, 0x9B, 0x7D, 0xBF,
+  93:user_app/main_alarm_file_upload.c ****     0x1F, 0x06, 0x2C, 0x1F, 0x60, 0xA3, 0x31, 0x87, 0xBD, 0x70, 0x01, 0x21, 0x0F, 0xDC, 0x70, 0x1E,
+  94:user_app/main_alarm_file_upload.c ****     0x63, 0x96, 0x47, 0xAE, 0xDA, 0x83, 0xD9, 0x96, 0x3B, 0x5E, 0xD8, 0x7E, 0x32, 0xB7, 0xCF, 0xED,
+  95:user_app/main_alarm_file_upload.c ****     0x92, 0x10, 0x44, 0x78, 0x1C, 0xB2, 0x64, 0xC2, 0xE6, 0x50, 0x44, 0x3D, 0x15, 0x98, 0x43, 0x11,
+  96:user_app/main_alarm_file_upload.c ****     0xE7, 0x19, 0x37, 0x72, 0x99, 0x6E, 0x23, 0x1B, 0xD6, 0x2C, 0xD9, 0x91, 0x75, 0x71, 0xBF, 0xAF,
+  97:user_app/main_alarm_file_upload.c ****     0x5A, 0x92, 0x1F, 0x19, 0x60, 0x38, 0xE5, 0xC3, 0x00, 0x3F, 0x27, 0x3C, 0x5F, 0x86, 0x45, 0x34,
+  98:user_app/main_alarm_file_upload.c ****     0x00, 0x00, 0x00, 0x49, 0x45, 0x4E, 0x44, 0xAE, 0x42, 0x60, 0x82
+  99:user_app/main_alarm_file_upload.c **** };
+ 100:user_app/main_alarm_file_upload.c **** 
+ 101:user_app/main_alarm_file_upload.c **** // Second file that will be sent
+ 102:user_app/main_alarm_file_upload.c **** static uint8_t file_1[] = {
+ 103:user_app/main_alarm_file_upload.c ****     0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A, 0x00, 0x00, 0x00, 0x0D, 0x49, 0x48, 0x44, 0x52,
+ 104:user_app/main_alarm_file_upload.c ****     0x9A, 0x00, 0x00, 0x00, 0x5F, 0x04, 0x03, 0x00, 0x00, 0x00, 0xE2, 0xF4, 0xC3, 0x23, 0x00, 0x00,
+ 105:user_app/main_alarm_file_upload.c ****     0x52, 0x47, 0x42, 0x00, 0xAE, 0xCE, 0x1C, 0xE9, 0x00, 0x00, 0x00, 0x04, 0x67, 0x41, 0x4D, 0x41,
+ 106:user_app/main_alarm_file_upload.c ****     0x8F, 0x0B, 0xFC, 0x61, 0x05, 0x00, 0x00, 0x00, 0x30, 0x50, 0x4C, 0x54, 0x45, 0x03, 0x03, 0x03,
+ 107:user_app/main_alarm_file_upload.c ****     0x00, 0x9E, 0xE8, 0x03, 0xA0, 0xE9, 0x2E, 0xAC, 0xEB, 0x51, 0xB8, 0xEE, 0x63, 0xBE, 0xF0, 0x5D,
+ 108:user_app/main_alarm_file_upload.c ****     0xC5, 0xF1, 0x9E, 0x9E, 0x9E, 0x8E, 0xD0, 0xF4, 0xAB, 0xDB, 0xF6, 0xB8, 0xE1, 0xF8, 0xCF, 0xCF,
+ 109:user_app/main_alarm_file_upload.c ****     0xFA, 0xFE, 0xFE, 0xFE, 0x93, 0x33, 0x21, 0xF4, 0x00, 0x00, 0x00, 0x09, 0x70, 0x48, 0x59, 0x73,
+ 110:user_app/main_alarm_file_upload.c ****     0x89, 0x00, 0x00, 0x05, 0x89, 0x01, 0x6D, 0x68, 0x9D, 0xFA, 0x00, 0x00, 0x05, 0x64, 0x49, 0x44,
+ 111:user_app/main_alarm_file_upload.c ****     0xC3, 0xAD, 0x99, 0xCF, 0x6B, 0x1B, 0x47, 0x14, 0xC7, 0x57, 0x47, 0x1D, 0x8C, 0x57, 0x47, 0x1D,
+ 112:user_app/main_alarm_file_upload.c ****     0x0D, 0x3D, 0xEF, 0xAC, 0x20, 0xB4, 0x37, 0xC9, 0x6E, 0x83, 0x0B, 0x09, 0x54, 0x32, 0x31, 0x39,
+ 113:user_app/main_alarm_file_upload.c ****     0x7A, 0x6A, 0x7B, 0xEE, 0x25, 0x36, 0x04, 0xBB, 0x24, 0xF6, 0x51, 0x07, 0xA3, 0x83, 0x6D, 0x6C,
+ 114:user_app/main_alarm_file_upload.c ****     0x52, 0x30, 0x71, 0xB0, 0x0F, 0x69, 0xC1, 0x50, 0x48, 0xEC, 0x3F, 0xC0, 0xEC, 0xA1, 0x98, 0x0A,
+ 115:user_app/main_alarm_file_upload.c ****     0x68, 0xC0, 0x52, 0xAD, 0x9D, 0xCE, 0xAF, 0x9D, 0x1F, 0xBB, 0xB3, 0x42, 0xBB, 0xEB, 0xC1, 0x98,
+ 116:user_app/main_alarm_file_upload.c ****     0x67, 0xBF, 0xEF, 0xCD, 0x7B, 0x6F, 0xD0, 0x93, 0x01, 0x13, 0x46, 0x10, 0xF4, 0x7A, 0x30, 0xED,
+ 117:user_app/main_alarm_file_upload.c ****     0x76, 0x66, 0xF1, 0x98, 0x7B, 0xFC, 0x21, 0x37, 0x2D, 0x38, 0xAE, 0xDB, 0x36, 0xB0, 0x2C, 0x0B,
+ 118:user_app/main_alarm_file_upload.c ****     0x79, 0xD5, 0xCB, 0x45, 0x1B, 0x36, 0x1C, 0x1B, 0xE0, 0x61, 0xE1, 0x7F, 0x0E, 0x98, 0x6B, 0xE7,
+ 119:user_app/main_alarm_file_upload.c ****     0x20, 0xCA, 0xF8, 0x31, 0x33, 0x6D, 0xCB, 0x22, 0xC2, 0x1C, 0x07, 0x59, 0x6A, 0x39, 0x94, 0x66,
+ 120:user_app/main_alarm_file_upload.c ****     0x0B, 0x36, 0xA9, 0x91, 0xEE, 0xDC, 0xDE, 0xE1, 0x87, 0xCB, 0xBF, 0x76, 0x1B, 0x2E, 0xB5, 0x79,
+ 121:user_app/main_alarm_file_upload.c ****     0xB6, 0x85, 0xDC, 0x0F, 0x9C, 0xCA, 0x2A, 0x5F, 0x7C, 0xB1, 0x5D, 0xC3, 0x34, 0x7B, 0x3E, 0x03,
+ 122:user_app/main_alarm_file_upload.c ****     0xFF, 0x6F, 0x15, 0x21, 0xFE, 0x12, 0x91, 0xF7, 0x7D, 0x7A, 0xDA, 0x10, 0x1B, 0xF9, 0x3C, 0x3A,
+ 123:user_app/main_alarm_file_upload.c ****     0xEF, 0xAB, 0xF4, 0x34, 0xF8, 0x13, 0x98, 0xD1, 0xC4, 0x43, 0x07, 0xD1, 0xDA, 0x19, 0x68, 0xE7,
+ 124:user_app/main_alarm_file_upload.c ****     0xBF, 0x5D, 0xAE, 0xA3, 0xAD, 0x58, 0x79, 0x47, 0x1F, 0x5F, 0x57, 0x3F, 0x87, 0x19, 0x68, 0x01,
+ 125:user_app/main_alarm_file_upload.c ****     0xA9, 0x03, 0x9C, 0x09, 0x28, 0x58, 0x16, 0x28, 0xBD, 0xF3, 0x20, 0x0B, 0x8D, 0x8C, 0x6E, 0x3D,
+ 126:user_app/main_alarm_file_upload.c ****     0x5F, 0xF3, 0xF9, 0x32, 0xEB, 0x9F, 0x1A, 0x0D, 0x59, 0xA4, 0x8D, 0x5C, 0xDC, 0xFB, 0x98, 0x83,
+ 127:user_app/main_alarm_file_upload.c ****     0x77, 0xF1, 0xE5, 0xC1, 0xC1, 0x5E, 0xA3, 0xE6, 0xE0, 0xF0, 0xFB, 0x98, 0x99, 0x76, 0x8D, 0x65,
+ 128:user_app/main_alarm_file_upload.c ****     0xBB, 0x60, 0xB7, 0x9A, 0x0A, 0xA7, 0xA3, 0xC9, 0xE1, 0x7B, 0xF9, 0x14, 0x3D, 0x78, 0x92, 0x95,
+ 129:user_app/main_alarm_file_upload.c ****     0x1A, 0xBE, 0xC1, 0x16, 0x00, 0xBD, 0xAC, 0x34, 0xF8, 0x3E, 0x9A, 0x0B, 0xC1, 0xE6, 0x97, 0x70,
+ 130:user_app/main_alarm_file_upload.c ****     0x89, 0x87, 0x17, 0xFB, 0xC0, 0xF7, 0xFD, 0x50, 0x12, 0x8A, 0xB9, 0x41, 0x53, 0x1A, 0x1B, 0x5E,
+ 131:user_app/main_alarm_file_upload.c ****     0xC0, 0xE3, 0x4E, 0xE4, 0x71, 0x67, 0xA1, 0x51, 0x73, 0x67, 0x17, 0x0F, 0xC3, 0xFB, 0x13, 0x43,
+ 132:user_app/main_alarm_file_upload.c ****     0xB4, 0x21, 0x8A, 0x5F, 0xDB, 0xC6, 0xC9, 0x1E, 0xC6, 0x6E, 0x84, 0x66, 0x14, 0xBC, 0x89, 0x69,
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccLtFHIM.s 			page 4
+
+
+ 133:user_app/main_alarm_file_upload.c ****     0xB8, 0x36, 0xE1, 0x32, 0xCC, 0xA2, 0xA3, 0x1F, 0xA1, 0x19, 0xC5, 0x49, 0x69, 0x43, 0x04, 0x73,
+ 134:user_app/main_alarm_file_upload.c ****     0xEF, 0x12, 0x97, 0x4A, 0x8A, 0x8B, 0x6A, 0x33, 0x8C, 0xD6, 0x84, 0xB4, 0x6B, 0x1B, 0xAC, 0xB0,
+ 135:user_app/main_alarm_file_upload.c ****     0x38, 0x0F, 0xB5, 0xDA, 0xF4, 0xE2, 0x74, 0x96, 0xD6, 0xA5, 0x20, 0xD9, 0x06, 0x47, 0x7A, 0x6D,
+ 136:user_app/main_alarm_file_upload.c ****     0x9A, 0x12, 0xAC, 0x6F, 0xA1, 0x5E, 0x5B, 0x2C, 0x0C, 0x92, 0x68, 0x9A, 0x41, 0xB5, 0x95, 0x49,
+ 137:user_app/main_alarm_file_upload.c ****     0xDA, 0x54, 0x76, 0xDA, 0xA9, 0x6C, 0x1C, 0x15, 0x5A, 0x48, 0x43, 0x53, 0x63, 0x9E, 0x6A, 0x63,
+ 138:user_app/main_alarm_file_upload.c ****     0xA1, 0x61, 0xBD, 0x67, 0x63, 0x69, 0x54, 0x8B, 0x88, 0xF9, 0xBE, 0xE2, 0x78, 0x53, 0x62, 0xB3,
+ 139:user_app/main_alarm_file_upload.c ****     0x99, 0xB6, 0x16, 0xBA, 0xBA, 0xA4, 0x68, 0x6B, 0x29, 0x1F, 0xAB, 0x33, 0x49, 0xC8, 0x68, 0x69,
+ 140:user_app/main_alarm_file_upload.c ****     0xCA, 0x3A, 0x6D, 0xE2, 0xEE, 0x4A, 0xDA, 0xE4, 0x69, 0x3D, 0x6D, 0x10, 0x0F, 0x04, 0xC5, 0x6F,
+ 141:user_app/main_alarm_file_upload.c ****     0xCD, 0x44, 0xB9, 0xAB, 0xA3, 0xAD, 0xC9, 0xB4, 0x82, 0x46, 0x1B, 0xB7, 0x5B, 0x79, 0x2F, 0x7A,
+ 142:user_app/main_alarm_file_upload.c ****     0x53, 0xE8, 0x47, 0xAA, 0xDF, 0xCC, 0xD0, 0x6F, 0xF4, 0x25, 0xE5, 0xB3, 0x26, 0x33, 0x55, 0x43,
+ 143:user_app/main_alarm_file_upload.c ****     0x5A, 0xA7, 0x8B, 0x8A, 0x71, 0x6D, 0x5C, 0xF4, 0x5A, 0x38, 0xE1, 0x94, 0x5E, 0x68, 0x68, 0x26,
+ 144:user_app/main_alarm_file_upload.c ****     0x71, 0x0D, 0xAA, 0xDF, 0x68, 0x50, 0x70, 0x1A, 0x7E, 0xC7, 0x28, 0x89, 0x36, 0x10, 0x0F, 0xC4,
+ 145:user_app/main_alarm_file_upload.c ****     0xE1, 0x41, 0xCD, 0xC2, 0x5B, 0x48, 0x5F, 0xEC, 0x85, 0x72, 0x75, 0xB4, 0x2B, 0xE1, 0x7B, 0x3A,
+ 146:user_app/main_alarm_file_upload.c ****     0x6B, 0x08, 0x5E, 0x42, 0xF2, 0x16, 0x8E, 0xA3, 0xF5, 0xB9, 0xB3, 0xA4, 0xEB, 0x78, 0x0D, 0x89,
+ 147:user_app/main_alarm_file_upload.c ****     0x6D, 0x4D, 0xBA, 0x1F, 0x84, 0xEB, 0xE2, 0xDA, 0xA6, 0x25, 0xD4, 0xA8, 0xB9, 0x3E, 0x96, 0xC6,
+ 148:user_app/main_alarm_file_upload.c ****     0xD2, 0x4E, 0x63, 0xD2, 0x3C, 0x81, 0x32, 0xB9, 0xDC, 0x38, 0x4D, 0x78, 0x96, 0x19, 0x60, 0xE8,
+ 149:user_app/main_alarm_file_upload.c ****     0x3B, 0x10, 0xE9, 0xA0, 0xD3, 0x16, 0x02, 0x14, 0x74, 0xC4, 0x6F, 0x05, 0x0E, 0x93, 0x52, 0x7A,
+ 150:user_app/main_alarm_file_upload.c ****     0x1B, 0xAF, 0xBB, 0x8A, 0x07, 0xD2, 0x6A, 0x33, 0x4D, 0x93, 0x79, 0x48, 0xF2, 0x2B, 0x79, 0x30,
+ 151:user_app/main_alarm_file_upload.c ****     0x9B, 0x58, 0xCF, 0x2C, 0x65, 0x92, 0x0B, 0xCD, 0xC4, 0x08, 0x89, 0xEF, 0x02, 0xD7, 0x26, 0x6A,
+ 152:user_app/main_alarm_file_upload.c ****     0x5C, 0xA3, 0xEC, 0xD1, 0x89, 0x89, 0x7B, 0x2A, 0xE7, 0xB7, 0x88, 0x37, 0x4C, 0x93, 0x8F, 0x98,
+ 153:user_app/main_alarm_file_upload.c ****     0xA4, 0x4D, 0x1B, 0xBD, 0x42, 0x1B, 0xAB, 0x57, 0x44, 0xFC, 0x15, 0x65, 0xC0, 0x31, 0x59, 0x4F,
+ 154:user_app/main_alarm_file_upload.c ****     0xE7, 0xD3, 0x4F, 0x84, 0x37, 0x4D, 0xB1, 0xA0, 0xCF, 0xA5, 0x0D, 0x92, 0x68, 0x7D, 0x69, 0xD3,
+ 155:user_app/main_alarm_file_upload.c ****     0xD1, 0xC6, 0xC0, 0x45, 0x95, 0x76, 0xA5, 0xD0, 0x0A, 0x05, 0xB3, 0x44, 0xFE, 0xC2, 0x83, 0xA3,
+ 156:user_app/main_alarm_file_upload.c ****     0x35, 0x44, 0xE8, 0x95, 0xAA, 0x5E, 0x8B, 0xBB, 0x87, 0xD3, 0xF8, 0x68, 0x31, 0x04, 0x79, 0xB7,
+ 157:user_app/main_alarm_file_upload.c ****     0x6D, 0x74, 0x9F, 0x45, 0xD5, 0x9B, 0x86, 0xE2, 0xBC, 0x8E, 0xD2, 0xBC, 0xD0, 0x31, 0xC5, 0x8D,
+ 158:user_app/main_alarm_file_upload.c ****     0x1B, 0x2D, 0xD7, 0x5E, 0x7A, 0x08, 0x71, 0xFB, 0x0B, 0xAD, 0xD1, 0x28, 0xAC, 0xF9, 0x71, 0x6D,
+ 159:user_app/main_alarm_file_upload.c ****     0x12, 0x2A, 0x3D, 0xE1, 0x58, 0xF2, 0x12, 0xB6, 0xB6, 0xC4, 0x66, 0x16, 0x75, 0xDA, 0x46, 0x66,
+ 160:user_app/main_alarm_file_upload.c ****     0x2D, 0x8C, 0x91, 0x96, 0x94, 0x58, 0x46, 0x82, 0xA5, 0x2D, 0x18, 0x49, 0xF1, 0xA2, 0xA4, 0xC7,
+ 161:user_app/main_alarm_file_upload.c ****     0x9C, 0x0B, 0x63, 0x68, 0x78, 0x81, 0x22, 0xCE, 0x83, 0x51, 0x6D, 0xEC, 0x46, 0x2D, 0xA2, 0xC4,
+ 162:user_app/main_alarm_file_upload.c ****     0xF2, 0xF9, 0x7C, 0x07, 0xC6, 0xB5, 0x09, 0x53, 0xB9, 0xB8, 0xD6, 0x89, 0x96, 0xE6, 0x41, 0x05,
+ 163:user_app/main_alarm_file_upload.c ****     0x61, 0x37, 0xCC, 0x5D, 0xF8, 0x45, 0xAC, 0xF2, 0x36, 0xE9, 0x86, 0x78, 0x09, 0x1D, 0xB3, 0xD1,
+ 164:user_app/main_alarm_file_upload.c ****     0xAC, 0x52, 0xE2, 0x57, 0x20, 0x69, 0xA2, 0x69, 0x96, 0xF9, 0xB4, 0xC4, 0xFE, 0x1B, 0x44, 0xE7,
+ 165:user_app/main_alarm_file_upload.c ****     0x0C, 0x78, 0x9B, 0x43, 0x47, 0xF3, 0x6F, 0x95, 0xD6, 0x78, 0x21, 0xDD, 0xEC, 0xE6, 0xA4, 0x5D,
+ 166:user_app/main_alarm_file_upload.c ****     0xBC, 0xBE, 0x79, 0x0A, 0xDA, 0x79, 0x69, 0x8E, 0x7D, 0x9F, 0x7E, 0x33, 0xDD, 0x9F, 0x05, 0xE0,
+ 167:user_app/main_alarm_file_upload.c ****     0xFC, 0x54, 0xB3, 0x1D, 0xCB, 0x5D, 0xF8, 0xA1, 0x61, 0xA1, 0xEF, 0xA8, 0x5F, 0xF7, 0x72, 0xD2,
+ 168:user_app/main_alarm_file_upload.c ****     0x1C, 0xC7, 0xB6, 0x2C, 0x44, 0xBB, 0x9F, 0xAA, 0x4D, 0xAB, 0x8F, 0x10, 0x7F, 0xA9, 0x06, 0x90,
+ 169:user_app/main_alarm_file_upload.c ****     0x1C, 0xC2, 0xFC, 0x34, 0xC4, 0xDB, 0x7B, 0xF6, 0x6C, 0xE5, 0x75, 0xDA, 0xFE, 0x71, 0xBC, 0xF3,
+ 170:user_app/main_alarm_file_upload.c ****     0xB4, 0xB3, 0xD3, 0xBE, 0x9B, 0x79, 0x1D, 0x81, 0x6D, 0xDE, 0xCD, 0x4C, 0x1B, 0x02, 0x30, 0xA3,
+ 171:user_app/main_alarm_file_upload.c ****     0x06, 0x76, 0x3B, 0x33, 0xCD, 0x01, 0xC0, 0x9E, 0x3F, 0xE2, 0xAC, 0xE3, 0x2A, 0x48, 0x11, 0x72,
+ 172:user_app/main_alarm_file_upload.c ****     0xC4, 0xBD, 0x63, 0x77, 0x91, 0xB4, 0xDB, 0x83, 0xFD, 0x06, 0x6E, 0x9F, 0xDD, 0xCD, 0xDE, 0x47,
+ 173:user_app/main_alarm_file_upload.c ****     0xDA, 0xCD, 0x73, 0x6B, 0xAC, 0x9D, 0x97, 0xA3, 0xFF, 0x86, 0x46, 0xA7, 0x2A, 0x37, 0xC9, 0x53,
+ 174:user_app/main_alarm_file_upload.c ****     0xFB, 0x8F, 0x38, 0xEC, 0x66, 0x49, 0xC0, 0x5C, 0x52, 0x00, 0x82, 0x4C, 0xB4, 0xF7, 0x15, 0x2A,
+ 175:user_app/main_alarm_file_upload.c ****     0xC3, 0x4D, 0x55, 0x7B, 0x6E, 0x85, 0x5A, 0xB9, 0xFD, 0x24, 0x0B, 0xAD, 0x0E, 0xEE, 0x31, 0xBB,
+ 176:user_app/main_alarm_file_upload.c ****     0xBD, 0x03, 0x9F, 0xD5, 0xCD, 0x3F, 0x9C, 0x2F, 0x32, 0xD0, 0x3E, 0xD9, 0xC0, 0xA9, 0x1C, 0x45,
+ 177:user_app/main_alarm_file_upload.c ****     0x90, 0xC5, 0x47, 0xE9, 0x69, 0x7F, 0xE3, 0xA6, 0xBB, 0x1B, 0xCD, 0x05, 0xE2, 0xC5, 0x07, 0xE9,
+ 178:user_app/main_alarm_file_upload.c ****     0xEC, 0xE2, 0xBC, 0xF4, 0xDB, 0x4E, 0xB0, 0x4F, 0x76, 0x78, 0xE6, 0x45, 0x7A, 0x1A, 0xBC, 0xA1,
+ 179:user_app/main_alarm_file_upload.c ****     0x62, 0x0D, 0x72, 0x7F, 0xA7, 0x41, 0xB7, 0x76, 0xC2, 0xCA, 0x14, 0x89, 0xB7, 0x1B, 0xD6, 0x88,
+ 180:user_app/main_alarm_file_upload.c ****     0x6E, 0x81, 0x35, 0xF5, 0x10, 0xFD, 0x57, 0x98, 0x89, 0x86, 0x8F, 0x95, 0x30, 0x6C, 0x6D, 0x1E,
+ 181:user_app/main_alarm_file_upload.c ****     0xCC, 0x58, 0x2E, 0x04, 0x6F, 0x6A, 0x11, 0xDA, 0x37, 0xB9, 0x32, 0xAB, 0xFB, 0x8B, 0x90, 0x05,
+ 182:user_app/main_alarm_file_upload.c ****     0x99, 0x33, 0x8B, 0xC9, 0xEB, 0xF2, 0xD4, 0x9A, 0x7D, 0x79, 0x0B, 0xA7, 0x0C, 0x84, 0x97, 0xF8,
+ 183:user_app/main_alarm_file_upload.c ****     0x7D, 0x2E, 0xE4, 0x18, 0x10, 0xFE, 0x0F, 0x6F, 0x3A, 0x5A, 0x10, 0x7B, 0xE9, 0x48, 0x47, 0x00,
+ 184:user_app/main_alarm_file_upload.c ****     0x49, 0x45, 0x4E, 0x44, 0xAE, 0x42, 0x60, 0x82
+ 185:user_app/main_alarm_file_upload.c **** };
+ 186:user_app/main_alarm_file_upload.c **** 
+ 187:user_app/main_alarm_file_upload.c **** static uint8_t last_file_idx   = 1;      // Store last file index that has been sent
+ 188:user_app/main_alarm_file_upload.c **** static uint8_t rx_payload[255] = { 0 };  // Buffer for rx payload
+ 189:user_app/main_alarm_file_upload.c **** static uint8_t rx_payload_size = 0;      // Size of the payload in the rx_payload buffer
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccLtFHIM.s 			page 5
+
+
+ 190:user_app/main_alarm_file_upload.c **** /*
+ 191:user_app/main_alarm_file_upload.c ****  * -----------------------------------------------------------------------------
+ 192:user_app/main_alarm_file_upload.c ****  * --- PRIVATE FUNCTIONS DECLARATION -------------------------------------------
+ 193:user_app/main_alarm_file_upload.c ****  */
+ 194:user_app/main_alarm_file_upload.c **** static void get_event( void );
+ 195:user_app/main_alarm_file_upload.c **** static void send_upload_file( uint8_t* file, uint16_t file_size, uint8_t port );
+ 196:user_app/main_alarm_file_upload.c **** 
+ 197:user_app/main_alarm_file_upload.c **** /*
+ 198:user_app/main_alarm_file_upload.c ****  * -----------------------------------------------------------------------------
+ 199:user_app/main_alarm_file_upload.c ****  * --- PUBLIC FUNCTIONS DEFINITION ---------------------------------------------
+ 200:user_app/main_alarm_file_upload.c ****  */
+ 201:user_app/main_alarm_file_upload.c **** 
+ 202:user_app/main_alarm_file_upload.c **** /**
+ 203:user_app/main_alarm_file_upload.c ****  * @brief Example on how to configure an alarm and start a file upload
+ 204:user_app/main_alarm_file_upload.c ****  *
+ 205:user_app/main_alarm_file_upload.c ****  * @param user_dev_eui  LoRaWAN dev EUI
+ 206:user_app/main_alarm_file_upload.c ****  * @param user_join_eui LoRaWAN join EUI
+ 207:user_app/main_alarm_file_upload.c ****  * @param user_app_key  LoRaWAN app Key
+ 208:user_app/main_alarm_file_upload.c ****  */
+ 209:user_app/main_alarm_file_upload.c **** void main_alarm_file_upload( uint8_t* user_dev_eui, uint8_t* user_join_eui, uint8_t* user_app_key )
+ 210:user_app/main_alarm_file_upload.c **** {
+ 211:user_app/main_alarm_file_upload.c ****     // Disable IRQ to avoid unwanted behaviour during init
+ 212:user_app/main_alarm_file_upload.c ****     bsp_disable_irq( );
+ 213:user_app/main_alarm_file_upload.c **** 
+ 214:user_app/main_alarm_file_upload.c ****     // Init the modem and use get_event as event callback, please note that the callback will be
+ 215:user_app/main_alarm_file_upload.c ****     // called immediately after the first call to modem_run_engine because of the reset detection
+ 216:user_app/main_alarm_file_upload.c ****     modem_init( &get_event );
+ 217:user_app/main_alarm_file_upload.c **** 
+ 218:user_app/main_alarm_file_upload.c ****     // Re-enable IRQ
+ 219:user_app/main_alarm_file_upload.c ****     bsp_enable_irq( );
+ 220:user_app/main_alarm_file_upload.c **** 
+ 221:user_app/main_alarm_file_upload.c ****     // Set euis and keys - (If the credentials have already been configured, the device will reload
+ 222:user_app/main_alarm_file_upload.c ****     // it's not a mandatory action)
+ 223:user_app/main_alarm_file_upload.c ****     modem_set_deveui( user_dev_eui );
+ 224:user_app/main_alarm_file_upload.c ****     modem_set_joineui( user_join_eui );
+ 225:user_app/main_alarm_file_upload.c ****     modem_set_nwkkey( user_app_key );
+ 226:user_app/main_alarm_file_upload.c **** 
+ 227:user_app/main_alarm_file_upload.c ****     // Join LoRaWAN network
+ 228:user_app/main_alarm_file_upload.c ****     modem_join( );
+ 229:user_app/main_alarm_file_upload.c **** 
+ 230:user_app/main_alarm_file_upload.c ****     BSP_DBG_TRACE_INFO( "Alarm and file upload exemple is starting \n" );
+ 231:user_app/main_alarm_file_upload.c **** 
+ 232:user_app/main_alarm_file_upload.c ****     while( 1 )
+ 233:user_app/main_alarm_file_upload.c ****     {
+ 234:user_app/main_alarm_file_upload.c ****         // Execute modem runtime, this function must be recalled in sleep_time_ms (max value, can b
+ 235:user_app/main_alarm_file_upload.c ****         uint32_t sleep_time = modem_run_engine( );
+ 236:user_app/main_alarm_file_upload.c **** 
+ 237:user_app/main_alarm_file_upload.c ****         // go to sleep (if low power is enabled)
+ 238:user_app/main_alarm_file_upload.c ****         bsp_mcu_set_sleep_for_ms( sleep_time );
+ 239:user_app/main_alarm_file_upload.c **** 
+ 240:user_app/main_alarm_file_upload.c ****         // Alarm and file upload are managed in the 'get_event' function
+ 241:user_app/main_alarm_file_upload.c ****     }
+ 242:user_app/main_alarm_file_upload.c **** }
+ 243:user_app/main_alarm_file_upload.c **** 
+ 244:user_app/main_alarm_file_upload.c **** /*
+ 245:user_app/main_alarm_file_upload.c ****  * -----------------------------------------------------------------------------
+ 246:user_app/main_alarm_file_upload.c ****  * --- PRIVATE FUNCTIONS DEFINITION --------------------------------------------
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccLtFHIM.s 			page 6
+
+
+ 247:user_app/main_alarm_file_upload.c ****  */
+ 248:user_app/main_alarm_file_upload.c **** 
+ 249:user_app/main_alarm_file_upload.c **** /**
+ 250:user_app/main_alarm_file_upload.c ****  * @brief User callback for modem event
+ 251:user_app/main_alarm_file_upload.c ****  *
+ 252:user_app/main_alarm_file_upload.c ****  *  This callback is called every time an event ( see modem_rsp_event_t ) appears in the modem.
+ 253:user_app/main_alarm_file_upload.c ****  *  Several events may have to be read from the modem when this callback is called.
+ 254:user_app/main_alarm_file_upload.c ****  */
+ 255:user_app/main_alarm_file_upload.c **** static void get_event( void )
+ 256:user_app/main_alarm_file_upload.c **** {
+ 257:user_app/main_alarm_file_upload.c ****     BSP_DBG_TRACE_MSG_COLOR( "Get_event () callback\n", BSP_DBG_TRACE_COLOR_BLUE );
+ 258:user_app/main_alarm_file_upload.c **** 
+ 259:user_app/main_alarm_file_upload.c ****     modem_rsp_event_t type                   = RSP_NUMBER;
+ 260:user_app/main_alarm_file_upload.c ****     uint8_t           count                  = 0;
+ 261:user_app/main_alarm_file_upload.c ****     uint8_t           event_data[255]        = { 0 };
+ 262:user_app/main_alarm_file_upload.c ****     uint8_t           event_data_length      = 0;
+ 263:user_app/main_alarm_file_upload.c ****     uint8_t           asynchronous_msgnumber = 0;
+ 264:user_app/main_alarm_file_upload.c **** 
+ 265:user_app/main_alarm_file_upload.c ****     // Read modem event type and number
+ 266:user_app/main_alarm_file_upload.c ****     modem_get_event( &type, &count, event_data, &event_data_length, &asynchronous_msgnumber );
+ 267:user_app/main_alarm_file_upload.c **** 
+ 268:user_app/main_alarm_file_upload.c ****     // Continue to read modem event until all events have been processed
+ 269:user_app/main_alarm_file_upload.c ****     while( asynchronous_msgnumber > 0 )
+ 270:user_app/main_alarm_file_upload.c ****     {
+ 271:user_app/main_alarm_file_upload.c ****         BSP_DBG_TRACE_WARNING( "Event %u \n", type );
+ 272:user_app/main_alarm_file_upload.c ****         switch( type )
+ 273:user_app/main_alarm_file_upload.c ****         {
+ 274:user_app/main_alarm_file_upload.c ****         case RSP_RESET:
+ 275:user_app/main_alarm_file_upload.c ****             break;
+ 276:user_app/main_alarm_file_upload.c **** 
+ 277:user_app/main_alarm_file_upload.c ****         case RSP_ALARM:
+ 278:user_app/main_alarm_file_upload.c ****             BSP_DBG_TRACE_INFO( " Alarm is finish, prepare a new file upload\n" );
+ 279:user_app/main_alarm_file_upload.c **** 
+ 280:user_app/main_alarm_file_upload.c ****             // Send alternatively file_0 and file_1 on port 25
+ 281:user_app/main_alarm_file_upload.c ****             if( last_file_idx != 0 )
+ 282:user_app/main_alarm_file_upload.c ****             {
+ 283:user_app/main_alarm_file_upload.c ****                 last_file_idx = 0;
+ 284:user_app/main_alarm_file_upload.c ****                 send_upload_file( file_0, sizeof( file_0 ), 25 );
+ 285:user_app/main_alarm_file_upload.c ****             }
+ 286:user_app/main_alarm_file_upload.c ****             else
+ 287:user_app/main_alarm_file_upload.c ****             {
+ 288:user_app/main_alarm_file_upload.c ****                 last_file_idx = 1;
+ 289:user_app/main_alarm_file_upload.c ****                 send_upload_file( file_1, sizeof( file_1 ), 25 );
+ 290:user_app/main_alarm_file_upload.c ****             }
+ 291:user_app/main_alarm_file_upload.c ****             break;
+ 292:user_app/main_alarm_file_upload.c **** 
+ 293:user_app/main_alarm_file_upload.c ****         case RSP_JOINED:
+ 294:user_app/main_alarm_file_upload.c ****             BSP_DBG_TRACE_INFO( "Modem is join, program an alarm\n" );
+ 295:user_app/main_alarm_file_upload.c ****             modem_set_alarm_timer_s( bsp_rng_get_random_in_range( 45, 60 ) );
+ 296:user_app/main_alarm_file_upload.c ****             break;
+ 297:user_app/main_alarm_file_upload.c **** 
+ 298:user_app/main_alarm_file_upload.c ****         case RSP_TXDONE:
+ 299:user_app/main_alarm_file_upload.c ****             BSP_DBG_TRACE_INFO( "TX done \n" );
+ 300:user_app/main_alarm_file_upload.c ****             break;
+ 301:user_app/main_alarm_file_upload.c **** 
+ 302:user_app/main_alarm_file_upload.c ****         case RSP_DOWNDATA:
+ 303:user_app/main_alarm_file_upload.c ****             rx_payload_size = event_data_length - 4;
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccLtFHIM.s 			page 7
+
+
+ 304:user_app/main_alarm_file_upload.c ****             memcpy( rx_payload, &event_data[4], rx_payload_size );
+ 305:user_app/main_alarm_file_upload.c ****             BSP_DBG_TRACE_PRINTF( "Data received on port %u\n", event_data[3] );
+ 306:user_app/main_alarm_file_upload.c ****             BSP_DBG_TRACE_ARRAY( "DOWNDATA", rx_payload, rx_payload_size );
+ 307:user_app/main_alarm_file_upload.c ****             break;
+ 308:user_app/main_alarm_file_upload.c **** 
+ 309:user_app/main_alarm_file_upload.c ****         case RSP_FILEDONE:
+ 310:user_app/main_alarm_file_upload.c ****             BSP_DBG_TRACE_INFO( "File upload is complete, program a new alarm \n" );
+ 311:user_app/main_alarm_file_upload.c ****             modem_set_alarm_timer_s( bsp_rng_get_random_in_range( 60, 120 ) );
+ 312:user_app/main_alarm_file_upload.c ****             break;
+ 313:user_app/main_alarm_file_upload.c **** 
+ 314:user_app/main_alarm_file_upload.c ****         case RSP_SETCONF:
+ 315:user_app/main_alarm_file_upload.c ****             break;
+ 316:user_app/main_alarm_file_upload.c **** 
+ 317:user_app/main_alarm_file_upload.c ****         case RSP_MUTE:
+ 318:user_app/main_alarm_file_upload.c ****             break;
+ 319:user_app/main_alarm_file_upload.c **** 
+ 320:user_app/main_alarm_file_upload.c ****         case RSP_LINKSTATUS:
+ 321:user_app/main_alarm_file_upload.c ****             break;
+ 322:user_app/main_alarm_file_upload.c **** 
+ 323:user_app/main_alarm_file_upload.c ****         default:
+ 324:user_app/main_alarm_file_upload.c ****             BSP_DBG_TRACE_ERROR( "Unknown event %u\n", type );
+ 325:user_app/main_alarm_file_upload.c ****             break;
+ 326:user_app/main_alarm_file_upload.c ****         }
+ 327:user_app/main_alarm_file_upload.c **** 
+ 328:user_app/main_alarm_file_upload.c ****         modem_get_event( &type, &count, event_data, &event_data_length, &asynchronous_msgnumber );
+ 329:user_app/main_alarm_file_upload.c ****     }
+ 330:user_app/main_alarm_file_upload.c **** }
+ 331:user_app/main_alarm_file_upload.c **** 
+ 332:user_app/main_alarm_file_upload.c **** /**
+ 333:user_app/main_alarm_file_upload.c ****  * @brief Start an upload file
+ 334:user_app/main_alarm_file_upload.c ****  *
+ 335:user_app/main_alarm_file_upload.c ****  * @param file      Pointer to the file to send
+ 336:user_app/main_alarm_file_upload.c ****  * @param file_size Size of the file
+ 337:user_app/main_alarm_file_upload.c ****  * @param port      File upload port to use
+ 338:user_app/main_alarm_file_upload.c ****  */
+ 339:user_app/main_alarm_file_upload.c **** static void send_upload_file( uint8_t* file, uint16_t file_size, uint8_t port )
+  34              		.loc 1 339 13 view -0
+  35              		.cfi_startproc
+  36              		@ args = 0, pretend = 0, frame = 0
+  37              		@ frame_needed = 0, uses_anonymous_args = 0
+ 340:user_app/main_alarm_file_upload.c **** {
+ 341:user_app/main_alarm_file_upload.c ****     BSP_DBG_TRACE_WARNING( "START A FILE UPLOAD (size:%d)\n", file_size );
+  38              		.loc 1 341 5 view .LVU1
+  39              		.loc 1 341 5 view .LVU2
+ 339:user_app/main_alarm_file_upload.c **** {
+  40              		.loc 1 339 13 is_stmt 0 view .LVU3
+  41 0000 70B5     		push	{r4, r5, r6, lr}
+  42              		.cfi_def_cfa_offset 16
+  43              		.cfi_offset 4, -16
+  44              		.cfi_offset 5, -12
+  45              		.cfi_offset 6, -8
+  46              		.cfi_offset 14, -4
+ 339:user_app/main_alarm_file_upload.c **** {
+  47              		.loc 1 339 13 view .LVU4
+  48 0002 0C00     		movs	r4, r1
+  49 0004 0500     		movs	r5, r0
+  50              		.loc 1 341 5 view .LVU5
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccLtFHIM.s 			page 8
+
+
+  51 0006 0C48     		ldr	r0, .L2
+  52              	.LVL1:
+  53              		.loc 1 341 5 view .LVU6
+  54 0008 FFF7FEFF 		bl	bsp_trace_print
+  55              	.LVL2:
+  56              		.loc 1 341 5 is_stmt 1 view .LVU7
+  57 000c 0B48     		ldr	r0, .L2+4
+  58 000e FFF7FEFF 		bl	bsp_trace_print
+  59              	.LVL3:
+  60              		.loc 1 341 5 view .LVU8
+  61 0012 2100     		movs	r1, r4
+  62 0014 0A48     		ldr	r0, .L2+8
+  63 0016 FFF7FEFF 		bl	bsp_trace_print
+  64              	.LVL4:
+  65              		.loc 1 341 5 view .LVU9
+  66 001a 0A48     		ldr	r0, .L2+12
+  67 001c FFF7FEFF 		bl	bsp_trace_print
+  68              	.LVL5:
+  69              		.loc 1 341 5 view .LVU10
+  70              		.loc 1 341 74 view .LVU11
+ 342:user_app/main_alarm_file_upload.c **** 
+ 343:user_app/main_alarm_file_upload.c ****     // Initialise the file upload with no encryption and a 2s average delay between each chunks
+ 344:user_app/main_alarm_file_upload.c ****     modem_upload_init( port, FILE_UPLOAD_NOT_ENCRYPTED, file_size, 2 );
+  71              		.loc 1 344 5 view .LVU12
+  72 0020 0223     		movs	r3, #2
+  73 0022 2200     		movs	r2, r4
+  74 0024 0021     		movs	r1, #0
+  75 0026 1920     		movs	r0, #25
+  76 0028 FFF7FEFF 		bl	modem_upload_init
+  77              	.LVL6:
+ 345:user_app/main_alarm_file_upload.c ****     modem_upload_start( file, file_size );
+  78              		.loc 1 345 5 view .LVU13
+  79 002c 2800     		movs	r0, r5
+  80 002e 2100     		movs	r1, r4
+  81 0030 FFF7FEFF 		bl	modem_upload_start
+  82              	.LVL7:
+ 346:user_app/main_alarm_file_upload.c **** }
+  83              		.loc 1 346 1 is_stmt 0 view .LVU14
+  84              		@ sp needed
+  85              	.LVL8:
+  86              		.loc 1 346 1 view .LVU15
+  87 0034 70BD     		pop	{r4, r5, r6, pc}
+  88              	.L3:
+  89 0036 C046     		.align	2
+  90              	.L2:
+  91 0038 00000000 		.word	.LC0
+  92 003c 08000000 		.word	.LC2
+  93 0040 10000000 		.word	.LC4
+  94 0044 2F000000 		.word	.LC6
+  95              		.cfi_endproc
+  96              	.LFE12:
+  98              		.section	.rodata.get_event.str1.1,"aMS",%progbits,1
+  99              	.LC8:
+ 100 0000 1B5B303B 		.ascii	"\033[0;34m\000"
+ 100      33346D00 
+ 101              	.LC10:
+ 102 0008 4765745F 		.ascii	"Get_event () callback\012\000"
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccLtFHIM.s 			page 9
+
+
+ 102      6576656E 
+ 102      74202829 
+ 102      2063616C 
+ 102      6C626163 
+ 103              	.LC15:
+ 104 001f 4576656E 		.ascii	"Event %u\302\240\012\000"
+ 104      74202575 
+ 104      C2A00A00 
+ 105              	.LC17:
+ 106 002b 1B5B303B 		.ascii	"\033[0;32m\000"
+ 106      33326D00 
+ 107              	.LC19:
+ 108 0033 494E464F 		.ascii	"INFO : \000"
+ 108      203A2000 
+ 109              	.LC21:
+ 110 003b 20416C61 		.ascii	" Alarm is finish, prepare a new file upload\012\000"
+ 110      726D2069 
+ 110      73206669 
+ 110      6E697368 
+ 110      2C207072 
+ 111              	.LC26:
+ 112 0068 4D6F6465 		.ascii	"Modem is join, program an alarm\012\000"
+ 112      6D206973 
+ 112      206A6F69 
+ 112      6E2C2070 
+ 112      726F6772 
+ 113              	.LC28:
+ 114 0089 54582064 		.ascii	"TX done \012\000"
+ 114      6F6E6520 
+ 114      0A00
+ 115              	.LC32:
+ 116 0093 44617461 		.ascii	"Data received on port %u\012\000"
+ 116      20726563 
+ 116      65697665 
+ 116      64206F6E 
+ 116      20706F72 
+ 117              	.LC34:
+ 118 00ad 444F574E 		.ascii	"DOWNDATA\000"
+ 118      44415441 
+ 118      00
+ 119              	.LC36:
+ 120 00b6 2573202D 		.ascii	"%s - (%lu bytes):\012\000"
+ 120      2028256C 
+ 120      75206279 
+ 120      74657329 
+ 120      3A0A00
+ 121              	.LC38:
+ 122 00c9 0A00     		.ascii	"\012\000"
+ 123              	.LC40:
+ 124 00cb 20253032 		.ascii	" %02X\000"
+ 124      5800
+ 125              	.LC42:
+ 126 00d1 46696C65 		.ascii	"File upload is complete, program a new alarm \012\000"
+ 126      2075706C 
+ 126      6F616420 
+ 126      69732063 
+ 126      6F6D706C 
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccLtFHIM.s 			page 10
+
+
+ 127              	.LC44:
+ 128 0100 1B5B303B 		.ascii	"\033[0;31m\000"
+ 128      33316D00 
+ 129              	.LC46:
+ 130 0108 4552524F 		.ascii	"ERROR: \000"
+ 130      523A2000 
+ 131              	.LC48:
+ 132 0110 556E6B6E 		.ascii	"Unknown event %u\012\000"
+ 132      6F776E20 
+ 132      6576656E 
+ 132      74202575 
+ 132      0A00
+ 133              		.section	.text.get_event,"ax",%progbits
+ 134              		.align	1
+ 135              		.syntax unified
+ 136              		.code	16
+ 137              		.thumb_func
+ 138              		.fpu softvfp
+ 140              	get_event:
+ 141              	.LFB10:
+ 256:user_app/main_alarm_file_upload.c ****     BSP_DBG_TRACE_MSG_COLOR( "Get_event () callback\n", BSP_DBG_TRACE_COLOR_BLUE );
+ 142              		.loc 1 256 1 is_stmt 1 view -0
+ 143              		.cfi_startproc
+ 144              		@ args = 0, pretend = 0, frame = 264
+ 145              		@ frame_needed = 0, uses_anonymous_args = 0
+ 257:user_app/main_alarm_file_upload.c **** 
+ 146              		.loc 1 257 5 view .LVU17
+ 257:user_app/main_alarm_file_upload.c **** 
+ 147              		.loc 1 257 5 view .LVU18
+ 256:user_app/main_alarm_file_upload.c ****     BSP_DBG_TRACE_MSG_COLOR( "Get_event () callback\n", BSP_DBG_TRACE_COLOR_BLUE );
+ 148              		.loc 1 256 1 is_stmt 0 view .LVU19
+ 149 0000 F0B5     		push	{r4, r5, r6, r7, lr}
+ 150              		.cfi_def_cfa_offset 20
+ 151              		.cfi_offset 4, -20
+ 152              		.cfi_offset 5, -16
+ 153              		.cfi_offset 6, -12
+ 154              		.cfi_offset 7, -8
+ 155              		.cfi_offset 14, -4
+ 257:user_app/main_alarm_file_upload.c **** 
+ 156              		.loc 1 257 5 view .LVU20
+ 157 0002 6348     		ldr	r0, .L27
+ 256:user_app/main_alarm_file_upload.c ****     BSP_DBG_TRACE_MSG_COLOR( "Get_event () callback\n", BSP_DBG_TRACE_COLOR_BLUE );
+ 158              		.loc 1 256 1 view .LVU21
+ 159 0004 C5B0     		sub	sp, sp, #276
+ 160              		.cfi_def_cfa_offset 296
+ 257:user_app/main_alarm_file_upload.c **** 
+ 161              		.loc 1 257 5 view .LVU22
+ 162 0006 FFF7FEFF 		bl	bsp_trace_print
+ 163              	.LVL9:
+ 257:user_app/main_alarm_file_upload.c **** 
+ 164              		.loc 1 257 5 is_stmt 1 view .LVU23
+ 165 000a 6248     		ldr	r0, .L27+4
+ 166 000c FFF7FEFF 		bl	bsp_trace_print
+ 167              	.LVL10:
+ 257:user_app/main_alarm_file_upload.c **** 
+ 168              		.loc 1 257 5 view .LVU24
+ 169 0010 614C     		ldr	r4, .L27+8
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccLtFHIM.s 			page 11
+
+
+ 260:user_app/main_alarm_file_upload.c ****     uint8_t           event_data[255]        = { 0 };
+ 170              		.loc 1 260 23 is_stmt 0 view .LVU25
+ 171 0012 0026     		movs	r6, #0
+ 257:user_app/main_alarm_file_upload.c **** 
+ 172              		.loc 1 257 5 view .LVU26
+ 173 0014 2000     		movs	r0, r4
+ 260:user_app/main_alarm_file_upload.c ****     uint8_t           event_data[255]        = { 0 };
+ 174              		.loc 1 260 23 view .LVU27
+ 175 0016 0D27     		movs	r7, #13
+ 257:user_app/main_alarm_file_upload.c **** 
+ 176              		.loc 1 257 5 view .LVU28
+ 177 0018 FFF7FEFF 		bl	bsp_trace_print
+ 178              	.LVL11:
+ 257:user_app/main_alarm_file_upload.c **** 
+ 179              		.loc 1 257 5 is_stmt 1 view .LVU29
+ 257:user_app/main_alarm_file_upload.c **** 
+ 180              		.loc 1 257 83 view .LVU30
+ 259:user_app/main_alarm_file_upload.c ****     uint8_t           count                  = 0;
+ 181              		.loc 1 259 5 view .LVU31
+ 259:user_app/main_alarm_file_upload.c ****     uint8_t           count                  = 0;
+ 182              		.loc 1 259 23 is_stmt 0 view .LVU32
+ 183 001c 0B23     		movs	r3, #11
+ 261:user_app/main_alarm_file_upload.c ****     uint8_t           event_data_length      = 0;
+ 184              		.loc 1 261 23 view .LVU33
+ 185 001e FB22     		movs	r2, #251
+ 186 0020 3100     		movs	r1, r6
+ 259:user_app/main_alarm_file_upload.c ****     uint8_t           count                  = 0;
+ 187              		.loc 1 259 23 view .LVU34
+ 188 0022 03AD     		add	r5, sp, #12
+ 260:user_app/main_alarm_file_upload.c ****     uint8_t           event_data[255]        = { 0 };
+ 189              		.loc 1 260 23 view .LVU35
+ 190 0024 6F44     		add	r7, r7, sp
+ 261:user_app/main_alarm_file_upload.c ****     uint8_t           event_data_length      = 0;
+ 191              		.loc 1 261 23 view .LVU36
+ 192 0026 05A8     		add	r0, sp, #20
+ 259:user_app/main_alarm_file_upload.c ****     uint8_t           count                  = 0;
+ 193              		.loc 1 259 23 view .LVU37
+ 194 0028 2B70     		strb	r3, [r5]
+ 260:user_app/main_alarm_file_upload.c ****     uint8_t           event_data[255]        = { 0 };
+ 195              		.loc 1 260 5 is_stmt 1 view .LVU38
+ 260:user_app/main_alarm_file_upload.c ****     uint8_t           event_data[255]        = { 0 };
+ 196              		.loc 1 260 23 is_stmt 0 view .LVU39
+ 197 002a 3E70     		strb	r6, [r7]
+ 261:user_app/main_alarm_file_upload.c ****     uint8_t           event_data_length      = 0;
+ 198              		.loc 1 261 5 is_stmt 1 view .LVU40
+ 261:user_app/main_alarm_file_upload.c ****     uint8_t           event_data_length      = 0;
+ 199              		.loc 1 261 23 is_stmt 0 view .LVU41
+ 200 002c 0496     		str	r6, [sp, #16]
+ 201 002e FFF7FEFF 		bl	memset
+ 202              	.LVL12:
+ 262:user_app/main_alarm_file_upload.c ****     uint8_t           asynchronous_msgnumber = 0;
+ 203              		.loc 1 262 5 is_stmt 1 view .LVU42
+ 262:user_app/main_alarm_file_upload.c ****     uint8_t           asynchronous_msgnumber = 0;
+ 204              		.loc 1 262 23 is_stmt 0 view .LVU43
+ 205 0032 6B46     		mov	r3, sp
+ 206 0034 9E73     		strb	r6, [r3, #14]
+ 263:user_app/main_alarm_file_upload.c **** 
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccLtFHIM.s 			page 12
+
+
+ 207              		.loc 1 263 5 is_stmt 1 view .LVU44
+ 263:user_app/main_alarm_file_upload.c **** 
+ 208              		.loc 1 263 23 is_stmt 0 view .LVU45
+ 209 0036 0F23     		movs	r3, #15
+ 210 0038 6B44     		add	r3, r3, sp
+ 211 003a 1E70     		strb	r6, [r3]
+ 266:user_app/main_alarm_file_upload.c **** 
+ 212              		.loc 1 266 5 is_stmt 1 view .LVU46
+ 213              	.L26:
+ 328:user_app/main_alarm_file_upload.c ****     }
+ 214              		.loc 1 328 9 is_stmt 0 view .LVU47
+ 215 003c 0093     		str	r3, [sp]
+ 216 003e 0E23     		movs	r3, #14
+ 217 0040 3900     		movs	r1, r7
+ 218 0042 6B44     		add	r3, r3, sp
+ 219 0044 2800     		movs	r0, r5
+ 220 0046 04AA     		add	r2, sp, #16
+ 221 0048 FFF7FEFF 		bl	modem_get_event
+ 222              	.LVL13:
+ 269:user_app/main_alarm_file_upload.c ****     {
+ 223              		.loc 1 269 10 is_stmt 1 view .LVU48
+ 269:user_app/main_alarm_file_upload.c ****     {
+ 224              		.loc 1 269 35 is_stmt 0 view .LVU49
+ 225 004c 0F23     		movs	r3, #15
+ 226 004e 6B44     		add	r3, r3, sp
+ 269:user_app/main_alarm_file_upload.c ****     {
+ 227              		.loc 1 269 10 view .LVU50
+ 228 0050 1B78     		ldrb	r3, [r3]
+ 229 0052 002B     		cmp	r3, #0
+ 230 0054 01D1     		bne	.L18
+ 330:user_app/main_alarm_file_upload.c **** 
+ 231              		.loc 1 330 1 view .LVU51
+ 232 0056 45B0     		add	sp, sp, #276
+ 233              		@ sp needed
+ 234 0058 F0BD     		pop	{r4, r5, r6, r7, pc}
+ 235              	.L18:
+ 271:user_app/main_alarm_file_upload.c ****         switch( type )
+ 236              		.loc 1 271 9 is_stmt 1 view .LVU52
+ 271:user_app/main_alarm_file_upload.c ****         switch( type )
+ 237              		.loc 1 271 9 view .LVU53
+ 238 005a 5048     		ldr	r0, .L27+12
+ 239 005c FFF7FEFF 		bl	bsp_trace_print
+ 240              	.LVL14:
+ 271:user_app/main_alarm_file_upload.c ****         switch( type )
+ 241              		.loc 1 271 9 view .LVU54
+ 242 0060 4F48     		ldr	r0, .L27+16
+ 243 0062 FFF7FEFF 		bl	bsp_trace_print
+ 244              	.LVL15:
+ 271:user_app/main_alarm_file_upload.c ****         switch( type )
+ 245              		.loc 1 271 9 view .LVU55
+ 246 0066 2978     		ldrb	r1, [r5]
+ 247 0068 4E48     		ldr	r0, .L27+20
+ 248 006a FFF7FEFF 		bl	bsp_trace_print
+ 249              	.LVL16:
+ 271:user_app/main_alarm_file_upload.c ****         switch( type )
+ 250              		.loc 1 271 9 view .LVU56
+ 251 006e 2000     		movs	r0, r4
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccLtFHIM.s 			page 13
+
+
+ 252 0070 FFF7FEFF 		bl	bsp_trace_print
+ 253              	.LVL17:
+ 271:user_app/main_alarm_file_upload.c ****         switch( type )
+ 254              		.loc 1 271 9 view .LVU57
+ 271:user_app/main_alarm_file_upload.c ****         switch( type )
+ 255              		.loc 1 271 54 view .LVU58
+ 272:user_app/main_alarm_file_upload.c ****         {
+ 256              		.loc 1 272 9 view .LVU59
+ 257 0074 2878     		ldrb	r0, [r5]
+ 258 0076 0928     		cmp	r0, #9
+ 259 0078 00D9     		bls	.LCB157
+ 260 007a 7EE0     		b	.L6	@long jump
+ 261              	.LCB157:
+ 262 007c FFF7FEFF 		bl	__gnu_thumb1_case_uqi
+ 263              	.L8:
+ 264 0080 1B       		.byte	(.L7-.L8)/2
+ 265 0081 05       		.byte	(.L13-.L8)/2
+ 266 0082 23       		.byte	(.L12-.L8)/2
+ 267 0083 36       		.byte	(.L11-.L8)/2
+ 268 0084 41       		.byte	(.L10-.L8)/2
+ 269 0085 6E       		.byte	(.L9-.L8)/2
+ 270 0086 1B       		.byte	(.L7-.L8)/2
+ 271 0087 1B       		.byte	(.L7-.L8)/2
+ 272 0088 7D       		.byte	(.L6-.L8)/2
+ 273 0089 1B       		.byte	(.L7-.L8)/2
+ 274              		.p2align 1
+ 275              	.L13:
+ 278:user_app/main_alarm_file_upload.c **** 
+ 276              		.loc 1 278 13 view .LVU60
+ 278:user_app/main_alarm_file_upload.c **** 
+ 277              		.loc 1 278 13 view .LVU61
+ 278 008a 4748     		ldr	r0, .L27+24
+ 279 008c FFF7FEFF 		bl	bsp_trace_print
+ 280              	.LVL18:
+ 278:user_app/main_alarm_file_upload.c **** 
+ 281              		.loc 1 278 13 view .LVU62
+ 282 0090 4648     		ldr	r0, .L27+28
+ 283 0092 FFF7FEFF 		bl	bsp_trace_print
+ 284              	.LVL19:
+ 278:user_app/main_alarm_file_upload.c **** 
+ 285              		.loc 1 278 13 view .LVU63
+ 286 0096 4648     		ldr	r0, .L27+32
+ 287 0098 FFF7FEFF 		bl	bsp_trace_print
+ 288              	.LVL20:
+ 278:user_app/main_alarm_file_upload.c **** 
+ 289              		.loc 1 278 13 view .LVU64
+ 290 009c 2000     		movs	r0, r4
+ 291 009e FFF7FEFF 		bl	bsp_trace_print
+ 292              	.LVL21:
+ 278:user_app/main_alarm_file_upload.c **** 
+ 293              		.loc 1 278 13 view .LVU65
+ 278:user_app/main_alarm_file_upload.c **** 
+ 294              		.loc 1 278 82 view .LVU66
+ 281:user_app/main_alarm_file_upload.c ****             {
+ 295              		.loc 1 281 13 view .LVU67
+ 281:user_app/main_alarm_file_upload.c ****             {
+ 296              		.loc 1 281 31 is_stmt 0 view .LVU68
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccLtFHIM.s 			page 14
+
+
+ 297 00a2 444B     		ldr	r3, .L27+36
+ 281:user_app/main_alarm_file_upload.c ****             {
+ 298              		.loc 1 281 15 view .LVU69
+ 299 00a4 1A78     		ldrb	r2, [r3]
+ 300 00a6 002A     		cmp	r2, #0
+ 301 00a8 08D0     		beq	.L14
+ 283:user_app/main_alarm_file_upload.c ****                 send_upload_file( file_0, sizeof( file_0 ), 25 );
+ 302              		.loc 1 283 17 is_stmt 1 view .LVU70
+ 283:user_app/main_alarm_file_upload.c ****                 send_upload_file( file_0, sizeof( file_0 ), 25 );
+ 303              		.loc 1 283 31 is_stmt 0 view .LVU71
+ 304 00aa 0022     		movs	r2, #0
+ 284:user_app/main_alarm_file_upload.c ****             }
+ 305              		.loc 1 284 17 view .LVU72
+ 306 00ac 4249     		ldr	r1, .L27+40
+ 307 00ae 4348     		ldr	r0, .L27+44
+ 283:user_app/main_alarm_file_upload.c ****                 send_upload_file( file_0, sizeof( file_0 ), 25 );
+ 308              		.loc 1 283 31 view .LVU73
+ 309 00b0 1A70     		strb	r2, [r3]
+ 284:user_app/main_alarm_file_upload.c ****             }
+ 310              		.loc 1 284 17 is_stmt 1 view .LVU74
+ 311              	.L22:
+ 289:user_app/main_alarm_file_upload.c ****             }
+ 312              		.loc 1 289 17 is_stmt 0 view .LVU75
+ 313 00b2 FFF7FEFF 		bl	send_upload_file.constprop.0
+ 314              	.LVL22:
+ 315              	.L7:
+ 328:user_app/main_alarm_file_upload.c ****     }
+ 316              		.loc 1 328 9 is_stmt 1 view .LVU76
+ 317 00b6 0F23     		movs	r3, #15
+ 318 00b8 6B44     		add	r3, r3, sp
+ 319 00ba BFE7     		b	.L26
+ 320              	.L14:
+ 288:user_app/main_alarm_file_upload.c ****                 send_upload_file( file_1, sizeof( file_1 ), 25 );
+ 321              		.loc 1 288 17 view .LVU77
+ 288:user_app/main_alarm_file_upload.c ****                 send_upload_file( file_1, sizeof( file_1 ), 25 );
+ 322              		.loc 1 288 31 is_stmt 0 view .LVU78
+ 323 00bc 0122     		movs	r2, #1
+ 289:user_app/main_alarm_file_upload.c ****             }
+ 324              		.loc 1 289 17 view .LVU79
+ 325 00be 4049     		ldr	r1, .L27+48
+ 326 00c0 4048     		ldr	r0, .L27+52
+ 288:user_app/main_alarm_file_upload.c ****                 send_upload_file( file_1, sizeof( file_1 ), 25 );
+ 327              		.loc 1 288 31 view .LVU80
+ 328 00c2 1A70     		strb	r2, [r3]
+ 289:user_app/main_alarm_file_upload.c ****             }
+ 329              		.loc 1 289 17 is_stmt 1 view .LVU81
+ 330 00c4 F5E7     		b	.L22
+ 331              	.L12:
+ 294:user_app/main_alarm_file_upload.c ****             modem_set_alarm_timer_s( bsp_rng_get_random_in_range( 45, 60 ) );
+ 332              		.loc 1 294 13 view .LVU82
+ 294:user_app/main_alarm_file_upload.c ****             modem_set_alarm_timer_s( bsp_rng_get_random_in_range( 45, 60 ) );
+ 333              		.loc 1 294 13 view .LVU83
+ 334 00c6 3848     		ldr	r0, .L27+24
+ 335 00c8 FFF7FEFF 		bl	bsp_trace_print
+ 336              	.LVL23:
+ 294:user_app/main_alarm_file_upload.c ****             modem_set_alarm_timer_s( bsp_rng_get_random_in_range( 45, 60 ) );
+ 337              		.loc 1 294 13 view .LVU84
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccLtFHIM.s 			page 15
+
+
+ 338 00cc 3748     		ldr	r0, .L27+28
+ 339 00ce FFF7FEFF 		bl	bsp_trace_print
+ 340              	.LVL24:
+ 294:user_app/main_alarm_file_upload.c ****             modem_set_alarm_timer_s( bsp_rng_get_random_in_range( 45, 60 ) );
+ 341              		.loc 1 294 13 view .LVU85
+ 342 00d2 3D48     		ldr	r0, .L27+56
+ 343 00d4 FFF7FEFF 		bl	bsp_trace_print
+ 344              	.LVL25:
+ 294:user_app/main_alarm_file_upload.c ****             modem_set_alarm_timer_s( bsp_rng_get_random_in_range( 45, 60 ) );
+ 345              		.loc 1 294 13 view .LVU86
+ 346 00d8 2000     		movs	r0, r4
+ 347 00da FFF7FEFF 		bl	bsp_trace_print
+ 348              	.LVL26:
+ 294:user_app/main_alarm_file_upload.c ****             modem_set_alarm_timer_s( bsp_rng_get_random_in_range( 45, 60 ) );
+ 349              		.loc 1 294 13 view .LVU87
+ 294:user_app/main_alarm_file_upload.c ****             modem_set_alarm_timer_s( bsp_rng_get_random_in_range( 45, 60 ) );
+ 350              		.loc 1 294 70 view .LVU88
+ 295:user_app/main_alarm_file_upload.c ****             break;
+ 351              		.loc 1 295 13 view .LVU89
+ 352 00de 3C21     		movs	r1, #60
+ 353 00e0 2D20     		movs	r0, #45
+ 354              	.L23:
+ 311:user_app/main_alarm_file_upload.c ****             break;
+ 355              		.loc 1 311 13 is_stmt 0 view .LVU90
+ 356 00e2 FFF7FEFF 		bl	bsp_rng_get_random_in_range
+ 357              	.LVL27:
+ 358 00e6 FFF7FEFF 		bl	modem_set_alarm_timer_s
+ 359              	.LVL28:
+ 312:user_app/main_alarm_file_upload.c **** 
+ 360              		.loc 1 312 13 is_stmt 1 view .LVU91
+ 361 00ea E4E7     		b	.L7
+ 362              	.L11:
+ 299:user_app/main_alarm_file_upload.c ****             break;
+ 363              		.loc 1 299 13 view .LVU92
+ 299:user_app/main_alarm_file_upload.c ****             break;
+ 364              		.loc 1 299 13 view .LVU93
+ 365 00ec 2E48     		ldr	r0, .L27+24
+ 366 00ee FFF7FEFF 		bl	bsp_trace_print
+ 367              	.LVL29:
+ 299:user_app/main_alarm_file_upload.c ****             break;
+ 368              		.loc 1 299 13 view .LVU94
+ 369 00f2 2E48     		ldr	r0, .L27+28
+ 370 00f4 FFF7FEFF 		bl	bsp_trace_print
+ 371              	.LVL30:
+ 299:user_app/main_alarm_file_upload.c ****             break;
+ 372              		.loc 1 299 13 view .LVU95
+ 373 00f8 3448     		ldr	r0, .L27+60
+ 374 00fa FFF7FEFF 		bl	bsp_trace_print
+ 375              	.LVL31:
+ 299:user_app/main_alarm_file_upload.c ****             break;
+ 376              		.loc 1 299 13 view .LVU96
+ 377              	.L24:
+ 324:user_app/main_alarm_file_upload.c ****             break;
+ 378              		.loc 1 324 13 view .LVU97
+ 379 00fe 2000     		movs	r0, r4
+ 380 0100 1AE0     		b	.L25
+ 381              	.L10:
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccLtFHIM.s 			page 16
+
+
+ 303:user_app/main_alarm_file_upload.c ****             memcpy( rx_payload, &event_data[4], rx_payload_size );
+ 382              		.loc 1 303 13 view .LVU98
+ 303:user_app/main_alarm_file_upload.c ****             memcpy( rx_payload, &event_data[4], rx_payload_size );
+ 383              		.loc 1 303 49 is_stmt 0 view .LVU99
+ 384 0102 6B46     		mov	r3, sp
+ 385 0104 9A7B     		ldrb	r2, [r3, #14]
+ 303:user_app/main_alarm_file_upload.c ****             memcpy( rx_payload, &event_data[4], rx_payload_size );
+ 386              		.loc 1 303 29 view .LVU100
+ 387 0106 324B     		ldr	r3, .L27+64
+ 303:user_app/main_alarm_file_upload.c ****             memcpy( rx_payload, &event_data[4], rx_payload_size );
+ 388              		.loc 1 303 49 view .LVU101
+ 389 0108 043A     		subs	r2, r2, #4
+ 390 010a D2B2     		uxtb	r2, r2
+ 304:user_app/main_alarm_file_upload.c ****             BSP_DBG_TRACE_PRINTF( "Data received on port %u\n", event_data[3] );
+ 391              		.loc 1 304 13 view .LVU102
+ 392 010c 05A9     		add	r1, sp, #20
+ 393 010e 3148     		ldr	r0, .L27+68
+ 303:user_app/main_alarm_file_upload.c ****             memcpy( rx_payload, &event_data[4], rx_payload_size );
+ 394              		.loc 1 303 29 view .LVU103
+ 395 0110 1A70     		strb	r2, [r3]
+ 304:user_app/main_alarm_file_upload.c ****             BSP_DBG_TRACE_PRINTF( "Data received on port %u\n", event_data[3] );
+ 396              		.loc 1 304 13 is_stmt 1 view .LVU104
+ 397 0112 FFF7FEFF 		bl	memcpy
+ 398              	.LVL32:
+ 305:user_app/main_alarm_file_upload.c ****             BSP_DBG_TRACE_ARRAY( "DOWNDATA", rx_payload, rx_payload_size );
+ 399              		.loc 1 305 13 view .LVU105
+ 400 0116 04AB     		add	r3, sp, #16
+ 401 0118 D978     		ldrb	r1, [r3, #3]
+ 402 011a 2F48     		ldr	r0, .L27+72
+ 403 011c FFF7FEFF 		bl	bsp_trace_print
+ 404              	.LVL33:
+ 306:user_app/main_alarm_file_upload.c ****             break;
+ 405              		.loc 1 306 13 view .LVU106
+ 306:user_app/main_alarm_file_upload.c ****             break;
+ 406              		.loc 1 306 13 view .LVU107
+ 407 0120 2B4B     		ldr	r3, .L27+64
+ 408 0122 2E49     		ldr	r1, .L27+76
+ 409 0124 1A78     		ldrb	r2, [r3]
+ 410 0126 2E48     		ldr	r0, .L27+80
+ 411 0128 FFF7FEFF 		bl	bsp_trace_print
+ 412              	.LVL34:
+ 306:user_app/main_alarm_file_upload.c ****             break;
+ 413              		.loc 1 306 13 view .LVU108
+ 414              	.LBB2:
+ 306:user_app/main_alarm_file_upload.c ****             break;
+ 415              		.loc 1 306 13 view .LVU109
+ 306:user_app/main_alarm_file_upload.c ****             break;
+ 416              		.loc 1 306 13 is_stmt 0 view .LVU110
+ 417 012c 0026     		movs	r6, #0
+ 418              	.LVL35:
+ 419              	.L15:
+ 306:user_app/main_alarm_file_upload.c ****             break;
+ 420              		.loc 1 306 13 is_stmt 1 discriminator 7 view .LVU111
+ 421 012e 284B     		ldr	r3, .L27+64
+ 422 0130 1B78     		ldrb	r3, [r3]
+ 423 0132 B342     		cmp	r3, r6
+ 424 0134 03D8     		bhi	.L17
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccLtFHIM.s 			page 17
+
+
+ 425              	.LBE2:
+ 306:user_app/main_alarm_file_upload.c ****             break;
+ 426              		.loc 1 306 13 discriminator 9 view .LVU112
+ 427 0136 2B48     		ldr	r0, .L27+84
+ 428              	.LVL36:
+ 429              	.L25:
+ 324:user_app/main_alarm_file_upload.c ****             break;
+ 430              		.loc 1 324 13 is_stmt 0 view .LVU113
+ 431 0138 FFF7FEFF 		bl	bsp_trace_print
+ 432              	.LVL37:
+ 324:user_app/main_alarm_file_upload.c ****             break;
+ 433              		.loc 1 324 13 is_stmt 1 view .LVU114
+ 324:user_app/main_alarm_file_upload.c ****             break;
+ 434              		.loc 1 324 62 view .LVU115
+ 325:user_app/main_alarm_file_upload.c ****         }
+ 435              		.loc 1 325 13 view .LVU116
+ 436 013c BBE7     		b	.L7
+ 437              	.LVL38:
+ 438              	.L17:
+ 439              	.LBB3:
+ 306:user_app/main_alarm_file_upload.c ****             break;
+ 440              		.loc 1 306 13 discriminator 8 view .LVU117
+ 441 013e 0F23     		movs	r3, #15
+ 442 0140 1E42     		tst	r6, r3
+ 443 0142 04D1     		bne	.L16
+ 306:user_app/main_alarm_file_upload.c ****             break;
+ 444              		.loc 1 306 13 is_stmt 0 discriminator 2 view .LVU118
+ 445 0144 002E     		cmp	r6, #0
+ 446 0146 02D0     		beq	.L16
+ 306:user_app/main_alarm_file_upload.c ****             break;
+ 447              		.loc 1 306 13 is_stmt 1 discriminator 4 view .LVU119
+ 448 0148 2648     		ldr	r0, .L27+84
+ 449 014a FFF7FEFF 		bl	bsp_trace_print
+ 450              	.LVL39:
+ 451              	.L16:
+ 306:user_app/main_alarm_file_upload.c ****             break;
+ 452              		.loc 1 306 13 discriminator 6 view .LVU120
+ 453 014e 214B     		ldr	r3, .L27+68
+ 454 0150 2548     		ldr	r0, .L27+88
+ 455 0152 995D     		ldrb	r1, [r3, r6]
+ 456 0154 FFF7FEFF 		bl	bsp_trace_print
+ 457              	.LVL40:
+ 306:user_app/main_alarm_file_upload.c ****             break;
+ 458              		.loc 1 306 13 discriminator 6 view .LVU121
+ 459 0158 0136     		adds	r6, r6, #1
+ 460              	.LVL41:
+ 306:user_app/main_alarm_file_upload.c ****             break;
+ 461              		.loc 1 306 13 is_stmt 0 discriminator 6 view .LVU122
+ 462 015a E8E7     		b	.L15
+ 463              	.LVL42:
+ 464              	.L9:
+ 306:user_app/main_alarm_file_upload.c ****             break;
+ 465              		.loc 1 306 13 discriminator 6 view .LVU123
+ 466              	.LBE3:
+ 310:user_app/main_alarm_file_upload.c ****             modem_set_alarm_timer_s( bsp_rng_get_random_in_range( 60, 120 ) );
+ 467              		.loc 1 310 13 is_stmt 1 view .LVU124
+ 310:user_app/main_alarm_file_upload.c ****             modem_set_alarm_timer_s( bsp_rng_get_random_in_range( 60, 120 ) );
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccLtFHIM.s 			page 18
+
+
+ 468              		.loc 1 310 13 view .LVU125
+ 469 015c 1248     		ldr	r0, .L27+24
+ 470 015e FFF7FEFF 		bl	bsp_trace_print
+ 471              	.LVL43:
+ 310:user_app/main_alarm_file_upload.c ****             modem_set_alarm_timer_s( bsp_rng_get_random_in_range( 60, 120 ) );
+ 472              		.loc 1 310 13 view .LVU126
+ 473 0162 1248     		ldr	r0, .L27+28
+ 474 0164 FFF7FEFF 		bl	bsp_trace_print
+ 475              	.LVL44:
+ 310:user_app/main_alarm_file_upload.c ****             modem_set_alarm_timer_s( bsp_rng_get_random_in_range( 60, 120 ) );
+ 476              		.loc 1 310 13 view .LVU127
+ 477 0168 2048     		ldr	r0, .L27+92
+ 478 016a FFF7FEFF 		bl	bsp_trace_print
+ 479              	.LVL45:
+ 310:user_app/main_alarm_file_upload.c ****             modem_set_alarm_timer_s( bsp_rng_get_random_in_range( 60, 120 ) );
+ 480              		.loc 1 310 13 view .LVU128
+ 481 016e 2000     		movs	r0, r4
+ 482 0170 FFF7FEFF 		bl	bsp_trace_print
+ 483              	.LVL46:
+ 310:user_app/main_alarm_file_upload.c ****             modem_set_alarm_timer_s( bsp_rng_get_random_in_range( 60, 120 ) );
+ 484              		.loc 1 310 13 view .LVU129
+ 310:user_app/main_alarm_file_upload.c ****             modem_set_alarm_timer_s( bsp_rng_get_random_in_range( 60, 120 ) );
+ 485              		.loc 1 310 84 view .LVU130
+ 311:user_app/main_alarm_file_upload.c ****             break;
+ 486              		.loc 1 311 13 view .LVU131
+ 487 0174 7821     		movs	r1, #120
+ 488 0176 3C20     		movs	r0, #60
+ 489 0178 B3E7     		b	.L23
+ 490              	.L6:
+ 324:user_app/main_alarm_file_upload.c ****             break;
+ 491              		.loc 1 324 13 view .LVU132
+ 324:user_app/main_alarm_file_upload.c ****             break;
+ 492              		.loc 1 324 13 view .LVU133
+ 493 017a 1D48     		ldr	r0, .L27+96
+ 494 017c FFF7FEFF 		bl	bsp_trace_print
+ 495              	.LVL47:
+ 324:user_app/main_alarm_file_upload.c ****             break;
+ 496              		.loc 1 324 13 view .LVU134
+ 497 0180 1C48     		ldr	r0, .L27+100
+ 498 0182 FFF7FEFF 		bl	bsp_trace_print
+ 499              	.LVL48:
+ 324:user_app/main_alarm_file_upload.c ****             break;
+ 500              		.loc 1 324 13 view .LVU135
+ 501 0186 2978     		ldrb	r1, [r5]
+ 502 0188 1B48     		ldr	r0, .L27+104
+ 503 018a FFF7FEFF 		bl	bsp_trace_print
+ 504              	.LVL49:
+ 505 018e B6E7     		b	.L24
+ 506              	.L28:
+ 507              		.align	2
+ 508              	.L27:
+ 509 0190 00000000 		.word	.LC8
+ 510 0194 08000000 		.word	.LC10
+ 511 0198 2F000000 		.word	.LC6
+ 512 019c 00000000 		.word	.LC0
+ 513 01a0 08000000 		.word	.LC2
+ 514 01a4 1F000000 		.word	.LC15
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccLtFHIM.s 			page 19
+
+
+ 515 01a8 2B000000 		.word	.LC17
+ 516 01ac 33000000 		.word	.LC19
+ 517 01b0 3B000000 		.word	.LC21
+ 518 01b4 00000000 		.word	.LANCHOR0
+ 519 01b8 B7020000 		.word	695
+ 520 01bc 00000000 		.word	file_0
+ 521 01c0 0B060000 		.word	1547
+ 522 01c4 00000000 		.word	file_1
+ 523 01c8 68000000 		.word	.LC26
+ 524 01cc 89000000 		.word	.LC28
+ 525 01d0 00000000 		.word	.LANCHOR1
+ 526 01d4 00000000 		.word	rx_payload
+ 527 01d8 93000000 		.word	.LC32
+ 528 01dc AD000000 		.word	.LC34
+ 529 01e0 B6000000 		.word	.LC36
+ 530 01e4 C9000000 		.word	.LC38
+ 531 01e8 CB000000 		.word	.LC40
+ 532 01ec D1000000 		.word	.LC42
+ 533 01f0 00010000 		.word	.LC44
+ 534 01f4 08010000 		.word	.LC46
+ 535 01f8 10010000 		.word	.LC48
+ 536              		.cfi_endproc
+ 537              	.LFE10:
+ 539              		.section	.rodata.main_alarm_file_upload.str1.1,"aMS",%progbits,1
+ 540              	.LC53:
+ 541 0000 416C6172 		.ascii	"Alarm and file upload exemple is starting \012\000"
+ 541      6D20616E 
+ 541      64206669 
+ 541      6C652075 
+ 541      706C6F61 
+ 542              		.section	.text.main_alarm_file_upload,"ax",%progbits
+ 543              		.align	1
+ 544              		.global	main_alarm_file_upload
+ 545              		.syntax unified
+ 546              		.code	16
+ 547              		.thumb_func
+ 548              		.fpu softvfp
+ 550              	main_alarm_file_upload:
+ 551              	.LVL50:
+ 552              	.LFB9:
+ 210:user_app/main_alarm_file_upload.c ****     // Disable IRQ to avoid unwanted behaviour during init
+ 553              		.loc 1 210 1 view -0
+ 554              		.cfi_startproc
+ 555              		@ args = 0, pretend = 0, frame = 0
+ 556              		@ frame_needed = 0, uses_anonymous_args = 0
+ 212:user_app/main_alarm_file_upload.c **** 
+ 557              		.loc 1 212 5 view .LVU137
+ 210:user_app/main_alarm_file_upload.c ****     // Disable IRQ to avoid unwanted behaviour during init
+ 558              		.loc 1 210 1 is_stmt 0 view .LVU138
+ 559 0000 70B5     		push	{r4, r5, r6, lr}
+ 560              		.cfi_def_cfa_offset 16
+ 561              		.cfi_offset 4, -16
+ 562              		.cfi_offset 5, -12
+ 563              		.cfi_offset 6, -8
+ 564              		.cfi_offset 14, -4
+ 210:user_app/main_alarm_file_upload.c ****     // Disable IRQ to avoid unwanted behaviour during init
+ 565              		.loc 1 210 1 view .LVU139
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccLtFHIM.s 			page 20
+
+
+ 566 0002 0600     		movs	r6, r0
+ 567 0004 0D00     		movs	r5, r1
+ 568 0006 1400     		movs	r4, r2
+ 212:user_app/main_alarm_file_upload.c **** 
+ 569              		.loc 1 212 5 view .LVU140
+ 570 0008 FFF7FEFF 		bl	bsp_disable_irq
+ 571              	.LVL51:
+ 216:user_app/main_alarm_file_upload.c **** 
+ 572              		.loc 1 216 5 is_stmt 1 view .LVU141
+ 573 000c 1048     		ldr	r0, .L31
+ 574 000e FFF7FEFF 		bl	modem_init
+ 575              	.LVL52:
+ 219:user_app/main_alarm_file_upload.c **** 
+ 576              		.loc 1 219 5 view .LVU142
+ 577 0012 FFF7FEFF 		bl	bsp_enable_irq
+ 578              	.LVL53:
+ 223:user_app/main_alarm_file_upload.c ****     modem_set_joineui( user_join_eui );
+ 579              		.loc 1 223 5 view .LVU143
+ 580 0016 3000     		movs	r0, r6
+ 581 0018 FFF7FEFF 		bl	modem_set_deveui
+ 582              	.LVL54:
+ 224:user_app/main_alarm_file_upload.c ****     modem_set_nwkkey( user_app_key );
+ 583              		.loc 1 224 5 view .LVU144
+ 584 001c 2800     		movs	r0, r5
+ 585 001e FFF7FEFF 		bl	modem_set_joineui
+ 586              	.LVL55:
+ 225:user_app/main_alarm_file_upload.c **** 
+ 587              		.loc 1 225 5 view .LVU145
+ 588 0022 2000     		movs	r0, r4
+ 589 0024 FFF7FEFF 		bl	modem_set_nwkkey
+ 590              	.LVL56:
+ 228:user_app/main_alarm_file_upload.c **** 
+ 591              		.loc 1 228 5 view .LVU146
+ 592 0028 FFF7FEFF 		bl	modem_join
+ 593              	.LVL57:
+ 230:user_app/main_alarm_file_upload.c **** 
+ 594              		.loc 1 230 5 view .LVU147
+ 230:user_app/main_alarm_file_upload.c **** 
+ 595              		.loc 1 230 5 view .LVU148
+ 596 002c 0948     		ldr	r0, .L31+4
+ 597 002e FFF7FEFF 		bl	bsp_trace_print
+ 598              	.LVL58:
+ 230:user_app/main_alarm_file_upload.c **** 
+ 599              		.loc 1 230 5 view .LVU149
+ 600 0032 0948     		ldr	r0, .L31+8
+ 601 0034 FFF7FEFF 		bl	bsp_trace_print
+ 602              	.LVL59:
+ 230:user_app/main_alarm_file_upload.c **** 
+ 603              		.loc 1 230 5 view .LVU150
+ 604 0038 0848     		ldr	r0, .L31+12
+ 605 003a FFF7FEFF 		bl	bsp_trace_print
+ 606              	.LVL60:
+ 230:user_app/main_alarm_file_upload.c **** 
+ 607              		.loc 1 230 5 view .LVU151
+ 608 003e 0848     		ldr	r0, .L31+16
+ 609 0040 FFF7FEFF 		bl	bsp_trace_print
+ 610              	.LVL61:
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccLtFHIM.s 			page 21
+
+
+ 611              	.L30:
+ 230:user_app/main_alarm_file_upload.c **** 
+ 612              		.loc 1 230 5 discriminator 1 view .LVU152
+ 230:user_app/main_alarm_file_upload.c **** 
+ 613              		.loc 1 230 73 discriminator 1 view .LVU153
+ 232:user_app/main_alarm_file_upload.c ****     {
+ 614              		.loc 1 232 5 discriminator 1 view .LVU154
+ 615              	.LBB4:
+ 235:user_app/main_alarm_file_upload.c **** 
+ 616              		.loc 1 235 9 discriminator 1 view .LVU155
+ 235:user_app/main_alarm_file_upload.c **** 
+ 617              		.loc 1 235 31 is_stmt 0 discriminator 1 view .LVU156
+ 618 0044 FFF7FEFF 		bl	modem_run_engine
+ 619              	.LVL62:
+ 238:user_app/main_alarm_file_upload.c **** 
+ 620              		.loc 1 238 9 is_stmt 1 discriminator 1 view .LVU157
+ 621 0048 FFF7FEFF 		bl	bsp_mcu_set_sleep_for_ms
+ 622              	.LVL63:
+ 238:user_app/main_alarm_file_upload.c **** 
+ 623              		.loc 1 238 9 is_stmt 0 discriminator 1 view .LVU158
+ 624              	.LBE4:
+ 232:user_app/main_alarm_file_upload.c ****     {
+ 625              		.loc 1 232 10 is_stmt 1 discriminator 1 view .LVU159
+ 626 004c FAE7     		b	.L30
+ 627              	.L32:
+ 628 004e C046     		.align	2
+ 629              	.L31:
+ 630 0050 00000000 		.word	get_event
+ 631 0054 2B000000 		.word	.LC17
+ 632 0058 33000000 		.word	.LC19
+ 633 005c 00000000 		.word	.LC53
+ 634 0060 2F000000 		.word	.LC6
+ 635              		.cfi_endproc
+ 636              	.LFE9:
+ 638              		.section	.bss.rx_payload,"aw",%nobits
+ 639              		.align	2
+ 642              	rx_payload:
+ 643 0000 00000000 		.space	255
+ 643      00000000 
+ 643      00000000 
+ 643      00000000 
+ 643      00000000 
+ 644              		.section	.bss.rx_payload_size,"aw",%nobits
+ 645              		.set	.LANCHOR1,. + 0
+ 648              	rx_payload_size:
+ 649 0000 00       		.space	1
+ 650              		.section	.data.file_0,"aw"
+ 651              		.align	2
+ 654              	file_0:
+ 655 0000 89504E47 		.ascii	"\211PNG\015\012\032\012\000\000\000\015IHDR\000\000"
+ 655      0D0A1A0A 
+ 655      0000000D 
+ 655      49484452 
+ 655      0000
+ 656 0012 003C0000 		.ascii	"\000<\000\000\000a\004\003\000\000\000x\302\337h\000"
+ 656      00610403 
+ 656      00000078 
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccLtFHIM.s 			page 22
+
+
+ 656      C2DF6800 
+ 657 0022 00000173 		.ascii	"\000\000\001sRGB\000\256\316\034\351\000\000\000\004"
+ 657      52474200 
+ 657      AECE1CE9 
+ 657      00000004 
+ 658 0032 67414D41 		.ascii	"gAMA\000\000\261\217\013\374a\005\000\000\0000PLTE\003"
+ 658      0000B18F 
+ 658      0BFC6105 
+ 658      00000030 
+ 658      504C5445 
+ 659 0047 6B66457C 		.ascii	"kfE|w8\205|M\206|9\212\200P\217\212^\236\242]\242\231"
+ 659      7738857C 
+ 659      4D867C39 
+ 659      8A80508F 
+ 659      8A5E9EA2 
+ 660 005e 5BA9A067 		.ascii	"[\251\240g\234\230h\242\235q\251\246\210\266\263\227"
+ 660      9C9868A2 
+ 660      9D71A9A6 
+ 660      88B6B397 
+ 661 006e C2BDA9D0 		.ascii	"\302\275\251\320\315\371\374\374\205\3143\233\000\000"
+ 661      CDF9FCFC 
+ 661      85CC339B 
+ 661      0000
+ 662 007c 00097048 		.ascii	"\000\011pHYs\000\000\016\303\000\000\016\303\001\307"
+ 662      59730000 
+ 662      0EC30000 
+ 662      0EC301C7 
+ 663 008c 6FA86400 		.ascii	"o\250d\000\000\002\020IDATH\307\265\326\275N\3030\020"
+ 663      00021049 
+ 663      44415448 
+ 663      C7B5D6BD 
+ 663      4EC33010 
+ 664 00a0 07F01328 		.ascii	"\007\360\023(C\325\252\317\300\300\314#\360\014\021"
+ 664      43D5AACF 
+ 664      C0C0CC23 
+ 664      F00C11
+ 665 00af 520796F6 		.ascii	"R\007\226\366\025x\004\036\241;\003f``*\013\023\210"
+ 665      1578041E 
+ 665      A13B0366 
+ 665      60602A0B 
+ 665      1388
+ 666 00c1 74458896 		.ascii	"tE\210\226\235\241\021\250L\250\036PU\241\226\034v\322"
+ 666      9DA111A8 
+ 666      4CA81E50 
+ 666      55A1961C 
+ 666      76D2
+ 667 00d3 F82B7786 		.ascii	"\370+w\206\205L\210_\376\347\213\3538\006\001\356\265"
+ 667      854C885F 
+ 667      FEE78BEB 
+ 667      380601EE 
+ 667      B5
+ 668 00e4 3BC367EF 		.ascii	";\303g\357\037\036\357d\270\366\324\347\021\026)\317"
+ 668      1F1EEF64 
+ 668      B8F6D4E7 
+ 668      111629CF 
+ 669 00f4 7DC46B60 		.ascii	"}\304k`\271\2038\017\024N\315_\211\304\257P\301V\313"
+ 669      B983380F 
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccLtFHIM.s 			page 23
+
+
+ 669      144ECD5F 
+ 669      89C4AF50 
+ 669      C156CB
+ 670 0107 F0BBA1B6 		.ascii	"\360\273\241\266\370as`\207\023b`\2073\334\000\317]"
+ 670      F8617360 
+ 670      87136260 
+ 670      8733DC00 
+ 670      CF5D
+ 671 0119 B2B46149 		.ascii	"\262\264aI\207\267\334g\302\025\253\276\326\300\263"
+ 671      87B7DC67 
+ 671      C215ABBE 
+ 671      D6C0B3
+ 672 0128 0A8F794E 		.ascii	"\012\217yN\270\221+Vm\347\014\3539\227\210)\303\327"
+ 672      B8912B56 
+ 672      6DE70CEB 
+ 672      39978829 
+ 672      C3D7
+ 673 013a E52FC5D5 		.ascii	"\345/\305\325\326<E|\005vl\365T\301\002\363X=\025\012"
+ 673      D63C457C 
+ 673      05766CF5 
+ 673      54C102F3 
+ 673      583D150A 
+ 674 014e 9E55636C 		.ascii	"\236Uclg \332\030K\237\0144\347lZ\327\306\025\307WZ"
+ 674      6720DA18 
+ 674      4B9F0C34 
+ 674      E76C5AD7 
+ 674      C615C757 
+ 675 0163 B118323C 		.ascii	"\261\0302<)\0317Ls\262b,^z{\004\243\275\212\305\307"
+ 675      2919374C 
+ 675      73B2622C 
+ 675      5E7A7B04 
+ 675      A3BD8AC5 
+ 676 0178 EDE511CB 		.ascii	"\355\345\021\313\365M\217\275\010\227\267<\2441V7\334"
+ 676      F54D8FBD 
+ 676      0897B73C 
+ 676      A4315637 
+ 676      DC
+ 677 0189 4419F13D 		.ascii	"D\031\361=\316\325K\303s\271\264#\\\330Y#/\365C]\314"
+ 677      CED54BC3 
+ 677      73B9B423 
+ 677      5CD85923 
+ 677      2FF5435D 
+ 678 019e 78562B50 		.ascii	"xV+P$\223\330\350j!\034\337=-$\311o\365\033\232\364"
+ 678      2493D8E8 
+ 678      6A211CDF 
+ 678      3D2D24C9 
+ 678      6FF51B9A 
+ 679 01b3 CE260BA2 		.ascii	"\316&\013\242\272\273\214\366\325=\276C\270\312\374"
+ 679      BABB8CF6 
+ 679      D53DBE43 
+ 679      B8CAFC
+ 680 01c2 56A0F95A 		.ascii	"V\240\371Z\337\307Ym3Qn\305\031\316\371\326\364\325"
+ 680      DFC7596D 
+ 680      33516EC5 
+ 680      19CEF9D6 
+ 680      F4D5
+ 681 01d4 8E33FCC2 		.ascii	"\2163\374\302\2638\217\342<\370O\316\342,\377\366\334"
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccLtFHIM.s 			page 24
+
+
+ 681      B3388FE2 
+ 681      3CF84FCE 
+ 681      E22CFFF6 
+ 681      DC
+ 682 01e5 9BF8AC7D 		.ascii	"\233\370\254}\222\334\2559'yZ\363\230\342\304LyJ\261"
+ 682      92DCAD39 
+ 682      27795AF3 
+ 682      98E2C44C 
+ 682      794AB1
+ 683 01f8 A95D00C5 		.ascii	"\251]\000\305\246\366\222b\265A\233\316\0106S\246\367"
+ 683      A6F69262 
+ 683      B5419BCE 
+ 683      083653A6 
+ 683      F7
+ 684 0209 CA06DBA5 		.ascii	"\312\006\333\245\242\337P\301\207W\004\333p\271\321"
+ 684      A2DF50C1 
+ 684      875704DB 
+ 684      70B9D1
+ 685 0218 0A365CEE 		.ascii	"\0126\\\356\342\202\015\353\241Cv\302\313&;\341\352"
+ 685      E2820DEB 
+ 685      A14376C2 
+ 685      CB263BE1 
+ 685      EA
+ 686 0229 A3EAF334 		.ascii	"\243\352\3634\250\355s\007\203\332>;#o\277\271.w1\254"
+ 686      A8ED7307 
+ 686      83DA3E3B 
+ 686      236FBFB9 
+ 686      2E7731AC 
+ 687 023d EDB1BBFF 		.ascii	"\355\261\273\377\314\033\354\206\353/\233}\277\0237"
+ 687      CC1BEC86 
+ 687      EB2F9B7D 
+ 687      BF1337
+ 688 024c 5C1F062C 		.ascii	"\\\037\006,\037`\2431\207\275p\001!\017\334p\036r\202"
+ 688      1F60A331 
+ 688      87BD7001 
+ 688      210FDC70 
+ 688      1E7282
+ 689 025f 44639647 		.ascii	"Dc\226G\256\332\203\331\226;^\330~2\267\317\355N\247"
+ 689      AEDA83D9 
+ 689      963B5ED8 
+ 689      7E32B7CF 
+ 689      ED4EA7
+ 690 0272 7B921044 		.ascii	"{\222\020Dx\034\262d\302\346PD=\025\230C\0215%u\347"
+ 690      781CB264 
+ 690      C2E65044 
+ 690      3D159843 
+ 690      11352575 
+ 691 0287 19377299 		.ascii	"\0317r\231n#\033\326,\331\221uq\277\257\340\364$Z\222"
+ 691      6E231BD6 
+ 691      2CD99175 
+ 691      71BFAFE0 
+ 691      F4245A92 
+ 692 029b 1F196038 		.ascii	"\037\031`8\345\303\000?'<_\206E4J;\000\000\000\000I"
+ 692      E5C3003F 
+ 692      273C5F86 
+ 692      45344A3B 
+ 692      00000000 
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccLtFHIM.s 			page 25
+
+
+ 693 02b0 454E44AE 		.ascii	"END\256B`\202"
+ 693      426082
+ 694              		.section	.data.file_1,"aw"
+ 695              		.align	2
+ 698              	file_1:
+ 699 0000 89504E47 		.ascii	"\211PNG\015\012\032\012\000\000\000\015IHDR\000\000"
+ 699      0D0A1A0A 
+ 699      0000000D 
+ 699      49484452 
+ 699      0000
+ 700 0012 009A0000 		.ascii	"\000\232\000\000\000_\004\003\000\000\000\342\364\303"
+ 700      005F0403 
+ 700      000000E2 
+ 700      F4C3
+ 701 0020 23000000 		.ascii	"#\000\000\000\001sRGB\000\256\316\034\351\000\000\000"
+ 701      01735247 
+ 701      4200AECE 
+ 701      1CE90000 
+ 701      00
+ 702 0031 0467414D 		.ascii	"\004gAMA\000\000\261\217\013\374a\005\000\000\0000P"
+ 702      410000B1 
+ 702      8F0BFC61 
+ 702      05000000 
+ 702      3050
+ 703 0043 4C544503 		.ascii	"LTE\003\003\003[[[\000\236\350\003\240\351.\254\353"
+ 703      03035B5B 
+ 703      5B009EE8 
+ 703      03A0E92E 
+ 703      ACEB
+ 704 0055 51B8EE63 		.ascii	"Q\270\356c\276\360]\300\360q\305\361\236\236\236\216"
+ 704      BEF05DC0 
+ 704      F071C5F1 
+ 704      9E9E9E8E 
+ 705 0065 D0F4ABDB 		.ascii	"\320\364\253\333\366\270\341\370\317\317\317\320\352"
+ 705      F6B8E1F8 
+ 705      CFCFCFD0 
+ 705      EA
+ 706 0072 FAFEFEFE 		.ascii	"\372\376\376\376\2233!\364\000\000\000\011pHYs\000\000"
+ 706      933321F4 
+ 706      00000009 
+ 706      70485973 
+ 706      0000
+ 707 0084 05890000 		.ascii	"\005\211\000\000\005\211\001mh\235\372\000\000\005d"
+ 707      0589016D 
+ 707      689DFA00 
+ 707      000564
+ 708 0093 49444154 		.ascii	"IDATX\303\255\231\317k\033G\024\307WG\035\214WG\035"
+ 708      58C3AD99 
+ 708      CF6B1B47 
+ 708      14C75747 
+ 708      1D8C5747 
+ 709 00a8 4A60D70D 		.ascii	"J`\327\015=\357\254 \2647\311n\203\013\011T2194\267"
+ 709      3DEFAC20 
+ 709      B437C96E 
+ 709      830B0954 
+ 709      32313934 
+ 710 00bd 9E7A6A7B 		.ascii	"\236zj{\356%6\004\273$\366Q\007\243\203ml\234\020]R"
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccLtFHIM.s 			page 26
+
+
+ 710      EE253604 
+ 710      BB24F651 
+ 710      07A3836D 
+ 710      6C9C105D 
+ 711 00d2 3071B00F 		.ascii	"0q\260\017i\301PH\354?\300\354\241\230\012\331\254d"
+ 711      69C15048 
+ 711      EC3FC0EC 
+ 711      A1980AD9 
+ 711      AC64
+ 712 00e4 68C052AD 		.ascii	"h\300R\255\235\316\257\235\037\273\263B\273\353\301"
+ 712      9DCEAF9D 
+ 712      1FBBB342 
+ 712      BBEBC1
+ 713 00f3 98DDD5CC 		.ascii	"\230\335\325\314g\277\357\315{o\320\223\001\023F\020"
+ 713      67BFEFCD 
+ 713      7B6FD093 
+ 713      01134610 
+ 714 0103 F47A30ED 		.ascii	"\364z0\355\320\323.vf\361\230{\374!7-8\256\3336\260"
+ 714      D0D32E76 
+ 714      66F1987B 
+ 714      FC21372D 
+ 714      38AEDB36 
+ 715 0118 2C0B388E 		.ascii	",\0138\216Sy\325\313E\0336\034\033\340a\341\177\016"
+ 715      5379D5CB 
+ 715      451B361C 
+ 715      1BE061E1 
+ 715      7F0E
+ 716 012a 986BE7A0 		.ascii	"\230k\347\240\375N \312\37013m\313\"\302\034\007Yj9"
+ 716      FD4E20CA 
+ 716      F831336D 
+ 716      CB22C21C 
+ 716      07596A39 
+ 717 013e 94663FCE 		.ascii	"\224f?\316F\0136\251\221\356\334\336\341\207\313\277"
+ 717      460B36A9 
+ 717      91EEDCDE 
+ 717      E187CBBF 
+ 718 014e 761B2EB5 		.ascii	"v\033.\265y\276\227\205\266\205\334\017\234\312*_|\261"
+ 718      79BE9785 
+ 718      B685DC0F 
+ 718      9CCA2A5F 
+ 718      7CB1
+ 719 0160 5DC3347B 		.ascii	"]\3034{>\003\355_\342\377o\025!\376\022\221\367}z\332"
+ 719      3E03ED5F 
+ 719      E2FF6F15 
+ 719      21FE1291 
+ 719      F77D7ADA 
+ 720 0174 101BF93C 		.ascii	"\020\033\371<:\345\030\273\357\253\3644\370\023\230"
+ 720      3AE518BB 
+ 720      EFABF434 
+ 720      F81398
+ 721 0183 D1C44307 		.ascii	"\321\304C\007\321\332\031h\347.]\345\277]\256\243\255"
+ 721      D1DA1968 
+ 721      E72E5DE5 
+ 721      BF5DAEA3 
+ 721      AD
+ 722 0194 5879471F 		.ascii	"XyG\037_W?\207\031h\00113\330\251\003\234\011(X\026"
+ 722      5F573F87 
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccLtFHIM.s 			page 27
+
+
+ 722      19680131 
+ 722      33D8A903 
+ 722      9C092858 
+ 723 01a9 28BDF320 		.ascii	"(\275\363 \013\215\214n=L\004\234_\363\3712\353\237"
+ 723      0B8D8C6E 
+ 723      3D4C049C 
+ 723      5FF3F932 
+ 723      EB9F
+ 724 01bb 1A0D59A4 		.ascii	"\032\015Y\244\215\\\334\373\230\203vN\303w\361\345\301"
+ 724      8D5CDCFB 
+ 724      9883764E 
+ 724      C377F1E5 
+ 724      C1
+ 725 01cc C15EA3E6 		.ascii	"\301^\243\346\340\360\373\230\231v\215eU^\261\273`\267"
+ 725      E0F0FB98 
+ 725      99768D65 
+ 725      555EB1BB 
+ 725      60B7
+ 726 01de 9A0AA7A3 		.ascii	"\232\012\247\243\311\341{\371\024=x\222\225\026\324"
+ 726      C9E17BF9 
+ 726      143D7892 
+ 726      9516D4
+ 727 01ed 801ABEC1 		.ascii	"\200\032\276\301\026\000\275\2544\370>\232\013\301\346"
+ 727      1600BDAC 
+ 727      34F83E9A 
+ 727      0BC1E6
+ 728 01fc 977062DA 		.ascii	"\227pb\332\250\211\207\027\373\300\367\375P\022\212"
+ 728      A8898717 
+ 728      FBC0F7FD 
+ 728      50128A
+ 729 020b B941531A 		.ascii	"\271AS\032\033^\"\355\312\300\343N\344qg\241Qsg\027"
+ 729      1B5E22ED 
+ 729      CAC0E34E 
+ 729      E47167A1 
+ 729      51736717 
+ 730 021f 0FC3FB13 		.ascii	"\017\303\373\023C\031\3454\264!\212_\333\306\311\036"
+ 730      4319E534 
+ 730      B4218A5F 
+ 730      DBC6C91E 
+ 731 022f C66E8466 		.ascii	"\306n\204f\024\274\211i\035\024\277\2706\3412\314\242"
+ 731      14BC8969 
+ 731      1D14BFB8 
+ 731      36E132CC 
+ 731      A2
+ 732 0240 A31FA119 		.ascii	"\243\037\241\031\305IiC\004sW\375^\357\022\227J\212"
+ 732      C5496943 
+ 732      047357FD 
+ 732      5EEF1297 
+ 732      4A8A
+ 733 0252 8B6A338C 		.ascii	"\213j3\214\326\204\264k\033\254\260\313`\0318\017\265"
+ 733      D684B46B 
+ 733      1BACB0CB 
+ 733      6019380F 
+ 733      B5
+ 734 0263 DAF4E274 		.ascii	"\332\364\342t\226\326\245 \331\006GzmZq:\232\022\254"
+ 734      96D6A520 
+ 734      D906477A 
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccLtFHIM.s 			page 28
+
+
+ 734      6D5A713A 
+ 734      9A12AC
+ 735 0276 6FA15E5B 		.ascii	"o\241^[,\014\222h\232A\265\225I\270\255Q\332Tv\332\251"
+ 735      2C0C9268 
+ 735      9A41B595 
+ 735      49B8AD51 
+ 735      DA5476DA 
+ 736 028b 6C1C155A 		.ascii	"l\034\025ZHCSc\236jc\367\003C\241a\275gciT\213\210\371"
+ 736      48435363 
+ 736      9E6A63F7 
+ 736      0343A161 
+ 736      BD676369 
+ 737 02a3 BEE27853 		.ascii	"\276\342xSb\263\231F3\231\266\026\272\272\244hk)\037"
+ 737      62B39946 
+ 737      3399B616 
+ 737      BABAA468 
+ 737      6B291F
+ 738 02b6 AB3349C8 		.ascii	"\2533I\310hi\353b\347\312:m\342\356J\332\344i=m\020"
+ 738      6869EB62 
+ 738      E7CA3A6D 
+ 738      E2EE4ADA 
+ 738      E4693D6D 
+ 739 02cb 0F04C56F 		.ascii	"\017\004\305o\322\235)\315D\271\253\243\255\311\264"
+ 739      D29D29CD 
+ 739      44B9ABA3 
+ 739      ADC9B4
+ 740 02da 82461BB7 		.ascii	"\202F\033\267[y/z\240\241\251S\350G\252\337\314\320"
+ 740      5B792F7A 
+ 740      A0A1A953 
+ 740      E847AADF 
+ 740      CCD0
+ 741 02ec 6FF425E5 		.ascii	"o\364%\345\263&3UCcYTZ\247\213\212qm\\\364Z8\341\224"
+ 741      B3263355 
+ 741      43635954 
+ 741      5AA78B8A 
+ 741      716D5CF4 
+ 742 0304 5E686826 		.ascii	"^hh&s\002\034q\015\252\337hPp\032~\307(\2116\020\017"
+ 742      73021C71 
+ 742      0DAADF68 
+ 742      50701A7E 
+ 742      C7288936 
+ 743 031a C425D3E6 		.ascii	"\304%\323\346\341A\315\302[H_\354\205ru\264+\341{:{"
+ 743      E141CDC2 
+ 743      5B485FEC 
+ 743      857275B4 
+ 743      2BE17B3A 
+ 744 032f 1A6A6B08 		.ascii	"\032jk\010^B\362\026\216\243\365\271\263\244\353x\015"
+ 744      5E42F216 
+ 744      8EA3F5B9 
+ 744      B3A4EB78 
+ 744      0D
+ 745 0340 89A46912 		.ascii	"\211\244i\022mM\272\037\204\353\342\332\246%\324\250"
+ 745      6D4DBA1F 
+ 745      84EBE2DA 
+ 745      A625D4A8 
+ 746 0350 B93E96C6 		.ascii	"\271>\226\306vo\024\322Nc\322<\2012\271\3348Mx\226\031"
+ 746      766F14D2 
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccLtFHIM.s 			page 29
+
+
+ 746      4E63D23C 
+ 746      8132B9DC 
+ 746      384D7896 
+ 747 0365 60E8B4F1 		.ascii	"`\350\264\361\312;\020\351\240\323\026\002\024t\304"
+ 747      CA3B10E9 
+ 747      A0D31602 
+ 747      1474C4
+ 748 0374 6F050E93 		.ascii	"o\005\016\223RzBZ\\\033\257\273\212\007\322j3M\223y"
+ 748      527A425A 
+ 748      5C1BAFBB 
+ 748      8A07D26A 
+ 748      334D9379 
+ 749 0388 48F22B79 		.ascii	"H\362+y0\021M\365\233X\317,e\222\013\315\304\010\211"
+ 749      30114DF5 
+ 749      9B58CF2C 
+ 749      65920BCD 
+ 749      C40889
+ 750 039b EF02D726 		.ascii	"\357\002\327&j\320g\322\\\243\354\321\211\211{*\347"
+ 750      6AD067D2 
+ 750      5CA3ECD1 
+ 750      89897B2A 
+ 750      E7
+ 751 03ac B788374C 		.ascii	"\267\2107L\223\217\230\201\320\231\244M\033\275B\033"
+ 751      938F9881 
+ 751      D099A44D 
+ 751      1BBD421B 
+ 752 03bc AB5744FC 		.ascii	"\253WD\374\025e\3001YOd\260H\347\323O\2047M\261\240"
+ 752      1565C031 
+ 752      594F64B0 
+ 752      48E7D34F 
+ 752      84374DB1 
+ 753 03d1 CFA50D92 		.ascii	"\317\245\015\222h}i\323\010dJ\321\306\300E\225v\245"
+ 753      687D69D3 
+ 753      08644AD1 
+ 753      C6C04595 
+ 753      76A5
+ 754 03e3 D00A05B3 		.ascii	"\320\012\005\263D\376\302\203\243\305\365K5D\350\225"
+ 754      44FEC283 
+ 754      A3C5F54B 
+ 754      3544E895 
+ 755 03f3 AA5E8BBB 		.ascii	"\252^\213\273\207\323\370h1\004y\2678\341%mt\237E\325"
+ 755      87D3F868 
+ 755      310479B7 
+ 755      38E1256D 
+ 755      749F45D5 
+ 756 0407 9B86E2BC 		.ascii	"\233\206\342\274\216\322\274\3201\305\215\263u\203\033"
+ 756      8ED2BCD0 
+ 756      31C58DB3 
+ 756      75831B
+ 757 0416 2DD75E7A 		.ascii	"-\327^z\010q\373\013\255\321(\254\371qm\321\234\234"
+ 757      0871FB0B 
+ 757      ADD128AC 
+ 757      F9716DD1 
+ 757      9C9C
+ 758 0428 122A3DE1 		.ascii	"\022*=\341X\362\022\266\266\304f\026u\332Ff\224\257"
+ 758      58F212B6 
+ 758      B6C46616 
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccLtFHIM.s 			page 30
+
+
+ 758      75DA4666 
+ 758      94AF
+ 759 043a F82D8C91 		.ascii	"\370-\214\221\226\224XF\202\245-\030I\361\242\244\307"
+ 759      96945846 
+ 759      82A52D18 
+ 759      49F1A2A4 
+ 759      C7
+ 760 044b 93E25B9C 		.ascii	"\223\342[\234\013chx\201\"\316\203Qm\354F-\242\304\231"
+ 760      0B636878 
+ 760      8122CE83 
+ 760      516DEC46 
+ 760      2DA2C499 
+ 761 045f 5A6DF2F9 		.ascii	"Zm\362\371|\007\306\265\011S\271\270\326\211\226\346"
+ 761      7C07C6B5 
+ 761      0953B9B8 
+ 761      D68996E6 
+ 762 046f 4105B7A1 		.ascii	"A\005\267\241\310a7\314]\370E\254\3626\351\206x\011"
+ 762      C86137CC 
+ 762      5DF845AC 
+ 762      F236E986 
+ 762      7809
+ 763 0481 1DB3D17A 		.ascii	"\035\263\321z\001\325\254R\342W i\242i\226\371\264\304"
+ 763      01D5AC52 
+ 763      E2572069 
+ 763      A26996F9 
+ 763      B4C4
+ 764 0493 FE1B44E7 		.ascii	"\376\033D\3470L;\014x\233CG\363o\225\326x!\335\354\346"
+ 764      304C3B0C 
+ 764      789B4347 
+ 764      F36F95D6 
+ 764      7821DDEC 
+ 765 04a8 A45D037B 		.ascii	"\244]\003{5\274\276y\012\332yi\216}\237~3\335\237\005"
+ 765      35BCBE79 
+ 765      0ADA7969 
+ 765      8E7D9F7E 
+ 765      33DD9F05 
+ 766 04bc E0613E1A 		.ascii	"\340a>\032\374T\263\035\313]\370\241a\241\357\250_\367"
+ 766      FC54B31D 
+ 766      CB5DF8A1 
+ 766      61A1EFA8 
+ 766      5FF7
+ 767 04ce 72D260B7 		.ascii	"r\322`\267\012\034\307\266,D\273\237\252M\253\217\020"
+ 767      0A1CC7B6 
+ 767      2C44BB9F 
+ 767      AA4DAB8F 
+ 767      10
+ 768 04df 7FA90690 		.ascii	"\177\251\006\220>0\373\034\302\3744\304\333{\366l\345"
+ 768      3E30FB1C 
+ 768      C2FC34C4 
+ 768      DB7BF66C 
+ 768      E5
+ 769 04f0 75DAFE71 		.ascii	"u\332\376q\274\363\023\223\023\264\263\323\276\233y"
+ 769      BCF31393 
+ 769      13B4B3D3 
+ 769      BE9B79
+ 770 04ff 1D816DDE 		.ascii	"\035\201m\336\315L\033\0020\243\250\013~\006v;3\315"
+ 770      CD4C1B02 
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccLtFHIM.s 			page 31
+
+
+ 770      30A3A80B 
+ 770      7E06763B 
+ 770      33CD
+ 771 0511 01C09E3F 		.ascii	"\001\300\236?\342\254\343*H\021r1K\377\304\275cw\221"
+ 771      E2ACE32A 
+ 771      48117231 
+ 771      4BFFC4BD 
+ 771      637791
+ 772 0524 B4DB83FD 		.ascii	"\264\333\203\375\006n\237\335\315\336G\202\347U\332"
+ 772      066E9FDD 
+ 772      CDDE4782 
+ 772      E755DA
+ 773 0533 CD736BAC 		.ascii	"\315sk\254\235\227\243\377\206F\247*7\311S\305\257J"
+ 773      9D97A3FF 
+ 773      8646A72A 
+ 773      37C953C5 
+ 773      AF4A
+ 774 0545 FB8F38EC 		.ascii	"\373\2178\354fI\300\\R\000\202L\264\367\025*\244\273"
+ 774      6649C05C 
+ 774      5200824C 
+ 774      B4F7152A 
+ 774      A4BB
+ 775 0557 5CC34D55 		.ascii	"\\\303MU{n\205Z\271\375$\013\255\016\3561\273\374\213"
+ 775      7B6E855A 
+ 775      B9FD240B 
+ 775      AD0EEE31 
+ 775      BBFC8B
+ 776 056a 83BD039F 		.ascii	"\203\275\003\237\325\315?\234/2\320>\331\300\251\034"
+ 776      D5CD3F9C 
+ 776      2F32D03E 
+ 776      D9C0A91C 
+ 777 057a 45A7046F 		.ascii	"E\247\004o\220\305G\351i\177\343\246\273\033\315\005"
+ 777      90C547E9 
+ 777      697FE3A6 
+ 777      BB1BCD05 
+ 778 058a E2C507E9 		.ascii	"\342\305\007\351iA\235\354\342\274\364\333N\260Ovx\346"
+ 778      69419DEC 
+ 778      E2BCF4DB 
+ 778      4EB04F76 
+ 778      78E6
+ 779 059c 457A1ABC 		.ascii	"Ez\032\274\241\301\341>b\015r\177\247A\267v\302\312"
+ 779      A1C1E13E 
+ 779      620D727F 
+ 779      A741B776 
+ 779      C2CA
+ 780 05ae 1489B71B 		.ascii	"\024\211\267\033\326\210\266-wn\2015\365\020\375W\230"
+ 780      D688B62D 
+ 780      776E8135 
+ 780      F510FD57 
+ 780      98
+ 781 05bf 89868F95 		.ascii	"\211\206\217\2250lm\036s\023\327\314X.\004oj\021\332"
+ 781      306C6D1E 
+ 781      7313D7CC 
+ 781      582E046F 
+ 781      6A11DA
+ 782 05d2 37B932AB 		.ascii	"7\2712\253\373\213\220\005\354\312o\2313\213\311\353"
+ 782      FB8B9005 
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccLtFHIM.s 			page 32
+
+
+ 782      ECCA6F99 
+ 782      338BC9EB 
+ 783 05e2 F2D49A7D 		.ascii	"\362\324\232}y\013\247\014\204\227\370\\8\314}.\344"
+ 783      790BA70C 
+ 783      8497F85C 
+ 783      38CC7D2E 
+ 783      E4
+ 784 05f3 1810FE0F 		.ascii	"\030\020\376\017o:Z\020{\351HG\000\000\000\000IEND\256"
+ 784      6F3A5A10 
+ 784      7BE94847 
+ 784      00000000 
+ 784      49454E44 
+ 785 0608 426082   		.ascii	"B`\202"
+ 786              		.section	.data.last_file_idx,"aw"
+ 787              		.set	.LANCHOR0,. + 0
+ 790              	last_file_idx:
+ 791 0000 01       		.byte	1
+ 792              		.text
+ 793              	.Letext0:
+ 794              		.file 2 "/Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.external
+ 795              		.file 3 "/Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.external
+ 796              		.file 4 "/Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.external
+ 797              		.file 5 "/Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.external
+ 798              		.file 6 "/Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.external
+ 799              		.file 7 "/Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.external
+ 800              		.file 8 "smtc_modem_core/device_management/device_management_defs.h"
+ 801              		.file 9 "smtc_ral/src/ral_defs.h"
+ 802              		.file 10 "lr1mac/src/lr1mac_defs.h"
+ 803              		.file 11 "smtc_modem_core/modem_services/file_upload.h"
+ 804              		.file 12 "smtc_bsp/smtc_bsp_mcu.h"
+ 805              		.file 13 "smtc_modem_core/modem_api.h"
+ 806              		.file 14 "smtc_bsp/smtc_bsp_rng.h"
+ 807              		.file 15 "/Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.externa
+ 808              		.file 16 "<built-in>"
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccLtFHIM.s 			page 33
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 main_alarm_file_upload.c
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccLtFHIM.s:23     .text.send_upload_file.constprop.0:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccLtFHIM.s:30     .text.send_upload_file.constprop.0:0000000000000000 send_upload_file.constprop.0
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccLtFHIM.s:91     .text.send_upload_file.constprop.0:0000000000000038 $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccLtFHIM.s:134    .text.get_event:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccLtFHIM.s:140    .text.get_event:0000000000000000 get_event
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccLtFHIM.s:264    .text.get_event:0000000000000080 $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccLtFHIM.s:274    .text.get_event:000000000000008a $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccLtFHIM.s:509    .text.get_event:0000000000000190 $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccLtFHIM.s:654    .data.file_0:0000000000000000 file_0
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccLtFHIM.s:698    .data.file_1:0000000000000000 file_1
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccLtFHIM.s:642    .bss.rx_payload:0000000000000000 rx_payload
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccLtFHIM.s:543    .text.main_alarm_file_upload:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccLtFHIM.s:550    .text.main_alarm_file_upload:0000000000000000 main_alarm_file_upload
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccLtFHIM.s:630    .text.main_alarm_file_upload:0000000000000050 $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccLtFHIM.s:639    .bss.rx_payload:0000000000000000 $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccLtFHIM.s:648    .bss.rx_payload_size:0000000000000000 rx_payload_size
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccLtFHIM.s:649    .bss.rx_payload_size:0000000000000000 $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccLtFHIM.s:651    .data.file_0:0000000000000000 $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccLtFHIM.s:695    .data.file_1:0000000000000000 $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccLtFHIM.s:790    .data.last_file_idx:0000000000000000 last_file_idx
+
+UNDEFINED SYMBOLS
+bsp_trace_print
+modem_upload_init
+modem_upload_start
+memset
+modem_get_event
+__gnu_thumb1_case_uqi
+bsp_rng_get_random_in_range
+modem_set_alarm_timer_s
+memcpy
+bsp_disable_irq
+modem_init
+bsp_enable_irq
+modem_set_deveui
+modem_set_joineui
+modem_set_nwkkey
+modem_join
+modem_run_engine
+bsp_mcu_set_sleep_for_ms

@@ -1,0 +1,3556 @@
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s 			page 1
+
+
+   1              		.cpu cortex-m0plus
+   2              		.eabi_attribute 23, 1
+   3              		.eabi_attribute 24, 1
+   4              		.eabi_attribute 25, 1
+   5              		.eabi_attribute 26, 1
+   6              		.eabi_attribute 30, 4
+   7              		.eabi_attribute 34, 0
+   8              		.eabi_attribute 18, 4
+   9              		.file	"ral.c"
+  10              		.text
+  11              	.Ltext0:
+  12              		.cfi_sections	.debug_frame
+  13              		.section	.text.ral_init,"ax",%progbits
+  14              		.align	1
+  15              		.global	ral_init
+  16              		.arch armv6s-m
+  17              		.syntax unified
+  18              		.code	16
+  19              		.thumb_func
+  20              		.fpu softvfp
+  22              	ral_init:
+  23              	.LVL0:
+  24              	.LFB1:
+  25              		.file 1 "smtc_ral/src/ral.c"
+   1:smtc_ral/src/ral.c **** /**
+   2:smtc_ral/src/ral.c ****  * @file      ral.c
+   3:smtc_ral/src/ral.c ****  *
+   4:smtc_ral/src/ral.c ****  * @brief     Radio Abstraction Layer (RAL) API implementation
+   5:smtc_ral/src/ral.c ****  *
+   6:smtc_ral/src/ral.c ****  * Revised BSD License
+   7:smtc_ral/src/ral.c ****  * Copyright Semtech Corporation 2020. All rights reserved.
+   8:smtc_ral/src/ral.c ****  *
+   9:smtc_ral/src/ral.c ****  * Redistribution and use in source and binary forms, with or without
+  10:smtc_ral/src/ral.c ****  * modification, are permitted provided that the following conditions are met:
+  11:smtc_ral/src/ral.c ****  *     * Redistributions of source code must retain the above copyright
+  12:smtc_ral/src/ral.c ****  *       notice, this list of conditions and the following disclaimer.
+  13:smtc_ral/src/ral.c ****  *     * Redistributions in binary form must reproduce the above copyright
+  14:smtc_ral/src/ral.c ****  *       notice, this list of conditions and the following disclaimer in the
+  15:smtc_ral/src/ral.c ****  *       documentation and/or other materials provided with the distribution.
+  16:smtc_ral/src/ral.c ****  *     * Neither the name of the Semtech corporation nor the
+  17:smtc_ral/src/ral.c ****  *       names of its contributors may be used to endorse or promote products
+  18:smtc_ral/src/ral.c ****  *       derived from this software without specific prior written permission.
+  19:smtc_ral/src/ral.c ****  *
+  20:smtc_ral/src/ral.c ****  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+  21:smtc_ral/src/ral.c ****  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+  22:smtc_ral/src/ral.c ****  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+  23:smtc_ral/src/ral.c ****  * ARE DISCLAIMED. IN NO EVENT SHALL SEMTECH CORPORATION BE LIABLE FOR ANY
+  24:smtc_ral/src/ral.c ****  * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+  25:smtc_ral/src/ral.c ****  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+  26:smtc_ral/src/ral.c ****  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+  27:smtc_ral/src/ral.c ****  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  28:smtc_ral/src/ral.c ****  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+  29:smtc_ral/src/ral.c ****  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  30:smtc_ral/src/ral.c ****  */
+  31:smtc_ral/src/ral.c **** 
+  32:smtc_ral/src/ral.c **** /*
+  33:smtc_ral/src/ral.c ****  * -----------------------------------------------------------------------------
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s 			page 2
+
+
+  34:smtc_ral/src/ral.c ****  * --- DEPENDENCIES ------------------------------------------------------------
+  35:smtc_ral/src/ral.c ****  */
+  36:smtc_ral/src/ral.c **** 
+  37:smtc_ral/src/ral.c **** #include "ral.h"
+  38:smtc_ral/src/ral.c **** #include "ral_hal.h"
+  39:smtc_ral/src/ral.c **** 
+  40:smtc_ral/src/ral.c **** #if defined( SX126X )
+  41:smtc_ral/src/ral.c **** #include "ral_sx126x.h"
+  42:smtc_ral/src/ral.c **** #endif
+  43:smtc_ral/src/ral.c **** #if defined( SX1272 )
+  44:smtc_ral/src/ral.c **** #include "ral_sx1272.h"
+  45:smtc_ral/src/ral.c **** #endif
+  46:smtc_ral/src/ral.c **** #if defined( SX1276 )
+  47:smtc_ral/src/ral.c **** #include "ral_sx1276.h"
+  48:smtc_ral/src/ral.c **** #endif
+  49:smtc_ral/src/ral.c **** #if defined( SX1280 )
+  50:smtc_ral/src/ral.c **** #include "ral_sx1280.h"
+  51:smtc_ral/src/ral.c **** #endif
+  52:smtc_ral/src/ral.c **** #if !defined( SX126X ) && !defined( SX1272 ) && !defined( SX1276 ) && !defined( SX1280 )
+  53:smtc_ral/src/ral.c **** #error "Unknown radio selected..."
+  54:smtc_ral/src/ral.c **** #endif
+  55:smtc_ral/src/ral.c **** 
+  56:smtc_ral/src/ral.c **** /*
+  57:smtc_ral/src/ral.c ****  * -----------------------------------------------------------------------------
+  58:smtc_ral/src/ral.c ****  * --- PRIVATE MACROS-----------------------------------------------------------
+  59:smtc_ral/src/ral.c ****  */
+  60:smtc_ral/src/ral.c **** 
+  61:smtc_ral/src/ral.c **** /*
+  62:smtc_ral/src/ral.c ****  * -----------------------------------------------------------------------------
+  63:smtc_ral/src/ral.c ****  * --- PRIVATE CONSTANTS -------------------------------------------------------
+  64:smtc_ral/src/ral.c ****  */
+  65:smtc_ral/src/ral.c **** 
+  66:smtc_ral/src/ral.c **** /*
+  67:smtc_ral/src/ral.c ****  * -----------------------------------------------------------------------------
+  68:smtc_ral/src/ral.c ****  * --- PRIVATE TYPES -----------------------------------------------------------
+  69:smtc_ral/src/ral.c ****  */
+  70:smtc_ral/src/ral.c **** 
+  71:smtc_ral/src/ral.c **** /*
+  72:smtc_ral/src/ral.c ****  * -----------------------------------------------------------------------------
+  73:smtc_ral/src/ral.c ****  * --- PRIVATE VARIABLES -------------------------------------------------------
+  74:smtc_ral/src/ral.c ****  */
+  75:smtc_ral/src/ral.c **** 
+  76:smtc_ral/src/ral.c **** /*
+  77:smtc_ral/src/ral.c ****  * -----------------------------------------------------------------------------
+  78:smtc_ral/src/ral.c ****  * --- PRIVATE FUNCTIONS DECLARATION -------------------------------------------
+  79:smtc_ral/src/ral.c ****  */
+  80:smtc_ral/src/ral.c **** 
+  81:smtc_ral/src/ral.c **** /*
+  82:smtc_ral/src/ral.c ****  * -----------------------------------------------------------------------------
+  83:smtc_ral/src/ral.c ****  * --- PUBLIC FUNCTIONS DEFINITION ---------------------------------------------
+  84:smtc_ral/src/ral.c ****  */
+  85:smtc_ral/src/ral.c **** 
+  86:smtc_ral/src/ral.c **** ral_status_t ral_init( const ral_t* ral )
+  87:smtc_ral/src/ral.c **** {
+  26              		.loc 1 87 1 view -0
+  27              		.cfi_startproc
+  28              		@ args = 0, pretend = 0, frame = 0
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s 			page 3
+
+
+  29              		@ frame_needed = 0, uses_anonymous_args = 0
+  88:smtc_ral/src/ral.c ****     switch( ral->radio_type )
+  30              		.loc 1 88 5 view .LVU1
+  87:smtc_ral/src/ral.c ****     switch( ral->radio_type )
+  31              		.loc 1 87 1 is_stmt 0 view .LVU2
+  32 0000 10B5     		push	{r4, lr}
+  33              		.cfi_def_cfa_offset 8
+  34              		.cfi_offset 4, -8
+  35              		.cfi_offset 14, -4
+  36              		.loc 1 88 5 view .LVU3
+  37 0002 0279     		ldrb	r2, [r0, #4]
+  87:smtc_ral/src/ral.c ****     switch( ral->radio_type )
+  38              		.loc 1 87 1 view .LVU4
+  39 0004 0300     		movs	r3, r0
+  89:smtc_ral/src/ral.c ****     {
+  90:smtc_ral/src/ral.c **** #if defined( SX126X )
+  91:smtc_ral/src/ral.c ****     case RAL_RADIO_SX126X:
+  92:smtc_ral/src/ral.c ****     {
+  93:smtc_ral/src/ral.c ****         return ral_sx126x_init( ral );
+  94:smtc_ral/src/ral.c ****     }
+  95:smtc_ral/src/ral.c **** #endif
+  96:smtc_ral/src/ral.c **** #if defined( SX1272 )
+  97:smtc_ral/src/ral.c ****     case RAL_RADIO_SX1272:
+  98:smtc_ral/src/ral.c ****     {
+  99:smtc_ral/src/ral.c ****         return ral_sx1272_init( ral );
+ 100:smtc_ral/src/ral.c ****     }
+ 101:smtc_ral/src/ral.c **** #endif
+ 102:smtc_ral/src/ral.c **** #if defined( SX1276 )
+ 103:smtc_ral/src/ral.c ****     case RAL_RADIO_SX1276:
+ 104:smtc_ral/src/ral.c ****     {
+ 105:smtc_ral/src/ral.c ****         return ral_sx1276_init( ral );
+ 106:smtc_ral/src/ral.c ****     }
+ 107:smtc_ral/src/ral.c **** #endif
+ 108:smtc_ral/src/ral.c **** #if defined( SX1280 )
+ 109:smtc_ral/src/ral.c ****     case RAL_RADIO_SX1280:
+ 110:smtc_ral/src/ral.c ****     {
+ 111:smtc_ral/src/ral.c ****         return ral_sx1280_init( ral );
+ 112:smtc_ral/src/ral.c ****     }
+ 113:smtc_ral/src/ral.c **** #endif
+ 114:smtc_ral/src/ral.c ****     default:
+ 115:smtc_ral/src/ral.c ****         return RAL_STATUS_UNSUPPORTED_FEATURE;
+  40              		.loc 1 115 16 view .LVU5
+  41 0006 0120     		movs	r0, #1
+  42              	.LVL1:
+  88:smtc_ral/src/ral.c ****     {
+  43              		.loc 1 88 5 view .LVU6
+  44 0008 042A     		cmp	r2, #4
+  45 000a 02D1     		bne	.L2
+ 111:smtc_ral/src/ral.c ****     }
+  46              		.loc 1 111 9 is_stmt 1 view .LVU7
+ 111:smtc_ral/src/ral.c ****     }
+  47              		.loc 1 111 16 is_stmt 0 view .LVU8
+  48 000c 1800     		movs	r0, r3
+  49 000e FFF7FEFF 		bl	ral_sx1280_init
+  50              	.LVL2:
+  51              	.L2:
+ 116:smtc_ral/src/ral.c ****     };
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s 			page 4
+
+
+  52              		.loc 1 116 6 is_stmt 1 view .LVU9
+ 117:smtc_ral/src/ral.c **** }
+  53              		.loc 1 117 1 is_stmt 0 view .LVU10
+  54              		@ sp needed
+  55 0012 10BD     		pop	{r4, pc}
+  56              		.cfi_endproc
+  57              	.LFE1:
+  59              		.section	.text.ral_setup_gfsk,"ax",%progbits
+  60              		.align	1
+  61              		.global	ral_setup_gfsk
+  62              		.syntax unified
+  63              		.code	16
+  64              		.thumb_func
+  65              		.fpu softvfp
+  67              	ral_setup_gfsk:
+  68              	.LVL3:
+  69              	.LFB2:
+ 118:smtc_ral/src/ral.c **** 
+ 119:smtc_ral/src/ral.c **** ral_status_t ral_setup_gfsk( const ral_t* ral, const ral_params_gfsk_t* params )
+ 120:smtc_ral/src/ral.c **** {
+  70              		.loc 1 120 1 is_stmt 1 view -0
+  71              		.cfi_startproc
+  72              		@ args = 0, pretend = 0, frame = 0
+  73              		@ frame_needed = 0, uses_anonymous_args = 0
+ 121:smtc_ral/src/ral.c ****     switch( ral->radio_type )
+  74              		.loc 1 121 5 view .LVU12
+ 120:smtc_ral/src/ral.c ****     switch( ral->radio_type )
+  75              		.loc 1 120 1 is_stmt 0 view .LVU13
+  76 0000 10B5     		push	{r4, lr}
+  77              		.cfi_def_cfa_offset 8
+  78              		.cfi_offset 4, -8
+  79              		.cfi_offset 14, -4
+  80              		.loc 1 121 5 view .LVU14
+  81 0002 0279     		ldrb	r2, [r0, #4]
+ 120:smtc_ral/src/ral.c ****     switch( ral->radio_type )
+  82              		.loc 1 120 1 view .LVU15
+  83 0004 0300     		movs	r3, r0
+ 122:smtc_ral/src/ral.c ****     {
+ 123:smtc_ral/src/ral.c **** #if defined( SX126X )
+ 124:smtc_ral/src/ral.c ****     case RAL_RADIO_SX126X:
+ 125:smtc_ral/src/ral.c ****     {
+ 126:smtc_ral/src/ral.c ****         return ral_sx126x_setup_gfsk( ral, params );
+ 127:smtc_ral/src/ral.c ****     }
+ 128:smtc_ral/src/ral.c **** #endif
+ 129:smtc_ral/src/ral.c **** #if defined( SX1272 )
+ 130:smtc_ral/src/ral.c ****     case RAL_RADIO_SX1272:
+ 131:smtc_ral/src/ral.c ****     {
+ 132:smtc_ral/src/ral.c ****         return ral_sx1272_setup_gfsk( ral, params );
+ 133:smtc_ral/src/ral.c ****     }
+ 134:smtc_ral/src/ral.c **** #endif
+ 135:smtc_ral/src/ral.c **** #if defined( SX1276 )
+ 136:smtc_ral/src/ral.c ****     case RAL_RADIO_SX1276:
+ 137:smtc_ral/src/ral.c ****     {
+ 138:smtc_ral/src/ral.c ****         return ral_sx1276_setup_gfsk( ral, params );
+ 139:smtc_ral/src/ral.c ****     }
+ 140:smtc_ral/src/ral.c **** #endif
+ 141:smtc_ral/src/ral.c **** #if defined( SX1280 )
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s 			page 5
+
+
+ 142:smtc_ral/src/ral.c ****     case RAL_RADIO_SX1280:
+ 143:smtc_ral/src/ral.c ****     {
+ 144:smtc_ral/src/ral.c ****         return ral_sx1280_setup_gfsk( ral, params );
+ 145:smtc_ral/src/ral.c ****     }
+ 146:smtc_ral/src/ral.c **** #endif
+ 147:smtc_ral/src/ral.c ****     default:
+ 148:smtc_ral/src/ral.c ****         return RAL_STATUS_UNSUPPORTED_FEATURE;
+  84              		.loc 1 148 16 view .LVU16
+  85 0006 0120     		movs	r0, #1
+  86              	.LVL4:
+ 121:smtc_ral/src/ral.c ****     {
+  87              		.loc 1 121 5 view .LVU17
+  88 0008 042A     		cmp	r2, #4
+  89 000a 02D1     		bne	.L5
+ 144:smtc_ral/src/ral.c ****     }
+  90              		.loc 1 144 9 is_stmt 1 view .LVU18
+ 144:smtc_ral/src/ral.c ****     }
+  91              		.loc 1 144 16 is_stmt 0 view .LVU19
+  92 000c 1800     		movs	r0, r3
+  93 000e FFF7FEFF 		bl	ral_sx1280_setup_gfsk
+  94              	.LVL5:
+  95              	.L5:
+ 149:smtc_ral/src/ral.c ****     };
+  96              		.loc 1 149 6 is_stmt 1 view .LVU20
+ 150:smtc_ral/src/ral.c **** }
+  97              		.loc 1 150 1 is_stmt 0 view .LVU21
+  98              		@ sp needed
+  99 0012 10BD     		pop	{r4, pc}
+ 100              		.cfi_endproc
+ 101              	.LFE2:
+ 103              		.section	.text.ral_setup_rx_gfsk,"ax",%progbits
+ 104              		.align	1
+ 105              		.global	ral_setup_rx_gfsk
+ 106              		.syntax unified
+ 107              		.code	16
+ 108              		.thumb_func
+ 109              		.fpu softvfp
+ 111              	ral_setup_rx_gfsk:
+ 112              	.LVL6:
+ 113              	.LFB3:
+ 151:smtc_ral/src/ral.c **** 
+ 152:smtc_ral/src/ral.c **** ral_status_t ral_setup_rx_gfsk( const ral_t* ral, const ral_params_gfsk_t* params )
+ 153:smtc_ral/src/ral.c **** {
+ 114              		.loc 1 153 1 is_stmt 1 view -0
+ 115              		.cfi_startproc
+ 116              		@ args = 0, pretend = 0, frame = 0
+ 117              		@ frame_needed = 0, uses_anonymous_args = 0
+ 154:smtc_ral/src/ral.c ****     switch( ral->radio_type )
+ 118              		.loc 1 154 5 view .LVU23
+ 153:smtc_ral/src/ral.c ****     switch( ral->radio_type )
+ 119              		.loc 1 153 1 is_stmt 0 view .LVU24
+ 120 0000 10B5     		push	{r4, lr}
+ 121              		.cfi_def_cfa_offset 8
+ 122              		.cfi_offset 4, -8
+ 123              		.cfi_offset 14, -4
+ 124              		.loc 1 154 5 view .LVU25
+ 125 0002 0279     		ldrb	r2, [r0, #4]
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s 			page 6
+
+
+ 153:smtc_ral/src/ral.c ****     switch( ral->radio_type )
+ 126              		.loc 1 153 1 view .LVU26
+ 127 0004 0300     		movs	r3, r0
+ 155:smtc_ral/src/ral.c ****     {
+ 156:smtc_ral/src/ral.c **** #if defined( SX126X )
+ 157:smtc_ral/src/ral.c ****     case RAL_RADIO_SX126X:
+ 158:smtc_ral/src/ral.c ****     {
+ 159:smtc_ral/src/ral.c ****         return ral_sx126x_setup_rx_gfsk( ral, params );
+ 160:smtc_ral/src/ral.c ****     }
+ 161:smtc_ral/src/ral.c **** #endif
+ 162:smtc_ral/src/ral.c **** #if defined( SX1272 )
+ 163:smtc_ral/src/ral.c ****     case RAL_RADIO_SX1272:
+ 164:smtc_ral/src/ral.c ****     {
+ 165:smtc_ral/src/ral.c ****         return ral_sx1272_setup_rx_gfsk( ral, params );
+ 166:smtc_ral/src/ral.c ****     }
+ 167:smtc_ral/src/ral.c **** #endif
+ 168:smtc_ral/src/ral.c **** #if defined( SX1276 )
+ 169:smtc_ral/src/ral.c ****     case RAL_RADIO_SX1276:
+ 170:smtc_ral/src/ral.c ****     {
+ 171:smtc_ral/src/ral.c ****         return ral_sx1276_setup_rx_gfsk( ral, params );
+ 172:smtc_ral/src/ral.c ****     }
+ 173:smtc_ral/src/ral.c **** #endif
+ 174:smtc_ral/src/ral.c **** #if defined( SX1280 )
+ 175:smtc_ral/src/ral.c ****     case RAL_RADIO_SX1280:
+ 176:smtc_ral/src/ral.c ****     {
+ 177:smtc_ral/src/ral.c ****         return ral_sx1280_setup_rx_gfsk( ral, params );
+ 178:smtc_ral/src/ral.c ****     }
+ 179:smtc_ral/src/ral.c **** #endif
+ 180:smtc_ral/src/ral.c ****     default:
+ 181:smtc_ral/src/ral.c ****         return RAL_STATUS_UNSUPPORTED_FEATURE;
+ 128              		.loc 1 181 16 view .LVU27
+ 129 0006 0120     		movs	r0, #1
+ 130              	.LVL7:
+ 154:smtc_ral/src/ral.c ****     {
+ 131              		.loc 1 154 5 view .LVU28
+ 132 0008 042A     		cmp	r2, #4
+ 133 000a 02D1     		bne	.L8
+ 177:smtc_ral/src/ral.c ****     }
+ 134              		.loc 1 177 9 is_stmt 1 view .LVU29
+ 177:smtc_ral/src/ral.c ****     }
+ 135              		.loc 1 177 16 is_stmt 0 view .LVU30
+ 136 000c 1800     		movs	r0, r3
+ 137 000e FFF7FEFF 		bl	ral_sx1280_setup_rx_gfsk
+ 138              	.LVL8:
+ 139              	.L8:
+ 182:smtc_ral/src/ral.c ****     };
+ 140              		.loc 1 182 6 is_stmt 1 view .LVU31
+ 183:smtc_ral/src/ral.c **** }
+ 141              		.loc 1 183 1 is_stmt 0 view .LVU32
+ 142              		@ sp needed
+ 143 0012 10BD     		pop	{r4, pc}
+ 144              		.cfi_endproc
+ 145              	.LFE3:
+ 147              		.section	.text.ral_setup_tx_gfsk,"ax",%progbits
+ 148              		.align	1
+ 149              		.global	ral_setup_tx_gfsk
+ 150              		.syntax unified
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s 			page 7
+
+
+ 151              		.code	16
+ 152              		.thumb_func
+ 153              		.fpu softvfp
+ 155              	ral_setup_tx_gfsk:
+ 156              	.LVL9:
+ 157              	.LFB4:
+ 184:smtc_ral/src/ral.c **** 
+ 185:smtc_ral/src/ral.c **** ral_status_t ral_setup_tx_gfsk( const ral_t* ral, const ral_params_gfsk_t* params )
+ 186:smtc_ral/src/ral.c **** {
+ 158              		.loc 1 186 1 is_stmt 1 view -0
+ 159              		.cfi_startproc
+ 160              		@ args = 0, pretend = 0, frame = 0
+ 161              		@ frame_needed = 0, uses_anonymous_args = 0
+ 187:smtc_ral/src/ral.c ****     switch( ral->radio_type )
+ 162              		.loc 1 187 5 view .LVU34
+ 186:smtc_ral/src/ral.c ****     switch( ral->radio_type )
+ 163              		.loc 1 186 1 is_stmt 0 view .LVU35
+ 164 0000 10B5     		push	{r4, lr}
+ 165              		.cfi_def_cfa_offset 8
+ 166              		.cfi_offset 4, -8
+ 167              		.cfi_offset 14, -4
+ 168              		.loc 1 187 5 view .LVU36
+ 169 0002 0279     		ldrb	r2, [r0, #4]
+ 186:smtc_ral/src/ral.c ****     switch( ral->radio_type )
+ 170              		.loc 1 186 1 view .LVU37
+ 171 0004 0300     		movs	r3, r0
+ 188:smtc_ral/src/ral.c ****     {
+ 189:smtc_ral/src/ral.c **** #if defined( SX126X )
+ 190:smtc_ral/src/ral.c ****     case RAL_RADIO_SX126X:
+ 191:smtc_ral/src/ral.c ****     {
+ 192:smtc_ral/src/ral.c ****         return ral_sx126x_setup_tx_gfsk( ral, params );
+ 193:smtc_ral/src/ral.c ****     }
+ 194:smtc_ral/src/ral.c **** #endif
+ 195:smtc_ral/src/ral.c **** #if defined( SX1272 )
+ 196:smtc_ral/src/ral.c ****     case RAL_RADIO_SX1272:
+ 197:smtc_ral/src/ral.c ****     {
+ 198:smtc_ral/src/ral.c ****         return ral_sx1272_setup_tx_gfsk( ral, params );
+ 199:smtc_ral/src/ral.c ****     }
+ 200:smtc_ral/src/ral.c **** #endif
+ 201:smtc_ral/src/ral.c **** #if defined( SX1276 )
+ 202:smtc_ral/src/ral.c ****     case RAL_RADIO_SX1276:
+ 203:smtc_ral/src/ral.c ****     {
+ 204:smtc_ral/src/ral.c ****         return ral_sx1276_setup_tx_gfsk( ral, params );
+ 205:smtc_ral/src/ral.c ****     }
+ 206:smtc_ral/src/ral.c **** #endif
+ 207:smtc_ral/src/ral.c **** #if defined( SX1280 )
+ 208:smtc_ral/src/ral.c ****     case RAL_RADIO_SX1280:
+ 209:smtc_ral/src/ral.c ****     {
+ 210:smtc_ral/src/ral.c ****         return ral_sx1280_setup_tx_gfsk( ral, params );
+ 211:smtc_ral/src/ral.c ****     }
+ 212:smtc_ral/src/ral.c **** #endif
+ 213:smtc_ral/src/ral.c ****     default:
+ 214:smtc_ral/src/ral.c ****         return RAL_STATUS_UNSUPPORTED_FEATURE;
+ 172              		.loc 1 214 16 view .LVU38
+ 173 0006 0120     		movs	r0, #1
+ 174              	.LVL10:
+ 187:smtc_ral/src/ral.c ****     {
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s 			page 8
+
+
+ 175              		.loc 1 187 5 view .LVU39
+ 176 0008 042A     		cmp	r2, #4
+ 177 000a 02D1     		bne	.L11
+ 210:smtc_ral/src/ral.c ****     }
+ 178              		.loc 1 210 9 is_stmt 1 view .LVU40
+ 210:smtc_ral/src/ral.c ****     }
+ 179              		.loc 1 210 16 is_stmt 0 view .LVU41
+ 180 000c 1800     		movs	r0, r3
+ 181 000e FFF7FEFF 		bl	ral_sx1280_setup_tx_gfsk
+ 182              	.LVL11:
+ 183              	.L11:
+ 215:smtc_ral/src/ral.c ****     };
+ 184              		.loc 1 215 6 is_stmt 1 view .LVU42
+ 216:smtc_ral/src/ral.c **** }
+ 185              		.loc 1 216 1 is_stmt 0 view .LVU43
+ 186              		@ sp needed
+ 187 0012 10BD     		pop	{r4, pc}
+ 188              		.cfi_endproc
+ 189              	.LFE4:
+ 191              		.section	.text.ral_setup_lora,"ax",%progbits
+ 192              		.align	1
+ 193              		.global	ral_setup_lora
+ 194              		.syntax unified
+ 195              		.code	16
+ 196              		.thumb_func
+ 197              		.fpu softvfp
+ 199              	ral_setup_lora:
+ 200              	.LVL12:
+ 201              	.LFB5:
+ 217:smtc_ral/src/ral.c **** 
+ 218:smtc_ral/src/ral.c **** ral_status_t ral_setup_lora( const ral_t* ral, const ral_params_lora_t* params )
+ 219:smtc_ral/src/ral.c **** {
+ 202              		.loc 1 219 1 is_stmt 1 view -0
+ 203              		.cfi_startproc
+ 204              		@ args = 0, pretend = 0, frame = 0
+ 205              		@ frame_needed = 0, uses_anonymous_args = 0
+ 220:smtc_ral/src/ral.c ****     switch( ral->radio_type )
+ 206              		.loc 1 220 5 view .LVU45
+ 219:smtc_ral/src/ral.c ****     switch( ral->radio_type )
+ 207              		.loc 1 219 1 is_stmt 0 view .LVU46
+ 208 0000 10B5     		push	{r4, lr}
+ 209              		.cfi_def_cfa_offset 8
+ 210              		.cfi_offset 4, -8
+ 211              		.cfi_offset 14, -4
+ 212              		.loc 1 220 5 view .LVU47
+ 213 0002 0279     		ldrb	r2, [r0, #4]
+ 219:smtc_ral/src/ral.c ****     switch( ral->radio_type )
+ 214              		.loc 1 219 1 view .LVU48
+ 215 0004 0300     		movs	r3, r0
+ 221:smtc_ral/src/ral.c ****     {
+ 222:smtc_ral/src/ral.c **** #if defined( SX126X )
+ 223:smtc_ral/src/ral.c ****     case RAL_RADIO_SX126X:
+ 224:smtc_ral/src/ral.c ****     {
+ 225:smtc_ral/src/ral.c ****         return ral_sx126x_setup_lora( ral, params );
+ 226:smtc_ral/src/ral.c ****     }
+ 227:smtc_ral/src/ral.c **** #endif
+ 228:smtc_ral/src/ral.c **** #if defined( SX1272 )
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s 			page 9
+
+
+ 229:smtc_ral/src/ral.c ****     case RAL_RADIO_SX1272:
+ 230:smtc_ral/src/ral.c ****     {
+ 231:smtc_ral/src/ral.c ****         return ral_sx1272_setup_lora( ral, params );
+ 232:smtc_ral/src/ral.c ****     }
+ 233:smtc_ral/src/ral.c **** #endif
+ 234:smtc_ral/src/ral.c **** #if defined( SX1276 )
+ 235:smtc_ral/src/ral.c ****     case RAL_RADIO_SX1276:
+ 236:smtc_ral/src/ral.c ****     {
+ 237:smtc_ral/src/ral.c ****         return ral_sx1276_setup_lora( ral, params );
+ 238:smtc_ral/src/ral.c ****     }
+ 239:smtc_ral/src/ral.c **** #endif
+ 240:smtc_ral/src/ral.c **** #if defined( SX1280 )
+ 241:smtc_ral/src/ral.c ****     case RAL_RADIO_SX1280:
+ 242:smtc_ral/src/ral.c ****     {
+ 243:smtc_ral/src/ral.c ****         return ral_sx1280_setup_lora( ral, params );
+ 244:smtc_ral/src/ral.c ****     }
+ 245:smtc_ral/src/ral.c **** #endif
+ 246:smtc_ral/src/ral.c ****     default:
+ 247:smtc_ral/src/ral.c ****         return RAL_STATUS_UNSUPPORTED_FEATURE;
+ 216              		.loc 1 247 16 view .LVU49
+ 217 0006 0120     		movs	r0, #1
+ 218              	.LVL13:
+ 220:smtc_ral/src/ral.c ****     {
+ 219              		.loc 1 220 5 view .LVU50
+ 220 0008 042A     		cmp	r2, #4
+ 221 000a 02D1     		bne	.L14
+ 243:smtc_ral/src/ral.c ****     }
+ 222              		.loc 1 243 9 is_stmt 1 view .LVU51
+ 243:smtc_ral/src/ral.c ****     }
+ 223              		.loc 1 243 16 is_stmt 0 view .LVU52
+ 224 000c 1800     		movs	r0, r3
+ 225 000e FFF7FEFF 		bl	ral_sx1280_setup_lora
+ 226              	.LVL14:
+ 227              	.L14:
+ 248:smtc_ral/src/ral.c ****     };
+ 228              		.loc 1 248 6 is_stmt 1 view .LVU53
+ 249:smtc_ral/src/ral.c **** }
+ 229              		.loc 1 249 1 is_stmt 0 view .LVU54
+ 230              		@ sp needed
+ 231 0012 10BD     		pop	{r4, pc}
+ 232              		.cfi_endproc
+ 233              	.LFE5:
+ 235              		.section	.text.ral_setup_rx_lora,"ax",%progbits
+ 236              		.align	1
+ 237              		.global	ral_setup_rx_lora
+ 238              		.syntax unified
+ 239              		.code	16
+ 240              		.thumb_func
+ 241              		.fpu softvfp
+ 243              	ral_setup_rx_lora:
+ 244              	.LVL15:
+ 245              	.LFB6:
+ 250:smtc_ral/src/ral.c **** 
+ 251:smtc_ral/src/ral.c **** ral_status_t ral_setup_rx_lora( const ral_t* ral, const ral_params_lora_t* params )
+ 252:smtc_ral/src/ral.c **** {
+ 246              		.loc 1 252 1 is_stmt 1 view -0
+ 247              		.cfi_startproc
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s 			page 10
+
+
+ 248              		@ args = 0, pretend = 0, frame = 0
+ 249              		@ frame_needed = 0, uses_anonymous_args = 0
+ 253:smtc_ral/src/ral.c ****     switch( ral->radio_type )
+ 250              		.loc 1 253 5 view .LVU56
+ 252:smtc_ral/src/ral.c ****     switch( ral->radio_type )
+ 251              		.loc 1 252 1 is_stmt 0 view .LVU57
+ 252 0000 10B5     		push	{r4, lr}
+ 253              		.cfi_def_cfa_offset 8
+ 254              		.cfi_offset 4, -8
+ 255              		.cfi_offset 14, -4
+ 256              		.loc 1 253 5 view .LVU58
+ 257 0002 0279     		ldrb	r2, [r0, #4]
+ 252:smtc_ral/src/ral.c ****     switch( ral->radio_type )
+ 258              		.loc 1 252 1 view .LVU59
+ 259 0004 0300     		movs	r3, r0
+ 254:smtc_ral/src/ral.c ****     {
+ 255:smtc_ral/src/ral.c **** #if defined( SX126X )
+ 256:smtc_ral/src/ral.c ****     case RAL_RADIO_SX126X:
+ 257:smtc_ral/src/ral.c ****     {
+ 258:smtc_ral/src/ral.c ****         return ral_sx126x_setup_rx_lora( ral, params );
+ 259:smtc_ral/src/ral.c ****     }
+ 260:smtc_ral/src/ral.c **** #endif
+ 261:smtc_ral/src/ral.c **** #if defined( SX1272 )
+ 262:smtc_ral/src/ral.c ****     case RAL_RADIO_SX1272:
+ 263:smtc_ral/src/ral.c ****     {
+ 264:smtc_ral/src/ral.c ****         return ral_sx1272_setup_rx_lora( ral, params );
+ 265:smtc_ral/src/ral.c ****     }
+ 266:smtc_ral/src/ral.c **** #endif
+ 267:smtc_ral/src/ral.c **** #if defined( SX1276 )
+ 268:smtc_ral/src/ral.c ****     case RAL_RADIO_SX1276:
+ 269:smtc_ral/src/ral.c ****     {
+ 270:smtc_ral/src/ral.c ****         return ral_sx1276_setup_rx_lora( ral, params );
+ 271:smtc_ral/src/ral.c ****     }
+ 272:smtc_ral/src/ral.c **** #endif
+ 273:smtc_ral/src/ral.c **** #if defined( SX1280 )
+ 274:smtc_ral/src/ral.c ****     case RAL_RADIO_SX1280:
+ 275:smtc_ral/src/ral.c ****     {
+ 276:smtc_ral/src/ral.c ****         return ral_sx1280_setup_rx_lora( ral, params );
+ 277:smtc_ral/src/ral.c ****     }
+ 278:smtc_ral/src/ral.c **** #endif
+ 279:smtc_ral/src/ral.c ****     default:
+ 280:smtc_ral/src/ral.c ****         return RAL_STATUS_UNSUPPORTED_FEATURE;
+ 260              		.loc 1 280 16 view .LVU60
+ 261 0006 0120     		movs	r0, #1
+ 262              	.LVL16:
+ 253:smtc_ral/src/ral.c ****     {
+ 263              		.loc 1 253 5 view .LVU61
+ 264 0008 042A     		cmp	r2, #4
+ 265 000a 02D1     		bne	.L17
+ 276:smtc_ral/src/ral.c ****     }
+ 266              		.loc 1 276 9 is_stmt 1 view .LVU62
+ 276:smtc_ral/src/ral.c ****     }
+ 267              		.loc 1 276 16 is_stmt 0 view .LVU63
+ 268 000c 1800     		movs	r0, r3
+ 269 000e FFF7FEFF 		bl	ral_sx1280_setup_rx_lora
+ 270              	.LVL17:
+ 271              	.L17:
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s 			page 11
+
+
+ 281:smtc_ral/src/ral.c ****     };
+ 272              		.loc 1 281 6 is_stmt 1 view .LVU64
+ 282:smtc_ral/src/ral.c **** }
+ 273              		.loc 1 282 1 is_stmt 0 view .LVU65
+ 274              		@ sp needed
+ 275 0012 10BD     		pop	{r4, pc}
+ 276              		.cfi_endproc
+ 277              	.LFE6:
+ 279              		.section	.text.ral_setup_tx_lora,"ax",%progbits
+ 280              		.align	1
+ 281              		.global	ral_setup_tx_lora
+ 282              		.syntax unified
+ 283              		.code	16
+ 284              		.thumb_func
+ 285              		.fpu softvfp
+ 287              	ral_setup_tx_lora:
+ 288              	.LVL18:
+ 289              	.LFB7:
+ 283:smtc_ral/src/ral.c **** 
+ 284:smtc_ral/src/ral.c **** ral_status_t ral_setup_tx_lora( const ral_t* ral, const ral_params_lora_t* params )
+ 285:smtc_ral/src/ral.c **** {
+ 290              		.loc 1 285 1 is_stmt 1 view -0
+ 291              		.cfi_startproc
+ 292              		@ args = 0, pretend = 0, frame = 0
+ 293              		@ frame_needed = 0, uses_anonymous_args = 0
+ 286:smtc_ral/src/ral.c ****     switch( ral->radio_type )
+ 294              		.loc 1 286 5 view .LVU67
+ 285:smtc_ral/src/ral.c ****     switch( ral->radio_type )
+ 295              		.loc 1 285 1 is_stmt 0 view .LVU68
+ 296 0000 10B5     		push	{r4, lr}
+ 297              		.cfi_def_cfa_offset 8
+ 298              		.cfi_offset 4, -8
+ 299              		.cfi_offset 14, -4
+ 300              		.loc 1 286 5 view .LVU69
+ 301 0002 0279     		ldrb	r2, [r0, #4]
+ 285:smtc_ral/src/ral.c ****     switch( ral->radio_type )
+ 302              		.loc 1 285 1 view .LVU70
+ 303 0004 0300     		movs	r3, r0
+ 287:smtc_ral/src/ral.c ****     {
+ 288:smtc_ral/src/ral.c **** #if defined( SX126X )
+ 289:smtc_ral/src/ral.c ****     case RAL_RADIO_SX126X:
+ 290:smtc_ral/src/ral.c ****     {
+ 291:smtc_ral/src/ral.c ****         return ral_sx126x_setup_tx_lora( ral, params );
+ 292:smtc_ral/src/ral.c ****     }
+ 293:smtc_ral/src/ral.c **** #endif
+ 294:smtc_ral/src/ral.c **** #if defined( SX1272 )
+ 295:smtc_ral/src/ral.c ****     case RAL_RADIO_SX1272:
+ 296:smtc_ral/src/ral.c ****     {
+ 297:smtc_ral/src/ral.c ****         return ral_sx1272_setup_tx_lora( ral, params );
+ 298:smtc_ral/src/ral.c ****     }
+ 299:smtc_ral/src/ral.c **** #endif
+ 300:smtc_ral/src/ral.c **** #if defined( SX1276 )
+ 301:smtc_ral/src/ral.c ****     case RAL_RADIO_SX1276:
+ 302:smtc_ral/src/ral.c ****     {
+ 303:smtc_ral/src/ral.c ****         return ral_sx1276_setup_tx_lora( ral, params );
+ 304:smtc_ral/src/ral.c ****     }
+ 305:smtc_ral/src/ral.c **** #endif
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s 			page 12
+
+
+ 306:smtc_ral/src/ral.c **** #if defined( SX1280 )
+ 307:smtc_ral/src/ral.c ****     case RAL_RADIO_SX1280:
+ 308:smtc_ral/src/ral.c ****     {
+ 309:smtc_ral/src/ral.c ****         return ral_sx1280_setup_tx_lora( ral, params );
+ 310:smtc_ral/src/ral.c ****     }
+ 311:smtc_ral/src/ral.c **** #endif
+ 312:smtc_ral/src/ral.c ****     default:
+ 313:smtc_ral/src/ral.c ****         return RAL_STATUS_UNSUPPORTED_FEATURE;
+ 304              		.loc 1 313 16 view .LVU71
+ 305 0006 0120     		movs	r0, #1
+ 306              	.LVL19:
+ 286:smtc_ral/src/ral.c ****     {
+ 307              		.loc 1 286 5 view .LVU72
+ 308 0008 042A     		cmp	r2, #4
+ 309 000a 02D1     		bne	.L20
+ 309:smtc_ral/src/ral.c ****     }
+ 310              		.loc 1 309 9 is_stmt 1 view .LVU73
+ 309:smtc_ral/src/ral.c ****     }
+ 311              		.loc 1 309 16 is_stmt 0 view .LVU74
+ 312 000c 1800     		movs	r0, r3
+ 313 000e FFF7FEFF 		bl	ral_sx1280_setup_tx_lora
+ 314              	.LVL20:
+ 315              	.L20:
+ 314:smtc_ral/src/ral.c ****     };
+ 316              		.loc 1 314 6 is_stmt 1 view .LVU75
+ 315:smtc_ral/src/ral.c **** }
+ 317              		.loc 1 315 1 is_stmt 0 view .LVU76
+ 318              		@ sp needed
+ 319 0012 10BD     		pop	{r4, pc}
+ 320              		.cfi_endproc
+ 321              	.LFE7:
+ 323              		.section	.text.ral_setup_flrc,"ax",%progbits
+ 324              		.align	1
+ 325              		.global	ral_setup_flrc
+ 326              		.syntax unified
+ 327              		.code	16
+ 328              		.thumb_func
+ 329              		.fpu softvfp
+ 331              	ral_setup_flrc:
+ 332              	.LVL21:
+ 333              	.LFB8:
+ 316:smtc_ral/src/ral.c **** 
+ 317:smtc_ral/src/ral.c **** ral_status_t ral_setup_flrc( const ral_t* ral, const ral_params_flrc_t* params )
+ 318:smtc_ral/src/ral.c **** {
+ 334              		.loc 1 318 1 is_stmt 1 view -0
+ 335              		.cfi_startproc
+ 336              		@ args = 0, pretend = 0, frame = 0
+ 337              		@ frame_needed = 0, uses_anonymous_args = 0
+ 319:smtc_ral/src/ral.c ****     switch( ral->radio_type )
+ 338              		.loc 1 319 5 view .LVU78
+ 318:smtc_ral/src/ral.c ****     switch( ral->radio_type )
+ 339              		.loc 1 318 1 is_stmt 0 view .LVU79
+ 340 0000 10B5     		push	{r4, lr}
+ 341              		.cfi_def_cfa_offset 8
+ 342              		.cfi_offset 4, -8
+ 343              		.cfi_offset 14, -4
+ 344              		.loc 1 319 5 view .LVU80
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s 			page 13
+
+
+ 345 0002 0279     		ldrb	r2, [r0, #4]
+ 318:smtc_ral/src/ral.c ****     switch( ral->radio_type )
+ 346              		.loc 1 318 1 view .LVU81
+ 347 0004 0300     		movs	r3, r0
+ 320:smtc_ral/src/ral.c ****     {
+ 321:smtc_ral/src/ral.c **** #if defined( SX126X )
+ 322:smtc_ral/src/ral.c ****     case RAL_RADIO_SX126X:
+ 323:smtc_ral/src/ral.c ****     {
+ 324:smtc_ral/src/ral.c ****         return ral_sx126x_setup_flrc( ral, params );
+ 325:smtc_ral/src/ral.c ****     }
+ 326:smtc_ral/src/ral.c **** #endif
+ 327:smtc_ral/src/ral.c **** #if defined( SX1272 )
+ 328:smtc_ral/src/ral.c ****     case RAL_RADIO_SX1272:
+ 329:smtc_ral/src/ral.c ****     {
+ 330:smtc_ral/src/ral.c ****         return ral_sx1272_setup_flrc( ral, params );
+ 331:smtc_ral/src/ral.c ****     }
+ 332:smtc_ral/src/ral.c **** #endif
+ 333:smtc_ral/src/ral.c **** #if defined( SX1276 )
+ 334:smtc_ral/src/ral.c ****     case RAL_RADIO_SX1276:
+ 335:smtc_ral/src/ral.c ****     {
+ 336:smtc_ral/src/ral.c ****         return ral_sx1276_setup_flrc( ral, params );
+ 337:smtc_ral/src/ral.c ****     }
+ 338:smtc_ral/src/ral.c **** #endif
+ 339:smtc_ral/src/ral.c **** #if defined( SX1280 )
+ 340:smtc_ral/src/ral.c ****     case RAL_RADIO_SX1280:
+ 341:smtc_ral/src/ral.c ****     {
+ 342:smtc_ral/src/ral.c ****         return ral_sx1280_setup_flrc( ral, params );
+ 343:smtc_ral/src/ral.c ****     }
+ 344:smtc_ral/src/ral.c **** #endif
+ 345:smtc_ral/src/ral.c ****     default:
+ 346:smtc_ral/src/ral.c ****         return RAL_STATUS_UNSUPPORTED_FEATURE;
+ 348              		.loc 1 346 16 view .LVU82
+ 349 0006 0120     		movs	r0, #1
+ 350              	.LVL22:
+ 319:smtc_ral/src/ral.c ****     {
+ 351              		.loc 1 319 5 view .LVU83
+ 352 0008 042A     		cmp	r2, #4
+ 353 000a 02D1     		bne	.L23
+ 342:smtc_ral/src/ral.c ****     }
+ 354              		.loc 1 342 9 is_stmt 1 view .LVU84
+ 342:smtc_ral/src/ral.c ****     }
+ 355              		.loc 1 342 16 is_stmt 0 view .LVU85
+ 356 000c 1800     		movs	r0, r3
+ 357 000e FFF7FEFF 		bl	ral_sx1280_setup_flrc
+ 358              	.LVL23:
+ 359              	.L23:
+ 347:smtc_ral/src/ral.c ****     };
+ 360              		.loc 1 347 6 is_stmt 1 view .LVU86
+ 348:smtc_ral/src/ral.c **** }
+ 361              		.loc 1 348 1 is_stmt 0 view .LVU87
+ 362              		@ sp needed
+ 363 0012 10BD     		pop	{r4, pc}
+ 364              		.cfi_endproc
+ 365              	.LFE8:
+ 367              		.section	.text.ral_setup_rx_flrc,"ax",%progbits
+ 368              		.align	1
+ 369              		.global	ral_setup_rx_flrc
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s 			page 14
+
+
+ 370              		.syntax unified
+ 371              		.code	16
+ 372              		.thumb_func
+ 373              		.fpu softvfp
+ 375              	ral_setup_rx_flrc:
+ 376              	.LVL24:
+ 377              	.LFB9:
+ 349:smtc_ral/src/ral.c **** 
+ 350:smtc_ral/src/ral.c **** ral_status_t ral_setup_rx_flrc( const ral_t* ral, const ral_params_flrc_t* params )
+ 351:smtc_ral/src/ral.c **** {
+ 378              		.loc 1 351 1 is_stmt 1 view -0
+ 379              		.cfi_startproc
+ 380              		@ args = 0, pretend = 0, frame = 0
+ 381              		@ frame_needed = 0, uses_anonymous_args = 0
+ 352:smtc_ral/src/ral.c ****     switch( ral->radio_type )
+ 382              		.loc 1 352 5 view .LVU89
+ 351:smtc_ral/src/ral.c ****     switch( ral->radio_type )
+ 383              		.loc 1 351 1 is_stmt 0 view .LVU90
+ 384 0000 10B5     		push	{r4, lr}
+ 385              		.cfi_def_cfa_offset 8
+ 386              		.cfi_offset 4, -8
+ 387              		.cfi_offset 14, -4
+ 388              		.loc 1 352 5 view .LVU91
+ 389 0002 0279     		ldrb	r2, [r0, #4]
+ 351:smtc_ral/src/ral.c ****     switch( ral->radio_type )
+ 390              		.loc 1 351 1 view .LVU92
+ 391 0004 0300     		movs	r3, r0
+ 353:smtc_ral/src/ral.c ****     {
+ 354:smtc_ral/src/ral.c **** #if defined( SX126X )
+ 355:smtc_ral/src/ral.c ****     case RAL_RADIO_SX126X:
+ 356:smtc_ral/src/ral.c ****     {
+ 357:smtc_ral/src/ral.c ****         return ral_sx126x_setup_rx_flrc( ral, params );
+ 358:smtc_ral/src/ral.c ****     }
+ 359:smtc_ral/src/ral.c **** #endif
+ 360:smtc_ral/src/ral.c **** #if defined( SX1272 )
+ 361:smtc_ral/src/ral.c ****     case RAL_RADIO_SX1272:
+ 362:smtc_ral/src/ral.c ****     {
+ 363:smtc_ral/src/ral.c ****         return ral_sx1272_setup_rx_flrc( ral, params );
+ 364:smtc_ral/src/ral.c ****     }
+ 365:smtc_ral/src/ral.c **** #endif
+ 366:smtc_ral/src/ral.c **** #if defined( SX1276 )
+ 367:smtc_ral/src/ral.c ****     case RAL_RADIO_SX1276:
+ 368:smtc_ral/src/ral.c ****     {
+ 369:smtc_ral/src/ral.c ****         return ral_sx1276_setup_rx_flrc( ral, params );
+ 370:smtc_ral/src/ral.c ****     }
+ 371:smtc_ral/src/ral.c **** #endif
+ 372:smtc_ral/src/ral.c **** #if defined( SX1280 )
+ 373:smtc_ral/src/ral.c ****     case RAL_RADIO_SX1280:
+ 374:smtc_ral/src/ral.c ****     {
+ 375:smtc_ral/src/ral.c ****         return ral_sx1280_setup_rx_flrc( ral, params );
+ 376:smtc_ral/src/ral.c ****     }
+ 377:smtc_ral/src/ral.c **** #endif
+ 378:smtc_ral/src/ral.c ****     default:
+ 379:smtc_ral/src/ral.c ****         return RAL_STATUS_UNSUPPORTED_FEATURE;
+ 392              		.loc 1 379 16 view .LVU93
+ 393 0006 0120     		movs	r0, #1
+ 394              	.LVL25:
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s 			page 15
+
+
+ 352:smtc_ral/src/ral.c ****     {
+ 395              		.loc 1 352 5 view .LVU94
+ 396 0008 042A     		cmp	r2, #4
+ 397 000a 02D1     		bne	.L26
+ 375:smtc_ral/src/ral.c ****     }
+ 398              		.loc 1 375 9 is_stmt 1 view .LVU95
+ 375:smtc_ral/src/ral.c ****     }
+ 399              		.loc 1 375 16 is_stmt 0 view .LVU96
+ 400 000c 1800     		movs	r0, r3
+ 401 000e FFF7FEFF 		bl	ral_sx1280_setup_rx_flrc
+ 402              	.LVL26:
+ 403              	.L26:
+ 380:smtc_ral/src/ral.c ****     };
+ 404              		.loc 1 380 6 is_stmt 1 view .LVU97
+ 381:smtc_ral/src/ral.c **** }
+ 405              		.loc 1 381 1 is_stmt 0 view .LVU98
+ 406              		@ sp needed
+ 407 0012 10BD     		pop	{r4, pc}
+ 408              		.cfi_endproc
+ 409              	.LFE9:
+ 411              		.section	.text.ral_setup_tx_flrc,"ax",%progbits
+ 412              		.align	1
+ 413              		.global	ral_setup_tx_flrc
+ 414              		.syntax unified
+ 415              		.code	16
+ 416              		.thumb_func
+ 417              		.fpu softvfp
+ 419              	ral_setup_tx_flrc:
+ 420              	.LVL27:
+ 421              	.LFB10:
+ 382:smtc_ral/src/ral.c **** 
+ 383:smtc_ral/src/ral.c **** ral_status_t ral_setup_tx_flrc( const ral_t* ral, const ral_params_flrc_t* params )
+ 384:smtc_ral/src/ral.c **** {
+ 422              		.loc 1 384 1 is_stmt 1 view -0
+ 423              		.cfi_startproc
+ 424              		@ args = 0, pretend = 0, frame = 0
+ 425              		@ frame_needed = 0, uses_anonymous_args = 0
+ 385:smtc_ral/src/ral.c ****     switch( ral->radio_type )
+ 426              		.loc 1 385 5 view .LVU100
+ 384:smtc_ral/src/ral.c ****     switch( ral->radio_type )
+ 427              		.loc 1 384 1 is_stmt 0 view .LVU101
+ 428 0000 10B5     		push	{r4, lr}
+ 429              		.cfi_def_cfa_offset 8
+ 430              		.cfi_offset 4, -8
+ 431              		.cfi_offset 14, -4
+ 432              		.loc 1 385 5 view .LVU102
+ 433 0002 0279     		ldrb	r2, [r0, #4]
+ 384:smtc_ral/src/ral.c ****     switch( ral->radio_type )
+ 434              		.loc 1 384 1 view .LVU103
+ 435 0004 0300     		movs	r3, r0
+ 386:smtc_ral/src/ral.c ****     {
+ 387:smtc_ral/src/ral.c **** #if defined( SX126X )
+ 388:smtc_ral/src/ral.c ****     case RAL_RADIO_SX126X:
+ 389:smtc_ral/src/ral.c ****     {
+ 390:smtc_ral/src/ral.c ****         return ral_sx126x_setup_tx_flrc( ral, params );
+ 391:smtc_ral/src/ral.c ****     }
+ 392:smtc_ral/src/ral.c **** #endif
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s 			page 16
+
+
+ 393:smtc_ral/src/ral.c **** #if defined( SX1272 )
+ 394:smtc_ral/src/ral.c ****     case RAL_RADIO_SX1272:
+ 395:smtc_ral/src/ral.c ****     {
+ 396:smtc_ral/src/ral.c ****         return ral_sx1272_setup_tx_flrc( ral, params );
+ 397:smtc_ral/src/ral.c ****     }
+ 398:smtc_ral/src/ral.c **** #endif
+ 399:smtc_ral/src/ral.c **** #if defined( SX1276 )
+ 400:smtc_ral/src/ral.c ****     case RAL_RADIO_SX1276:
+ 401:smtc_ral/src/ral.c ****     {
+ 402:smtc_ral/src/ral.c ****         return ral_sx1276_setup_tx_flrc( ral, params );
+ 403:smtc_ral/src/ral.c ****     }
+ 404:smtc_ral/src/ral.c **** #endif
+ 405:smtc_ral/src/ral.c **** #if defined( SX1280 )
+ 406:smtc_ral/src/ral.c ****     case RAL_RADIO_SX1280:
+ 407:smtc_ral/src/ral.c ****     {
+ 408:smtc_ral/src/ral.c ****         return ral_sx1280_setup_tx_flrc( ral, params );
+ 409:smtc_ral/src/ral.c ****     }
+ 410:smtc_ral/src/ral.c **** #endif
+ 411:smtc_ral/src/ral.c ****     default:
+ 412:smtc_ral/src/ral.c ****         return RAL_STATUS_UNSUPPORTED_FEATURE;
+ 436              		.loc 1 412 16 view .LVU104
+ 437 0006 0120     		movs	r0, #1
+ 438              	.LVL28:
+ 385:smtc_ral/src/ral.c ****     {
+ 439              		.loc 1 385 5 view .LVU105
+ 440 0008 042A     		cmp	r2, #4
+ 441 000a 02D1     		bne	.L29
+ 408:smtc_ral/src/ral.c ****     }
+ 442              		.loc 1 408 9 is_stmt 1 view .LVU106
+ 408:smtc_ral/src/ral.c ****     }
+ 443              		.loc 1 408 16 is_stmt 0 view .LVU107
+ 444 000c 1800     		movs	r0, r3
+ 445 000e FFF7FEFF 		bl	ral_sx1280_setup_tx_flrc
+ 446              	.LVL29:
+ 447              	.L29:
+ 413:smtc_ral/src/ral.c ****     };
+ 448              		.loc 1 413 6 is_stmt 1 view .LVU108
+ 414:smtc_ral/src/ral.c **** }
+ 449              		.loc 1 414 1 is_stmt 0 view .LVU109
+ 450              		@ sp needed
+ 451 0012 10BD     		pop	{r4, pc}
+ 452              		.cfi_endproc
+ 453              	.LFE10:
+ 455              		.section	.text.ral_setup_tx_lora_e,"ax",%progbits
+ 456              		.align	1
+ 457              		.global	ral_setup_tx_lora_e
+ 458              		.syntax unified
+ 459              		.code	16
+ 460              		.thumb_func
+ 461              		.fpu softvfp
+ 463              	ral_setup_tx_lora_e:
+ 464              	.LVL30:
+ 465              	.LFB11:
+ 415:smtc_ral/src/ral.c **** 
+ 416:smtc_ral/src/ral.c **** ral_status_t ral_setup_tx_lora_e( const ral_t* ral, const ral_params_lora_e_t* params )
+ 417:smtc_ral/src/ral.c **** {
+ 466              		.loc 1 417 1 is_stmt 1 view -0
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s 			page 17
+
+
+ 467              		.cfi_startproc
+ 468              		@ args = 0, pretend = 0, frame = 0
+ 469              		@ frame_needed = 0, uses_anonymous_args = 0
+ 418:smtc_ral/src/ral.c ****     switch( ral->radio_type )
+ 470              		.loc 1 418 5 view .LVU111
+ 417:smtc_ral/src/ral.c ****     switch( ral->radio_type )
+ 471              		.loc 1 417 1 is_stmt 0 view .LVU112
+ 472 0000 10B5     		push	{r4, lr}
+ 473              		.cfi_def_cfa_offset 8
+ 474              		.cfi_offset 4, -8
+ 475              		.cfi_offset 14, -4
+ 476              		.loc 1 418 5 view .LVU113
+ 477 0002 0279     		ldrb	r2, [r0, #4]
+ 417:smtc_ral/src/ral.c ****     switch( ral->radio_type )
+ 478              		.loc 1 417 1 view .LVU114
+ 479 0004 0300     		movs	r3, r0
+ 419:smtc_ral/src/ral.c ****     {
+ 420:smtc_ral/src/ral.c **** #if defined( SX126X )
+ 421:smtc_ral/src/ral.c ****     case RAL_RADIO_SX126X:
+ 422:smtc_ral/src/ral.c ****     {
+ 423:smtc_ral/src/ral.c ****         return ral_sx126x_setup_tx_lora_e( ral, params );
+ 424:smtc_ral/src/ral.c ****     }
+ 425:smtc_ral/src/ral.c **** #endif
+ 426:smtc_ral/src/ral.c **** #if defined( SX1272 )
+ 427:smtc_ral/src/ral.c ****     case RAL_RADIO_SX1272:
+ 428:smtc_ral/src/ral.c ****     {
+ 429:smtc_ral/src/ral.c ****         return ral_sx1272_setup_tx_lora_e( ral, params );
+ 430:smtc_ral/src/ral.c ****     }
+ 431:smtc_ral/src/ral.c **** #endif
+ 432:smtc_ral/src/ral.c **** #if defined( SX1276 )
+ 433:smtc_ral/src/ral.c ****     case RAL_RADIO_SX1276:
+ 434:smtc_ral/src/ral.c ****     {
+ 435:smtc_ral/src/ral.c ****         return ral_sx1276_setup_tx_lora_e( ral, params );
+ 436:smtc_ral/src/ral.c ****     }
+ 437:smtc_ral/src/ral.c **** #endif
+ 438:smtc_ral/src/ral.c **** #if defined( SX1280 )
+ 439:smtc_ral/src/ral.c ****     case RAL_RADIO_SX1280:
+ 440:smtc_ral/src/ral.c ****     {
+ 441:smtc_ral/src/ral.c ****         return ral_sx1280_setup_tx_lora_e( ral, params );
+ 442:smtc_ral/src/ral.c ****     }
+ 443:smtc_ral/src/ral.c **** #endif
+ 444:smtc_ral/src/ral.c ****     default:
+ 445:smtc_ral/src/ral.c ****         return RAL_STATUS_UNSUPPORTED_FEATURE;
+ 480              		.loc 1 445 16 view .LVU115
+ 481 0006 0120     		movs	r0, #1
+ 482              	.LVL31:
+ 418:smtc_ral/src/ral.c ****     {
+ 483              		.loc 1 418 5 view .LVU116
+ 484 0008 042A     		cmp	r2, #4
+ 485 000a 02D1     		bne	.L32
+ 441:smtc_ral/src/ral.c ****     }
+ 486              		.loc 1 441 9 is_stmt 1 view .LVU117
+ 441:smtc_ral/src/ral.c ****     }
+ 487              		.loc 1 441 16 is_stmt 0 view .LVU118
+ 488 000c 1800     		movs	r0, r3
+ 489 000e FFF7FEFF 		bl	ral_sx1280_setup_tx_lora_e
+ 490              	.LVL32:
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s 			page 18
+
+
+ 491              	.L32:
+ 446:smtc_ral/src/ral.c ****     };
+ 492              		.loc 1 446 6 is_stmt 1 view .LVU119
+ 447:smtc_ral/src/ral.c **** }
+ 493              		.loc 1 447 1 is_stmt 0 view .LVU120
+ 494              		@ sp needed
+ 495 0012 10BD     		pop	{r4, pc}
+ 496              		.cfi_endproc
+ 497              	.LFE11:
+ 499              		.section	.text.ral_tx_bpsk,"ax",%progbits
+ 500              		.align	1
+ 501              		.global	ral_tx_bpsk
+ 502              		.syntax unified
+ 503              		.code	16
+ 504              		.thumb_func
+ 505              		.fpu softvfp
+ 507              	ral_tx_bpsk:
+ 508              	.LVL33:
+ 509              	.LFB12:
+ 448:smtc_ral/src/ral.c **** 
+ 449:smtc_ral/src/ral.c **** ral_status_t ral_tx_bpsk( const ral_t* ral, const ral_params_bpsk_t* params )
+ 450:smtc_ral/src/ral.c **** {
+ 510              		.loc 1 450 1 is_stmt 1 view -0
+ 511              		.cfi_startproc
+ 512              		@ args = 0, pretend = 0, frame = 0
+ 513              		@ frame_needed = 0, uses_anonymous_args = 0
+ 451:smtc_ral/src/ral.c ****     switch( ral->radio_type )
+ 514              		.loc 1 451 5 view .LVU122
+ 450:smtc_ral/src/ral.c ****     switch( ral->radio_type )
+ 515              		.loc 1 450 1 is_stmt 0 view .LVU123
+ 516 0000 10B5     		push	{r4, lr}
+ 517              		.cfi_def_cfa_offset 8
+ 518              		.cfi_offset 4, -8
+ 519              		.cfi_offset 14, -4
+ 520              		.loc 1 451 5 view .LVU124
+ 521 0002 0279     		ldrb	r2, [r0, #4]
+ 450:smtc_ral/src/ral.c ****     switch( ral->radio_type )
+ 522              		.loc 1 450 1 view .LVU125
+ 523 0004 0300     		movs	r3, r0
+ 452:smtc_ral/src/ral.c ****     {
+ 453:smtc_ral/src/ral.c **** #if defined( SX126X )
+ 454:smtc_ral/src/ral.c ****     case RAL_RADIO_SX126X:
+ 455:smtc_ral/src/ral.c ****     {
+ 456:smtc_ral/src/ral.c ****         return ral_sx126x_tx_bpsk( ral, params );
+ 457:smtc_ral/src/ral.c ****     }
+ 458:smtc_ral/src/ral.c **** #endif
+ 459:smtc_ral/src/ral.c **** #if defined( SX1272 )
+ 460:smtc_ral/src/ral.c ****     case RAL_RADIO_SX1272:
+ 461:smtc_ral/src/ral.c ****     {
+ 462:smtc_ral/src/ral.c ****         return ral_sx1272_tx_bpsk( ral, params );
+ 463:smtc_ral/src/ral.c ****     }
+ 464:smtc_ral/src/ral.c **** #endif
+ 465:smtc_ral/src/ral.c **** #if defined( SX1276 )
+ 466:smtc_ral/src/ral.c ****     case RAL_RADIO_SX1276:
+ 467:smtc_ral/src/ral.c ****     {
+ 468:smtc_ral/src/ral.c ****         return ral_sx1276_tx_bpsk( ral, params );
+ 469:smtc_ral/src/ral.c ****     }
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s 			page 19
+
+
+ 470:smtc_ral/src/ral.c **** #endif
+ 471:smtc_ral/src/ral.c **** #if defined( SX1280 )
+ 472:smtc_ral/src/ral.c ****     case RAL_RADIO_SX1280:
+ 473:smtc_ral/src/ral.c ****     {
+ 474:smtc_ral/src/ral.c ****         return ral_sx1280_tx_bpsk( ral, params );
+ 475:smtc_ral/src/ral.c ****     }
+ 476:smtc_ral/src/ral.c **** #endif
+ 477:smtc_ral/src/ral.c ****     default:
+ 478:smtc_ral/src/ral.c ****         return RAL_STATUS_UNSUPPORTED_FEATURE;
+ 524              		.loc 1 478 16 view .LVU126
+ 525 0006 0120     		movs	r0, #1
+ 526              	.LVL34:
+ 451:smtc_ral/src/ral.c ****     {
+ 527              		.loc 1 451 5 view .LVU127
+ 528 0008 042A     		cmp	r2, #4
+ 529 000a 02D1     		bne	.L35
+ 474:smtc_ral/src/ral.c ****     }
+ 530              		.loc 1 474 9 is_stmt 1 view .LVU128
+ 474:smtc_ral/src/ral.c ****     }
+ 531              		.loc 1 474 16 is_stmt 0 view .LVU129
+ 532 000c 1800     		movs	r0, r3
+ 533 000e FFF7FEFF 		bl	ral_sx1280_tx_bpsk
+ 534              	.LVL35:
+ 535              	.L35:
+ 479:smtc_ral/src/ral.c ****     };
+ 536              		.loc 1 479 6 is_stmt 1 view .LVU130
+ 480:smtc_ral/src/ral.c **** }
+ 537              		.loc 1 480 1 is_stmt 0 view .LVU131
+ 538              		@ sp needed
+ 539 0012 10BD     		pop	{r4, pc}
+ 540              		.cfi_endproc
+ 541              	.LFE12:
+ 543              		.section	.text.ral_setup_cad,"ax",%progbits
+ 544              		.align	1
+ 545              		.global	ral_setup_cad
+ 546              		.syntax unified
+ 547              		.code	16
+ 548              		.thumb_func
+ 549              		.fpu softvfp
+ 551              	ral_setup_cad:
+ 552              	.LVL36:
+ 553              	.LFB13:
+ 481:smtc_ral/src/ral.c **** 
+ 482:smtc_ral/src/ral.c **** ral_status_t ral_setup_cad( const ral_t* ral, const ral_lora_cad_params_t* params )
+ 483:smtc_ral/src/ral.c **** {
+ 554              		.loc 1 483 1 is_stmt 1 view -0
+ 555              		.cfi_startproc
+ 556              		@ args = 0, pretend = 0, frame = 0
+ 557              		@ frame_needed = 0, uses_anonymous_args = 0
+ 484:smtc_ral/src/ral.c ****     switch( ral->radio_type )
+ 558              		.loc 1 484 5 view .LVU133
+ 483:smtc_ral/src/ral.c ****     switch( ral->radio_type )
+ 559              		.loc 1 483 1 is_stmt 0 view .LVU134
+ 560 0000 10B5     		push	{r4, lr}
+ 561              		.cfi_def_cfa_offset 8
+ 562              		.cfi_offset 4, -8
+ 563              		.cfi_offset 14, -4
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s 			page 20
+
+
+ 564              		.loc 1 484 5 view .LVU135
+ 565 0002 0279     		ldrb	r2, [r0, #4]
+ 483:smtc_ral/src/ral.c ****     switch( ral->radio_type )
+ 566              		.loc 1 483 1 view .LVU136
+ 567 0004 0300     		movs	r3, r0
+ 485:smtc_ral/src/ral.c ****     {
+ 486:smtc_ral/src/ral.c **** #if defined( SX126X )
+ 487:smtc_ral/src/ral.c ****     case RAL_RADIO_SX126X:
+ 488:smtc_ral/src/ral.c ****     {
+ 489:smtc_ral/src/ral.c ****         return ral_sx126x_setup_cad( ral, params );
+ 490:smtc_ral/src/ral.c ****     }
+ 491:smtc_ral/src/ral.c **** #endif
+ 492:smtc_ral/src/ral.c **** #if defined( SX1272 )
+ 493:smtc_ral/src/ral.c ****     case RAL_RADIO_SX1272:
+ 494:smtc_ral/src/ral.c ****     {
+ 495:smtc_ral/src/ral.c ****         return ral_sx1272_setup_cad( ral, params );
+ 496:smtc_ral/src/ral.c ****     }
+ 497:smtc_ral/src/ral.c **** #endif
+ 498:smtc_ral/src/ral.c **** #if defined( SX1276 )
+ 499:smtc_ral/src/ral.c ****     case RAL_RADIO_SX1276:
+ 500:smtc_ral/src/ral.c ****     {
+ 501:smtc_ral/src/ral.c ****         return ral_sx1276_setup_cad( ral, params );
+ 502:smtc_ral/src/ral.c ****     }
+ 503:smtc_ral/src/ral.c **** #endif
+ 504:smtc_ral/src/ral.c **** #if defined( SX1280 )
+ 505:smtc_ral/src/ral.c ****     case RAL_RADIO_SX1280:
+ 506:smtc_ral/src/ral.c ****     {
+ 507:smtc_ral/src/ral.c ****         return ral_sx1280_setup_cad( ral, params );
+ 508:smtc_ral/src/ral.c ****     }
+ 509:smtc_ral/src/ral.c **** #endif
+ 510:smtc_ral/src/ral.c ****     default:
+ 511:smtc_ral/src/ral.c ****         return RAL_STATUS_UNSUPPORTED_FEATURE;
+ 568              		.loc 1 511 16 view .LVU137
+ 569 0006 0120     		movs	r0, #1
+ 570              	.LVL37:
+ 484:smtc_ral/src/ral.c ****     {
+ 571              		.loc 1 484 5 view .LVU138
+ 572 0008 042A     		cmp	r2, #4
+ 573 000a 02D1     		bne	.L38
+ 507:smtc_ral/src/ral.c ****     }
+ 574              		.loc 1 507 9 is_stmt 1 view .LVU139
+ 507:smtc_ral/src/ral.c ****     }
+ 575              		.loc 1 507 16 is_stmt 0 view .LVU140
+ 576 000c 1800     		movs	r0, r3
+ 577 000e FFF7FEFF 		bl	ral_sx1280_setup_cad
+ 578              	.LVL38:
+ 579              	.L38:
+ 512:smtc_ral/src/ral.c ****     };
+ 580              		.loc 1 512 6 is_stmt 1 view .LVU141
+ 513:smtc_ral/src/ral.c **** }
+ 581              		.loc 1 513 1 is_stmt 0 view .LVU142
+ 582              		@ sp needed
+ 583 0012 10BD     		pop	{r4, pc}
+ 584              		.cfi_endproc
+ 585              	.LFE13:
+ 587              		.section	.text.ral_set_pkt_payload,"ax",%progbits
+ 588              		.align	1
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s 			page 21
+
+
+ 589              		.global	ral_set_pkt_payload
+ 590              		.syntax unified
+ 591              		.code	16
+ 592              		.thumb_func
+ 593              		.fpu softvfp
+ 595              	ral_set_pkt_payload:
+ 596              	.LVL39:
+ 597              	.LFB14:
+ 514:smtc_ral/src/ral.c **** 
+ 515:smtc_ral/src/ral.c **** ral_status_t ral_set_pkt_payload( const ral_t* ral, const uint8_t* buffer, const uint16_t size )
+ 516:smtc_ral/src/ral.c **** {
+ 598              		.loc 1 516 1 is_stmt 1 view -0
+ 599              		.cfi_startproc
+ 600              		@ args = 0, pretend = 0, frame = 0
+ 601              		@ frame_needed = 0, uses_anonymous_args = 0
+ 517:smtc_ral/src/ral.c ****     switch( ral->radio_type )
+ 602              		.loc 1 517 5 view .LVU144
+ 516:smtc_ral/src/ral.c ****     switch( ral->radio_type )
+ 603              		.loc 1 516 1 is_stmt 0 view .LVU145
+ 604 0000 10B5     		push	{r4, lr}
+ 605              		.cfi_def_cfa_offset 8
+ 606              		.cfi_offset 4, -8
+ 607              		.cfi_offset 14, -4
+ 608              		.loc 1 517 5 view .LVU146
+ 609 0002 0479     		ldrb	r4, [r0, #4]
+ 516:smtc_ral/src/ral.c ****     switch( ral->radio_type )
+ 610              		.loc 1 516 1 view .LVU147
+ 611 0004 0300     		movs	r3, r0
+ 518:smtc_ral/src/ral.c ****     {
+ 519:smtc_ral/src/ral.c **** #if defined( SX126X )
+ 520:smtc_ral/src/ral.c ****     case RAL_RADIO_SX126X:
+ 521:smtc_ral/src/ral.c ****     {
+ 522:smtc_ral/src/ral.c ****         return ral_sx126x_set_pkt_payload( ral, buffer, size );
+ 523:smtc_ral/src/ral.c ****     }
+ 524:smtc_ral/src/ral.c **** #endif
+ 525:smtc_ral/src/ral.c **** #if defined( SX1272 )
+ 526:smtc_ral/src/ral.c ****     case RAL_RADIO_SX1272:
+ 527:smtc_ral/src/ral.c ****     {
+ 528:smtc_ral/src/ral.c ****         return ral_sx1272_set_pkt_payload( ral, buffer, size );
+ 529:smtc_ral/src/ral.c ****     }
+ 530:smtc_ral/src/ral.c **** #endif
+ 531:smtc_ral/src/ral.c **** #if defined( SX1276 )
+ 532:smtc_ral/src/ral.c ****     case RAL_RADIO_SX1276:
+ 533:smtc_ral/src/ral.c ****     {
+ 534:smtc_ral/src/ral.c ****         return ral_sx1276_set_pkt_payload( ral, buffer, size );
+ 535:smtc_ral/src/ral.c ****     }
+ 536:smtc_ral/src/ral.c **** #endif
+ 537:smtc_ral/src/ral.c **** #if defined( SX1280 )
+ 538:smtc_ral/src/ral.c ****     case RAL_RADIO_SX1280:
+ 539:smtc_ral/src/ral.c ****     {
+ 540:smtc_ral/src/ral.c ****         return ral_sx1280_set_pkt_payload( ral, buffer, size );
+ 541:smtc_ral/src/ral.c ****     }
+ 542:smtc_ral/src/ral.c **** #endif
+ 543:smtc_ral/src/ral.c ****     default:
+ 544:smtc_ral/src/ral.c ****         return RAL_STATUS_UNSUPPORTED_FEATURE;
+ 612              		.loc 1 544 16 view .LVU148
+ 613 0006 0120     		movs	r0, #1
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s 			page 22
+
+
+ 614              	.LVL40:
+ 517:smtc_ral/src/ral.c ****     {
+ 615              		.loc 1 517 5 view .LVU149
+ 616 0008 042C     		cmp	r4, #4
+ 617 000a 02D1     		bne	.L41
+ 540:smtc_ral/src/ral.c ****     }
+ 618              		.loc 1 540 9 is_stmt 1 view .LVU150
+ 540:smtc_ral/src/ral.c ****     }
+ 619              		.loc 1 540 16 is_stmt 0 view .LVU151
+ 620 000c 1800     		movs	r0, r3
+ 621 000e FFF7FEFF 		bl	ral_sx1280_set_pkt_payload
+ 622              	.LVL41:
+ 623              	.L41:
+ 545:smtc_ral/src/ral.c ****     };
+ 624              		.loc 1 545 6 is_stmt 1 view .LVU152
+ 546:smtc_ral/src/ral.c **** }
+ 625              		.loc 1 546 1 is_stmt 0 view .LVU153
+ 626              		@ sp needed
+ 627 0012 10BD     		pop	{r4, pc}
+ 628              		.cfi_endproc
+ 629              	.LFE14:
+ 631              		.section	.text.ral_get_pkt_payload,"ax",%progbits
+ 632              		.align	1
+ 633              		.global	ral_get_pkt_payload
+ 634              		.syntax unified
+ 635              		.code	16
+ 636              		.thumb_func
+ 637              		.fpu softvfp
+ 639              	ral_get_pkt_payload:
+ 640              	.LVL42:
+ 641              	.LFB15:
+ 547:smtc_ral/src/ral.c **** 
+ 548:smtc_ral/src/ral.c **** ral_status_t ral_get_pkt_payload( const ral_t* ral, uint8_t* buffer, uint16_t max_size, uint16_t* s
+ 549:smtc_ral/src/ral.c **** {
+ 642              		.loc 1 549 1 is_stmt 1 view -0
+ 643              		.cfi_startproc
+ 644              		@ args = 0, pretend = 0, frame = 0
+ 645              		@ frame_needed = 0, uses_anonymous_args = 0
+ 550:smtc_ral/src/ral.c ****     switch( ral->radio_type )
+ 646              		.loc 1 550 5 view .LVU155
+ 549:smtc_ral/src/ral.c ****     switch( ral->radio_type )
+ 647              		.loc 1 549 1 is_stmt 0 view .LVU156
+ 648 0000 70B5     		push	{r4, r5, r6, lr}
+ 649              		.cfi_def_cfa_offset 16
+ 650              		.cfi_offset 4, -16
+ 651              		.cfi_offset 5, -12
+ 652              		.cfi_offset 6, -8
+ 653              		.cfi_offset 14, -4
+ 654              		.loc 1 550 5 view .LVU157
+ 655 0002 0579     		ldrb	r5, [r0, #4]
+ 549:smtc_ral/src/ral.c ****     switch( ral->radio_type )
+ 656              		.loc 1 549 1 view .LVU158
+ 657 0004 0400     		movs	r4, r0
+ 551:smtc_ral/src/ral.c ****     {
+ 552:smtc_ral/src/ral.c **** #if defined( SX126X )
+ 553:smtc_ral/src/ral.c ****     case RAL_RADIO_SX126X:
+ 554:smtc_ral/src/ral.c ****     {
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s 			page 23
+
+
+ 555:smtc_ral/src/ral.c ****         return ral_sx126x_get_pkt_payload( ral, buffer, max_size, size );
+ 556:smtc_ral/src/ral.c ****     }
+ 557:smtc_ral/src/ral.c **** #endif
+ 558:smtc_ral/src/ral.c **** #if defined( SX1272 )
+ 559:smtc_ral/src/ral.c ****     case RAL_RADIO_SX1272:
+ 560:smtc_ral/src/ral.c ****     {
+ 561:smtc_ral/src/ral.c ****         return ral_sx1272_get_pkt_payload( ral, buffer, max_size, size );
+ 562:smtc_ral/src/ral.c ****     }
+ 563:smtc_ral/src/ral.c **** #endif
+ 564:smtc_ral/src/ral.c **** #if defined( SX1276 )
+ 565:smtc_ral/src/ral.c ****     case RAL_RADIO_SX1276:
+ 566:smtc_ral/src/ral.c ****     {
+ 567:smtc_ral/src/ral.c ****         return ral_sx1276_get_pkt_payload( ral, buffer, max_size, size );
+ 568:smtc_ral/src/ral.c ****     }
+ 569:smtc_ral/src/ral.c **** #endif
+ 570:smtc_ral/src/ral.c **** #if defined( SX1280 )
+ 571:smtc_ral/src/ral.c ****     case RAL_RADIO_SX1280:
+ 572:smtc_ral/src/ral.c ****     {
+ 573:smtc_ral/src/ral.c ****         return ral_sx1280_get_pkt_payload( ral, buffer, max_size, size );
+ 574:smtc_ral/src/ral.c ****     }
+ 575:smtc_ral/src/ral.c **** #endif
+ 576:smtc_ral/src/ral.c ****     default:
+ 577:smtc_ral/src/ral.c ****         return RAL_STATUS_UNSUPPORTED_FEATURE;
+ 658              		.loc 1 577 16 view .LVU159
+ 659 0006 0120     		movs	r0, #1
+ 660              	.LVL43:
+ 550:smtc_ral/src/ral.c ****     {
+ 661              		.loc 1 550 5 view .LVU160
+ 662 0008 042D     		cmp	r5, #4
+ 663 000a 02D1     		bne	.L44
+ 573:smtc_ral/src/ral.c ****     }
+ 664              		.loc 1 573 9 is_stmt 1 view .LVU161
+ 573:smtc_ral/src/ral.c ****     }
+ 665              		.loc 1 573 16 is_stmt 0 view .LVU162
+ 666 000c 2000     		movs	r0, r4
+ 667 000e FFF7FEFF 		bl	ral_sx1280_get_pkt_payload
+ 668              	.LVL44:
+ 669              	.L44:
+ 578:smtc_ral/src/ral.c ****     };
+ 670              		.loc 1 578 6 is_stmt 1 view .LVU163
+ 579:smtc_ral/src/ral.c **** }
+ 671              		.loc 1 579 1 is_stmt 0 view .LVU164
+ 672              		@ sp needed
+ 673              	.LVL45:
+ 674              		.loc 1 579 1 view .LVU165
+ 675 0012 70BD     		pop	{r4, r5, r6, pc}
+ 676              		.cfi_endproc
+ 677              	.LFE15:
+ 679              		.section	.text.ral_get_gfsk_pkt_status,"ax",%progbits
+ 680              		.align	1
+ 681              		.global	ral_get_gfsk_pkt_status
+ 682              		.syntax unified
+ 683              		.code	16
+ 684              		.thumb_func
+ 685              		.fpu softvfp
+ 687              	ral_get_gfsk_pkt_status:
+ 688              	.LVL46:
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s 			page 24
+
+
+ 689              	.LFB16:
+ 580:smtc_ral/src/ral.c **** 
+ 581:smtc_ral/src/ral.c **** ral_status_t ral_get_gfsk_pkt_status( const ral_t* ral, ral_rx_pkt_status_gfsk_t* pkt_status )
+ 582:smtc_ral/src/ral.c **** {
+ 690              		.loc 1 582 1 is_stmt 1 view -0
+ 691              		.cfi_startproc
+ 692              		@ args = 0, pretend = 0, frame = 0
+ 693              		@ frame_needed = 0, uses_anonymous_args = 0
+ 583:smtc_ral/src/ral.c ****     switch( ral->radio_type )
+ 694              		.loc 1 583 5 view .LVU167
+ 582:smtc_ral/src/ral.c ****     switch( ral->radio_type )
+ 695              		.loc 1 582 1 is_stmt 0 view .LVU168
+ 696 0000 10B5     		push	{r4, lr}
+ 697              		.cfi_def_cfa_offset 8
+ 698              		.cfi_offset 4, -8
+ 699              		.cfi_offset 14, -4
+ 700              		.loc 1 583 5 view .LVU169
+ 701 0002 0279     		ldrb	r2, [r0, #4]
+ 582:smtc_ral/src/ral.c ****     switch( ral->radio_type )
+ 702              		.loc 1 582 1 view .LVU170
+ 703 0004 0300     		movs	r3, r0
+ 584:smtc_ral/src/ral.c ****     {
+ 585:smtc_ral/src/ral.c **** #if defined( SX126X )
+ 586:smtc_ral/src/ral.c ****     case RAL_RADIO_SX126X:
+ 587:smtc_ral/src/ral.c ****     {
+ 588:smtc_ral/src/ral.c ****         return ral_sx126x_get_gfsk_pkt_status( ral, pkt_status );
+ 589:smtc_ral/src/ral.c ****     }
+ 590:smtc_ral/src/ral.c **** #endif
+ 591:smtc_ral/src/ral.c **** #if defined( SX1272 )
+ 592:smtc_ral/src/ral.c ****     case RAL_RADIO_SX1272:
+ 593:smtc_ral/src/ral.c ****     {
+ 594:smtc_ral/src/ral.c ****         return ral_sx1272_get_pkt_status_gfsk( ral, pkt_status );
+ 595:smtc_ral/src/ral.c ****     }
+ 596:smtc_ral/src/ral.c **** #endif
+ 597:smtc_ral/src/ral.c **** #if defined( SX1276 )
+ 598:smtc_ral/src/ral.c ****     case RAL_RADIO_SX1276:
+ 599:smtc_ral/src/ral.c ****     {
+ 600:smtc_ral/src/ral.c ****         return ral_sx1276_get_pkt_status_gfsk( ral, pkt_status );
+ 601:smtc_ral/src/ral.c ****     }
+ 602:smtc_ral/src/ral.c **** #endif
+ 603:smtc_ral/src/ral.c **** #if defined( SX1280 )
+ 604:smtc_ral/src/ral.c ****     case RAL_RADIO_SX1280:
+ 605:smtc_ral/src/ral.c ****     {
+ 606:smtc_ral/src/ral.c ****         return ral_sx1280_get_gfsk_pkt_status( ral, pkt_status );
+ 607:smtc_ral/src/ral.c ****     }
+ 608:smtc_ral/src/ral.c **** #endif
+ 609:smtc_ral/src/ral.c ****     default:
+ 610:smtc_ral/src/ral.c ****         return RAL_STATUS_UNSUPPORTED_FEATURE;
+ 704              		.loc 1 610 16 view .LVU171
+ 705 0006 0120     		movs	r0, #1
+ 706              	.LVL47:
+ 583:smtc_ral/src/ral.c ****     {
+ 707              		.loc 1 583 5 view .LVU172
+ 708 0008 042A     		cmp	r2, #4
+ 709 000a 02D1     		bne	.L47
+ 606:smtc_ral/src/ral.c ****     }
+ 710              		.loc 1 606 9 is_stmt 1 view .LVU173
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s 			page 25
+
+
+ 606:smtc_ral/src/ral.c ****     }
+ 711              		.loc 1 606 16 is_stmt 0 view .LVU174
+ 712 000c 1800     		movs	r0, r3
+ 713 000e FFF7FEFF 		bl	ral_sx1280_get_gfsk_pkt_status
+ 714              	.LVL48:
+ 715              	.L47:
+ 611:smtc_ral/src/ral.c ****     };
+ 716              		.loc 1 611 6 is_stmt 1 view .LVU175
+ 612:smtc_ral/src/ral.c **** }
+ 717              		.loc 1 612 1 is_stmt 0 view .LVU176
+ 718              		@ sp needed
+ 719 0012 10BD     		pop	{r4, pc}
+ 720              		.cfi_endproc
+ 721              	.LFE16:
+ 723              		.section	.text.ral_get_lora_pkt_status,"ax",%progbits
+ 724              		.align	1
+ 725              		.global	ral_get_lora_pkt_status
+ 726              		.syntax unified
+ 727              		.code	16
+ 728              		.thumb_func
+ 729              		.fpu softvfp
+ 731              	ral_get_lora_pkt_status:
+ 732              	.LVL49:
+ 733              	.LFB17:
+ 613:smtc_ral/src/ral.c **** 
+ 614:smtc_ral/src/ral.c **** ral_status_t ral_get_lora_pkt_status( const ral_t* ral, ral_rx_pkt_status_lora_t* pkt_status )
+ 615:smtc_ral/src/ral.c **** {
+ 734              		.loc 1 615 1 is_stmt 1 view -0
+ 735              		.cfi_startproc
+ 736              		@ args = 0, pretend = 0, frame = 0
+ 737              		@ frame_needed = 0, uses_anonymous_args = 0
+ 616:smtc_ral/src/ral.c ****     switch( ral->radio_type )
+ 738              		.loc 1 616 5 view .LVU178
+ 615:smtc_ral/src/ral.c ****     switch( ral->radio_type )
+ 739              		.loc 1 615 1 is_stmt 0 view .LVU179
+ 740 0000 10B5     		push	{r4, lr}
+ 741              		.cfi_def_cfa_offset 8
+ 742              		.cfi_offset 4, -8
+ 743              		.cfi_offset 14, -4
+ 744              		.loc 1 616 5 view .LVU180
+ 745 0002 0279     		ldrb	r2, [r0, #4]
+ 615:smtc_ral/src/ral.c ****     switch( ral->radio_type )
+ 746              		.loc 1 615 1 view .LVU181
+ 747 0004 0300     		movs	r3, r0
+ 617:smtc_ral/src/ral.c ****     {
+ 618:smtc_ral/src/ral.c **** #if defined( SX126X )
+ 619:smtc_ral/src/ral.c ****     case RAL_RADIO_SX126X:
+ 620:smtc_ral/src/ral.c ****     {
+ 621:smtc_ral/src/ral.c ****         return ral_sx126x_get_lora_pkt_status( ral, pkt_status );
+ 622:smtc_ral/src/ral.c ****     }
+ 623:smtc_ral/src/ral.c **** #endif
+ 624:smtc_ral/src/ral.c **** #if defined( SX1272 )
+ 625:smtc_ral/src/ral.c ****     case RAL_RADIO_SX1272:
+ 626:smtc_ral/src/ral.c ****     {
+ 627:smtc_ral/src/ral.c ****         return ral_sx1272_get_pkt_status_lora( ral, pkt_status );
+ 628:smtc_ral/src/ral.c ****     }
+ 629:smtc_ral/src/ral.c **** #endif
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s 			page 26
+
+
+ 630:smtc_ral/src/ral.c **** #if defined( SX1276 )
+ 631:smtc_ral/src/ral.c ****     case RAL_RADIO_SX1276:
+ 632:smtc_ral/src/ral.c ****     {
+ 633:smtc_ral/src/ral.c ****         return ral_sx1276_get_pkt_status_lora( ral, pkt_status );
+ 634:smtc_ral/src/ral.c ****     }
+ 635:smtc_ral/src/ral.c **** #endif
+ 636:smtc_ral/src/ral.c **** #if defined( SX1280 )
+ 637:smtc_ral/src/ral.c ****     case RAL_RADIO_SX1280:
+ 638:smtc_ral/src/ral.c ****     {
+ 639:smtc_ral/src/ral.c ****         return ral_sx1280_get_lora_pkt_status( ral, pkt_status );
+ 640:smtc_ral/src/ral.c ****     }
+ 641:smtc_ral/src/ral.c **** #endif
+ 642:smtc_ral/src/ral.c ****     default:
+ 643:smtc_ral/src/ral.c ****         return RAL_STATUS_UNSUPPORTED_FEATURE;
+ 748              		.loc 1 643 16 view .LVU182
+ 749 0006 0120     		movs	r0, #1
+ 750              	.LVL50:
+ 616:smtc_ral/src/ral.c ****     {
+ 751              		.loc 1 616 5 view .LVU183
+ 752 0008 042A     		cmp	r2, #4
+ 753 000a 02D1     		bne	.L50
+ 639:smtc_ral/src/ral.c ****     }
+ 754              		.loc 1 639 9 is_stmt 1 view .LVU184
+ 639:smtc_ral/src/ral.c ****     }
+ 755              		.loc 1 639 16 is_stmt 0 view .LVU185
+ 756 000c 1800     		movs	r0, r3
+ 757 000e FFF7FEFF 		bl	ral_sx1280_get_lora_pkt_status
+ 758              	.LVL51:
+ 759              	.L50:
+ 644:smtc_ral/src/ral.c ****     };
+ 760              		.loc 1 644 6 is_stmt 1 view .LVU186
+ 645:smtc_ral/src/ral.c **** }
+ 761              		.loc 1 645 1 is_stmt 0 view .LVU187
+ 762              		@ sp needed
+ 763 0012 10BD     		pop	{r4, pc}
+ 764              		.cfi_endproc
+ 765              	.LFE17:
+ 767              		.section	.text.ral_get_lora_incoming_pkt_config,"ax",%progbits
+ 768              		.align	1
+ 769              		.global	ral_get_lora_incoming_pkt_config
+ 770              		.syntax unified
+ 771              		.code	16
+ 772              		.thumb_func
+ 773              		.fpu softvfp
+ 775              	ral_get_lora_incoming_pkt_config:
+ 776              	.LVL52:
+ 777              	.LFB18:
+ 646:smtc_ral/src/ral.c **** 
+ 647:smtc_ral/src/ral.c **** ral_status_t ral_get_lora_incoming_pkt_config( const ral_t* ral, ral_lora_cr_t* rx_cr, bool* rx_is_
+ 648:smtc_ral/src/ral.c **** {
+ 778              		.loc 1 648 1 is_stmt 1 view -0
+ 779              		.cfi_startproc
+ 780              		@ args = 0, pretend = 0, frame = 0
+ 781              		@ frame_needed = 0, uses_anonymous_args = 0
+ 649:smtc_ral/src/ral.c ****     switch( ral->radio_type )
+ 782              		.loc 1 649 5 view .LVU189
+ 648:smtc_ral/src/ral.c ****     switch( ral->radio_type )
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s 			page 27
+
+
+ 783              		.loc 1 648 1 is_stmt 0 view .LVU190
+ 784 0000 10B5     		push	{r4, lr}
+ 785              		.cfi_def_cfa_offset 8
+ 786              		.cfi_offset 4, -8
+ 787              		.cfi_offset 14, -4
+ 788              		.loc 1 649 5 view .LVU191
+ 789 0002 0479     		ldrb	r4, [r0, #4]
+ 648:smtc_ral/src/ral.c ****     switch( ral->radio_type )
+ 790              		.loc 1 648 1 view .LVU192
+ 791 0004 0300     		movs	r3, r0
+ 650:smtc_ral/src/ral.c ****     {
+ 651:smtc_ral/src/ral.c **** #if defined( SX126X )
+ 652:smtc_ral/src/ral.c ****     case RAL_RADIO_SX126X:
+ 653:smtc_ral/src/ral.c ****     {
+ 654:smtc_ral/src/ral.c ****         return RAL_STATUS_UNSUPPORTED_FEATURE;
+ 655:smtc_ral/src/ral.c ****     }
+ 656:smtc_ral/src/ral.c **** #endif
+ 657:smtc_ral/src/ral.c **** #if defined( SX1272 )
+ 658:smtc_ral/src/ral.c ****     case RAL_RADIO_SX1272:
+ 659:smtc_ral/src/ral.c ****     {
+ 660:smtc_ral/src/ral.c ****         return RAL_STATUS_UNSUPPORTED_FEATURE;
+ 661:smtc_ral/src/ral.c ****     }
+ 662:smtc_ral/src/ral.c **** #endif
+ 663:smtc_ral/src/ral.c **** #if defined( SX1276 )
+ 664:smtc_ral/src/ral.c ****     case RAL_RADIO_SX1276:
+ 665:smtc_ral/src/ral.c ****     {
+ 666:smtc_ral/src/ral.c ****         return RAL_STATUS_UNSUPPORTED_FEATURE;
+ 667:smtc_ral/src/ral.c ****     }
+ 668:smtc_ral/src/ral.c **** #endif
+ 669:smtc_ral/src/ral.c **** #if defined( SX1280 )
+ 670:smtc_ral/src/ral.c ****     case RAL_RADIO_SX1280:
+ 671:smtc_ral/src/ral.c ****     {
+ 672:smtc_ral/src/ral.c ****         return ral_sx1280_get_lora_incoming_pkt_config( ral, rx_cr, rx_is_crc_en );
+ 673:smtc_ral/src/ral.c ****     }
+ 674:smtc_ral/src/ral.c **** #endif
+ 675:smtc_ral/src/ral.c ****     default:
+ 676:smtc_ral/src/ral.c ****         return RAL_STATUS_UNSUPPORTED_FEATURE;
+ 792              		.loc 1 676 16 view .LVU193
+ 793 0006 0120     		movs	r0, #1
+ 794              	.LVL53:
+ 649:smtc_ral/src/ral.c ****     {
+ 795              		.loc 1 649 5 view .LVU194
+ 796 0008 042C     		cmp	r4, #4
+ 797 000a 02D1     		bne	.L53
+ 672:smtc_ral/src/ral.c ****     }
+ 798              		.loc 1 672 9 is_stmt 1 view .LVU195
+ 672:smtc_ral/src/ral.c ****     }
+ 799              		.loc 1 672 16 is_stmt 0 view .LVU196
+ 800 000c 1800     		movs	r0, r3
+ 801 000e FFF7FEFF 		bl	ral_sx1280_get_lora_incoming_pkt_config
+ 802              	.LVL54:
+ 803              	.L53:
+ 677:smtc_ral/src/ral.c ****     };
+ 804              		.loc 1 677 6 is_stmt 1 view .LVU197
+ 678:smtc_ral/src/ral.c **** }
+ 805              		.loc 1 678 1 is_stmt 0 view .LVU198
+ 806              		@ sp needed
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s 			page 28
+
+
+ 807 0012 10BD     		pop	{r4, pc}
+ 808              		.cfi_endproc
+ 809              	.LFE18:
+ 811              		.section	.text.ral_get_flrc_pkt_status,"ax",%progbits
+ 812              		.align	1
+ 813              		.global	ral_get_flrc_pkt_status
+ 814              		.syntax unified
+ 815              		.code	16
+ 816              		.thumb_func
+ 817              		.fpu softvfp
+ 819              	ral_get_flrc_pkt_status:
+ 820              	.LVL55:
+ 821              	.LFB19:
+ 679:smtc_ral/src/ral.c **** 
+ 680:smtc_ral/src/ral.c **** ral_status_t ral_get_flrc_pkt_status( const ral_t* ral, ral_rx_pkt_status_flrc_t* pkt_status )
+ 681:smtc_ral/src/ral.c **** {
+ 822              		.loc 1 681 1 is_stmt 1 view -0
+ 823              		.cfi_startproc
+ 824              		@ args = 0, pretend = 0, frame = 0
+ 825              		@ frame_needed = 0, uses_anonymous_args = 0
+ 682:smtc_ral/src/ral.c ****     switch( ral->radio_type )
+ 826              		.loc 1 682 5 view .LVU200
+ 681:smtc_ral/src/ral.c ****     switch( ral->radio_type )
+ 827              		.loc 1 681 1 is_stmt 0 view .LVU201
+ 828 0000 10B5     		push	{r4, lr}
+ 829              		.cfi_def_cfa_offset 8
+ 830              		.cfi_offset 4, -8
+ 831              		.cfi_offset 14, -4
+ 832              		.loc 1 682 5 view .LVU202
+ 833 0002 0279     		ldrb	r2, [r0, #4]
+ 681:smtc_ral/src/ral.c ****     switch( ral->radio_type )
+ 834              		.loc 1 681 1 view .LVU203
+ 835 0004 0300     		movs	r3, r0
+ 683:smtc_ral/src/ral.c ****     {
+ 684:smtc_ral/src/ral.c **** #if defined( SX126X )
+ 685:smtc_ral/src/ral.c ****     case RAL_RADIO_SX126X:
+ 686:smtc_ral/src/ral.c ****     {
+ 687:smtc_ral/src/ral.c ****         return ral_sx126x_get_flrc_pkt_status( ral, pkt_status );
+ 688:smtc_ral/src/ral.c ****     }
+ 689:smtc_ral/src/ral.c **** #endif
+ 690:smtc_ral/src/ral.c **** #if defined( SX1272 )
+ 691:smtc_ral/src/ral.c ****     case RAL_RADIO_SX1272:
+ 692:smtc_ral/src/ral.c ****     {
+ 693:smtc_ral/src/ral.c ****         return ral_sx1272_get_pkt_status_flrc( ral, pkt_status );
+ 694:smtc_ral/src/ral.c ****     }
+ 695:smtc_ral/src/ral.c **** #endif
+ 696:smtc_ral/src/ral.c **** #if defined( SX1276 )
+ 697:smtc_ral/src/ral.c ****     case RAL_RADIO_SX1276:
+ 698:smtc_ral/src/ral.c ****     {
+ 699:smtc_ral/src/ral.c ****         return ral_sx1276_get_pkt_status_flrc( ral, pkt_status );
+ 700:smtc_ral/src/ral.c ****     }
+ 701:smtc_ral/src/ral.c **** #endif
+ 702:smtc_ral/src/ral.c **** #if defined( SX1280 )
+ 703:smtc_ral/src/ral.c ****     case RAL_RADIO_SX1280:
+ 704:smtc_ral/src/ral.c ****     {
+ 705:smtc_ral/src/ral.c ****         return ral_sx1280_get_flrc_pkt_status( ral, pkt_status );
+ 706:smtc_ral/src/ral.c ****     }
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s 			page 29
+
+
+ 707:smtc_ral/src/ral.c **** #endif
+ 708:smtc_ral/src/ral.c ****     default:
+ 709:smtc_ral/src/ral.c ****         return RAL_STATUS_UNSUPPORTED_FEATURE;
+ 836              		.loc 1 709 16 view .LVU204
+ 837 0006 0120     		movs	r0, #1
+ 838              	.LVL56:
+ 682:smtc_ral/src/ral.c ****     {
+ 839              		.loc 1 682 5 view .LVU205
+ 840 0008 042A     		cmp	r2, #4
+ 841 000a 02D1     		bne	.L56
+ 705:smtc_ral/src/ral.c ****     }
+ 842              		.loc 1 705 9 is_stmt 1 view .LVU206
+ 705:smtc_ral/src/ral.c ****     }
+ 843              		.loc 1 705 16 is_stmt 0 view .LVU207
+ 844 000c 1800     		movs	r0, r3
+ 845 000e FFF7FEFF 		bl	ral_sx1280_get_flrc_pkt_status
+ 846              	.LVL57:
+ 847              	.L56:
+ 710:smtc_ral/src/ral.c ****     };
+ 848              		.loc 1 710 6 is_stmt 1 view .LVU208
+ 711:smtc_ral/src/ral.c **** }
+ 849              		.loc 1 711 1 is_stmt 0 view .LVU209
+ 850              		@ sp needed
+ 851 0012 10BD     		pop	{r4, pc}
+ 852              		.cfi_endproc
+ 853              	.LFE19:
+ 855              		.section	.text.ral_set_sleep,"ax",%progbits
+ 856              		.align	1
+ 857              		.global	ral_set_sleep
+ 858              		.syntax unified
+ 859              		.code	16
+ 860              		.thumb_func
+ 861              		.fpu softvfp
+ 863              	ral_set_sleep:
+ 864              	.LVL58:
+ 865              	.LFB20:
+ 712:smtc_ral/src/ral.c **** 
+ 713:smtc_ral/src/ral.c **** ral_status_t ral_set_sleep( const ral_t* ral )
+ 714:smtc_ral/src/ral.c **** {
+ 866              		.loc 1 714 1 is_stmt 1 view -0
+ 867              		.cfi_startproc
+ 868              		@ args = 0, pretend = 0, frame = 0
+ 869              		@ frame_needed = 0, uses_anonymous_args = 0
+ 715:smtc_ral/src/ral.c ****     switch( ral->radio_type )
+ 870              		.loc 1 715 5 view .LVU211
+ 714:smtc_ral/src/ral.c ****     switch( ral->radio_type )
+ 871              		.loc 1 714 1 is_stmt 0 view .LVU212
+ 872 0000 10B5     		push	{r4, lr}
+ 873              		.cfi_def_cfa_offset 8
+ 874              		.cfi_offset 4, -8
+ 875              		.cfi_offset 14, -4
+ 876              		.loc 1 715 5 view .LVU213
+ 877 0002 0279     		ldrb	r2, [r0, #4]
+ 714:smtc_ral/src/ral.c ****     switch( ral->radio_type )
+ 878              		.loc 1 714 1 view .LVU214
+ 879 0004 0300     		movs	r3, r0
+ 716:smtc_ral/src/ral.c ****     {
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s 			page 30
+
+
+ 717:smtc_ral/src/ral.c **** #if defined( SX126X )
+ 718:smtc_ral/src/ral.c ****     case RAL_RADIO_SX126X:
+ 719:smtc_ral/src/ral.c ****     {
+ 720:smtc_ral/src/ral.c ****         return ral_sx126x_set_sleep( ral );
+ 721:smtc_ral/src/ral.c ****     }
+ 722:smtc_ral/src/ral.c **** #endif
+ 723:smtc_ral/src/ral.c **** #if defined( SX1272 )
+ 724:smtc_ral/src/ral.c ****     case RAL_RADIO_SX1272:
+ 725:smtc_ral/src/ral.c ****     {
+ 726:smtc_ral/src/ral.c ****         return ral_sx1272_set_sleep( ral );
+ 727:smtc_ral/src/ral.c ****     }
+ 728:smtc_ral/src/ral.c **** #endif
+ 729:smtc_ral/src/ral.c **** #if defined( SX1276 )
+ 730:smtc_ral/src/ral.c ****     case RAL_RADIO_SX1276:
+ 731:smtc_ral/src/ral.c ****     {
+ 732:smtc_ral/src/ral.c ****         return ral_sx1276_set_sleep( ral );
+ 733:smtc_ral/src/ral.c ****     }
+ 734:smtc_ral/src/ral.c **** #endif
+ 735:smtc_ral/src/ral.c **** #if defined( SX1280 )
+ 736:smtc_ral/src/ral.c ****     case RAL_RADIO_SX1280:
+ 737:smtc_ral/src/ral.c ****     {
+ 738:smtc_ral/src/ral.c ****         return ral_sx1280_set_sleep( ral );
+ 739:smtc_ral/src/ral.c ****     }
+ 740:smtc_ral/src/ral.c **** #endif
+ 741:smtc_ral/src/ral.c ****     default:
+ 742:smtc_ral/src/ral.c ****         return RAL_STATUS_UNSUPPORTED_FEATURE;
+ 880              		.loc 1 742 16 view .LVU215
+ 881 0006 0120     		movs	r0, #1
+ 882              	.LVL59:
+ 715:smtc_ral/src/ral.c ****     {
+ 883              		.loc 1 715 5 view .LVU216
+ 884 0008 042A     		cmp	r2, #4
+ 885 000a 02D1     		bne	.L59
+ 738:smtc_ral/src/ral.c ****     }
+ 886              		.loc 1 738 9 is_stmt 1 view .LVU217
+ 738:smtc_ral/src/ral.c ****     }
+ 887              		.loc 1 738 16 is_stmt 0 view .LVU218
+ 888 000c 1800     		movs	r0, r3
+ 889 000e FFF7FEFF 		bl	ral_sx1280_set_sleep
+ 890              	.LVL60:
+ 891              	.L59:
+ 743:smtc_ral/src/ral.c ****     };
+ 892              		.loc 1 743 6 is_stmt 1 view .LVU219
+ 744:smtc_ral/src/ral.c **** }
+ 893              		.loc 1 744 1 is_stmt 0 view .LVU220
+ 894              		@ sp needed
+ 895 0012 10BD     		pop	{r4, pc}
+ 896              		.cfi_endproc
+ 897              	.LFE20:
+ 899              		.section	.text.ral_set_standby,"ax",%progbits
+ 900              		.align	1
+ 901              		.global	ral_set_standby
+ 902              		.syntax unified
+ 903              		.code	16
+ 904              		.thumb_func
+ 905              		.fpu softvfp
+ 907              	ral_set_standby:
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s 			page 31
+
+
+ 908              	.LVL61:
+ 909              	.LFB21:
+ 745:smtc_ral/src/ral.c **** 
+ 746:smtc_ral/src/ral.c **** ral_status_t ral_set_standby( const ral_t* ral )
+ 747:smtc_ral/src/ral.c **** {
+ 910              		.loc 1 747 1 is_stmt 1 view -0
+ 911              		.cfi_startproc
+ 912              		@ args = 0, pretend = 0, frame = 0
+ 913              		@ frame_needed = 0, uses_anonymous_args = 0
+ 748:smtc_ral/src/ral.c ****     switch( ral->radio_type )
+ 914              		.loc 1 748 5 view .LVU222
+ 747:smtc_ral/src/ral.c ****     switch( ral->radio_type )
+ 915              		.loc 1 747 1 is_stmt 0 view .LVU223
+ 916 0000 10B5     		push	{r4, lr}
+ 917              		.cfi_def_cfa_offset 8
+ 918              		.cfi_offset 4, -8
+ 919              		.cfi_offset 14, -4
+ 920              		.loc 1 748 5 view .LVU224
+ 921 0002 0279     		ldrb	r2, [r0, #4]
+ 747:smtc_ral/src/ral.c ****     switch( ral->radio_type )
+ 922              		.loc 1 747 1 view .LVU225
+ 923 0004 0300     		movs	r3, r0
+ 749:smtc_ral/src/ral.c ****     {
+ 750:smtc_ral/src/ral.c **** #if defined( SX126X )
+ 751:smtc_ral/src/ral.c ****     case RAL_RADIO_SX126X:
+ 752:smtc_ral/src/ral.c ****     {
+ 753:smtc_ral/src/ral.c ****         return ral_sx126x_set_standby( ral );
+ 754:smtc_ral/src/ral.c ****     }
+ 755:smtc_ral/src/ral.c **** #endif
+ 756:smtc_ral/src/ral.c **** #if defined( SX1272 )
+ 757:smtc_ral/src/ral.c ****     case RAL_RADIO_SX1272:
+ 758:smtc_ral/src/ral.c ****     {
+ 759:smtc_ral/src/ral.c ****         return ral_sx1272_set_standby( ral );
+ 760:smtc_ral/src/ral.c ****     }
+ 761:smtc_ral/src/ral.c **** #endif
+ 762:smtc_ral/src/ral.c **** #if defined( SX1276 )
+ 763:smtc_ral/src/ral.c ****     case RAL_RADIO_SX1276:
+ 764:smtc_ral/src/ral.c ****     {
+ 765:smtc_ral/src/ral.c ****         return ral_sx1276_set_standby( ral );
+ 766:smtc_ral/src/ral.c ****     }
+ 767:smtc_ral/src/ral.c **** #endif
+ 768:smtc_ral/src/ral.c **** #if defined( SX1280 )
+ 769:smtc_ral/src/ral.c ****     case RAL_RADIO_SX1280:
+ 770:smtc_ral/src/ral.c ****     {
+ 771:smtc_ral/src/ral.c ****         return ral_sx1280_set_standby( ral );
+ 772:smtc_ral/src/ral.c ****     }
+ 773:smtc_ral/src/ral.c **** #endif
+ 774:smtc_ral/src/ral.c ****     default:
+ 775:smtc_ral/src/ral.c ****         return RAL_STATUS_UNSUPPORTED_FEATURE;
+ 924              		.loc 1 775 16 view .LVU226
+ 925 0006 0120     		movs	r0, #1
+ 926              	.LVL62:
+ 748:smtc_ral/src/ral.c ****     {
+ 927              		.loc 1 748 5 view .LVU227
+ 928 0008 042A     		cmp	r2, #4
+ 929 000a 02D1     		bne	.L62
+ 771:smtc_ral/src/ral.c ****     }
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s 			page 32
+
+
+ 930              		.loc 1 771 9 is_stmt 1 view .LVU228
+ 771:smtc_ral/src/ral.c ****     }
+ 931              		.loc 1 771 16 is_stmt 0 view .LVU229
+ 932 000c 1800     		movs	r0, r3
+ 933 000e FFF7FEFF 		bl	ral_sx1280_set_standby
+ 934              	.LVL63:
+ 935              	.L62:
+ 776:smtc_ral/src/ral.c ****     };
+ 936              		.loc 1 776 6 is_stmt 1 view .LVU230
+ 777:smtc_ral/src/ral.c **** }
+ 937              		.loc 1 777 1 is_stmt 0 view .LVU231
+ 938              		@ sp needed
+ 939 0012 10BD     		pop	{r4, pc}
+ 940              		.cfi_endproc
+ 941              	.LFE21:
+ 943              		.section	.text.ral_set_tx,"ax",%progbits
+ 944              		.align	1
+ 945              		.global	ral_set_tx
+ 946              		.syntax unified
+ 947              		.code	16
+ 948              		.thumb_func
+ 949              		.fpu softvfp
+ 951              	ral_set_tx:
+ 952              	.LVL64:
+ 953              	.LFB22:
+ 778:smtc_ral/src/ral.c **** 
+ 779:smtc_ral/src/ral.c **** ral_status_t ral_set_tx( const ral_t* ral )
+ 780:smtc_ral/src/ral.c **** {
+ 954              		.loc 1 780 1 is_stmt 1 view -0
+ 955              		.cfi_startproc
+ 956              		@ args = 0, pretend = 0, frame = 0
+ 957              		@ frame_needed = 0, uses_anonymous_args = 0
+ 781:smtc_ral/src/ral.c ****     switch( ral->radio_type )
+ 958              		.loc 1 781 5 view .LVU233
+ 780:smtc_ral/src/ral.c ****     switch( ral->radio_type )
+ 959              		.loc 1 780 1 is_stmt 0 view .LVU234
+ 960 0000 10B5     		push	{r4, lr}
+ 961              		.cfi_def_cfa_offset 8
+ 962              		.cfi_offset 4, -8
+ 963              		.cfi_offset 14, -4
+ 964              		.loc 1 781 5 view .LVU235
+ 965 0002 0279     		ldrb	r2, [r0, #4]
+ 780:smtc_ral/src/ral.c ****     switch( ral->radio_type )
+ 966              		.loc 1 780 1 view .LVU236
+ 967 0004 0300     		movs	r3, r0
+ 782:smtc_ral/src/ral.c ****     {
+ 783:smtc_ral/src/ral.c **** #if defined( SX126X )
+ 784:smtc_ral/src/ral.c ****     case RAL_RADIO_SX126X:
+ 785:smtc_ral/src/ral.c ****     {
+ 786:smtc_ral/src/ral.c ****         return ral_sx126x_set_tx( ral );
+ 787:smtc_ral/src/ral.c ****     }
+ 788:smtc_ral/src/ral.c **** #endif
+ 789:smtc_ral/src/ral.c **** #if defined( SX1272 )
+ 790:smtc_ral/src/ral.c ****     case RAL_RADIO_SX1272:
+ 791:smtc_ral/src/ral.c ****     {
+ 792:smtc_ral/src/ral.c ****         return ral_sx1272_set_tx( ral );
+ 793:smtc_ral/src/ral.c ****     }
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s 			page 33
+
+
+ 794:smtc_ral/src/ral.c **** #endif
+ 795:smtc_ral/src/ral.c **** #if defined( SX1276 )
+ 796:smtc_ral/src/ral.c ****     case RAL_RADIO_SX1276:
+ 797:smtc_ral/src/ral.c ****     {
+ 798:smtc_ral/src/ral.c ****         return ral_sx1276_set_tx( ral );
+ 799:smtc_ral/src/ral.c ****     }
+ 800:smtc_ral/src/ral.c **** #endif
+ 801:smtc_ral/src/ral.c **** #if defined( SX1280 )
+ 802:smtc_ral/src/ral.c ****     case RAL_RADIO_SX1280:
+ 803:smtc_ral/src/ral.c ****     {
+ 804:smtc_ral/src/ral.c ****         return ral_sx1280_set_tx( ral );
+ 805:smtc_ral/src/ral.c ****     }
+ 806:smtc_ral/src/ral.c **** #endif
+ 807:smtc_ral/src/ral.c ****     default:
+ 808:smtc_ral/src/ral.c ****         return RAL_STATUS_UNSUPPORTED_FEATURE;
+ 968              		.loc 1 808 16 view .LVU237
+ 969 0006 0120     		movs	r0, #1
+ 970              	.LVL65:
+ 781:smtc_ral/src/ral.c ****     {
+ 971              		.loc 1 781 5 view .LVU238
+ 972 0008 042A     		cmp	r2, #4
+ 973 000a 02D1     		bne	.L65
+ 804:smtc_ral/src/ral.c ****     }
+ 974              		.loc 1 804 9 is_stmt 1 view .LVU239
+ 804:smtc_ral/src/ral.c ****     }
+ 975              		.loc 1 804 16 is_stmt 0 view .LVU240
+ 976 000c 1800     		movs	r0, r3
+ 977 000e FFF7FEFF 		bl	ral_sx1280_set_tx
+ 978              	.LVL66:
+ 979              	.L65:
+ 809:smtc_ral/src/ral.c ****     };
+ 980              		.loc 1 809 6 is_stmt 1 view .LVU241
+ 810:smtc_ral/src/ral.c **** }
+ 981              		.loc 1 810 1 is_stmt 0 view .LVU242
+ 982              		@ sp needed
+ 983 0012 10BD     		pop	{r4, pc}
+ 984              		.cfi_endproc
+ 985              	.LFE22:
+ 987              		.section	.text.ral_set_tx_cw,"ax",%progbits
+ 988              		.align	1
+ 989              		.global	ral_set_tx_cw
+ 990              		.syntax unified
+ 991              		.code	16
+ 992              		.thumb_func
+ 993              		.fpu softvfp
+ 995              	ral_set_tx_cw:
+ 996              	.LVL67:
+ 997              	.LFB23:
+ 811:smtc_ral/src/ral.c **** 
+ 812:smtc_ral/src/ral.c **** ral_status_t ral_set_tx_cw( const ral_t* ral )
+ 813:smtc_ral/src/ral.c **** {
+ 998              		.loc 1 813 1 is_stmt 1 view -0
+ 999              		.cfi_startproc
+ 1000              		@ args = 0, pretend = 0, frame = 0
+ 1001              		@ frame_needed = 0, uses_anonymous_args = 0
+ 814:smtc_ral/src/ral.c ****     switch( ral->radio_type )
+ 1002              		.loc 1 814 5 view .LVU244
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s 			page 34
+
+
+ 813:smtc_ral/src/ral.c ****     switch( ral->radio_type )
+ 1003              		.loc 1 813 1 is_stmt 0 view .LVU245
+ 1004 0000 10B5     		push	{r4, lr}
+ 1005              		.cfi_def_cfa_offset 8
+ 1006              		.cfi_offset 4, -8
+ 1007              		.cfi_offset 14, -4
+ 1008              		.loc 1 814 5 view .LVU246
+ 1009 0002 0279     		ldrb	r2, [r0, #4]
+ 813:smtc_ral/src/ral.c ****     switch( ral->radio_type )
+ 1010              		.loc 1 813 1 view .LVU247
+ 1011 0004 0300     		movs	r3, r0
+ 815:smtc_ral/src/ral.c ****     {
+ 816:smtc_ral/src/ral.c **** #if defined( SX126X )
+ 817:smtc_ral/src/ral.c ****     case RAL_RADIO_SX126X:
+ 818:smtc_ral/src/ral.c ****     {
+ 819:smtc_ral/src/ral.c ****         return ral_sx126x_set_tx_cw( ral );
+ 820:smtc_ral/src/ral.c ****     }
+ 821:smtc_ral/src/ral.c **** #endif
+ 822:smtc_ral/src/ral.c **** #if defined( SX1272 )
+ 823:smtc_ral/src/ral.c ****     case RAL_RADIO_SX1272:
+ 824:smtc_ral/src/ral.c ****     {
+ 825:smtc_ral/src/ral.c ****         return ral_sx1272_set_tx_cw( ral );
+ 826:smtc_ral/src/ral.c ****     }
+ 827:smtc_ral/src/ral.c **** #endif
+ 828:smtc_ral/src/ral.c **** #if defined( SX1276 )
+ 829:smtc_ral/src/ral.c ****     case RAL_RADIO_SX1276:
+ 830:smtc_ral/src/ral.c ****     {
+ 831:smtc_ral/src/ral.c ****         return ral_sx1276_set_tx_cw( ral );
+ 832:smtc_ral/src/ral.c ****     }
+ 833:smtc_ral/src/ral.c **** #endif
+ 834:smtc_ral/src/ral.c **** #if defined( SX1280 )
+ 835:smtc_ral/src/ral.c ****     case RAL_RADIO_SX1280:
+ 836:smtc_ral/src/ral.c ****     {
+ 837:smtc_ral/src/ral.c ****         return ral_sx1280_set_tx_cw( ral );
+ 838:smtc_ral/src/ral.c ****     }
+ 839:smtc_ral/src/ral.c **** #endif
+ 840:smtc_ral/src/ral.c ****     default:
+ 841:smtc_ral/src/ral.c ****         return RAL_STATUS_UNSUPPORTED_FEATURE;
+ 1012              		.loc 1 841 16 view .LVU248
+ 1013 0006 0120     		movs	r0, #1
+ 1014              	.LVL68:
+ 814:smtc_ral/src/ral.c ****     {
+ 1015              		.loc 1 814 5 view .LVU249
+ 1016 0008 042A     		cmp	r2, #4
+ 1017 000a 02D1     		bne	.L68
+ 837:smtc_ral/src/ral.c ****     }
+ 1018              		.loc 1 837 9 is_stmt 1 view .LVU250
+ 837:smtc_ral/src/ral.c ****     }
+ 1019              		.loc 1 837 16 is_stmt 0 view .LVU251
+ 1020 000c 1800     		movs	r0, r3
+ 1021 000e FFF7FEFF 		bl	ral_sx1280_set_tx_cw
+ 1022              	.LVL69:
+ 1023              	.L68:
+ 842:smtc_ral/src/ral.c ****     };
+ 1024              		.loc 1 842 6 is_stmt 1 view .LVU252
+ 843:smtc_ral/src/ral.c **** }
+ 1025              		.loc 1 843 1 is_stmt 0 view .LVU253
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s 			page 35
+
+
+ 1026              		@ sp needed
+ 1027 0012 10BD     		pop	{r4, pc}
+ 1028              		.cfi_endproc
+ 1029              	.LFE23:
+ 1031              		.section	.text.ral_set_rx,"ax",%progbits
+ 1032              		.align	1
+ 1033              		.global	ral_set_rx
+ 1034              		.syntax unified
+ 1035              		.code	16
+ 1036              		.thumb_func
+ 1037              		.fpu softvfp
+ 1039              	ral_set_rx:
+ 1040              	.LVL70:
+ 1041              	.LFB24:
+ 844:smtc_ral/src/ral.c **** 
+ 845:smtc_ral/src/ral.c **** ral_status_t ral_set_rx( const ral_t* ral, const uint32_t timeout_ms )
+ 846:smtc_ral/src/ral.c **** {
+ 1042              		.loc 1 846 1 is_stmt 1 view -0
+ 1043              		.cfi_startproc
+ 1044              		@ args = 0, pretend = 0, frame = 0
+ 1045              		@ frame_needed = 0, uses_anonymous_args = 0
+ 847:smtc_ral/src/ral.c ****     switch( ral->radio_type )
+ 1046              		.loc 1 847 5 view .LVU255
+ 846:smtc_ral/src/ral.c ****     switch( ral->radio_type )
+ 1047              		.loc 1 846 1 is_stmt 0 view .LVU256
+ 1048 0000 10B5     		push	{r4, lr}
+ 1049              		.cfi_def_cfa_offset 8
+ 1050              		.cfi_offset 4, -8
+ 1051              		.cfi_offset 14, -4
+ 1052              		.loc 1 847 5 view .LVU257
+ 1053 0002 0279     		ldrb	r2, [r0, #4]
+ 846:smtc_ral/src/ral.c ****     switch( ral->radio_type )
+ 1054              		.loc 1 846 1 view .LVU258
+ 1055 0004 0300     		movs	r3, r0
+ 848:smtc_ral/src/ral.c ****     {
+ 849:smtc_ral/src/ral.c **** #if defined( SX126X )
+ 850:smtc_ral/src/ral.c ****     case RAL_RADIO_SX126X:
+ 851:smtc_ral/src/ral.c ****     {
+ 852:smtc_ral/src/ral.c ****         return ral_sx126x_set_rx( ral, timeout_ms );
+ 853:smtc_ral/src/ral.c ****     }
+ 854:smtc_ral/src/ral.c **** #endif
+ 855:smtc_ral/src/ral.c **** #if defined( SX1272 )
+ 856:smtc_ral/src/ral.c ****     case RAL_RADIO_SX1272:
+ 857:smtc_ral/src/ral.c ****     {
+ 858:smtc_ral/src/ral.c ****         return ral_sx1272_set_rx( ral, timeout_ms );
+ 859:smtc_ral/src/ral.c ****     }
+ 860:smtc_ral/src/ral.c **** #endif
+ 861:smtc_ral/src/ral.c **** #if defined( SX1276 )
+ 862:smtc_ral/src/ral.c ****     case RAL_RADIO_SX1276:
+ 863:smtc_ral/src/ral.c ****     {
+ 864:smtc_ral/src/ral.c ****         return ral_sx1276_set_rx( ral, timeout_ms );
+ 865:smtc_ral/src/ral.c ****     }
+ 866:smtc_ral/src/ral.c **** #endif
+ 867:smtc_ral/src/ral.c **** #if defined( SX1280 )
+ 868:smtc_ral/src/ral.c ****     case RAL_RADIO_SX1280:
+ 869:smtc_ral/src/ral.c ****     {
+ 870:smtc_ral/src/ral.c ****         return ral_sx1280_set_rx( ral, timeout_ms );
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s 			page 36
+
+
+ 871:smtc_ral/src/ral.c ****     }
+ 872:smtc_ral/src/ral.c **** #endif
+ 873:smtc_ral/src/ral.c ****     default:
+ 874:smtc_ral/src/ral.c ****         return RAL_STATUS_UNSUPPORTED_FEATURE;
+ 1056              		.loc 1 874 16 view .LVU259
+ 1057 0006 0120     		movs	r0, #1
+ 1058              	.LVL71:
+ 847:smtc_ral/src/ral.c ****     {
+ 1059              		.loc 1 847 5 view .LVU260
+ 1060 0008 042A     		cmp	r2, #4
+ 1061 000a 02D1     		bne	.L71
+ 870:smtc_ral/src/ral.c ****     }
+ 1062              		.loc 1 870 9 is_stmt 1 view .LVU261
+ 870:smtc_ral/src/ral.c ****     }
+ 1063              		.loc 1 870 16 is_stmt 0 view .LVU262
+ 1064 000c 1800     		movs	r0, r3
+ 1065 000e FFF7FEFF 		bl	ral_sx1280_set_rx
+ 1066              	.LVL72:
+ 1067              	.L71:
+ 875:smtc_ral/src/ral.c ****     };
+ 1068              		.loc 1 875 6 is_stmt 1 view .LVU263
+ 876:smtc_ral/src/ral.c **** }
+ 1069              		.loc 1 876 1 is_stmt 0 view .LVU264
+ 1070              		@ sp needed
+ 1071 0012 10BD     		pop	{r4, pc}
+ 1072              		.cfi_endproc
+ 1073              	.LFE24:
+ 1075              		.section	.text.ral_set_cad,"ax",%progbits
+ 1076              		.align	1
+ 1077              		.global	ral_set_cad
+ 1078              		.syntax unified
+ 1079              		.code	16
+ 1080              		.thumb_func
+ 1081              		.fpu softvfp
+ 1083              	ral_set_cad:
+ 1084              	.LVL73:
+ 1085              	.LFB25:
+ 877:smtc_ral/src/ral.c **** 
+ 878:smtc_ral/src/ral.c **** ral_status_t ral_set_cad( const ral_t* ral )
+ 879:smtc_ral/src/ral.c **** {
+ 1086              		.loc 1 879 1 is_stmt 1 view -0
+ 1087              		.cfi_startproc
+ 1088              		@ args = 0, pretend = 0, frame = 0
+ 1089              		@ frame_needed = 0, uses_anonymous_args = 0
+ 880:smtc_ral/src/ral.c ****     switch( ral->radio_type )
+ 1090              		.loc 1 880 5 view .LVU266
+ 879:smtc_ral/src/ral.c ****     switch( ral->radio_type )
+ 1091              		.loc 1 879 1 is_stmt 0 view .LVU267
+ 1092 0000 10B5     		push	{r4, lr}
+ 1093              		.cfi_def_cfa_offset 8
+ 1094              		.cfi_offset 4, -8
+ 1095              		.cfi_offset 14, -4
+ 1096              		.loc 1 880 5 view .LVU268
+ 1097 0002 0279     		ldrb	r2, [r0, #4]
+ 879:smtc_ral/src/ral.c ****     switch( ral->radio_type )
+ 1098              		.loc 1 879 1 view .LVU269
+ 1099 0004 0300     		movs	r3, r0
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s 			page 37
+
+
+ 881:smtc_ral/src/ral.c ****     {
+ 882:smtc_ral/src/ral.c **** #if defined( SX126X )
+ 883:smtc_ral/src/ral.c ****     case RAL_RADIO_SX126X:
+ 884:smtc_ral/src/ral.c ****     {
+ 885:smtc_ral/src/ral.c ****         return ral_sx126x_set_cad( ral );
+ 886:smtc_ral/src/ral.c ****     }
+ 887:smtc_ral/src/ral.c **** #endif
+ 888:smtc_ral/src/ral.c **** #if defined( SX1272 )
+ 889:smtc_ral/src/ral.c ****     case RAL_RADIO_SX1272:
+ 890:smtc_ral/src/ral.c ****     {
+ 891:smtc_ral/src/ral.c ****         return ral_sx1272_set_cad( ral );
+ 892:smtc_ral/src/ral.c ****     }
+ 893:smtc_ral/src/ral.c **** #endif
+ 894:smtc_ral/src/ral.c **** #if defined( SX1276 )
+ 895:smtc_ral/src/ral.c ****     case RAL_RADIO_SX1276:
+ 896:smtc_ral/src/ral.c ****     {
+ 897:smtc_ral/src/ral.c ****         return ral_sx1276_set_cad( ral );
+ 898:smtc_ral/src/ral.c ****     }
+ 899:smtc_ral/src/ral.c **** #endif
+ 900:smtc_ral/src/ral.c **** #if defined( SX1280 )
+ 901:smtc_ral/src/ral.c ****     case RAL_RADIO_SX1280:
+ 902:smtc_ral/src/ral.c ****     {
+ 903:smtc_ral/src/ral.c ****         return ral_sx1280_set_cad( ral );
+ 904:smtc_ral/src/ral.c ****     }
+ 905:smtc_ral/src/ral.c **** #endif
+ 906:smtc_ral/src/ral.c ****     default:
+ 907:smtc_ral/src/ral.c ****         return RAL_STATUS_UNSUPPORTED_FEATURE;
+ 1100              		.loc 1 907 16 view .LVU270
+ 1101 0006 0120     		movs	r0, #1
+ 1102              	.LVL74:
+ 880:smtc_ral/src/ral.c ****     {
+ 1103              		.loc 1 880 5 view .LVU271
+ 1104 0008 042A     		cmp	r2, #4
+ 1105 000a 02D1     		bne	.L74
+ 903:smtc_ral/src/ral.c ****     }
+ 1106              		.loc 1 903 9 is_stmt 1 view .LVU272
+ 903:smtc_ral/src/ral.c ****     }
+ 1107              		.loc 1 903 16 is_stmt 0 view .LVU273
+ 1108 000c 1800     		movs	r0, r3
+ 1109 000e FFF7FEFF 		bl	ral_sx1280_set_cad
+ 1110              	.LVL75:
+ 1111              	.L74:
+ 908:smtc_ral/src/ral.c ****     };
+ 1112              		.loc 1 908 6 is_stmt 1 view .LVU274
+ 909:smtc_ral/src/ral.c **** }
+ 1113              		.loc 1 909 1 is_stmt 0 view .LVU275
+ 1114              		@ sp needed
+ 1115 0012 10BD     		pop	{r4, pc}
+ 1116              		.cfi_endproc
+ 1117              	.LFE25:
+ 1119              		.section	.text.ral_get_irq_status,"ax",%progbits
+ 1120              		.align	1
+ 1121              		.global	ral_get_irq_status
+ 1122              		.syntax unified
+ 1123              		.code	16
+ 1124              		.thumb_func
+ 1125              		.fpu softvfp
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s 			page 38
+
+
+ 1127              	ral_get_irq_status:
+ 1128              	.LVL76:
+ 1129              	.LFB26:
+ 910:smtc_ral/src/ral.c **** 
+ 911:smtc_ral/src/ral.c **** ral_status_t ral_get_irq_status( const ral_t* ral, ral_irq_t* irq_status )
+ 912:smtc_ral/src/ral.c **** {
+ 1130              		.loc 1 912 1 is_stmt 1 view -0
+ 1131              		.cfi_startproc
+ 1132              		@ args = 0, pretend = 0, frame = 0
+ 1133              		@ frame_needed = 0, uses_anonymous_args = 0
+ 913:smtc_ral/src/ral.c ****     switch( ral->radio_type )
+ 1134              		.loc 1 913 5 view .LVU277
+ 912:smtc_ral/src/ral.c ****     switch( ral->radio_type )
+ 1135              		.loc 1 912 1 is_stmt 0 view .LVU278
+ 1136 0000 10B5     		push	{r4, lr}
+ 1137              		.cfi_def_cfa_offset 8
+ 1138              		.cfi_offset 4, -8
+ 1139              		.cfi_offset 14, -4
+ 1140              		.loc 1 913 5 view .LVU279
+ 1141 0002 0279     		ldrb	r2, [r0, #4]
+ 912:smtc_ral/src/ral.c ****     switch( ral->radio_type )
+ 1142              		.loc 1 912 1 view .LVU280
+ 1143 0004 0300     		movs	r3, r0
+ 914:smtc_ral/src/ral.c ****     {
+ 915:smtc_ral/src/ral.c **** #if defined( SX126X )
+ 916:smtc_ral/src/ral.c ****     case RAL_RADIO_SX126X:
+ 917:smtc_ral/src/ral.c ****     {
+ 918:smtc_ral/src/ral.c ****         return ral_sx126x_get_irq_status( ral, irq_status );
+ 919:smtc_ral/src/ral.c ****     }
+ 920:smtc_ral/src/ral.c **** #endif
+ 921:smtc_ral/src/ral.c **** #if defined( SX1272 )
+ 922:smtc_ral/src/ral.c ****     case RAL_RADIO_SX1272:
+ 923:smtc_ral/src/ral.c ****     {
+ 924:smtc_ral/src/ral.c ****         return ral_sx1272_get_irq_status( ral, irq_status );
+ 925:smtc_ral/src/ral.c ****     }
+ 926:smtc_ral/src/ral.c **** #endif
+ 927:smtc_ral/src/ral.c **** #if defined( SX1276 )
+ 928:smtc_ral/src/ral.c ****     case RAL_RADIO_SX1276:
+ 929:smtc_ral/src/ral.c ****     {
+ 930:smtc_ral/src/ral.c ****         return ral_sx1276_get_irq_status( ral, irq_status );
+ 931:smtc_ral/src/ral.c ****     }
+ 932:smtc_ral/src/ral.c **** #endif
+ 933:smtc_ral/src/ral.c **** #if defined( SX1280 )
+ 934:smtc_ral/src/ral.c ****     case RAL_RADIO_SX1280:
+ 935:smtc_ral/src/ral.c ****     {
+ 936:smtc_ral/src/ral.c ****         return ral_sx1280_get_irq_status( ral, irq_status );
+ 937:smtc_ral/src/ral.c ****     }
+ 938:smtc_ral/src/ral.c **** #endif
+ 939:smtc_ral/src/ral.c ****     default:
+ 940:smtc_ral/src/ral.c ****         return RAL_STATUS_UNSUPPORTED_FEATURE;
+ 1144              		.loc 1 940 16 view .LVU281
+ 1145 0006 0120     		movs	r0, #1
+ 1146              	.LVL77:
+ 913:smtc_ral/src/ral.c ****     {
+ 1147              		.loc 1 913 5 view .LVU282
+ 1148 0008 042A     		cmp	r2, #4
+ 1149 000a 02D1     		bne	.L77
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s 			page 39
+
+
+ 936:smtc_ral/src/ral.c ****     }
+ 1150              		.loc 1 936 9 is_stmt 1 view .LVU283
+ 936:smtc_ral/src/ral.c ****     }
+ 1151              		.loc 1 936 16 is_stmt 0 view .LVU284
+ 1152 000c 1800     		movs	r0, r3
+ 1153 000e FFF7FEFF 		bl	ral_sx1280_get_irq_status
+ 1154              	.LVL78:
+ 1155              	.L77:
+ 941:smtc_ral/src/ral.c ****     };
+ 1156              		.loc 1 941 6 is_stmt 1 view .LVU285
+ 942:smtc_ral/src/ral.c **** }
+ 1157              		.loc 1 942 1 is_stmt 0 view .LVU286
+ 1158              		@ sp needed
+ 1159 0012 10BD     		pop	{r4, pc}
+ 1160              		.cfi_endproc
+ 1161              	.LFE26:
+ 1163              		.section	.text.ral_clear_irq_status,"ax",%progbits
+ 1164              		.align	1
+ 1165              		.global	ral_clear_irq_status
+ 1166              		.syntax unified
+ 1167              		.code	16
+ 1168              		.thumb_func
+ 1169              		.fpu softvfp
+ 1171              	ral_clear_irq_status:
+ 1172              	.LVL79:
+ 1173              	.LFB27:
+ 943:smtc_ral/src/ral.c **** 
+ 944:smtc_ral/src/ral.c **** ral_status_t ral_clear_irq_status( const ral_t* ral, const ral_irq_t irq_status )
+ 945:smtc_ral/src/ral.c **** {
+ 1174              		.loc 1 945 1 is_stmt 1 view -0
+ 1175              		.cfi_startproc
+ 1176              		@ args = 0, pretend = 0, frame = 0
+ 1177              		@ frame_needed = 0, uses_anonymous_args = 0
+ 946:smtc_ral/src/ral.c ****     switch( ral->radio_type )
+ 1178              		.loc 1 946 5 view .LVU288
+ 945:smtc_ral/src/ral.c ****     switch( ral->radio_type )
+ 1179              		.loc 1 945 1 is_stmt 0 view .LVU289
+ 1180 0000 10B5     		push	{r4, lr}
+ 1181              		.cfi_def_cfa_offset 8
+ 1182              		.cfi_offset 4, -8
+ 1183              		.cfi_offset 14, -4
+ 1184              		.loc 1 946 5 view .LVU290
+ 1185 0002 0279     		ldrb	r2, [r0, #4]
+ 945:smtc_ral/src/ral.c ****     switch( ral->radio_type )
+ 1186              		.loc 1 945 1 view .LVU291
+ 1187 0004 0300     		movs	r3, r0
+ 947:smtc_ral/src/ral.c ****     {
+ 948:smtc_ral/src/ral.c **** #if defined( SX126X )
+ 949:smtc_ral/src/ral.c ****     case RAL_RADIO_SX126X:
+ 950:smtc_ral/src/ral.c ****     {
+ 951:smtc_ral/src/ral.c ****         return ral_sx126x_clear_irq_status( ral, irq_status );
+ 952:smtc_ral/src/ral.c ****     }
+ 953:smtc_ral/src/ral.c **** #endif
+ 954:smtc_ral/src/ral.c **** #if defined( SX1272 )
+ 955:smtc_ral/src/ral.c ****     case RAL_RADIO_SX1272:
+ 956:smtc_ral/src/ral.c ****     {
+ 957:smtc_ral/src/ral.c ****         return ral_sx1272_clear_irq_status( ral, irq_status );
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s 			page 40
+
+
+ 958:smtc_ral/src/ral.c ****     }
+ 959:smtc_ral/src/ral.c **** #endif
+ 960:smtc_ral/src/ral.c **** #if defined( SX1276 )
+ 961:smtc_ral/src/ral.c ****     case RAL_RADIO_SX1276:
+ 962:smtc_ral/src/ral.c ****     {
+ 963:smtc_ral/src/ral.c ****         return ral_sx1276_clear_irq_status( ral, irq_status );
+ 964:smtc_ral/src/ral.c ****     }
+ 965:smtc_ral/src/ral.c **** #endif
+ 966:smtc_ral/src/ral.c **** #if defined( SX1280 )
+ 967:smtc_ral/src/ral.c ****     case RAL_RADIO_SX1280:
+ 968:smtc_ral/src/ral.c ****     {
+ 969:smtc_ral/src/ral.c ****         return ral_sx1280_clear_irq_status( ral, irq_status );
+ 970:smtc_ral/src/ral.c ****     }
+ 971:smtc_ral/src/ral.c **** #endif
+ 972:smtc_ral/src/ral.c ****     default:
+ 973:smtc_ral/src/ral.c ****         return RAL_STATUS_UNSUPPORTED_FEATURE;
+ 1188              		.loc 1 973 16 view .LVU292
+ 1189 0006 0120     		movs	r0, #1
+ 1190              	.LVL80:
+ 946:smtc_ral/src/ral.c ****     {
+ 1191              		.loc 1 946 5 view .LVU293
+ 1192 0008 042A     		cmp	r2, #4
+ 1193 000a 02D1     		bne	.L80
+ 969:smtc_ral/src/ral.c ****     }
+ 1194              		.loc 1 969 9 is_stmt 1 view .LVU294
+ 969:smtc_ral/src/ral.c ****     }
+ 1195              		.loc 1 969 16 is_stmt 0 view .LVU295
+ 1196 000c 1800     		movs	r0, r3
+ 1197 000e FFF7FEFF 		bl	ral_sx1280_clear_irq_status
+ 1198              	.LVL81:
+ 1199              	.L80:
+ 974:smtc_ral/src/ral.c ****     };
+ 1200              		.loc 1 974 6 is_stmt 1 view .LVU296
+ 975:smtc_ral/src/ral.c **** }
+ 1201              		.loc 1 975 1 is_stmt 0 view .LVU297
+ 1202              		@ sp needed
+ 1203 0012 10BD     		pop	{r4, pc}
+ 1204              		.cfi_endproc
+ 1205              	.LFE27:
+ 1207              		.section	.text.ral_get_and_clear_irq_status,"ax",%progbits
+ 1208              		.align	1
+ 1209              		.global	ral_get_and_clear_irq_status
+ 1210              		.syntax unified
+ 1211              		.code	16
+ 1212              		.thumb_func
+ 1213              		.fpu softvfp
+ 1215              	ral_get_and_clear_irq_status:
+ 1216              	.LVL82:
+ 1217              	.LFB28:
+ 976:smtc_ral/src/ral.c **** 
+ 977:smtc_ral/src/ral.c **** ral_status_t ral_get_and_clear_irq_status( const ral_t* ral, ral_irq_t* irq_status )
+ 978:smtc_ral/src/ral.c **** {
+ 1218              		.loc 1 978 1 is_stmt 1 view -0
+ 1219              		.cfi_startproc
+ 1220              		@ args = 0, pretend = 0, frame = 0
+ 1221              		@ frame_needed = 0, uses_anonymous_args = 0
+ 979:smtc_ral/src/ral.c ****     switch( ral->radio_type )
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s 			page 41
+
+
+ 1222              		.loc 1 979 5 view .LVU299
+ 978:smtc_ral/src/ral.c ****     switch( ral->radio_type )
+ 1223              		.loc 1 978 1 is_stmt 0 view .LVU300
+ 1224 0000 10B5     		push	{r4, lr}
+ 1225              		.cfi_def_cfa_offset 8
+ 1226              		.cfi_offset 4, -8
+ 1227              		.cfi_offset 14, -4
+ 1228              		.loc 1 979 5 view .LVU301
+ 1229 0002 0279     		ldrb	r2, [r0, #4]
+ 978:smtc_ral/src/ral.c ****     switch( ral->radio_type )
+ 1230              		.loc 1 978 1 view .LVU302
+ 1231 0004 0300     		movs	r3, r0
+ 980:smtc_ral/src/ral.c ****     {
+ 981:smtc_ral/src/ral.c **** #if defined( SX126X )
+ 982:smtc_ral/src/ral.c ****     case RAL_RADIO_SX126X:
+ 983:smtc_ral/src/ral.c ****     {
+ 984:smtc_ral/src/ral.c ****         return ral_sx126x_get_and_clear_irq_status( ral, irq_status );
+ 985:smtc_ral/src/ral.c ****     }
+ 986:smtc_ral/src/ral.c **** #endif
+ 987:smtc_ral/src/ral.c **** #if defined( SX1280 )
+ 988:smtc_ral/src/ral.c ****     case RAL_RADIO_SX1280:
+ 989:smtc_ral/src/ral.c ****     {
+ 990:smtc_ral/src/ral.c ****         return ral_sx1280_get_and_clear_irq_status( ral, irq_status );
+ 991:smtc_ral/src/ral.c ****     }
+ 992:smtc_ral/src/ral.c **** #endif
+ 993:smtc_ral/src/ral.c ****     default:
+ 994:smtc_ral/src/ral.c ****         return RAL_STATUS_UNSUPPORTED_FEATURE;
+ 1232              		.loc 1 994 16 view .LVU303
+ 1233 0006 0120     		movs	r0, #1
+ 1234              	.LVL83:
+ 979:smtc_ral/src/ral.c ****     {
+ 1235              		.loc 1 979 5 view .LVU304
+ 1236 0008 042A     		cmp	r2, #4
+ 1237 000a 02D1     		bne	.L83
+ 990:smtc_ral/src/ral.c ****     }
+ 1238              		.loc 1 990 9 is_stmt 1 view .LVU305
+ 990:smtc_ral/src/ral.c ****     }
+ 1239              		.loc 1 990 16 is_stmt 0 view .LVU306
+ 1240 000c 1800     		movs	r0, r3
+ 1241 000e FFF7FEFF 		bl	ral_sx1280_get_and_clear_irq_status
+ 1242              	.LVL84:
+ 1243              	.L83:
+ 995:smtc_ral/src/ral.c ****     };
+ 1244              		.loc 1 995 6 is_stmt 1 view .LVU307
+ 996:smtc_ral/src/ral.c **** }
+ 1245              		.loc 1 996 1 is_stmt 0 view .LVU308
+ 1246              		@ sp needed
+ 1247 0012 10BD     		pop	{r4, pc}
+ 1248              		.cfi_endproc
+ 1249              	.LFE28:
+ 1251              		.section	.text.ral_set_dio_irq_params,"ax",%progbits
+ 1252              		.align	1
+ 1253              		.global	ral_set_dio_irq_params
+ 1254              		.syntax unified
+ 1255              		.code	16
+ 1256              		.thumb_func
+ 1257              		.fpu softvfp
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s 			page 42
+
+
+ 1259              	ral_set_dio_irq_params:
+ 1260              	.LVL85:
+ 1261              	.LFB29:
+ 997:smtc_ral/src/ral.c **** 
+ 998:smtc_ral/src/ral.c **** ral_status_t ral_set_dio_irq_params( const ral_t* ral, const ral_irq_t ral_irq )
+ 999:smtc_ral/src/ral.c **** {
+ 1262              		.loc 1 999 1 is_stmt 1 view -0
+ 1263              		.cfi_startproc
+ 1264              		@ args = 0, pretend = 0, frame = 0
+ 1265              		@ frame_needed = 0, uses_anonymous_args = 0
+1000:smtc_ral/src/ral.c ****     switch( ral->radio_type )
+ 1266              		.loc 1 1000 5 view .LVU310
+ 999:smtc_ral/src/ral.c ****     switch( ral->radio_type )
+ 1267              		.loc 1 999 1 is_stmt 0 view .LVU311
+ 1268 0000 10B5     		push	{r4, lr}
+ 1269              		.cfi_def_cfa_offset 8
+ 1270              		.cfi_offset 4, -8
+ 1271              		.cfi_offset 14, -4
+ 1272              		.loc 1 1000 5 view .LVU312
+ 1273 0002 0279     		ldrb	r2, [r0, #4]
+ 999:smtc_ral/src/ral.c ****     switch( ral->radio_type )
+ 1274              		.loc 1 999 1 view .LVU313
+ 1275 0004 0300     		movs	r3, r0
+1001:smtc_ral/src/ral.c ****     {
+1002:smtc_ral/src/ral.c **** #if defined( SX126X )
+1003:smtc_ral/src/ral.c ****     case RAL_RADIO_SX126X:
+1004:smtc_ral/src/ral.c ****     {
+1005:smtc_ral/src/ral.c ****         return ral_sx126x_set_dio_irq_params( ral, ral_irq );
+1006:smtc_ral/src/ral.c ****     }
+1007:smtc_ral/src/ral.c **** #endif
+1008:smtc_ral/src/ral.c **** #if defined( SX1280 )
+1009:smtc_ral/src/ral.c ****     case RAL_RADIO_SX1280:
+1010:smtc_ral/src/ral.c ****     {
+1011:smtc_ral/src/ral.c ****         return ral_sx1280_set_dio_irq_params( ral, ral_irq );
+1012:smtc_ral/src/ral.c ****     }
+1013:smtc_ral/src/ral.c **** #endif
+1014:smtc_ral/src/ral.c ****     default:
+1015:smtc_ral/src/ral.c ****         return RAL_STATUS_UNSUPPORTED_FEATURE;
+ 1276              		.loc 1 1015 16 view .LVU314
+ 1277 0006 0120     		movs	r0, #1
+ 1278              	.LVL86:
+1000:smtc_ral/src/ral.c ****     {
+ 1279              		.loc 1 1000 5 view .LVU315
+ 1280 0008 042A     		cmp	r2, #4
+ 1281 000a 02D1     		bne	.L86
+1011:smtc_ral/src/ral.c ****     }
+ 1282              		.loc 1 1011 9 is_stmt 1 view .LVU316
+1011:smtc_ral/src/ral.c ****     }
+ 1283              		.loc 1 1011 16 is_stmt 0 view .LVU317
+ 1284 000c 1800     		movs	r0, r3
+ 1285 000e FFF7FEFF 		bl	ral_sx1280_set_dio_irq_params
+ 1286              	.LVL87:
+ 1287              	.L86:
+1016:smtc_ral/src/ral.c ****     };
+ 1288              		.loc 1 1016 6 is_stmt 1 view .LVU318
+1017:smtc_ral/src/ral.c **** }
+ 1289              		.loc 1 1017 1 is_stmt 0 view .LVU319
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s 			page 43
+
+
+ 1290              		@ sp needed
+ 1291 0012 10BD     		pop	{r4, pc}
+ 1292              		.cfi_endproc
+ 1293              	.LFE29:
+ 1295              		.section	.text.ral_process_irq,"ax",%progbits
+ 1296              		.align	1
+ 1297              		.global	ral_process_irq
+ 1298              		.syntax unified
+ 1299              		.code	16
+ 1300              		.thumb_func
+ 1301              		.fpu softvfp
+ 1303              	ral_process_irq:
+ 1304              	.LVL88:
+ 1305              	.LFB30:
+1018:smtc_ral/src/ral.c **** 
+1019:smtc_ral/src/ral.c **** ral_status_t ral_process_irq( const ral_t* ral, ral_irq_t* ral_irq )
+1020:smtc_ral/src/ral.c **** {
+ 1306              		.loc 1 1020 1 is_stmt 1 view -0
+ 1307              		.cfi_startproc
+ 1308              		@ args = 0, pretend = 0, frame = 0
+ 1309              		@ frame_needed = 0, uses_anonymous_args = 0
+1021:smtc_ral/src/ral.c ****     switch( ral->radio_type )
+ 1310              		.loc 1 1021 5 view .LVU321
+1020:smtc_ral/src/ral.c ****     switch( ral->radio_type )
+ 1311              		.loc 1 1020 1 is_stmt 0 view .LVU322
+ 1312 0000 10B5     		push	{r4, lr}
+ 1313              		.cfi_def_cfa_offset 8
+ 1314              		.cfi_offset 4, -8
+ 1315              		.cfi_offset 14, -4
+ 1316              		.loc 1 1021 5 view .LVU323
+ 1317 0002 0279     		ldrb	r2, [r0, #4]
+1020:smtc_ral/src/ral.c ****     switch( ral->radio_type )
+ 1318              		.loc 1 1020 1 view .LVU324
+ 1319 0004 0300     		movs	r3, r0
+1022:smtc_ral/src/ral.c ****     {
+1023:smtc_ral/src/ral.c **** #if defined( SX126X )
+1024:smtc_ral/src/ral.c ****     case RAL_RADIO_SX126X:
+1025:smtc_ral/src/ral.c ****     {
+1026:smtc_ral/src/ral.c ****         return RAL_STATUS_UNSUPPORTED_FEATURE;
+1027:smtc_ral/src/ral.c ****     }
+1028:smtc_ral/src/ral.c **** #endif
+1029:smtc_ral/src/ral.c **** #if defined( SX1272 )
+1030:smtc_ral/src/ral.c ****     case RAL_RADIO_SX1272:
+1031:smtc_ral/src/ral.c ****     {
+1032:smtc_ral/src/ral.c ****         return RAL_STATUS_UNSUPPORTED_FEATURE;
+1033:smtc_ral/src/ral.c ****     }
+1034:smtc_ral/src/ral.c **** #endif
+1035:smtc_ral/src/ral.c **** #if defined( SX1276 )
+1036:smtc_ral/src/ral.c ****     case RAL_RADIO_SX1276:
+1037:smtc_ral/src/ral.c ****     {
+1038:smtc_ral/src/ral.c ****         return RAL_STATUS_UNSUPPORTED_FEATURE;
+1039:smtc_ral/src/ral.c ****     }
+1040:smtc_ral/src/ral.c **** #endif
+1041:smtc_ral/src/ral.c **** #if defined( SX1280 )
+1042:smtc_ral/src/ral.c ****     case RAL_RADIO_SX1280:
+1043:smtc_ral/src/ral.c ****     {
+1044:smtc_ral/src/ral.c ****         return ral_sx1280_process_irq( ral, ral_irq );
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s 			page 44
+
+
+1045:smtc_ral/src/ral.c ****     }
+1046:smtc_ral/src/ral.c **** #endif
+1047:smtc_ral/src/ral.c ****     default:
+1048:smtc_ral/src/ral.c ****         return RAL_STATUS_UNSUPPORTED_FEATURE;
+ 1320              		.loc 1 1048 16 view .LVU325
+ 1321 0006 0120     		movs	r0, #1
+ 1322              	.LVL89:
+1021:smtc_ral/src/ral.c ****     {
+ 1323              		.loc 1 1021 5 view .LVU326
+ 1324 0008 042A     		cmp	r2, #4
+ 1325 000a 02D1     		bne	.L89
+1044:smtc_ral/src/ral.c ****     }
+ 1326              		.loc 1 1044 9 is_stmt 1 view .LVU327
+1044:smtc_ral/src/ral.c ****     }
+ 1327              		.loc 1 1044 16 is_stmt 0 view .LVU328
+ 1328 000c 1800     		movs	r0, r3
+ 1329 000e FFF7FEFF 		bl	ral_sx1280_process_irq
+ 1330              	.LVL90:
+ 1331              	.L89:
+1049:smtc_ral/src/ral.c ****     };
+ 1332              		.loc 1 1049 6 is_stmt 1 view .LVU329
+1050:smtc_ral/src/ral.c **** }
+ 1333              		.loc 1 1050 1 is_stmt 0 view .LVU330
+ 1334              		@ sp needed
+ 1335 0012 10BD     		pop	{r4, pc}
+ 1336              		.cfi_endproc
+ 1337              	.LFE30:
+ 1339              		.section	.text.ral_get_rssi,"ax",%progbits
+ 1340              		.align	1
+ 1341              		.global	ral_get_rssi
+ 1342              		.syntax unified
+ 1343              		.code	16
+ 1344              		.thumb_func
+ 1345              		.fpu softvfp
+ 1347              	ral_get_rssi:
+ 1348              	.LVL91:
+ 1349              	.LFB31:
+1051:smtc_ral/src/ral.c **** 
+1052:smtc_ral/src/ral.c **** ral_status_t ral_get_rssi( const ral_t* ral, int16_t* rssi )
+1053:smtc_ral/src/ral.c **** {
+ 1350              		.loc 1 1053 1 is_stmt 1 view -0
+ 1351              		.cfi_startproc
+ 1352              		@ args = 0, pretend = 0, frame = 0
+ 1353              		@ frame_needed = 0, uses_anonymous_args = 0
+1054:smtc_ral/src/ral.c ****     switch( ral->radio_type )
+ 1354              		.loc 1 1054 5 view .LVU332
+1053:smtc_ral/src/ral.c ****     switch( ral->radio_type )
+ 1355              		.loc 1 1053 1 is_stmt 0 view .LVU333
+ 1356 0000 10B5     		push	{r4, lr}
+ 1357              		.cfi_def_cfa_offset 8
+ 1358              		.cfi_offset 4, -8
+ 1359              		.cfi_offset 14, -4
+ 1360              		.loc 1 1054 5 view .LVU334
+ 1361 0002 0279     		ldrb	r2, [r0, #4]
+1053:smtc_ral/src/ral.c ****     switch( ral->radio_type )
+ 1362              		.loc 1 1053 1 view .LVU335
+ 1363 0004 0300     		movs	r3, r0
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s 			page 45
+
+
+1055:smtc_ral/src/ral.c ****     {
+1056:smtc_ral/src/ral.c **** #if defined( SX126X )
+1057:smtc_ral/src/ral.c ****     case RAL_RADIO_SX126X:
+1058:smtc_ral/src/ral.c ****     {
+1059:smtc_ral/src/ral.c ****         return ral_sx126x_get_rssi( ral, rssi );
+1060:smtc_ral/src/ral.c ****     }
+1061:smtc_ral/src/ral.c **** #endif
+1062:smtc_ral/src/ral.c **** #if defined( SX1272 )
+1063:smtc_ral/src/ral.c ****     case RAL_RADIO_SX1272:
+1064:smtc_ral/src/ral.c ****     {
+1065:smtc_ral/src/ral.c ****         return ral_sx1272_get_rssi( ral, rssi );
+1066:smtc_ral/src/ral.c ****     }
+1067:smtc_ral/src/ral.c **** #endif
+1068:smtc_ral/src/ral.c **** #if defined( SX1276 )
+1069:smtc_ral/src/ral.c ****     case RAL_RADIO_SX1276:
+1070:smtc_ral/src/ral.c ****     {
+1071:smtc_ral/src/ral.c ****         return ral_sx1276_get_rssi( ral, rssi );
+1072:smtc_ral/src/ral.c ****     }
+1073:smtc_ral/src/ral.c **** #endif
+1074:smtc_ral/src/ral.c **** #if defined( SX1280 )
+1075:smtc_ral/src/ral.c ****     case RAL_RADIO_SX1280:
+1076:smtc_ral/src/ral.c ****     {
+1077:smtc_ral/src/ral.c ****         return ral_sx1280_get_rssi( ral, rssi );
+1078:smtc_ral/src/ral.c ****     }
+1079:smtc_ral/src/ral.c **** #endif
+1080:smtc_ral/src/ral.c ****     default:
+1081:smtc_ral/src/ral.c ****         return RAL_STATUS_UNSUPPORTED_FEATURE;
+ 1364              		.loc 1 1081 16 view .LVU336
+ 1365 0006 0120     		movs	r0, #1
+ 1366              	.LVL92:
+1054:smtc_ral/src/ral.c ****     {
+ 1367              		.loc 1 1054 5 view .LVU337
+ 1368 0008 042A     		cmp	r2, #4
+ 1369 000a 02D1     		bne	.L92
+1077:smtc_ral/src/ral.c ****     }
+ 1370              		.loc 1 1077 9 is_stmt 1 view .LVU338
+1077:smtc_ral/src/ral.c ****     }
+ 1371              		.loc 1 1077 16 is_stmt 0 view .LVU339
+ 1372 000c 1800     		movs	r0, r3
+ 1373 000e FFF7FEFF 		bl	ral_sx1280_get_rssi
+ 1374              	.LVL93:
+ 1375              	.L92:
+1082:smtc_ral/src/ral.c ****     };
+ 1376              		.loc 1 1082 6 is_stmt 1 view .LVU340
+1083:smtc_ral/src/ral.c **** }
+ 1377              		.loc 1 1083 1 is_stmt 0 view .LVU341
+ 1378              		@ sp needed
+ 1379 0012 10BD     		pop	{r4, pc}
+ 1380              		.cfi_endproc
+ 1381              	.LFE31:
+ 1383              		.section	.text.ral_get_lora_time_on_air_in_ms,"ax",%progbits
+ 1384              		.align	1
+ 1385              		.global	ral_get_lora_time_on_air_in_ms
+ 1386              		.syntax unified
+ 1387              		.code	16
+ 1388              		.thumb_func
+ 1389              		.fpu softvfp
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s 			page 46
+
+
+ 1391              	ral_get_lora_time_on_air_in_ms:
+ 1392              	.LVL94:
+ 1393              	.LFB32:
+1084:smtc_ral/src/ral.c **** 
+1085:smtc_ral/src/ral.c **** ral_status_t ral_get_lora_time_on_air_in_ms( const ral_t* ral, const ral_params_lora_t* params, uin
+1086:smtc_ral/src/ral.c **** {
+ 1394              		.loc 1 1086 1 is_stmt 1 view -0
+ 1395              		.cfi_startproc
+ 1396              		@ args = 0, pretend = 0, frame = 0
+ 1397              		@ frame_needed = 0, uses_anonymous_args = 0
+1087:smtc_ral/src/ral.c ****     switch( ral->radio_type )
+ 1398              		.loc 1 1087 5 view .LVU343
+1086:smtc_ral/src/ral.c ****     switch( ral->radio_type )
+ 1399              		.loc 1 1086 1 is_stmt 0 view .LVU344
+ 1400 0000 10B5     		push	{r4, lr}
+ 1401              		.cfi_def_cfa_offset 8
+ 1402              		.cfi_offset 4, -8
+ 1403              		.cfi_offset 14, -4
+1086:smtc_ral/src/ral.c ****     switch( ral->radio_type )
+ 1404              		.loc 1 1086 1 view .LVU345
+ 1405 0002 0B00     		movs	r3, r1
+ 1406 0004 1100     		movs	r1, r2
+ 1407              	.LVL95:
+ 1408              		.loc 1 1087 5 view .LVU346
+ 1409 0006 0279     		ldrb	r2, [r0, #4]
+ 1410              	.LVL96:
+1088:smtc_ral/src/ral.c ****     {
+1089:smtc_ral/src/ral.c **** #if defined( SX126X )
+1090:smtc_ral/src/ral.c ****     case RAL_RADIO_SX126X:
+1091:smtc_ral/src/ral.c ****     {
+1092:smtc_ral/src/ral.c ****         return ral_sx126x_get_lora_time_on_air_in_ms( params, toa );
+1093:smtc_ral/src/ral.c ****     }
+1094:smtc_ral/src/ral.c **** #endif
+1095:smtc_ral/src/ral.c **** #if defined( SX1272 )
+1096:smtc_ral/src/ral.c ****     case RAL_RADIO_SX1272:
+1097:smtc_ral/src/ral.c ****     {
+1098:smtc_ral/src/ral.c ****         return ral_sx1272_get_lora_time_on_air_in_ms( params, toa );
+1099:smtc_ral/src/ral.c ****     }
+1100:smtc_ral/src/ral.c **** #endif
+1101:smtc_ral/src/ral.c **** #if defined( SX1276 )
+1102:smtc_ral/src/ral.c ****     case RAL_RADIO_SX1276:
+1103:smtc_ral/src/ral.c ****     {
+1104:smtc_ral/src/ral.c ****         return ral_sx1276_get_lora_time_on_air_in_ms( params, toa );
+1105:smtc_ral/src/ral.c ****     }
+1106:smtc_ral/src/ral.c **** #endif
+1107:smtc_ral/src/ral.c **** #if defined( SX1280 )
+1108:smtc_ral/src/ral.c ****     case RAL_RADIO_SX1280:
+1109:smtc_ral/src/ral.c ****     {
+1110:smtc_ral/src/ral.c ****         return ral_sx1280_get_lora_time_on_air_in_ms( params, toa );
+1111:smtc_ral/src/ral.c ****     }
+1112:smtc_ral/src/ral.c **** #endif
+1113:smtc_ral/src/ral.c ****     default:
+1114:smtc_ral/src/ral.c ****         return RAL_STATUS_UNSUPPORTED_FEATURE;
+ 1411              		.loc 1 1114 16 view .LVU347
+ 1412 0008 0120     		movs	r0, #1
+ 1413              	.LVL97:
+1087:smtc_ral/src/ral.c ****     {
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s 			page 47
+
+
+ 1414              		.loc 1 1087 5 view .LVU348
+ 1415 000a 042A     		cmp	r2, #4
+ 1416 000c 02D1     		bne	.L95
+1110:smtc_ral/src/ral.c ****     }
+ 1417              		.loc 1 1110 9 is_stmt 1 view .LVU349
+1110:smtc_ral/src/ral.c ****     }
+ 1418              		.loc 1 1110 16 is_stmt 0 view .LVU350
+ 1419 000e 1800     		movs	r0, r3
+ 1420 0010 FFF7FEFF 		bl	ral_sx1280_get_lora_time_on_air_in_ms
+ 1421              	.LVL98:
+ 1422              	.L95:
+1115:smtc_ral/src/ral.c ****     };
+ 1423              		.loc 1 1115 6 is_stmt 1 view .LVU351
+1116:smtc_ral/src/ral.c **** }
+ 1424              		.loc 1 1116 1 is_stmt 0 view .LVU352
+ 1425              		@ sp needed
+ 1426 0014 10BD     		pop	{r4, pc}
+ 1427              		.cfi_endproc
+ 1428              	.LFE32:
+ 1430              		.section	.text.ral_get_gfsk_time_on_air_in_ms,"ax",%progbits
+ 1431              		.align	1
+ 1432              		.global	ral_get_gfsk_time_on_air_in_ms
+ 1433              		.syntax unified
+ 1434              		.code	16
+ 1435              		.thumb_func
+ 1436              		.fpu softvfp
+ 1438              	ral_get_gfsk_time_on_air_in_ms:
+ 1439              	.LVL99:
+ 1440              	.LFB33:
+1117:smtc_ral/src/ral.c **** 
+1118:smtc_ral/src/ral.c **** ral_status_t ral_get_gfsk_time_on_air_in_ms( const ral_t* ral, const ral_params_gfsk_t* params, uin
+1119:smtc_ral/src/ral.c **** {
+ 1441              		.loc 1 1119 1 is_stmt 1 view -0
+ 1442              		.cfi_startproc
+ 1443              		@ args = 0, pretend = 0, frame = 0
+ 1444              		@ frame_needed = 0, uses_anonymous_args = 0
+1120:smtc_ral/src/ral.c ****     switch( ral->radio_type )
+ 1445              		.loc 1 1120 5 view .LVU354
+1119:smtc_ral/src/ral.c ****     switch( ral->radio_type )
+ 1446              		.loc 1 1119 1 is_stmt 0 view .LVU355
+ 1447 0000 10B5     		push	{r4, lr}
+ 1448              		.cfi_def_cfa_offset 8
+ 1449              		.cfi_offset 4, -8
+ 1450              		.cfi_offset 14, -4
+1119:smtc_ral/src/ral.c ****     switch( ral->radio_type )
+ 1451              		.loc 1 1119 1 view .LVU356
+ 1452 0002 0B00     		movs	r3, r1
+ 1453 0004 1100     		movs	r1, r2
+ 1454              	.LVL100:
+ 1455              		.loc 1 1120 5 view .LVU357
+ 1456 0006 0279     		ldrb	r2, [r0, #4]
+ 1457              	.LVL101:
+1121:smtc_ral/src/ral.c ****     {
+1122:smtc_ral/src/ral.c **** #if defined( SX126X )
+1123:smtc_ral/src/ral.c ****     case RAL_RADIO_SX126X:
+1124:smtc_ral/src/ral.c ****     {
+1125:smtc_ral/src/ral.c ****         return ral_sx126x_get_gfsk_time_on_air_in_ms( params, toa );
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s 			page 48
+
+
+1126:smtc_ral/src/ral.c ****     }
+1127:smtc_ral/src/ral.c **** #endif
+1128:smtc_ral/src/ral.c **** #if defined( SX1272 )
+1129:smtc_ral/src/ral.c ****     case RAL_RADIO_SX1272:
+1130:smtc_ral/src/ral.c ****     {
+1131:smtc_ral/src/ral.c ****         return ral_sx1272_get_gfsk_time_on_air_in_ms( params, toa );
+1132:smtc_ral/src/ral.c ****     }
+1133:smtc_ral/src/ral.c **** #endif
+1134:smtc_ral/src/ral.c **** #if defined( SX1276 )
+1135:smtc_ral/src/ral.c ****     case RAL_RADIO_SX1276:
+1136:smtc_ral/src/ral.c ****     {
+1137:smtc_ral/src/ral.c ****         return ral_sx1276_get_gfsk_time_on_air_in_ms( params, toa );
+1138:smtc_ral/src/ral.c ****     }
+1139:smtc_ral/src/ral.c **** #endif
+1140:smtc_ral/src/ral.c **** #if defined( SX1280 )
+1141:smtc_ral/src/ral.c ****     case RAL_RADIO_SX1280:
+1142:smtc_ral/src/ral.c ****     {
+1143:smtc_ral/src/ral.c ****         return ral_sx1280_get_gfsk_time_on_air_in_ms( params, toa );
+1144:smtc_ral/src/ral.c ****     }
+1145:smtc_ral/src/ral.c **** #endif
+1146:smtc_ral/src/ral.c ****     default:
+1147:smtc_ral/src/ral.c ****         return RAL_STATUS_UNSUPPORTED_FEATURE;
+ 1458              		.loc 1 1147 16 view .LVU358
+ 1459 0008 0120     		movs	r0, #1
+ 1460              	.LVL102:
+1120:smtc_ral/src/ral.c ****     {
+ 1461              		.loc 1 1120 5 view .LVU359
+ 1462 000a 042A     		cmp	r2, #4
+ 1463 000c 02D1     		bne	.L98
+1143:smtc_ral/src/ral.c ****     }
+ 1464              		.loc 1 1143 9 is_stmt 1 view .LVU360
+1143:smtc_ral/src/ral.c ****     }
+ 1465              		.loc 1 1143 16 is_stmt 0 view .LVU361
+ 1466 000e 1800     		movs	r0, r3
+ 1467 0010 FFF7FEFF 		bl	ral_sx1280_get_gfsk_time_on_air_in_ms
+ 1468              	.LVL103:
+ 1469              	.L98:
+1148:smtc_ral/src/ral.c ****     };
+ 1470              		.loc 1 1148 6 is_stmt 1 view .LVU362
+1149:smtc_ral/src/ral.c **** }
+ 1471              		.loc 1 1149 1 is_stmt 0 view .LVU363
+ 1472              		@ sp needed
+ 1473 0014 10BD     		pop	{r4, pc}
+ 1474              		.cfi_endproc
+ 1475              	.LFE33:
+ 1477              		.section	.text.ral_get_flrc_time_on_air_in_ms,"ax",%progbits
+ 1478              		.align	1
+ 1479              		.global	ral_get_flrc_time_on_air_in_ms
+ 1480              		.syntax unified
+ 1481              		.code	16
+ 1482              		.thumb_func
+ 1483              		.fpu softvfp
+ 1485              	ral_get_flrc_time_on_air_in_ms:
+ 1486              	.LVL104:
+ 1487              	.LFB34:
+1150:smtc_ral/src/ral.c **** 
+1151:smtc_ral/src/ral.c **** ral_status_t ral_get_flrc_time_on_air_in_ms( const ral_t* ral, const ral_params_flrc_t* params, uin
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s 			page 49
+
+
+1152:smtc_ral/src/ral.c **** {
+ 1488              		.loc 1 1152 1 is_stmt 1 view -0
+ 1489              		.cfi_startproc
+ 1490              		@ args = 0, pretend = 0, frame = 0
+ 1491              		@ frame_needed = 0, uses_anonymous_args = 0
+1153:smtc_ral/src/ral.c ****     switch( ral->radio_type )
+ 1492              		.loc 1 1153 5 view .LVU365
+1152:smtc_ral/src/ral.c ****     switch( ral->radio_type )
+ 1493              		.loc 1 1152 1 is_stmt 0 view .LVU366
+ 1494 0000 10B5     		push	{r4, lr}
+ 1495              		.cfi_def_cfa_offset 8
+ 1496              		.cfi_offset 4, -8
+ 1497              		.cfi_offset 14, -4
+1152:smtc_ral/src/ral.c ****     switch( ral->radio_type )
+ 1498              		.loc 1 1152 1 view .LVU367
+ 1499 0002 0B00     		movs	r3, r1
+ 1500 0004 1100     		movs	r1, r2
+ 1501              	.LVL105:
+ 1502              		.loc 1 1153 5 view .LVU368
+ 1503 0006 0279     		ldrb	r2, [r0, #4]
+ 1504              	.LVL106:
+1154:smtc_ral/src/ral.c ****     {
+1155:smtc_ral/src/ral.c **** #if defined( SX1280 )
+1156:smtc_ral/src/ral.c ****     case RAL_RADIO_SX1280:
+1157:smtc_ral/src/ral.c ****     {
+1158:smtc_ral/src/ral.c ****         return ral_sx1280_get_flrc_time_on_air_in_ms( params, toa );
+1159:smtc_ral/src/ral.c ****     }
+1160:smtc_ral/src/ral.c **** #endif
+1161:smtc_ral/src/ral.c ****     default:
+1162:smtc_ral/src/ral.c ****         return RAL_STATUS_UNSUPPORTED_FEATURE;
+ 1505              		.loc 1 1162 16 view .LVU369
+ 1506 0008 0120     		movs	r0, #1
+ 1507              	.LVL107:
+1153:smtc_ral/src/ral.c ****     {
+ 1508              		.loc 1 1153 5 view .LVU370
+ 1509 000a 042A     		cmp	r2, #4
+ 1510 000c 02D1     		bne	.L101
+1158:smtc_ral/src/ral.c ****     }
+ 1511              		.loc 1 1158 9 is_stmt 1 view .LVU371
+1158:smtc_ral/src/ral.c ****     }
+ 1512              		.loc 1 1158 16 is_stmt 0 view .LVU372
+ 1513 000e 1800     		movs	r0, r3
+ 1514 0010 FFF7FEFF 		bl	ral_sx1280_get_flrc_time_on_air_in_ms
+ 1515              	.LVL108:
+ 1516              	.L101:
+1163:smtc_ral/src/ral.c ****     };
+ 1517              		.loc 1 1163 6 is_stmt 1 view .LVU373
+1164:smtc_ral/src/ral.c **** }
+ 1518              		.loc 1 1164 1 is_stmt 0 view .LVU374
+ 1519              		@ sp needed
+ 1520 0014 10BD     		pop	{r4, pc}
+ 1521              		.cfi_endproc
+ 1522              	.LFE34:
+ 1524              		.section	.text.ral_get_lora_tx_consumption_in_ua,"ax",%progbits
+ 1525              		.align	1
+ 1526              		.global	ral_get_lora_tx_consumption_in_ua
+ 1527              		.syntax unified
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s 			page 50
+
+
+ 1528              		.code	16
+ 1529              		.thumb_func
+ 1530              		.fpu softvfp
+ 1532              	ral_get_lora_tx_consumption_in_ua:
+ 1533              	.LVL109:
+ 1534              	.LFB35:
+1165:smtc_ral/src/ral.c **** 
+1166:smtc_ral/src/ral.c **** ral_status_t ral_get_lora_tx_consumption_in_ua( const ral_t* ral, const ral_params_lora_t* params,
+1167:smtc_ral/src/ral.c ****                                                 uint32_t* micro_ampere )
+1168:smtc_ral/src/ral.c **** {
+ 1535              		.loc 1 1168 1 is_stmt 1 view -0
+ 1536              		.cfi_startproc
+ 1537              		@ args = 0, pretend = 0, frame = 0
+ 1538              		@ frame_needed = 0, uses_anonymous_args = 0
+1169:smtc_ral/src/ral.c ****     switch( ral->radio_type )
+ 1539              		.loc 1 1169 5 view .LVU376
+1168:smtc_ral/src/ral.c ****     switch( ral->radio_type )
+ 1540              		.loc 1 1168 1 is_stmt 0 view .LVU377
+ 1541 0000 10B5     		push	{r4, lr}
+ 1542              		.cfi_def_cfa_offset 8
+ 1543              		.cfi_offset 4, -8
+ 1544              		.cfi_offset 14, -4
+1168:smtc_ral/src/ral.c ****     switch( ral->radio_type )
+ 1545              		.loc 1 1168 1 view .LVU378
+ 1546 0002 0B00     		movs	r3, r1
+ 1547 0004 1100     		movs	r1, r2
+ 1548              	.LVL110:
+ 1549              		.loc 1 1169 5 view .LVU379
+ 1550 0006 0279     		ldrb	r2, [r0, #4]
+ 1551              	.LVL111:
+1170:smtc_ral/src/ral.c ****     {
+1171:smtc_ral/src/ral.c **** #if defined( SX126X )
+1172:smtc_ral/src/ral.c ****     case RAL_RADIO_SX126X:
+1173:smtc_ral/src/ral.c ****     {
+1174:smtc_ral/src/ral.c ****         return RAL_STATUS_UNSUPPORTED_FEATURE;
+1175:smtc_ral/src/ral.c ****     }
+1176:smtc_ral/src/ral.c **** #endif
+1177:smtc_ral/src/ral.c **** #if defined( SX1272 )
+1178:smtc_ral/src/ral.c ****     case RAL_RADIO_SX1272:
+1179:smtc_ral/src/ral.c ****     {
+1180:smtc_ral/src/ral.c ****         return RAL_STATUS_UNSUPPORTED_FEATURE;
+1181:smtc_ral/src/ral.c ****     }
+1182:smtc_ral/src/ral.c **** #endif
+1183:smtc_ral/src/ral.c **** #if defined( SX1276 )
+1184:smtc_ral/src/ral.c ****     case RAL_RADIO_SX1276:
+1185:smtc_ral/src/ral.c ****     {
+1186:smtc_ral/src/ral.c ****         return RAL_STATUS_UNSUPPORTED_FEATURE;
+1187:smtc_ral/src/ral.c ****     }
+1188:smtc_ral/src/ral.c **** #endif
+1189:smtc_ral/src/ral.c **** #if defined( SX1280 )
+1190:smtc_ral/src/ral.c ****     case RAL_RADIO_SX1280:
+1191:smtc_ral/src/ral.c ****     {
+1192:smtc_ral/src/ral.c ****         return ral_sx1280_convert_lora_tx_dbm_to_ua( params, micro_ampere );
+1193:smtc_ral/src/ral.c ****     }
+1194:smtc_ral/src/ral.c **** #endif
+1195:smtc_ral/src/ral.c ****     default:
+1196:smtc_ral/src/ral.c ****         return RAL_STATUS_UNSUPPORTED_FEATURE;
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s 			page 51
+
+
+ 1552              		.loc 1 1196 16 view .LVU380
+ 1553 0008 0120     		movs	r0, #1
+ 1554              	.LVL112:
+1169:smtc_ral/src/ral.c ****     {
+ 1555              		.loc 1 1169 5 view .LVU381
+ 1556 000a 042A     		cmp	r2, #4
+ 1557 000c 02D1     		bne	.L104
+1192:smtc_ral/src/ral.c ****     }
+ 1558              		.loc 1 1192 9 is_stmt 1 view .LVU382
+1192:smtc_ral/src/ral.c ****     }
+ 1559              		.loc 1 1192 16 is_stmt 0 view .LVU383
+ 1560 000e 1800     		movs	r0, r3
+ 1561 0010 FFF7FEFF 		bl	ral_sx1280_convert_lora_tx_dbm_to_ua
+ 1562              	.LVL113:
+ 1563              	.L104:
+1197:smtc_ral/src/ral.c ****     };
+ 1564              		.loc 1 1197 6 is_stmt 1 view .LVU384
+1198:smtc_ral/src/ral.c **** }
+ 1565              		.loc 1 1198 1 is_stmt 0 view .LVU385
+ 1566              		@ sp needed
+ 1567 0014 10BD     		pop	{r4, pc}
+ 1568              		.cfi_endproc
+ 1569              	.LFE35:
+ 1571              		.section	.text.ral_get_lora_rx_consumption_in_ua,"ax",%progbits
+ 1572              		.align	1
+ 1573              		.global	ral_get_lora_rx_consumption_in_ua
+ 1574              		.syntax unified
+ 1575              		.code	16
+ 1576              		.thumb_func
+ 1577              		.fpu softvfp
+ 1579              	ral_get_lora_rx_consumption_in_ua:
+ 1580              	.LVL114:
+ 1581              	.LFB36:
+1199:smtc_ral/src/ral.c **** 
+1200:smtc_ral/src/ral.c **** ral_status_t ral_get_lora_rx_consumption_in_ua( const ral_t* ral, const ral_params_lora_t* params,
+1201:smtc_ral/src/ral.c ****                                                 uint32_t* micro_ampere )
+1202:smtc_ral/src/ral.c **** {
+ 1582              		.loc 1 1202 1 is_stmt 1 view -0
+ 1583              		.cfi_startproc
+ 1584              		@ args = 0, pretend = 0, frame = 0
+ 1585              		@ frame_needed = 0, uses_anonymous_args = 0
+1203:smtc_ral/src/ral.c ****     switch( ral->radio_type )
+ 1586              		.loc 1 1203 5 view .LVU387
+1202:smtc_ral/src/ral.c ****     switch( ral->radio_type )
+ 1587              		.loc 1 1202 1 is_stmt 0 view .LVU388
+ 1588 0000 10B5     		push	{r4, lr}
+ 1589              		.cfi_def_cfa_offset 8
+ 1590              		.cfi_offset 4, -8
+ 1591              		.cfi_offset 14, -4
+1202:smtc_ral/src/ral.c ****     switch( ral->radio_type )
+ 1592              		.loc 1 1202 1 view .LVU389
+ 1593 0002 0B00     		movs	r3, r1
+ 1594 0004 1100     		movs	r1, r2
+ 1595              	.LVL115:
+ 1596              		.loc 1 1203 5 view .LVU390
+ 1597 0006 0279     		ldrb	r2, [r0, #4]
+ 1598              	.LVL116:
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s 			page 52
+
+
+1204:smtc_ral/src/ral.c ****     {
+1205:smtc_ral/src/ral.c **** #if defined( SX126X )
+1206:smtc_ral/src/ral.c ****     case RAL_RADIO_SX126X:
+1207:smtc_ral/src/ral.c ****     {
+1208:smtc_ral/src/ral.c ****         return RAL_STATUS_UNSUPPORTED_FEATURE;
+1209:smtc_ral/src/ral.c ****     }
+1210:smtc_ral/src/ral.c **** #endif
+1211:smtc_ral/src/ral.c **** #if defined( SX1272 )
+1212:smtc_ral/src/ral.c ****     case RAL_RADIO_SX1272:
+1213:smtc_ral/src/ral.c ****     {
+1214:smtc_ral/src/ral.c ****         return RAL_STATUS_UNSUPPORTED_FEATURE;
+1215:smtc_ral/src/ral.c ****     }
+1216:smtc_ral/src/ral.c **** #endif
+1217:smtc_ral/src/ral.c **** #if defined( SX1276 )
+1218:smtc_ral/src/ral.c ****     case RAL_RADIO_SX1276:
+1219:smtc_ral/src/ral.c ****     {
+1220:smtc_ral/src/ral.c ****         return RAL_STATUS_UNSUPPORTED_FEATURE;
+1221:smtc_ral/src/ral.c ****     }
+1222:smtc_ral/src/ral.c **** #endif
+1223:smtc_ral/src/ral.c **** #if defined( SX1280 )
+1224:smtc_ral/src/ral.c ****     case RAL_RADIO_SX1280:
+1225:smtc_ral/src/ral.c ****     {
+1226:smtc_ral/src/ral.c ****         return ral_sx1280_convert_lora_rx_bw_to_ua( params, micro_ampere );
+1227:smtc_ral/src/ral.c ****     }
+1228:smtc_ral/src/ral.c **** #endif
+1229:smtc_ral/src/ral.c ****     default:
+1230:smtc_ral/src/ral.c ****         return RAL_STATUS_UNSUPPORTED_FEATURE;
+ 1599              		.loc 1 1230 16 view .LVU391
+ 1600 0008 0120     		movs	r0, #1
+ 1601              	.LVL117:
+1203:smtc_ral/src/ral.c ****     {
+ 1602              		.loc 1 1203 5 view .LVU392
+ 1603 000a 042A     		cmp	r2, #4
+ 1604 000c 02D1     		bne	.L107
+1226:smtc_ral/src/ral.c ****     }
+ 1605              		.loc 1 1226 9 is_stmt 1 view .LVU393
+1226:smtc_ral/src/ral.c ****     }
+ 1606              		.loc 1 1226 16 is_stmt 0 view .LVU394
+ 1607 000e 1800     		movs	r0, r3
+ 1608 0010 FFF7FEFF 		bl	ral_sx1280_convert_lora_rx_bw_to_ua
+ 1609              	.LVL118:
+ 1610              	.L107:
+1231:smtc_ral/src/ral.c ****     };
+ 1611              		.loc 1 1231 6 is_stmt 1 view .LVU395
+1232:smtc_ral/src/ral.c **** }
+ 1612              		.loc 1 1232 1 is_stmt 0 view .LVU396
+ 1613              		@ sp needed
+ 1614 0014 10BD     		pop	{r4, pc}
+ 1615              		.cfi_endproc
+ 1616              	.LFE36:
+ 1618              		.section	.text.ral_set_tcxo_on,"ax",%progbits
+ 1619              		.align	1
+ 1620              		.global	ral_set_tcxo_on
+ 1621              		.syntax unified
+ 1622              		.code	16
+ 1623              		.thumb_func
+ 1624              		.fpu softvfp
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s 			page 53
+
+
+ 1626              	ral_set_tcxo_on:
+ 1627              	.LVL119:
+ 1628              	.LFB37:
+1233:smtc_ral/src/ral.c **** 
+1234:smtc_ral/src/ral.c **** ral_status_t ral_set_tcxo_on( const ral_t* ral )
+1235:smtc_ral/src/ral.c **** {
+ 1629              		.loc 1 1235 1 is_stmt 1 view -0
+ 1630              		.cfi_startproc
+ 1631              		@ args = 0, pretend = 0, frame = 0
+ 1632              		@ frame_needed = 0, uses_anonymous_args = 0
+1236:smtc_ral/src/ral.c ****     ral_status_t status = RAL_STATUS_UNSUPPORTED_FEATURE;
+ 1633              		.loc 1 1236 5 view .LVU398
+1237:smtc_ral/src/ral.c **** 
+1238:smtc_ral/src/ral.c ****     if( ral->tcxo_cfg.tcxo_ctrl_mode == RAL_TCXO_CTRL_HOST_EXT )
+ 1634              		.loc 1 1238 5 view .LVU399
+1235:smtc_ral/src/ral.c ****     ral_status_t status = RAL_STATUS_UNSUPPORTED_FEATURE;
+ 1635              		.loc 1 1235 1 is_stmt 0 view .LVU400
+ 1636 0000 10B5     		push	{r4, lr}
+ 1637              		.cfi_def_cfa_offset 8
+ 1638              		.cfi_offset 4, -8
+ 1639              		.cfi_offset 14, -4
+ 1640              		.loc 1 1238 7 view .LVU401
+ 1641 0002 8279     		ldrb	r2, [r0, #6]
+1235:smtc_ral/src/ral.c ****     ral_status_t status = RAL_STATUS_UNSUPPORTED_FEATURE;
+ 1642              		.loc 1 1235 1 view .LVU402
+ 1643 0004 0300     		movs	r3, r0
+1236:smtc_ral/src/ral.c ****     ral_status_t status = RAL_STATUS_UNSUPPORTED_FEATURE;
+ 1644              		.loc 1 1236 18 view .LVU403
+ 1645 0006 0120     		movs	r0, #1
+ 1646              	.LVL120:
+ 1647              		.loc 1 1238 7 view .LVU404
+ 1648 0008 022A     		cmp	r2, #2
+ 1649 000a 03D1     		bne	.L110
+1239:smtc_ral/src/ral.c ****     {
+1240:smtc_ral/src/ral.c ****         status = ( ral_status_t ) ral_hal_set_tcxo_on( ral->context, ral->tcxo_cfg.tcxo_startup_tim
+ 1650              		.loc 1 1240 9 is_stmt 1 view .LVU405
+ 1651              		.loc 1 1240 35 is_stmt 0 view .LVU406
+ 1652 000c 1989     		ldrh	r1, [r3, #8]
+ 1653 000e 1868     		ldr	r0, [r3]
+ 1654 0010 FFF7FEFF 		bl	ral_hal_set_tcxo_on
+ 1655              	.LVL121:
+ 1656              	.L110:
+1241:smtc_ral/src/ral.c ****     }
+1242:smtc_ral/src/ral.c **** 
+1243:smtc_ral/src/ral.c ****     return status;
+ 1657              		.loc 1 1243 5 is_stmt 1 view .LVU407
+1244:smtc_ral/src/ral.c **** }
+ 1658              		.loc 1 1244 1 is_stmt 0 view .LVU408
+ 1659              		@ sp needed
+ 1660 0014 10BD     		pop	{r4, pc}
+ 1661              		.cfi_endproc
+ 1662              	.LFE37:
+ 1664              		.section	.text.ral_set_tcxo_off,"ax",%progbits
+ 1665              		.align	1
+ 1666              		.global	ral_set_tcxo_off
+ 1667              		.syntax unified
+ 1668              		.code	16
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s 			page 54
+
+
+ 1669              		.thumb_func
+ 1670              		.fpu softvfp
+ 1672              	ral_set_tcxo_off:
+ 1673              	.LVL122:
+ 1674              	.LFB38:
+1245:smtc_ral/src/ral.c **** 
+1246:smtc_ral/src/ral.c **** ral_status_t ral_set_tcxo_off( const ral_t* ral )
+1247:smtc_ral/src/ral.c **** {
+ 1675              		.loc 1 1247 1 is_stmt 1 view -0
+ 1676              		.cfi_startproc
+ 1677              		@ args = 0, pretend = 0, frame = 0
+ 1678              		@ frame_needed = 0, uses_anonymous_args = 0
+1248:smtc_ral/src/ral.c ****     ral_status_t status = RAL_STATUS_UNSUPPORTED_FEATURE;
+ 1679              		.loc 1 1248 5 view .LVU410
+1249:smtc_ral/src/ral.c **** 
+1250:smtc_ral/src/ral.c ****     if( ral->tcxo_cfg.tcxo_ctrl_mode == RAL_TCXO_CTRL_HOST_EXT )
+ 1680              		.loc 1 1250 5 view .LVU411
+1247:smtc_ral/src/ral.c ****     ral_status_t status = RAL_STATUS_UNSUPPORTED_FEATURE;
+ 1681              		.loc 1 1247 1 is_stmt 0 view .LVU412
+ 1682 0000 10B5     		push	{r4, lr}
+ 1683              		.cfi_def_cfa_offset 8
+ 1684              		.cfi_offset 4, -8
+ 1685              		.cfi_offset 14, -4
+ 1686              		.loc 1 1250 7 view .LVU413
+ 1687 0002 8279     		ldrb	r2, [r0, #6]
+1247:smtc_ral/src/ral.c ****     ral_status_t status = RAL_STATUS_UNSUPPORTED_FEATURE;
+ 1688              		.loc 1 1247 1 view .LVU414
+ 1689 0004 0300     		movs	r3, r0
+1248:smtc_ral/src/ral.c ****     ral_status_t status = RAL_STATUS_UNSUPPORTED_FEATURE;
+ 1690              		.loc 1 1248 18 view .LVU415
+ 1691 0006 0120     		movs	r0, #1
+ 1692              	.LVL123:
+ 1693              		.loc 1 1250 7 view .LVU416
+ 1694 0008 022A     		cmp	r2, #2
+ 1695 000a 02D1     		bne	.L113
+1251:smtc_ral/src/ral.c ****     {
+1252:smtc_ral/src/ral.c ****         status = ( ral_status_t ) ral_hal_set_tcxo_off( ral->context );
+ 1696              		.loc 1 1252 9 is_stmt 1 view .LVU417
+ 1697              		.loc 1 1252 35 is_stmt 0 view .LVU418
+ 1698 000c 1868     		ldr	r0, [r3]
+ 1699 000e FFF7FEFF 		bl	ral_hal_set_tcxo_off
+ 1700              	.LVL124:
+ 1701              	.L113:
+1253:smtc_ral/src/ral.c ****     }
+1254:smtc_ral/src/ral.c **** 
+1255:smtc_ral/src/ral.c ****     return status;
+ 1702              		.loc 1 1255 5 is_stmt 1 view .LVU419
+1256:smtc_ral/src/ral.c **** }
+ 1703              		.loc 1 1256 1 is_stmt 0 view .LVU420
+ 1704              		@ sp needed
+ 1705 0012 10BD     		pop	{r4, pc}
+ 1706              		.cfi_endproc
+ 1707              	.LFE38:
+ 1709              		.section	.text.ral_read_register,"ax",%progbits
+ 1710              		.align	1
+ 1711              		.global	ral_read_register
+ 1712              		.syntax unified
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s 			page 55
+
+
+ 1713              		.code	16
+ 1714              		.thumb_func
+ 1715              		.fpu softvfp
+ 1717              	ral_read_register:
+ 1718              	.LVL125:
+ 1719              	.LFB39:
+1257:smtc_ral/src/ral.c **** 
+1258:smtc_ral/src/ral.c **** ral_status_t ral_read_register( const ral_t* ral, uint16_t address, uint8_t* buffer, uint16_t size 
+1259:smtc_ral/src/ral.c **** {
+ 1720              		.loc 1 1259 1 is_stmt 1 view -0
+ 1721              		.cfi_startproc
+ 1722              		@ args = 0, pretend = 0, frame = 0
+ 1723              		@ frame_needed = 0, uses_anonymous_args = 0
+1260:smtc_ral/src/ral.c ****     switch( ral->radio_type )
+ 1724              		.loc 1 1260 5 view .LVU422
+1259:smtc_ral/src/ral.c ****     switch( ral->radio_type )
+ 1725              		.loc 1 1259 1 is_stmt 0 view .LVU423
+ 1726 0000 70B5     		push	{r4, r5, r6, lr}
+ 1727              		.cfi_def_cfa_offset 16
+ 1728              		.cfi_offset 4, -16
+ 1729              		.cfi_offset 5, -12
+ 1730              		.cfi_offset 6, -8
+ 1731              		.cfi_offset 14, -4
+ 1732              		.loc 1 1260 5 view .LVU424
+ 1733 0002 0579     		ldrb	r5, [r0, #4]
+1259:smtc_ral/src/ral.c ****     switch( ral->radio_type )
+ 1734              		.loc 1 1259 1 view .LVU425
+ 1735 0004 0400     		movs	r4, r0
+1261:smtc_ral/src/ral.c ****     {
+1262:smtc_ral/src/ral.c **** #if defined( SX126X )
+1263:smtc_ral/src/ral.c ****     case RAL_RADIO_SX126X:
+1264:smtc_ral/src/ral.c ****     {
+1265:smtc_ral/src/ral.c ****         return RAL_STATUS_UNSUPPORTED_FEATURE;
+1266:smtc_ral/src/ral.c ****     }
+1267:smtc_ral/src/ral.c **** #endif
+1268:smtc_ral/src/ral.c **** #if defined( SX1272 )
+1269:smtc_ral/src/ral.c ****     case RAL_RADIO_SX1272:
+1270:smtc_ral/src/ral.c ****     {
+1271:smtc_ral/src/ral.c ****         return RAL_STATUS_UNSUPPORTED_FEATURE;
+1272:smtc_ral/src/ral.c ****     }
+1273:smtc_ral/src/ral.c **** #endif
+1274:smtc_ral/src/ral.c **** #if defined( SX1276 )
+1275:smtc_ral/src/ral.c ****     case RAL_RADIO_SX1276:
+1276:smtc_ral/src/ral.c ****     {
+1277:smtc_ral/src/ral.c ****         return RAL_STATUS_UNSUPPORTED_FEATURE;
+1278:smtc_ral/src/ral.c ****     }
+1279:smtc_ral/src/ral.c **** #endif
+1280:smtc_ral/src/ral.c **** #if defined( SX1280 )
+1281:smtc_ral/src/ral.c ****     case RAL_RADIO_SX1280:
+1282:smtc_ral/src/ral.c ****     {
+1283:smtc_ral/src/ral.c ****         return ral_sx1280_read_register( ral, address, buffer, size );
+1284:smtc_ral/src/ral.c ****     }
+1285:smtc_ral/src/ral.c **** #endif
+1286:smtc_ral/src/ral.c ****     default:
+1287:smtc_ral/src/ral.c ****         return RAL_STATUS_UNSUPPORTED_FEATURE;
+ 1736              		.loc 1 1287 16 view .LVU426
+ 1737 0006 0120     		movs	r0, #1
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s 			page 56
+
+
+ 1738              	.LVL126:
+1260:smtc_ral/src/ral.c ****     {
+ 1739              		.loc 1 1260 5 view .LVU427
+ 1740 0008 042D     		cmp	r5, #4
+ 1741 000a 02D1     		bne	.L116
+1283:smtc_ral/src/ral.c ****     }
+ 1742              		.loc 1 1283 9 is_stmt 1 view .LVU428
+1283:smtc_ral/src/ral.c ****     }
+ 1743              		.loc 1 1283 16 is_stmt 0 view .LVU429
+ 1744 000c 2000     		movs	r0, r4
+ 1745 000e FFF7FEFF 		bl	ral_sx1280_read_register
+ 1746              	.LVL127:
+ 1747              	.L116:
+1288:smtc_ral/src/ral.c ****     };
+ 1748              		.loc 1 1288 6 is_stmt 1 view .LVU430
+1289:smtc_ral/src/ral.c **** }
+ 1749              		.loc 1 1289 1 is_stmt 0 view .LVU431
+ 1750              		@ sp needed
+ 1751              	.LVL128:
+ 1752              		.loc 1 1289 1 view .LVU432
+ 1753 0012 70BD     		pop	{r4, r5, r6, pc}
+ 1754              		.cfi_endproc
+ 1755              	.LFE39:
+ 1757              		.section	.text.ral_write_register,"ax",%progbits
+ 1758              		.align	1
+ 1759              		.global	ral_write_register
+ 1760              		.syntax unified
+ 1761              		.code	16
+ 1762              		.thumb_func
+ 1763              		.fpu softvfp
+ 1765              	ral_write_register:
+ 1766              	.LVL129:
+ 1767              	.LFB40:
+1290:smtc_ral/src/ral.c **** 
+1291:smtc_ral/src/ral.c **** ral_status_t ral_write_register( const ral_t* ral, uint16_t address, uint8_t* buffer, uint16_t size
+1292:smtc_ral/src/ral.c **** {
+ 1768              		.loc 1 1292 1 is_stmt 1 view -0
+ 1769              		.cfi_startproc
+ 1770              		@ args = 0, pretend = 0, frame = 0
+ 1771              		@ frame_needed = 0, uses_anonymous_args = 0
+1293:smtc_ral/src/ral.c ****     switch( ral->radio_type )
+ 1772              		.loc 1 1293 5 view .LVU434
+1292:smtc_ral/src/ral.c ****     switch( ral->radio_type )
+ 1773              		.loc 1 1292 1 is_stmt 0 view .LVU435
+ 1774 0000 70B5     		push	{r4, r5, r6, lr}
+ 1775              		.cfi_def_cfa_offset 16
+ 1776              		.cfi_offset 4, -16
+ 1777              		.cfi_offset 5, -12
+ 1778              		.cfi_offset 6, -8
+ 1779              		.cfi_offset 14, -4
+ 1780              		.loc 1 1293 5 view .LVU436
+ 1781 0002 0579     		ldrb	r5, [r0, #4]
+1292:smtc_ral/src/ral.c ****     switch( ral->radio_type )
+ 1782              		.loc 1 1292 1 view .LVU437
+ 1783 0004 0400     		movs	r4, r0
+1294:smtc_ral/src/ral.c ****     {
+1295:smtc_ral/src/ral.c **** #if defined( SX126X )
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s 			page 57
+
+
+1296:smtc_ral/src/ral.c ****     case RAL_RADIO_SX126X:
+1297:smtc_ral/src/ral.c ****     {
+1298:smtc_ral/src/ral.c ****         return RAL_STATUS_UNSUPPORTED_FEATURE;
+1299:smtc_ral/src/ral.c ****     }
+1300:smtc_ral/src/ral.c **** #endif
+1301:smtc_ral/src/ral.c **** #if defined( SX1272 )
+1302:smtc_ral/src/ral.c ****     case RAL_RADIO_SX1272:
+1303:smtc_ral/src/ral.c ****     {
+1304:smtc_ral/src/ral.c ****         return RAL_STATUS_UNSUPPORTED_FEATURE;
+1305:smtc_ral/src/ral.c ****     }
+1306:smtc_ral/src/ral.c **** #endif
+1307:smtc_ral/src/ral.c **** #if defined( SX1276 )
+1308:smtc_ral/src/ral.c ****     case RAL_RADIO_SX1276:
+1309:smtc_ral/src/ral.c ****     {
+1310:smtc_ral/src/ral.c ****         return RAL_STATUS_UNSUPPORTED_FEATURE;
+1311:smtc_ral/src/ral.c ****     }
+1312:smtc_ral/src/ral.c **** #endif
+1313:smtc_ral/src/ral.c **** #if defined( SX1280 )
+1314:smtc_ral/src/ral.c ****     case RAL_RADIO_SX1280:
+1315:smtc_ral/src/ral.c ****     {
+1316:smtc_ral/src/ral.c ****         return ral_sx1280_write_register( ral, address, buffer, size );
+1317:smtc_ral/src/ral.c ****     }
+1318:smtc_ral/src/ral.c **** #endif
+1319:smtc_ral/src/ral.c ****     default:
+1320:smtc_ral/src/ral.c ****         return RAL_STATUS_UNSUPPORTED_FEATURE;
+ 1784              		.loc 1 1320 16 view .LVU438
+ 1785 0006 0120     		movs	r0, #1
+ 1786              	.LVL130:
+1293:smtc_ral/src/ral.c ****     {
+ 1787              		.loc 1 1293 5 view .LVU439
+ 1788 0008 042D     		cmp	r5, #4
+ 1789 000a 02D1     		bne	.L119
+1316:smtc_ral/src/ral.c ****     }
+ 1790              		.loc 1 1316 9 is_stmt 1 view .LVU440
+1316:smtc_ral/src/ral.c ****     }
+ 1791              		.loc 1 1316 16 is_stmt 0 view .LVU441
+ 1792 000c 2000     		movs	r0, r4
+ 1793 000e FFF7FEFF 		bl	ral_sx1280_write_register
+ 1794              	.LVL131:
+ 1795              	.L119:
+1321:smtc_ral/src/ral.c ****     };
+ 1796              		.loc 1 1321 6 is_stmt 1 view .LVU442
+1322:smtc_ral/src/ral.c **** }
+ 1797              		.loc 1 1322 1 is_stmt 0 view .LVU443
+ 1798              		@ sp needed
+ 1799              	.LVL132:
+ 1800              		.loc 1 1322 1 view .LVU444
+ 1801 0012 70BD     		pop	{r4, r5, r6, pc}
+ 1802              		.cfi_endproc
+ 1803              	.LFE40:
+ 1805              		.text
+ 1806              	.Letext0:
+ 1807              		.file 2 "/Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.external
+ 1808              		.file 3 "/Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.external
+ 1809              		.file 4 "smtc_ral/src/ral_defs.h"
+ 1810              		.file 5 "smtc_ral/src/ral_sx1280.h"
+ 1811              		.file 6 "smtc_ral/src/ral_hal.h"
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s 			page 58
+
+
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s 			page 59
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 ral.c
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s:14     .text.ral_init:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s:22     .text.ral_init:0000000000000000 ral_init
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s:60     .text.ral_setup_gfsk:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s:67     .text.ral_setup_gfsk:0000000000000000 ral_setup_gfsk
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s:104    .text.ral_setup_rx_gfsk:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s:111    .text.ral_setup_rx_gfsk:0000000000000000 ral_setup_rx_gfsk
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s:148    .text.ral_setup_tx_gfsk:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s:155    .text.ral_setup_tx_gfsk:0000000000000000 ral_setup_tx_gfsk
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s:192    .text.ral_setup_lora:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s:199    .text.ral_setup_lora:0000000000000000 ral_setup_lora
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s:236    .text.ral_setup_rx_lora:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s:243    .text.ral_setup_rx_lora:0000000000000000 ral_setup_rx_lora
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s:280    .text.ral_setup_tx_lora:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s:287    .text.ral_setup_tx_lora:0000000000000000 ral_setup_tx_lora
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s:324    .text.ral_setup_flrc:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s:331    .text.ral_setup_flrc:0000000000000000 ral_setup_flrc
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s:368    .text.ral_setup_rx_flrc:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s:375    .text.ral_setup_rx_flrc:0000000000000000 ral_setup_rx_flrc
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s:412    .text.ral_setup_tx_flrc:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s:419    .text.ral_setup_tx_flrc:0000000000000000 ral_setup_tx_flrc
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s:456    .text.ral_setup_tx_lora_e:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s:463    .text.ral_setup_tx_lora_e:0000000000000000 ral_setup_tx_lora_e
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s:500    .text.ral_tx_bpsk:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s:507    .text.ral_tx_bpsk:0000000000000000 ral_tx_bpsk
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s:544    .text.ral_setup_cad:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s:551    .text.ral_setup_cad:0000000000000000 ral_setup_cad
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s:588    .text.ral_set_pkt_payload:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s:595    .text.ral_set_pkt_payload:0000000000000000 ral_set_pkt_payload
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s:632    .text.ral_get_pkt_payload:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s:639    .text.ral_get_pkt_payload:0000000000000000 ral_get_pkt_payload
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s:680    .text.ral_get_gfsk_pkt_status:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s:687    .text.ral_get_gfsk_pkt_status:0000000000000000 ral_get_gfsk_pkt_status
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s:724    .text.ral_get_lora_pkt_status:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s:731    .text.ral_get_lora_pkt_status:0000000000000000 ral_get_lora_pkt_status
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s:768    .text.ral_get_lora_incoming_pkt_config:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s:775    .text.ral_get_lora_incoming_pkt_config:0000000000000000 ral_get_lora_incoming_pkt_config
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s:812    .text.ral_get_flrc_pkt_status:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s:819    .text.ral_get_flrc_pkt_status:0000000000000000 ral_get_flrc_pkt_status
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s:856    .text.ral_set_sleep:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s:863    .text.ral_set_sleep:0000000000000000 ral_set_sleep
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s:900    .text.ral_set_standby:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s:907    .text.ral_set_standby:0000000000000000 ral_set_standby
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s:944    .text.ral_set_tx:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s:951    .text.ral_set_tx:0000000000000000 ral_set_tx
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s:988    .text.ral_set_tx_cw:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s:995    .text.ral_set_tx_cw:0000000000000000 ral_set_tx_cw
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s:1032   .text.ral_set_rx:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s:1039   .text.ral_set_rx:0000000000000000 ral_set_rx
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s:1076   .text.ral_set_cad:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s:1083   .text.ral_set_cad:0000000000000000 ral_set_cad
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s:1120   .text.ral_get_irq_status:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s:1127   .text.ral_get_irq_status:0000000000000000 ral_get_irq_status
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s:1164   .text.ral_clear_irq_status:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s:1171   .text.ral_clear_irq_status:0000000000000000 ral_clear_irq_status
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s:1208   .text.ral_get_and_clear_irq_status:0000000000000000 $t
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s 			page 60
+
+
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s:1215   .text.ral_get_and_clear_irq_status:0000000000000000 ral_get_and_clear_irq_status
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s:1252   .text.ral_set_dio_irq_params:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s:1259   .text.ral_set_dio_irq_params:0000000000000000 ral_set_dio_irq_params
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s:1296   .text.ral_process_irq:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s:1303   .text.ral_process_irq:0000000000000000 ral_process_irq
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s:1340   .text.ral_get_rssi:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s:1347   .text.ral_get_rssi:0000000000000000 ral_get_rssi
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s:1384   .text.ral_get_lora_time_on_air_in_ms:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s:1391   .text.ral_get_lora_time_on_air_in_ms:0000000000000000 ral_get_lora_time_on_air_in_ms
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s:1431   .text.ral_get_gfsk_time_on_air_in_ms:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s:1438   .text.ral_get_gfsk_time_on_air_in_ms:0000000000000000 ral_get_gfsk_time_on_air_in_ms
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s:1478   .text.ral_get_flrc_time_on_air_in_ms:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s:1485   .text.ral_get_flrc_time_on_air_in_ms:0000000000000000 ral_get_flrc_time_on_air_in_ms
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s:1525   .text.ral_get_lora_tx_consumption_in_ua:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s:1532   .text.ral_get_lora_tx_consumption_in_ua:0000000000000000 ral_get_lora_tx_consumption_in_ua
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s:1572   .text.ral_get_lora_rx_consumption_in_ua:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s:1579   .text.ral_get_lora_rx_consumption_in_ua:0000000000000000 ral_get_lora_rx_consumption_in_ua
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s:1619   .text.ral_set_tcxo_on:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s:1626   .text.ral_set_tcxo_on:0000000000000000 ral_set_tcxo_on
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s:1665   .text.ral_set_tcxo_off:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s:1672   .text.ral_set_tcxo_off:0000000000000000 ral_set_tcxo_off
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s:1710   .text.ral_read_register:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s:1717   .text.ral_read_register:0000000000000000 ral_read_register
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s:1758   .text.ral_write_register:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s:1765   .text.ral_write_register:0000000000000000 ral_write_register
+
+UNDEFINED SYMBOLS
+ral_sx1280_init
+ral_sx1280_setup_gfsk
+ral_sx1280_setup_rx_gfsk
+ral_sx1280_setup_tx_gfsk
+ral_sx1280_setup_lora
+ral_sx1280_setup_rx_lora
+ral_sx1280_setup_tx_lora
+ral_sx1280_setup_flrc
+ral_sx1280_setup_rx_flrc
+ral_sx1280_setup_tx_flrc
+ral_sx1280_setup_tx_lora_e
+ral_sx1280_tx_bpsk
+ral_sx1280_setup_cad
+ral_sx1280_set_pkt_payload
+ral_sx1280_get_pkt_payload
+ral_sx1280_get_gfsk_pkt_status
+ral_sx1280_get_lora_pkt_status
+ral_sx1280_get_lora_incoming_pkt_config
+ral_sx1280_get_flrc_pkt_status
+ral_sx1280_set_sleep
+ral_sx1280_set_standby
+ral_sx1280_set_tx
+ral_sx1280_set_tx_cw
+ral_sx1280_set_rx
+ral_sx1280_set_cad
+ral_sx1280_get_irq_status
+ral_sx1280_clear_irq_status
+ral_sx1280_get_and_clear_irq_status
+ral_sx1280_set_dio_irq_params
+ral_sx1280_process_irq
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc7bNrdv.s 			page 61
+
+
+ral_sx1280_get_rssi
+ral_sx1280_get_lora_time_on_air_in_ms
+ral_sx1280_get_gfsk_time_on_air_in_ms
+ral_sx1280_get_flrc_time_on_air_in_ms
+ral_sx1280_convert_lora_tx_dbm_to_ua
+ral_sx1280_convert_lora_rx_bw_to_ua
+ral_hal_set_tcxo_on
+ral_hal_set_tcxo_off
+ral_sx1280_read_register
+ral_sx1280_write_register

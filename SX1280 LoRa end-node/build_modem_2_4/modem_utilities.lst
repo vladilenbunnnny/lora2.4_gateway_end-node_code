@@ -1,0 +1,1133 @@
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccxiyra1.s 			page 1
+
+
+   1              		.cpu cortex-m0plus
+   2              		.eabi_attribute 23, 1
+   3              		.eabi_attribute 24, 1
+   4              		.eabi_attribute 25, 1
+   5              		.eabi_attribute 26, 1
+   6              		.eabi_attribute 30, 4
+   7              		.eabi_attribute 34, 0
+   8              		.eabi_attribute 18, 4
+   9              		.file	"modem_utilities.c"
+  10              		.text
+  11              	.Ltext0:
+  12              		.cfi_sections	.debug_frame
+  13              		.section	.text.sha256_do,"ax",%progbits
+  14              		.align	1
+  15              		.arch armv6s-m
+  16              		.syntax unified
+  17              		.code	16
+  18              		.thumb_func
+  19              		.fpu softvfp
+  21              	sha256_do:
+  22              	.LVL0:
+  23              	.LFB4:
+  24              		.file 1 "smtc_modem_core/modem_services/modem_utilities.c"
+   1:smtc_modem_core/modem_services/modem_utilities.c **** /*!
+   2:smtc_modem_core/modem_services/modem_utilities.c ****  * \file      modem_utilities.c
+   3:smtc_modem_core/modem_services/modem_utilities.c ****  *
+   4:smtc_modem_core/modem_services/modem_utilities.c ****  * \brief     utilities for modem
+   5:smtc_modem_core/modem_services/modem_utilities.c ****  *
+   6:smtc_modem_core/modem_services/modem_utilities.c ****  * Revised BSD License
+   7:smtc_modem_core/modem_services/modem_utilities.c ****  * Copyright Semtech Corporation 2020. All rights reserved.
+   8:smtc_modem_core/modem_services/modem_utilities.c ****  *
+   9:smtc_modem_core/modem_services/modem_utilities.c ****  * Redistribution and use in source and binary forms, with or without
+  10:smtc_modem_core/modem_services/modem_utilities.c ****  * modification, are permitted provided that the following conditions are met:
+  11:smtc_modem_core/modem_services/modem_utilities.c ****  *     * Redistributions of source code must retain the above copyright
+  12:smtc_modem_core/modem_services/modem_utilities.c ****  *       notice, this list of conditions and the following disclaimer.
+  13:smtc_modem_core/modem_services/modem_utilities.c ****  *     * Redistributions in binary form must reproduce the above copyright
+  14:smtc_modem_core/modem_services/modem_utilities.c ****  *       notice, this list of conditions and the following disclaimer in the
+  15:smtc_modem_core/modem_services/modem_utilities.c ****  *       documentation and/or other materials provided with the distribution.
+  16:smtc_modem_core/modem_services/modem_utilities.c ****  *     * Neither the name of the Semtech corporation nor the
+  17:smtc_modem_core/modem_services/modem_utilities.c ****  *       names of its contributors may be used to endorse or promote products
+  18:smtc_modem_core/modem_services/modem_utilities.c ****  *       derived from this software without specific prior written permission.
+  19:smtc_modem_core/modem_services/modem_utilities.c ****  *
+  20:smtc_modem_core/modem_services/modem_utilities.c ****  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+  21:smtc_modem_core/modem_services/modem_utilities.c ****  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+  22:smtc_modem_core/modem_services/modem_utilities.c ****  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+  23:smtc_modem_core/modem_services/modem_utilities.c ****  * ARE DISCLAIMED. IN NO EVENT SHALL SEMTECH CORPORATION BE LIABLE FOR ANY DIRECT,
+  24:smtc_modem_core/modem_services/modem_utilities.c ****  * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+  25:smtc_modem_core/modem_services/modem_utilities.c ****  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+  26:smtc_modem_core/modem_services/modem_utilities.c ****  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+  27:smtc_modem_core/modem_services/modem_utilities.c ****  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  28:smtc_modem_core/modem_services/modem_utilities.c ****  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+  29:smtc_modem_core/modem_services/modem_utilities.c ****  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  30:smtc_modem_core/modem_services/modem_utilities.c ****  */
+  31:smtc_modem_core/modem_services/modem_utilities.c **** 
+  32:smtc_modem_core/modem_services/modem_utilities.c **** #include "modem_utilities.h"
+  33:smtc_modem_core/modem_services/modem_utilities.c **** 
+  34:smtc_modem_core/modem_services/modem_utilities.c **** #if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccxiyra1.s 			page 2
+
+
+  35:smtc_modem_core/modem_services/modem_utilities.c **** #define ENDIAN_n2b32( x ) __builtin_bswap32( x )
+  36:smtc_modem_core/modem_services/modem_utilities.c **** #else
+  37:smtc_modem_core/modem_services/modem_utilities.c **** #define ENDIAN_n2b32( x ) ( x )
+  38:smtc_modem_core/modem_services/modem_utilities.c **** #endif
+  39:smtc_modem_core/modem_services/modem_utilities.c **** 
+  40:smtc_modem_core/modem_services/modem_utilities.c **** // ------------------------------------------------
+  41:smtc_modem_core/modem_services/modem_utilities.c **** // SHA-256
+  42:smtc_modem_core/modem_services/modem_utilities.c **** 
+  43:smtc_modem_core/modem_services/modem_utilities.c **** #define ROR( a, b ) ( ( ( a ) >> ( b ) ) | ( ( a ) << ( 32 - ( b ) ) ) )
+  44:smtc_modem_core/modem_services/modem_utilities.c **** 
+  45:smtc_modem_core/modem_services/modem_utilities.c **** #define CH( x, y, z ) ( ( ( x ) & ( y ) ) ^ ( ~( x ) & ( z ) ) )
+  46:smtc_modem_core/modem_services/modem_utilities.c **** #define MAJ( x, y, z ) ( ( ( x ) & ( y ) ) ^ ( ( x ) & ( z ) ) ^ ( ( y ) & ( z ) ) )
+  47:smtc_modem_core/modem_services/modem_utilities.c **** #define EP0( x ) ( ROR( x, 2 ) ^ ROR( x, 13 ) ^ ROR( x, 22 ) )
+  48:smtc_modem_core/modem_services/modem_utilities.c **** #define EP1( x ) ( ROR( x, 6 ) ^ ROR( x, 11 ) ^ ROR( x, 25 ) )
+  49:smtc_modem_core/modem_services/modem_utilities.c **** #define SIG0( x ) ( ROR( x, 7 ) ^ ROR( x, 18 ) ^ ( ( x ) >> 3 ) )
+  50:smtc_modem_core/modem_services/modem_utilities.c **** #define SIG1( x ) ( ROR( x, 17 ) ^ ROR( x, 19 ) ^ ( ( x ) >> 10 ) )
+  51:smtc_modem_core/modem_services/modem_utilities.c **** 
+  52:smtc_modem_core/modem_services/modem_utilities.c **** static void sha256_do( uint32_t* state, const uint8_t* block )
+  53:smtc_modem_core/modem_services/modem_utilities.c **** {
+  25              		.loc 1 53 1 view -0
+  26              		.cfi_startproc
+  27              		@ args = 0, pretend = 0, frame = 304
+  28              		@ frame_needed = 0, uses_anonymous_args = 0
+  54:smtc_modem_core/modem_services/modem_utilities.c ****     static const uint32_t K[64] = { 0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5, 0x3956c25b, 0x5
+  29              		.loc 1 54 5 view .LVU1
+  55:smtc_modem_core/modem_services/modem_utilities.c ****                                     0xab1c5ed5, 0xd807aa98, 0x12835b01, 0x243185be, 0x550c7dc3, 0x7
+  56:smtc_modem_core/modem_services/modem_utilities.c ****                                     0x9bdc06a7, 0xc19bf174, 0xe49b69c1, 0xefbe4786, 0x0fc19dc6, 0x2
+  57:smtc_modem_core/modem_services/modem_utilities.c ****                                     0x4a7484aa, 0x5cb0a9dc, 0x76f988da, 0x983e5152, 0xa831c66d, 0xb
+  58:smtc_modem_core/modem_services/modem_utilities.c ****                                     0xc6e00bf3, 0xd5a79147, 0x06ca6351, 0x14292967, 0x27b70a85, 0x2
+  59:smtc_modem_core/modem_services/modem_utilities.c ****                                     0x53380d13, 0x650a7354, 0x766a0abb, 0x81c2c92e, 0x92722c85, 0xa
+  60:smtc_modem_core/modem_services/modem_utilities.c ****                                     0xc24b8b70, 0xc76c51a3, 0xd192e819, 0xd6990624, 0xf40e3585, 0x1
+  61:smtc_modem_core/modem_services/modem_utilities.c ****                                     0x1e376c08, 0x2748774c, 0x34b0bcb5, 0x391c0cb3, 0x4ed8aa4a, 0x5
+  62:smtc_modem_core/modem_services/modem_utilities.c ****                                     0x748f82ee, 0x78a5636f, 0x84c87814, 0x8cc70208, 0x90befffa, 0xa
+  63:smtc_modem_core/modem_services/modem_utilities.c ****                                     0xc67178f2 };
+  64:smtc_modem_core/modem_services/modem_utilities.c **** 
+  65:smtc_modem_core/modem_services/modem_utilities.c ****     uint32_t a, b, c, d, e, f, g, h, i, j, t1, t2, w[64];
+  30              		.loc 1 65 5 view .LVU2
+  66:smtc_modem_core/modem_services/modem_utilities.c **** 
+  67:smtc_modem_core/modem_services/modem_utilities.c ****     for( i = 0, j = 0; i < 16; i++, j += 4 )
+  31              		.loc 1 67 5 view .LVU3
+  32              		.loc 1 67 24 view .LVU4
+  53:smtc_modem_core/modem_services/modem_utilities.c ****     static const uint32_t K[64] = { 0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5, 0x3956c25b, 0x5
+  33              		.loc 1 53 1 is_stmt 0 view .LVU5
+  34 0000 F0B5     		push	{r4, r5, r6, r7, lr}
+  35              		.cfi_def_cfa_offset 20
+  36              		.cfi_offset 4, -20
+  37              		.cfi_offset 5, -16
+  38              		.cfi_offset 6, -12
+  39              		.cfi_offset 7, -8
+  40              		.cfi_offset 14, -4
+  41 0002 CDB0     		sub	sp, sp, #308
+  42              		.cfi_def_cfa_offset 328
+  43 0004 0D00     		movs	r5, r1
+  44 0006 0CAA     		add	r2, sp, #48
+  53:smtc_modem_core/modem_services/modem_utilities.c ****     static const uint32_t K[64] = { 0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5, 0x3956c25b, 0x5
+  45              		.loc 1 53 1 view .LVU6
+  46 0008 1400     		movs	r4, r2
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccxiyra1.s 			page 3
+
+
+  47 000a 4035     		adds	r5, r5, #64
+  48              	.LVL1:
+  49              	.L2:
+  68:smtc_modem_core/modem_services/modem_utilities.c ****     {
+  69:smtc_modem_core/modem_services/modem_utilities.c ****         w[i] = ( block[j] << 24 ) | ( block[j + 1] << 16 ) | ( block[j + 2] << 8 ) | ( block[j + 3]
+  50              		.loc 1 69 9 is_stmt 1 discriminator 3 view .LVU7
+  51              		.loc 1 69 23 is_stmt 0 discriminator 3 view .LVU8
+  52 000c 0B78     		ldrb	r3, [r1]
+  53              		.loc 1 69 44 discriminator 3 view .LVU9
+  54 000e 4E78     		ldrb	r6, [r1, #1]
+  55              		.loc 1 69 27 discriminator 3 view .LVU10
+  56 0010 1B06     		lsls	r3, r3, #24
+  57              		.loc 1 69 52 discriminator 3 view .LVU11
+  58 0012 3604     		lsls	r6, r6, #16
+  59              		.loc 1 69 84 discriminator 3 view .LVU12
+  60 0014 3343     		orrs	r3, r6
+  61              		.loc 1 69 93 discriminator 3 view .LVU13
+  62 0016 CE78     		ldrb	r6, [r1, #3]
+  63              		.loc 1 69 84 discriminator 3 view .LVU14
+  64 0018 3343     		orrs	r3, r6
+  65              		.loc 1 69 69 discriminator 3 view .LVU15
+  66 001a 8E78     		ldrb	r6, [r1, #2]
+  67 001c 0431     		adds	r1, r1, #4
+  68              	.LVL2:
+  69              		.loc 1 69 77 discriminator 3 view .LVU16
+  70 001e 3602     		lsls	r6, r6, #8
+  71              		.loc 1 69 84 discriminator 3 view .LVU17
+  72 0020 3343     		orrs	r3, r6
+  73              		.loc 1 69 14 discriminator 3 view .LVU18
+  74 0022 08C4     		stmia	r4!, {r3}
+  67:smtc_modem_core/modem_services/modem_utilities.c ****     {
+  75              		.loc 1 67 32 is_stmt 1 discriminator 3 view .LVU19
+  76              	.LVL3:
+  67:smtc_modem_core/modem_services/modem_utilities.c ****     {
+  77              		.loc 1 67 24 discriminator 3 view .LVU20
+  67:smtc_modem_core/modem_services/modem_utilities.c ****     {
+  78              		.loc 1 67 5 is_stmt 0 discriminator 3 view .LVU21
+  79 0024 8D42     		cmp	r5, r1
+  80 0026 F1D1     		bne	.L2
+  81 0028 1025     		movs	r5, #16
+  82              	.LVL4:
+  70:smtc_modem_core/modem_services/modem_utilities.c ****     }
+  71:smtc_modem_core/modem_services/modem_utilities.c ****     for( ; i < 64; i++ )
+  72:smtc_modem_core/modem_services/modem_utilities.c ****     {
+  73:smtc_modem_core/modem_services/modem_utilities.c ****         w[i] = SIG1( w[i - 2] ) + w[i - 7] + SIG0( w[i - 15] ) + w[i - 16];
+  83              		.loc 1 73 16 view .LVU22
+  84 002a 1127     		movs	r7, #17
+  85              	.L3:
+  86              	.LVL5:
+  87              		.loc 1 73 9 is_stmt 1 discriminator 2 view .LVU23
+  88              		.loc 1 73 16 is_stmt 0 discriminator 2 view .LVU24
+  89 002c 936B     		ldr	r3, [r2, #56]
+  90 002e 1326     		movs	r6, #19
+  91 0030 1900     		movs	r1, r3
+  92 0032 F941     		rors	r1, r1, r7
+  93 0034 8C46     		mov	ip, r1
+  94 0036 1900     		movs	r1, r3
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccxiyra1.s 			page 4
+
+
+  95 0038 F141     		rors	r1, r1, r6
+  96 003a 6646     		mov	r6, ip
+  97 003c 9B0A     		lsrs	r3, r3, #10
+  98 003e 7140     		eors	r1, r6
+  99 0040 4B40     		eors	r3, r1
+ 100              		.loc 1 73 64 discriminator 2 view .LVU25
+ 101 0042 1668     		ldr	r6, [r2]
+ 102 0044 516A     		ldr	r1, [r2, #36]
+ 103              		.loc 1 73 46 discriminator 2 view .LVU26
+ 104 0046 5468     		ldr	r4, [r2, #4]
+ 105              		.loc 1 73 64 discriminator 2 view .LVU27
+ 106 0048 8919     		adds	r1, r1, r6
+ 107 004a 5B18     		adds	r3, r3, r1
+ 108              		.loc 1 73 46 discriminator 2 view .LVU28
+ 109 004c 0726     		movs	r6, #7
+ 110 004e 2100     		movs	r1, r4
+ 111 0050 F141     		rors	r1, r1, r6
+ 112 0052 8C46     		mov	ip, r1
+ 113 0054 2100     		movs	r1, r4
+ 114 0056 0B36     		adds	r6, r6, #11
+ 115 0058 F141     		rors	r1, r1, r6
+ 116 005a 6646     		mov	r6, ip
+ 117 005c E408     		lsrs	r4, r4, #3
+ 118 005e 7140     		eors	r1, r6
+ 119 0060 6140     		eors	r1, r4
+ 120              		.loc 1 73 64 discriminator 2 view .LVU29
+ 121 0062 5B18     		adds	r3, r3, r1
+  71:smtc_modem_core/modem_services/modem_utilities.c ****     {
+ 122              		.loc 1 71 21 discriminator 2 view .LVU30
+ 123 0064 0135     		adds	r5, r5, #1
+ 124              	.LVL6:
+ 125              		.loc 1 73 14 discriminator 2 view .LVU31
+ 126 0066 1364     		str	r3, [r2, #64]
+  71:smtc_modem_core/modem_services/modem_utilities.c ****     {
+ 127              		.loc 1 71 20 is_stmt 1 discriminator 2 view .LVU32
+ 128              	.LVL7:
+  71:smtc_modem_core/modem_services/modem_utilities.c ****     {
+ 129              		.loc 1 71 12 discriminator 2 view .LVU33
+ 130 0068 0432     		adds	r2, r2, #4
+  71:smtc_modem_core/modem_services/modem_utilities.c ****     {
+ 131              		.loc 1 71 5 is_stmt 0 discriminator 2 view .LVU34
+ 132 006a 402D     		cmp	r5, #64
+ 133 006c DED1     		bne	.L3
+  74:smtc_modem_core/modem_services/modem_utilities.c ****     }
+  75:smtc_modem_core/modem_services/modem_utilities.c **** 
+  76:smtc_modem_core/modem_services/modem_utilities.c ****     a = state[0];
+ 134              		.loc 1 76 5 is_stmt 1 view .LVU35
+ 135              		.loc 1 76 7 is_stmt 0 view .LVU36
+ 136 006e 0368     		ldr	r3, [r0]
+  77:smtc_modem_core/modem_services/modem_utilities.c ****     b = state[1];
+  78:smtc_modem_core/modem_services/modem_utilities.c ****     c = state[2];
+  79:smtc_modem_core/modem_services/modem_utilities.c ****     d = state[3];
+  80:smtc_modem_core/modem_services/modem_utilities.c ****     e = state[4];
+  81:smtc_modem_core/modem_services/modem_utilities.c ****     f = state[5];
+  82:smtc_modem_core/modem_services/modem_utilities.c ****     g = state[6];
+  83:smtc_modem_core/modem_services/modem_utilities.c ****     h = state[7];
+ 137              		.loc 1 83 7 view .LVU37
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccxiyra1.s 			page 5
+
+
+ 138 0070 0027     		movs	r7, #0
+  76:smtc_modem_core/modem_services/modem_utilities.c ****     b = state[1];
+ 139              		.loc 1 76 7 view .LVU38
+ 140 0072 0293     		str	r3, [sp, #8]
+ 141              	.LVL8:
+  77:smtc_modem_core/modem_services/modem_utilities.c ****     b = state[1];
+ 142              		.loc 1 77 5 is_stmt 1 view .LVU39
+  77:smtc_modem_core/modem_services/modem_utilities.c ****     b = state[1];
+ 143              		.loc 1 77 7 is_stmt 0 view .LVU40
+ 144 0074 4368     		ldr	r3, [r0, #4]
+ 145              	.LVL9:
+  76:smtc_modem_core/modem_services/modem_utilities.c ****     b = state[1];
+ 146              		.loc 1 76 7 view .LVU41
+ 147 0076 029C     		ldr	r4, [sp, #8]
+  77:smtc_modem_core/modem_services/modem_utilities.c ****     b = state[1];
+ 148              		.loc 1 77 7 view .LVU42
+ 149 0078 0393     		str	r3, [sp, #12]
+ 150              	.LVL10:
+  78:smtc_modem_core/modem_services/modem_utilities.c ****     d = state[3];
+ 151              		.loc 1 78 5 is_stmt 1 view .LVU43
+  78:smtc_modem_core/modem_services/modem_utilities.c ****     d = state[3];
+ 152              		.loc 1 78 7 is_stmt 0 view .LVU44
+ 153 007a 8368     		ldr	r3, [r0, #8]
+ 154              	.LVL11:
+  77:smtc_modem_core/modem_services/modem_utilities.c ****     b = state[1];
+ 155              		.loc 1 77 7 view .LVU45
+ 156 007c 039E     		ldr	r6, [sp, #12]
+  78:smtc_modem_core/modem_services/modem_utilities.c ****     d = state[3];
+ 157              		.loc 1 78 7 view .LVU46
+ 158 007e 0493     		str	r3, [sp, #16]
+ 159              	.LVL12:
+  79:smtc_modem_core/modem_services/modem_utilities.c ****     e = state[4];
+ 160              		.loc 1 79 5 is_stmt 1 view .LVU47
+  79:smtc_modem_core/modem_services/modem_utilities.c ****     e = state[4];
+ 161              		.loc 1 79 7 is_stmt 0 view .LVU48
+ 162 0080 C368     		ldr	r3, [r0, #12]
+ 163              	.LVL13:
+  79:smtc_modem_core/modem_services/modem_utilities.c ****     e = state[4];
+ 164              		.loc 1 79 7 view .LVU49
+ 165 0082 0593     		str	r3, [sp, #20]
+ 166              	.LVL14:
+  80:smtc_modem_core/modem_services/modem_utilities.c ****     f = state[5];
+ 167              		.loc 1 80 5 is_stmt 1 view .LVU50
+  80:smtc_modem_core/modem_services/modem_utilities.c ****     f = state[5];
+ 168              		.loc 1 80 7 is_stmt 0 view .LVU51
+ 169 0084 0369     		ldr	r3, [r0, #16]
+ 170              	.LVL15:
+  80:smtc_modem_core/modem_services/modem_utilities.c ****     f = state[5];
+ 171              		.loc 1 80 7 view .LVU52
+ 172 0086 0693     		str	r3, [sp, #24]
+ 173              	.LVL16:
+  81:smtc_modem_core/modem_services/modem_utilities.c ****     g = state[6];
+ 174              		.loc 1 81 5 is_stmt 1 view .LVU53
+  81:smtc_modem_core/modem_services/modem_utilities.c ****     g = state[6];
+ 175              		.loc 1 81 7 is_stmt 0 view .LVU54
+ 176 0088 4369     		ldr	r3, [r0, #20]
+ 177              	.LVL17:
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccxiyra1.s 			page 6
+
+
+  80:smtc_modem_core/modem_services/modem_utilities.c ****     f = state[5];
+ 178              		.loc 1 80 7 view .LVU55
+ 179 008a 0699     		ldr	r1, [sp, #24]
+  81:smtc_modem_core/modem_services/modem_utilities.c ****     g = state[6];
+ 180              		.loc 1 81 7 view .LVU56
+ 181 008c 0793     		str	r3, [sp, #28]
+ 182              	.LVL18:
+  82:smtc_modem_core/modem_services/modem_utilities.c ****     h = state[7];
+ 183              		.loc 1 82 5 is_stmt 1 view .LVU57
+  82:smtc_modem_core/modem_services/modem_utilities.c ****     h = state[7];
+ 184              		.loc 1 82 7 is_stmt 0 view .LVU58
+ 185 008e 8369     		ldr	r3, [r0, #24]
+ 186              	.LVL19:
+  82:smtc_modem_core/modem_services/modem_utilities.c ****     h = state[7];
+ 187              		.loc 1 82 7 view .LVU59
+ 188 0090 0893     		str	r3, [sp, #32]
+ 189              	.LVL20:
+ 190              		.loc 1 83 5 is_stmt 1 view .LVU60
+ 191              		.loc 1 83 7 is_stmt 0 view .LVU61
+ 192 0092 C369     		ldr	r3, [r0, #28]
+ 193              	.LVL21:
+ 194              		.loc 1 83 7 view .LVU62
+ 195 0094 0993     		str	r3, [sp, #36]
+ 196              	.LVL22:
+  84:smtc_modem_core/modem_services/modem_utilities.c **** 
+  85:smtc_modem_core/modem_services/modem_utilities.c ****     for( i = 0; i < 64; i++ )
+ 197              		.loc 1 85 5 is_stmt 1 view .LVU63
+ 198              		.loc 1 85 17 view .LVU64
+  83:smtc_modem_core/modem_services/modem_utilities.c **** 
+ 199              		.loc 1 83 7 is_stmt 0 view .LVU65
+ 200 0096 0A93     		str	r3, [sp, #40]
+  82:smtc_modem_core/modem_services/modem_utilities.c ****     h = state[7];
+ 201              		.loc 1 82 7 view .LVU66
+ 202 0098 089B     		ldr	r3, [sp, #32]
+ 203              	.LVL23:
+  82:smtc_modem_core/modem_services/modem_utilities.c ****     h = state[7];
+ 204              		.loc 1 82 7 view .LVU67
+ 205 009a 0193     		str	r3, [sp, #4]
+  81:smtc_modem_core/modem_services/modem_utilities.c ****     g = state[6];
+ 206              		.loc 1 81 7 view .LVU68
+ 207 009c 079B     		ldr	r3, [sp, #28]
+ 208 009e 0093     		str	r3, [sp]
+  79:smtc_modem_core/modem_services/modem_utilities.c ****     e = state[4];
+ 209              		.loc 1 79 7 view .LVU69
+ 210 00a0 059B     		ldr	r3, [sp, #20]
+ 211 00a2 0B93     		str	r3, [sp, #44]
+  78:smtc_modem_core/modem_services/modem_utilities.c ****     d = state[3];
+ 212              		.loc 1 78 7 view .LVU70
+ 213 00a4 049B     		ldr	r3, [sp, #16]
+ 214 00a6 9C46     		mov	ip, r3
+ 215              	.LVL24:
+ 216              	.L4:
+  86:smtc_modem_core/modem_services/modem_utilities.c ****     {
+  87:smtc_modem_core/modem_services/modem_utilities.c ****         t1 = h + EP1( e ) + CH( e, f, g ) + K[i] + w[i];
+ 217              		.loc 1 87 9 is_stmt 1 discriminator 3 view .LVU71
+ 218              		.loc 1 87 18 is_stmt 0 discriminator 3 view .LVU72
+ 219 00a8 0B23     		movs	r3, #11
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccxiyra1.s 			page 7
+
+
+ 220 00aa 0D00     		movs	r5, r1
+ 221 00ac 0A00     		movs	r2, r1
+ 222 00ae DD41     		rors	r5, r5, r3
+ 223 00b0 053B     		subs	r3, r3, #5
+ 224 00b2 DA41     		rors	r2, r2, r3
+ 225 00b4 6A40     		eors	r2, r5
+ 226 00b6 0D00     		movs	r5, r1
+ 227 00b8 1333     		adds	r3, r3, #19
+ 228 00ba DD41     		rors	r5, r5, r3
+ 229              		.loc 1 87 12 discriminator 3 view .LVU73
+ 230 00bc 2A4B     		ldr	r3, .L8
+ 231              		.loc 1 87 18 discriminator 3 view .LVU74
+ 232 00be 5540     		eors	r5, r2
+ 233              		.loc 1 87 12 discriminator 3 view .LVU75
+ 234 00c0 0CAA     		add	r2, sp, #48
+ 235 00c2 DB59     		ldr	r3, [r3, r7]
+ 236 00c4 BA58     		ldr	r2, [r7, r2]
+ 237 00c6 0437     		adds	r7, r7, #4
+ 238 00c8 9A18     		adds	r2, r3, r2
+ 239 00ca AA18     		adds	r2, r5, r2
+ 240              		.loc 1 87 29 discriminator 3 view .LVU76
+ 241 00cc 019B     		ldr	r3, [sp, #4]
+ 242 00ce 009D     		ldr	r5, [sp]
+ 243 00d0 8B43     		bics	r3, r1
+ 244 00d2 0D40     		ands	r5, r1
+ 245 00d4 6B40     		eors	r3, r5
+ 246              		.loc 1 87 12 discriminator 3 view .LVU77
+ 247 00d6 D218     		adds	r2, r2, r3
+ 248 00d8 0A9B     		ldr	r3, [sp, #40]
+  88:smtc_modem_core/modem_services/modem_utilities.c ****         t2 = EP0( a ) + MAJ( a, b, c );
+ 249              		.loc 1 88 14 discriminator 3 view .LVU78
+ 250 00da 2500     		movs	r5, r4
+  87:smtc_modem_core/modem_services/modem_utilities.c ****         t2 = EP0( a ) + MAJ( a, b, c );
+ 251              		.loc 1 87 12 discriminator 3 view .LVU79
+ 252 00dc D318     		adds	r3, r2, r3
+ 253 00de 0A93     		str	r3, [sp, #40]
+ 254              	.LVL25:
+ 255              		.loc 1 88 9 is_stmt 1 discriminator 3 view .LVU80
+ 256              		.loc 1 88 14 is_stmt 0 discriminator 3 view .LVU81
+ 257 00e0 0D23     		movs	r3, #13
+ 258              	.LVL26:
+ 259              		.loc 1 88 14 discriminator 3 view .LVU82
+ 260 00e2 DD41     		rors	r5, r5, r3
+ 261 00e4 0222     		movs	r2, #2
+ 262 00e6 2B00     		movs	r3, r5
+ 263 00e8 2500     		movs	r5, r4
+ 264 00ea D541     		rors	r5, r5, r2
+ 265 00ec 2200     		movs	r2, r4
+ 266 00ee 5D40     		eors	r5, r3
+ 267 00f0 1623     		movs	r3, #22
+ 268 00f2 DA41     		rors	r2, r2, r3
+ 269              		.loc 1 88 25 discriminator 3 view .LVU83
+ 270 00f4 6346     		mov	r3, ip
+ 271              		.loc 1 88 14 discriminator 3 view .LVU84
+ 272 00f6 5540     		eors	r5, r2
+ 273              		.loc 1 88 25 discriminator 3 view .LVU85
+ 274 00f8 6246     		mov	r2, ip
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccxiyra1.s 			page 8
+
+
+ 275 00fa 7340     		eors	r3, r6
+ 276 00fc 3240     		ands	r2, r6
+ 277 00fe 2340     		ands	r3, r4
+ 278 0100 5340     		eors	r3, r2
+ 279              		.loc 1 88 12 discriminator 3 view .LVU86
+ 280 0102 ED18     		adds	r5, r5, r3
+ 281              	.LVL27:
+  89:smtc_modem_core/modem_services/modem_utilities.c ****         h  = g;
+ 282              		.loc 1 89 9 is_stmt 1 discriminator 3 view .LVU87
+  90:smtc_modem_core/modem_services/modem_utilities.c ****         g  = f;
+ 283              		.loc 1 90 9 discriminator 3 view .LVU88
+  91:smtc_modem_core/modem_services/modem_utilities.c ****         f  = e;
+ 284              		.loc 1 91 9 discriminator 3 view .LVU89
+  92:smtc_modem_core/modem_services/modem_utilities.c ****         e  = d + t1;
+ 285              		.loc 1 92 9 discriminator 3 view .LVU90
+ 286              		.loc 1 92 12 is_stmt 0 discriminator 3 view .LVU91
+ 287 0104 0A9A     		ldr	r2, [sp, #40]
+ 288 0106 0B9B     		ldr	r3, [sp, #44]
+ 289 0108 D318     		adds	r3, r2, r3
+ 290              	.LVL28:
+  93:smtc_modem_core/modem_services/modem_utilities.c ****         d  = c;
+ 291              		.loc 1 93 9 is_stmt 1 discriminator 3 view .LVU92
+  94:smtc_modem_core/modem_services/modem_utilities.c ****         c  = b;
+ 292              		.loc 1 94 9 discriminator 3 view .LVU93
+  95:smtc_modem_core/modem_services/modem_utilities.c ****         b  = a;
+ 293              		.loc 1 95 9 discriminator 3 view .LVU94
+  96:smtc_modem_core/modem_services/modem_utilities.c ****         a  = t1 + t2;
+ 294              		.loc 1 96 9 discriminator 3 view .LVU95
+ 295              		.loc 1 96 12 is_stmt 0 discriminator 3 view .LVU96
+ 296 010a 5219     		adds	r2, r2, r5
+ 297              	.LVL29:
+  85:smtc_modem_core/modem_services/modem_utilities.c ****     {
+ 298              		.loc 1 85 25 is_stmt 1 discriminator 3 view .LVU97
+  85:smtc_modem_core/modem_services/modem_utilities.c ****     {
+ 299              		.loc 1 85 17 discriminator 3 view .LVU98
+ 300 010c 6546     		mov	r5, ip
+ 301              	.LVL30:
+  85:smtc_modem_core/modem_services/modem_utilities.c ****     {
+ 302              		.loc 1 85 17 is_stmt 0 discriminator 3 view .LVU99
+ 303 010e 0B95     		str	r5, [sp, #44]
+ 304 0110 019D     		ldr	r5, [sp, #4]
+ 305 0112 0A95     		str	r5, [sp, #40]
+ 306              	.LVL31:
+  85:smtc_modem_core/modem_services/modem_utilities.c ****     {
+ 307              		.loc 1 85 5 discriminator 3 view .LVU100
+ 308 0114 8025     		movs	r5, #128
+ 309 0116 6D00     		lsls	r5, r5, #1
+ 310 0118 AF42     		cmp	r7, r5
+ 311 011a 1DD1     		bne	.L5
+  97:smtc_modem_core/modem_services/modem_utilities.c ****     }
+  98:smtc_modem_core/modem_services/modem_utilities.c **** 
+  99:smtc_modem_core/modem_services/modem_utilities.c ****     state[0] += a;
+ 312              		.loc 1 99 5 is_stmt 1 view .LVU101
+ 313              		.loc 1 99 14 is_stmt 0 view .LVU102
+ 314 011c 029D     		ldr	r5, [sp, #8]
+ 315 011e AA18     		adds	r2, r5, r2
+ 316              	.LVL32:
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccxiyra1.s 			page 9
+
+
+ 317              		.loc 1 99 14 view .LVU103
+ 318 0120 0260     		str	r2, [r0]
+ 100:smtc_modem_core/modem_services/modem_utilities.c ****     state[1] += b;
+ 319              		.loc 1 100 5 is_stmt 1 view .LVU104
+ 320              		.loc 1 100 14 is_stmt 0 view .LVU105
+ 321 0122 039A     		ldr	r2, [sp, #12]
+ 322 0124 1419     		adds	r4, r2, r4
+ 323              	.LVL33:
+ 101:smtc_modem_core/modem_services/modem_utilities.c ****     state[2] += c;
+ 324              		.loc 1 101 14 view .LVU106
+ 325 0126 049A     		ldr	r2, [sp, #16]
+ 100:smtc_modem_core/modem_services/modem_utilities.c ****     state[1] += b;
+ 326              		.loc 1 100 14 view .LVU107
+ 327 0128 4460     		str	r4, [r0, #4]
+ 328              		.loc 1 101 5 is_stmt 1 view .LVU108
+ 329              		.loc 1 101 14 is_stmt 0 view .LVU109
+ 330 012a 9619     		adds	r6, r2, r6
+ 331              	.LVL34:
+ 102:smtc_modem_core/modem_services/modem_utilities.c ****     state[3] += d;
+ 332              		.loc 1 102 14 view .LVU110
+ 333 012c 059A     		ldr	r2, [sp, #20]
+ 101:smtc_modem_core/modem_services/modem_utilities.c ****     state[2] += c;
+ 334              		.loc 1 101 14 view .LVU111
+ 335 012e 8660     		str	r6, [r0, #8]
+ 336              		.loc 1 102 5 is_stmt 1 view .LVU112
+ 337              		.loc 1 102 14 is_stmt 0 view .LVU113
+ 338 0130 6244     		add	r2, r2, ip
+ 339 0132 C260     		str	r2, [r0, #12]
+ 103:smtc_modem_core/modem_services/modem_utilities.c ****     state[4] += e;
+ 340              		.loc 1 103 5 is_stmt 1 view .LVU114
+ 341              		.loc 1 103 14 is_stmt 0 view .LVU115
+ 342 0134 069A     		ldr	r2, [sp, #24]
+ 343 0136 D318     		adds	r3, r2, r3
+ 344              	.LVL35:
+ 104:smtc_modem_core/modem_services/modem_utilities.c ****     state[5] += f;
+ 105:smtc_modem_core/modem_services/modem_utilities.c ****     state[6] += g;
+ 345              		.loc 1 105 14 view .LVU116
+ 346 0138 009A     		ldr	r2, [sp]
+ 103:smtc_modem_core/modem_services/modem_utilities.c ****     state[4] += e;
+ 347              		.loc 1 103 14 view .LVU117
+ 348 013a 0361     		str	r3, [r0, #16]
+ 104:smtc_modem_core/modem_services/modem_utilities.c ****     state[5] += f;
+ 349              		.loc 1 104 5 is_stmt 1 view .LVU118
+ 350              		.loc 1 105 14 is_stmt 0 view .LVU119
+ 351 013c 9446     		mov	ip, r2
+ 352              	.LVL36:
+ 104:smtc_modem_core/modem_services/modem_utilities.c ****     state[5] += f;
+ 353              		.loc 1 104 14 view .LVU120
+ 354 013e 079B     		ldr	r3, [sp, #28]
+ 106:smtc_modem_core/modem_services/modem_utilities.c ****     state[7] += h;
+ 355              		.loc 1 106 14 view .LVU121
+ 356 0140 019A     		ldr	r2, [sp, #4]
+ 104:smtc_modem_core/modem_services/modem_utilities.c ****     state[5] += f;
+ 357              		.loc 1 104 14 view .LVU122
+ 358 0142 5918     		adds	r1, r3, r1
+ 359              	.LVL37:
+ 105:smtc_modem_core/modem_services/modem_utilities.c ****     state[7] += h;
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccxiyra1.s 			page 10
+
+
+ 360              		.loc 1 105 14 view .LVU123
+ 361 0144 089B     		ldr	r3, [sp, #32]
+ 104:smtc_modem_core/modem_services/modem_utilities.c ****     state[5] += f;
+ 362              		.loc 1 104 14 view .LVU124
+ 363 0146 4161     		str	r1, [r0, #20]
+ 105:smtc_modem_core/modem_services/modem_utilities.c ****     state[7] += h;
+ 364              		.loc 1 105 5 is_stmt 1 view .LVU125
+ 105:smtc_modem_core/modem_services/modem_utilities.c ****     state[7] += h;
+ 365              		.loc 1 105 14 is_stmt 0 view .LVU126
+ 366 0148 6344     		add	r3, r3, ip
+ 367              		.loc 1 106 14 view .LVU127
+ 368 014a 9446     		mov	ip, r2
+ 105:smtc_modem_core/modem_services/modem_utilities.c ****     state[7] += h;
+ 369              		.loc 1 105 14 view .LVU128
+ 370 014c 8361     		str	r3, [r0, #24]
+ 371              		.loc 1 106 5 is_stmt 1 view .LVU129
+ 372              		.loc 1 106 14 is_stmt 0 view .LVU130
+ 373 014e 099B     		ldr	r3, [sp, #36]
+ 374 0150 6344     		add	r3, r3, ip
+ 375 0152 C361     		str	r3, [r0, #28]
+ 107:smtc_modem_core/modem_services/modem_utilities.c **** }
+ 376              		.loc 1 107 1 view .LVU131
+ 377 0154 4DB0     		add	sp, sp, #308
+ 378              	.LVL38:
+ 379              		.loc 1 107 1 view .LVU132
+ 380              		@ sp needed
+ 381 0156 F0BD     		pop	{r4, r5, r6, r7, pc}
+ 382              	.LVL39:
+ 383              	.L5:
+ 384              		.loc 1 107 1 view .LVU133
+ 385 0158 009D     		ldr	r5, [sp]
+ 386 015a B446     		mov	ip, r6
+ 387              	.LVL40:
+ 388              		.loc 1 107 1 view .LVU134
+ 389 015c 0091     		str	r1, [sp]
+ 390              	.LVL41:
+ 391              		.loc 1 107 1 view .LVU135
+ 392 015e 2600     		movs	r6, r4
+ 393              	.LVL42:
+  92:smtc_modem_core/modem_services/modem_utilities.c ****         d  = c;
+ 394              		.loc 1 92 12 view .LVU136
+ 395 0160 1900     		movs	r1, r3
+ 396              	.LVL43:
+  96:smtc_modem_core/modem_services/modem_utilities.c ****     }
+ 397              		.loc 1 96 12 view .LVU137
+ 398 0162 1400     		movs	r4, r2
+ 399              	.LVL44:
+  96:smtc_modem_core/modem_services/modem_utilities.c ****     }
+ 400              		.loc 1 96 12 view .LVU138
+ 401 0164 0195     		str	r5, [sp, #4]
+ 402 0166 9FE7     		b	.L4
+ 403              	.L9:
+ 404              		.align	2
+ 405              	.L8:
+ 406 0168 00000000 		.word	K.5322
+ 407              		.cfi_endproc
+ 408              	.LFE4:
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccxiyra1.s 			page 11
+
+
+ 410              		.section	.text.sha256,"ax",%progbits
+ 411              		.align	1
+ 412              		.global	sha256
+ 413              		.syntax unified
+ 414              		.code	16
+ 415              		.thumb_func
+ 416              		.fpu softvfp
+ 418              	sha256:
+ 419              	.LVL45:
+ 420              	.LFB5:
+ 108:smtc_modem_core/modem_services/modem_utilities.c **** 
+ 109:smtc_modem_core/modem_services/modem_utilities.c **** #undef ROR
+ 110:smtc_modem_core/modem_services/modem_utilities.c **** #undef CH
+ 111:smtc_modem_core/modem_services/modem_utilities.c **** #undef MAJ
+ 112:smtc_modem_core/modem_services/modem_utilities.c **** #undef EP0
+ 113:smtc_modem_core/modem_services/modem_utilities.c **** #undef EP1
+ 114:smtc_modem_core/modem_services/modem_utilities.c **** #undef SIG0
+ 115:smtc_modem_core/modem_services/modem_utilities.c **** #undef SIG1
+ 116:smtc_modem_core/modem_services/modem_utilities.c **** 
+ 117:smtc_modem_core/modem_services/modem_utilities.c **** void sha256( uint32_t* hash, const uint8_t* msg, uint32_t len )
+ 118:smtc_modem_core/modem_services/modem_utilities.c **** {
+ 421              		.loc 1 118 1 is_stmt 1 view -0
+ 422              		.cfi_startproc
+ 423              		@ args = 0, pretend = 0, frame = 104
+ 424              		@ frame_needed = 0, uses_anonymous_args = 0
+ 119:smtc_modem_core/modem_services/modem_utilities.c ****     uint32_t state[8] = {
+ 425              		.loc 1 119 5 view .LVU140
+ 118:smtc_modem_core/modem_services/modem_utilities.c ****     uint32_t state[8] = {
+ 426              		.loc 1 118 1 is_stmt 0 view .LVU141
+ 427 0000 F0B5     		push	{r4, r5, r6, r7, lr}
+ 428              		.cfi_def_cfa_offset 20
+ 429              		.cfi_offset 4, -20
+ 430              		.cfi_offset 5, -16
+ 431              		.cfi_offset 6, -12
+ 432              		.cfi_offset 7, -8
+ 433              		.cfi_offset 14, -4
+ 434 0002 9BB0     		sub	sp, sp, #108
+ 435              		.cfi_def_cfa_offset 128
+ 436              		.loc 1 119 14 view .LVU142
+ 437 0004 02AC     		add	r4, sp, #8
+ 118:smtc_modem_core/modem_services/modem_utilities.c ****     uint32_t state[8] = {
+ 438              		.loc 1 118 1 view .LVU143
+ 439 0006 1600     		movs	r6, r2
+ 440              		.loc 1 119 14 view .LVU144
+ 441 0008 2200     		movs	r2, r4
+ 442              	.LVL46:
+ 443              		.loc 1 119 14 view .LVU145
+ 444 000a 214B     		ldr	r3, .L19
+ 118:smtc_modem_core/modem_services/modem_utilities.c ****     uint32_t state[8] = {
+ 445              		.loc 1 118 1 view .LVU146
+ 446 000c 0190     		str	r0, [sp, #4]
+ 447 000e 0F00     		movs	r7, r1
+ 448              		.loc 1 119 14 view .LVU147
+ 449 0010 23CB     		ldmia	r3!, {r0, r1, r5}
+ 450 0012 23C2     		stmia	r2!, {r0, r1, r5}
+ 451              	.LVL47:
+ 452              		.loc 1 119 14 view .LVU148
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccxiyra1.s 			page 12
+
+
+ 453 0014 23CB     		ldmia	r3!, {r0, r1, r5}
+ 454 0016 23C2     		stmia	r2!, {r0, r1, r5}
+ 120:smtc_modem_core/modem_services/modem_utilities.c ****         0x6a09e667, 0xbb67ae85, 0x3c6ef372, 0xa54ff53a, 0x510e527f, 0x9b05688c, 0x1f83d9ab, 0x5be0c
+ 121:smtc_modem_core/modem_services/modem_utilities.c ****     };
+ 122:smtc_modem_core/modem_services/modem_utilities.c **** 
+ 123:smtc_modem_core/modem_services/modem_utilities.c ****     uint32_t bitlen = len << 3;
+ 455              		.loc 1 123 14 view .LVU149
+ 456 0018 3500     		movs	r5, r6
+ 119:smtc_modem_core/modem_services/modem_utilities.c ****         0x6a09e667, 0xbb67ae85, 0x3c6ef372, 0xa54ff53a, 0x510e527f, 0x9b05688c, 0x1f83d9ab, 0x5be0c
+ 457              		.loc 1 119 14 view .LVU150
+ 458 001a 03CB     		ldmia	r3!, {r0, r1}
+ 459 001c 03C2     		stmia	r2!, {r0, r1}
+ 460              		.loc 1 123 5 is_stmt 1 view .LVU151
+ 461              		.loc 1 123 14 is_stmt 0 view .LVU152
+ 462 001e F300     		lsls	r3, r6, #3
+ 463 0020 0093     		str	r3, [sp]
+ 464              	.LVL48:
+ 465              	.L16:
+ 466              		.loc 1 123 14 view .LVU153
+ 467 0022 B919     		adds	r1, r7, r6
+ 468 0024 491B     		subs	r1, r1, r5
+ 469              	.LVL49:
+ 124:smtc_modem_core/modem_services/modem_utilities.c ****     while( 1 )
+ 470              		.loc 1 124 5 is_stmt 1 view .LVU154
+ 125:smtc_modem_core/modem_services/modem_utilities.c ****     {
+ 126:smtc_modem_core/modem_services/modem_utilities.c ****         if( len < 64 )
+ 471              		.loc 1 126 9 view .LVU155
+ 472              		.loc 1 126 11 is_stmt 0 view .LVU156
+ 473 0026 3F2D     		cmp	r5, #63
+ 474 0028 2DD8     		bhi	.L11
+ 475              		.loc 1 126 11 view .LVU157
+ 476 002a B509     		lsrs	r5, r6, #6
+ 477              	.LVL50:
+ 478              		.loc 1 126 11 view .LVU158
+ 479 002c AD01     		lsls	r5, r5, #6
+ 480 002e 7F19     		adds	r7, r7, r5
+ 481 0030 751B     		subs	r5, r6, r5
+ 482              	.LBB2:
+ 127:smtc_modem_core/modem_services/modem_utilities.c ****         {
+ 128:smtc_modem_core/modem_services/modem_utilities.c ****             union
+ 483              		.loc 1 128 13 is_stmt 1 view .LVU159
+ 129:smtc_modem_core/modem_services/modem_utilities.c ****             {
+ 130:smtc_modem_core/modem_services/modem_utilities.c ****                 uint8_t  bytes[64];
+ 131:smtc_modem_core/modem_services/modem_utilities.c ****                 uint32_t words[16];
+ 132:smtc_modem_core/modem_services/modem_utilities.c ****             } tmp;
+ 133:smtc_modem_core/modem_services/modem_utilities.c ****             memset( tmp.words, 0, sizeof( tmp ) );
+ 484              		.loc 1 133 13 view .LVU160
+ 485 0032 0AAE     		add	r6, sp, #40
+ 486 0034 4022     		movs	r2, #64
+ 487 0036 0021     		movs	r1, #0
+ 488              	.LVL51:
+ 489              		.loc 1 133 13 is_stmt 0 view .LVU161
+ 490 0038 3000     		movs	r0, r6
+ 491 003a FFF7FEFF 		bl	memset
+ 492              	.LVL52:
+ 134:smtc_modem_core/modem_services/modem_utilities.c ****             memcpy( tmp.bytes, msg, len );
+ 493              		.loc 1 134 13 is_stmt 1 view .LVU162
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccxiyra1.s 			page 13
+
+
+ 494 003e 2A00     		movs	r2, r5
+ 495 0040 3900     		movs	r1, r7
+ 496 0042 3000     		movs	r0, r6
+ 497 0044 FFF7FEFF 		bl	memcpy
+ 498              	.LVL53:
+ 135:smtc_modem_core/modem_services/modem_utilities.c ****             tmp.bytes[len] = 0x80;
+ 499              		.loc 1 135 13 view .LVU163
+ 500              		.loc 1 135 28 is_stmt 0 view .LVU164
+ 501 0048 8023     		movs	r3, #128
+ 502 004a 7355     		strb	r3, [r6, r5]
+ 136:smtc_modem_core/modem_services/modem_utilities.c ****             if( len < 56 )
+ 503              		.loc 1 136 13 is_stmt 1 view .LVU165
+ 504              		.loc 1 136 15 is_stmt 0 view .LVU166
+ 505 004c 372D     		cmp	r5, #55
+ 506 004e 10D8     		bhi	.L12
+ 507              	.L13:
+ 508              	.LBB3:
+ 137:smtc_modem_core/modem_services/modem_utilities.c ****             {
+ 138:smtc_modem_core/modem_services/modem_utilities.c ****             last:
+ 139:smtc_modem_core/modem_services/modem_utilities.c ****                 tmp.words[15] = ENDIAN_n2b32( bitlen );
+ 509              		.loc 1 139 17 is_stmt 1 view .LVU167
+ 510              		.loc 1 139 33 is_stmt 0 view .LVU168
+ 511 0050 009B     		ldr	r3, [sp]
+ 140:smtc_modem_core/modem_services/modem_utilities.c ****                 sha256_do( state, tmp.bytes );
+ 512              		.loc 1 140 17 view .LVU169
+ 513 0052 3100     		movs	r1, r6
+ 139:smtc_modem_core/modem_services/modem_utilities.c ****                 sha256_do( state, tmp.bytes );
+ 514              		.loc 1 139 33 view .LVU170
+ 515 0054 1BBA     		rev	r3, r3
+ 516              		.loc 1 140 17 view .LVU171
+ 517 0056 2000     		movs	r0, r4
+ 139:smtc_modem_core/modem_services/modem_utilities.c ****                 sha256_do( state, tmp.bytes );
+ 518              		.loc 1 139 31 view .LVU172
+ 519 0058 F363     		str	r3, [r6, #60]
+ 520              		.loc 1 140 17 is_stmt 1 view .LVU173
+ 521 005a FFF7FEFF 		bl	sha256_do
+ 522              	.LVL54:
+ 141:smtc_modem_core/modem_services/modem_utilities.c ****                 int i;
+ 523              		.loc 1 141 17 view .LVU174
+ 142:smtc_modem_core/modem_services/modem_utilities.c ****                 for( i = 0; i < 8; i++ )
+ 524              		.loc 1 142 17 view .LVU175
+ 525              		.loc 1 142 29 view .LVU176
+ 140:smtc_modem_core/modem_services/modem_utilities.c ****                 int i;
+ 526              		.loc 1 140 17 is_stmt 0 view .LVU177
+ 527 005e 0023     		movs	r3, #0
+ 528              	.LVL55:
+ 529              	.L14:
+ 143:smtc_modem_core/modem_services/modem_utilities.c ****                 {
+ 144:smtc_modem_core/modem_services/modem_utilities.c ****                     hash[i] = ENDIAN_n2b32( state[i] );
+ 530              		.loc 1 144 21 is_stmt 1 discriminator 3 view .LVU178
+ 531              		.loc 1 144 31 is_stmt 0 discriminator 3 view .LVU179
+ 532 0060 E258     		ldr	r2, [r4, r3]
+ 533              		.loc 1 144 29 discriminator 3 view .LVU180
+ 534 0062 0199     		ldr	r1, [sp, #4]
+ 535              		.loc 1 144 31 discriminator 3 view .LVU181
+ 536 0064 12BA     		rev	r2, r2
+ 537              		.loc 1 144 29 discriminator 3 view .LVU182
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccxiyra1.s 			page 14
+
+
+ 538 0066 CA50     		str	r2, [r1, r3]
+ 142:smtc_modem_core/modem_services/modem_utilities.c ****                 {
+ 539              		.loc 1 142 36 is_stmt 1 discriminator 3 view .LVU183
+ 142:smtc_modem_core/modem_services/modem_utilities.c ****                 {
+ 540              		.loc 1 142 29 discriminator 3 view .LVU184
+ 541 0068 0433     		adds	r3, r3, #4
+ 142:smtc_modem_core/modem_services/modem_utilities.c ****                 {
+ 542              		.loc 1 142 17 is_stmt 0 discriminator 3 view .LVU185
+ 543 006a 202B     		cmp	r3, #32
+ 544 006c F8D1     		bne	.L14
+ 545              	.LBE3:
+ 546              	.LBE2:
+ 145:smtc_modem_core/modem_services/modem_utilities.c ****                 }
+ 146:smtc_modem_core/modem_services/modem_utilities.c ****                 break;
+ 147:smtc_modem_core/modem_services/modem_utilities.c ****             }
+ 148:smtc_modem_core/modem_services/modem_utilities.c ****             else
+ 149:smtc_modem_core/modem_services/modem_utilities.c ****             {
+ 150:smtc_modem_core/modem_services/modem_utilities.c ****                 sha256_do( state, tmp.bytes );
+ 151:smtc_modem_core/modem_services/modem_utilities.c ****                 memset( tmp.words, 0, sizeof( tmp ) );
+ 152:smtc_modem_core/modem_services/modem_utilities.c ****                 goto last;
+ 153:smtc_modem_core/modem_services/modem_utilities.c ****             }
+ 154:smtc_modem_core/modem_services/modem_utilities.c ****         }
+ 155:smtc_modem_core/modem_services/modem_utilities.c ****         else
+ 156:smtc_modem_core/modem_services/modem_utilities.c ****         {
+ 157:smtc_modem_core/modem_services/modem_utilities.c ****             sha256_do( state, msg );
+ 158:smtc_modem_core/modem_services/modem_utilities.c ****             msg += 64;
+ 159:smtc_modem_core/modem_services/modem_utilities.c ****             len -= 64;
+ 160:smtc_modem_core/modem_services/modem_utilities.c ****         }
+ 161:smtc_modem_core/modem_services/modem_utilities.c ****     }
+ 162:smtc_modem_core/modem_services/modem_utilities.c **** }
+ 547              		.loc 1 162 1 view .LVU186
+ 548 006e 1BB0     		add	sp, sp, #108
+ 549              	.LVL56:
+ 550              		.loc 1 162 1 view .LVU187
+ 551              		@ sp needed
+ 552 0070 F0BD     		pop	{r4, r5, r6, r7, pc}
+ 553              	.LVL57:
+ 554              	.L12:
+ 555              	.LBB4:
+ 150:smtc_modem_core/modem_services/modem_utilities.c ****                 memset( tmp.words, 0, sizeof( tmp ) );
+ 556              		.loc 1 150 17 is_stmt 1 view .LVU188
+ 557 0072 3100     		movs	r1, r6
+ 558 0074 2000     		movs	r0, r4
+ 559 0076 FFF7FEFF 		bl	sha256_do
+ 560              	.LVL58:
+ 151:smtc_modem_core/modem_services/modem_utilities.c ****                 goto last;
+ 561              		.loc 1 151 17 view .LVU189
+ 562 007a 4022     		movs	r2, #64
+ 563 007c 0021     		movs	r1, #0
+ 564 007e 3000     		movs	r0, r6
+ 565 0080 FFF7FEFF 		bl	memset
+ 566              	.LVL59:
+ 152:smtc_modem_core/modem_services/modem_utilities.c ****             }
+ 567              		.loc 1 152 17 view .LVU190
+ 568 0084 E4E7     		b	.L13
+ 569              	.LVL60:
+ 570              	.L11:
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccxiyra1.s 			page 15
+
+
+ 152:smtc_modem_core/modem_services/modem_utilities.c ****             }
+ 571              		.loc 1 152 17 is_stmt 0 view .LVU191
+ 572              	.LBE4:
+ 157:smtc_modem_core/modem_services/modem_utilities.c ****             msg += 64;
+ 573              		.loc 1 157 13 is_stmt 1 view .LVU192
+ 574 0086 2000     		movs	r0, r4
+ 575 0088 FFF7FEFF 		bl	sha256_do
+ 576              	.LVL61:
+ 158:smtc_modem_core/modem_services/modem_utilities.c ****             len -= 64;
+ 577              		.loc 1 158 13 view .LVU193
+ 159:smtc_modem_core/modem_services/modem_utilities.c ****         }
+ 578              		.loc 1 159 13 view .LVU194
+ 159:smtc_modem_core/modem_services/modem_utilities.c ****         }
+ 579              		.loc 1 159 17 is_stmt 0 view .LVU195
+ 580 008c 403D     		subs	r5, r5, #64
+ 581              	.LVL62:
+ 124:smtc_modem_core/modem_services/modem_utilities.c ****     {
+ 582              		.loc 1 124 10 is_stmt 1 view .LVU196
+ 126:smtc_modem_core/modem_services/modem_utilities.c ****         {
+ 583              		.loc 1 126 11 is_stmt 0 view .LVU197
+ 584 008e C8E7     		b	.L16
+ 585              	.L20:
+ 586              		.align	2
+ 587              	.L19:
+ 588 0090 00000000 		.word	.LANCHOR0
+ 589              		.cfi_endproc
+ 590              	.LFE5:
+ 592              		.section	.text.crc,"ax",%progbits
+ 593              		.align	1
+ 594              		.global	crc
+ 595              		.syntax unified
+ 596              		.code	16
+ 597              		.thumb_func
+ 598              		.fpu softvfp
+ 600              	crc:
+ 601              	.LVL63:
+ 602              	.LFB6:
+ 163:smtc_modem_core/modem_services/modem_utilities.c **** 
+ 164:smtc_modem_core/modem_services/modem_utilities.c **** uint32_t crc( uint8_t* buf, int len )
+ 165:smtc_modem_core/modem_services/modem_utilities.c **** {
+ 603              		.loc 1 165 1 is_stmt 1 view -0
+ 604              		.cfi_startproc
+ 605              		@ args = 0, pretend = 0, frame = 0
+ 606              		@ frame_needed = 0, uses_anonymous_args = 0
+ 166:smtc_modem_core/modem_services/modem_utilities.c ****     uint32_t crc = 0xFFFFFFFF;
+ 607              		.loc 1 166 5 view .LVU199
+ 167:smtc_modem_core/modem_services/modem_utilities.c ****     while( len-- > 0 )
+ 608              		.loc 1 167 5 view .LVU200
+ 166:smtc_modem_core/modem_services/modem_utilities.c ****     uint32_t crc = 0xFFFFFFFF;
+ 609              		.loc 1 166 14 is_stmt 0 view .LVU201
+ 610 0000 0123     		movs	r3, #1
+ 165:smtc_modem_core/modem_services/modem_utilities.c ****     uint32_t crc = 0xFFFFFFFF;
+ 611              		.loc 1 165 1 view .LVU202
+ 612 0002 70B5     		push	{r4, r5, r6, lr}
+ 613              		.cfi_def_cfa_offset 16
+ 614              		.cfi_offset 4, -16
+ 615              		.cfi_offset 5, -12
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccxiyra1.s 			page 16
+
+
+ 616              		.cfi_offset 6, -8
+ 617              		.cfi_offset 14, -4
+ 618              	.LBB5:
+ 619              	.LBB6:
+ 168:smtc_modem_core/modem_services/modem_utilities.c ****     {
+ 169:smtc_modem_core/modem_services/modem_utilities.c ****         crc = crc ^ *buf++;
+ 170:smtc_modem_core/modem_services/modem_utilities.c ****         for( int i = 0; i < 8; i++ )
+ 171:smtc_modem_core/modem_services/modem_utilities.c ****         {
+ 172:smtc_modem_core/modem_services/modem_utilities.c ****             uint32_t mask = -( crc & 1 );
+ 620              		.loc 1 172 36 view .LVU203
+ 621 0004 0124     		movs	r4, #1
+ 173:smtc_modem_core/modem_services/modem_utilities.c ****             crc           = ( crc >> 1 ) ^ ( 0xEDB88320 & mask );
+ 622              		.loc 1 173 57 view .LVU204
+ 623 0006 0A4D     		ldr	r5, .L26
+ 624              	.LBE6:
+ 625              	.LBE5:
+ 166:smtc_modem_core/modem_services/modem_utilities.c ****     while( len-- > 0 )
+ 626              		.loc 1 166 14 view .LVU205
+ 627 0008 5B42     		rsbs	r3, r3, #0
+ 628 000a 4118     		adds	r1, r0, r1
+ 629              	.LVL64:
+ 630              	.L22:
+ 167:smtc_modem_core/modem_services/modem_utilities.c ****     {
+ 631              		.loc 1 167 10 is_stmt 1 view .LVU206
+ 167:smtc_modem_core/modem_services/modem_utilities.c ****     {
+ 632              		.loc 1 167 10 is_stmt 0 view .LVU207
+ 633 000c 0A1A     		subs	r2, r1, r0
+ 634 000e 002A     		cmp	r2, #0
+ 635 0010 01DC     		bgt	.L24
+ 174:smtc_modem_core/modem_services/modem_utilities.c ****         }
+ 175:smtc_modem_core/modem_services/modem_utilities.c ****     }
+ 176:smtc_modem_core/modem_services/modem_utilities.c ****     return ~crc;
+ 636              		.loc 1 176 5 is_stmt 1 view .LVU208
+ 637              		.loc 1 176 12 is_stmt 0 view .LVU209
+ 638 0012 D843     		mvns	r0, r3
+ 639              	.LVL65:
+ 177:smtc_modem_core/modem_services/modem_utilities.c **** }
+ 640              		.loc 1 177 1 view .LVU210
+ 641              		@ sp needed
+ 642 0014 70BD     		pop	{r4, r5, r6, pc}
+ 643              	.LVL66:
+ 644              	.L24:
+ 169:smtc_modem_core/modem_services/modem_utilities.c ****         for( int i = 0; i < 8; i++ )
+ 645              		.loc 1 169 9 is_stmt 1 view .LVU211
+ 169:smtc_modem_core/modem_services/modem_utilities.c ****         for( int i = 0; i < 8; i++ )
+ 646              		.loc 1 169 21 is_stmt 0 view .LVU212
+ 647 0016 0278     		ldrb	r2, [r0]
+ 169:smtc_modem_core/modem_services/modem_utilities.c ****         for( int i = 0; i < 8; i++ )
+ 648              		.loc 1 169 13 view .LVU213
+ 649 0018 5340     		eors	r3, r2
+ 650              	.LVL67:
+ 170:smtc_modem_core/modem_services/modem_utilities.c ****         {
+ 651              		.loc 1 170 9 is_stmt 1 view .LVU214
+ 652              	.LBB8:
+ 170:smtc_modem_core/modem_services/modem_utilities.c ****         {
+ 653              		.loc 1 170 14 view .LVU215
+ 170:smtc_modem_core/modem_services/modem_utilities.c ****         {
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccxiyra1.s 			page 17
+
+
+ 654              		.loc 1 170 25 view .LVU216
+ 655              	.LBE8:
+ 169:smtc_modem_core/modem_services/modem_utilities.c ****         for( int i = 0; i < 8; i++ )
+ 656              		.loc 1 169 13 is_stmt 0 view .LVU217
+ 657 001a 0822     		movs	r2, #8
+ 658              	.LVL68:
+ 659              	.L23:
+ 660              	.LBB9:
+ 661              	.LBB7:
+ 172:smtc_modem_core/modem_services/modem_utilities.c ****             crc           = ( crc >> 1 ) ^ ( 0xEDB88320 & mask );
+ 662              		.loc 1 172 13 is_stmt 1 discriminator 3 view .LVU218
+ 173:smtc_modem_core/modem_services/modem_utilities.c ****         }
+ 663              		.loc 1 173 13 discriminator 3 view .LVU219
+ 173:smtc_modem_core/modem_services/modem_utilities.c ****         }
+ 664              		.loc 1 173 35 is_stmt 0 discriminator 3 view .LVU220
+ 665 001c 5E08     		lsrs	r6, r3, #1
+ 172:smtc_modem_core/modem_services/modem_utilities.c ****             crc           = ( crc >> 1 ) ^ ( 0xEDB88320 & mask );
+ 666              		.loc 1 172 36 discriminator 3 view .LVU221
+ 667 001e 2340     		ands	r3, r4
+ 668              	.LVL69:
+ 172:smtc_modem_core/modem_services/modem_utilities.c ****             crc           = ( crc >> 1 ) ^ ( 0xEDB88320 & mask );
+ 669              		.loc 1 172 22 discriminator 3 view .LVU222
+ 670 0020 5B42     		rsbs	r3, r3, #0
+ 173:smtc_modem_core/modem_services/modem_utilities.c ****         }
+ 671              		.loc 1 173 57 discriminator 3 view .LVU223
+ 672 0022 2B40     		ands	r3, r5
+ 673 0024 013A     		subs	r2, r2, #1
+ 173:smtc_modem_core/modem_services/modem_utilities.c ****         }
+ 674              		.loc 1 173 27 discriminator 3 view .LVU224
+ 675 0026 7340     		eors	r3, r6
+ 676              	.LVL70:
+ 173:smtc_modem_core/modem_services/modem_utilities.c ****         }
+ 677              		.loc 1 173 27 discriminator 3 view .LVU225
+ 678              	.LBE7:
+ 170:smtc_modem_core/modem_services/modem_utilities.c ****         {
+ 679              		.loc 1 170 32 is_stmt 1 discriminator 3 view .LVU226
+ 170:smtc_modem_core/modem_services/modem_utilities.c ****         {
+ 680              		.loc 1 170 25 discriminator 3 view .LVU227
+ 170:smtc_modem_core/modem_services/modem_utilities.c ****         {
+ 681              		.loc 1 170 9 is_stmt 0 discriminator 3 view .LVU228
+ 682 0028 002A     		cmp	r2, #0
+ 683 002a F7D1     		bne	.L23
+ 684 002c 0130     		adds	r0, r0, #1
+ 685              	.LVL71:
+ 170:smtc_modem_core/modem_services/modem_utilities.c ****         {
+ 686              		.loc 1 170 9 discriminator 3 view .LVU229
+ 687 002e EDE7     		b	.L22
+ 688              	.L27:
+ 689              		.align	2
+ 690              	.L26:
+ 691 0030 2083B8ED 		.word	-306674912
+ 692              	.LBE9:
+ 693              		.cfi_endproc
+ 694              	.LFE6:
+ 696              		.section	.rodata
+ 697              		.align	2
+ 698              		.set	.LANCHOR0,. + 0
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccxiyra1.s 			page 18
+
+
+ 699              	.LC0:
+ 700 0000 67E6096A 		.word	1779033703
+ 701 0004 85AE67BB 		.word	-1150833019
+ 702 0008 72F36E3C 		.word	1013904242
+ 703 000c 3AF54FA5 		.word	-1521486534
+ 704 0010 7F520E51 		.word	1359893119
+ 705 0014 8C68059B 		.word	-1694144372
+ 706 0018 ABD9831F 		.word	528734635
+ 707 001c 19CDE05B 		.word	1541459225
+ 708              		.section	.rodata.K.5322,"a"
+ 709              		.align	2
+ 712              	K.5322:
+ 713 0000 982F8A42 		.word	1116352408
+ 714 0004 91443771 		.word	1899447441
+ 715 0008 CFFBC0B5 		.word	-1245643825
+ 716 000c A5DBB5E9 		.word	-373957723
+ 717 0010 5BC25639 		.word	961987163
+ 718 0014 F111F159 		.word	1508970993
+ 719 0018 A4823F92 		.word	-1841331548
+ 720 001c D55E1CAB 		.word	-1424204075
+ 721 0020 98AA07D8 		.word	-670586216
+ 722 0024 015B8312 		.word	310598401
+ 723 0028 BE853124 		.word	607225278
+ 724 002c C37D0C55 		.word	1426881987
+ 725 0030 745DBE72 		.word	1925078388
+ 726 0034 FEB1DE80 		.word	-2132889090
+ 727 0038 A706DC9B 		.word	-1680079193
+ 728 003c 74F19BC1 		.word	-1046744716
+ 729 0040 C1699BE4 		.word	-459576895
+ 730 0044 8647BEEF 		.word	-272742522
+ 731 0048 C69DC10F 		.word	264347078
+ 732 004c CCA10C24 		.word	604807628
+ 733 0050 6F2CE92D 		.word	770255983
+ 734 0054 AA84744A 		.word	1249150122
+ 735 0058 DCA9B05C 		.word	1555081692
+ 736 005c DA88F976 		.word	1996064986
+ 737 0060 52513E98 		.word	-1740746414
+ 738 0064 6DC631A8 		.word	-1473132947
+ 739 0068 C82703B0 		.word	-1341970488
+ 740 006c C77F59BF 		.word	-1084653625
+ 741 0070 F30BE0C6 		.word	-958395405
+ 742 0074 4791A7D5 		.word	-710438585
+ 743 0078 5163CA06 		.word	113926993
+ 744 007c 67292914 		.word	338241895
+ 745 0080 850AB727 		.word	666307205
+ 746 0084 38211B2E 		.word	773529912
+ 747 0088 FC6D2C4D 		.word	1294757372
+ 748 008c 130D3853 		.word	1396182291
+ 749 0090 54730A65 		.word	1695183700
+ 750 0094 BB0A6A76 		.word	1986661051
+ 751 0098 2EC9C281 		.word	-2117940946
+ 752 009c 852C7292 		.word	-1838011259
+ 753 00a0 A1E8BFA2 		.word	-1564481375
+ 754 00a4 4B661AA8 		.word	-1474664885
+ 755 00a8 708B4BC2 		.word	-1035236496
+ 756 00ac A3516CC7 		.word	-949202525
+ 757 00b0 19E892D1 		.word	-778901479
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccxiyra1.s 			page 19
+
+
+ 758 00b4 240699D6 		.word	-694614492
+ 759 00b8 85350EF4 		.word	-200395387
+ 760 00bc 70A06A10 		.word	275423344
+ 761 00c0 16C1A419 		.word	430227734
+ 762 00c4 086C371E 		.word	506948616
+ 763 00c8 4C774827 		.word	659060556
+ 764 00cc B5BCB034 		.word	883997877
+ 765 00d0 B30C1C39 		.word	958139571
+ 766 00d4 4AAAD84E 		.word	1322822218
+ 767 00d8 4FCA9C5B 		.word	1537002063
+ 768 00dc F36F2E68 		.word	1747873779
+ 769 00e0 EE828F74 		.word	1955562222
+ 770 00e4 6F63A578 		.word	2024104815
+ 771 00e8 1478C884 		.word	-2067236844
+ 772 00ec 0802C78C 		.word	-1933114872
+ 773 00f0 FAFFBE90 		.word	-1866530822
+ 774 00f4 EB6C50A4 		.word	-1538233109
+ 775 00f8 F7A3F9BE 		.word	-1090935817
+ 776 00fc F27871C6 		.word	-965641998
+ 777              		.text
+ 778              	.Letext0:
+ 779              		.file 2 "/Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.external
+ 780              		.file 3 "/Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.external
+ 781              		.file 4 "/Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.external
+ 782              		.file 5 "/Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.external
+ 783              		.file 6 "/Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.external
+ 784              		.file 7 "/Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.external
+ 785              		.file 8 "lr1mac/src/lr1mac_defs.h"
+ 786              		.file 9 "/Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.external
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccxiyra1.s 			page 20
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 modem_utilities.c
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccxiyra1.s:14     .text.sha256_do:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccxiyra1.s:21     .text.sha256_do:0000000000000000 sha256_do
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccxiyra1.s:406    .text.sha256_do:0000000000000168 $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccxiyra1.s:712    .rodata.K.5322:0000000000000000 K.5322
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccxiyra1.s:411    .text.sha256:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccxiyra1.s:418    .text.sha256:0000000000000000 sha256
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccxiyra1.s:588    .text.sha256:0000000000000090 $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccxiyra1.s:593    .text.crc:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccxiyra1.s:600    .text.crc:0000000000000000 crc
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccxiyra1.s:691    .text.crc:0000000000000030 $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccxiyra1.s:697    .rodata:0000000000000000 $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccxiyra1.s:709    .rodata.K.5322:0000000000000000 $d
+
+UNDEFINED SYMBOLS
+memset
+memcpy

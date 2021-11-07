@@ -1,0 +1,840 @@
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccSVcqBO.s 			page 1
+
+
+   1              		.cpu cortex-m0plus
+   2              		.eabi_attribute 23, 1
+   3              		.eabi_attribute 24, 1
+   4              		.eabi_attribute 25, 1
+   5              		.eabi_attribute 26, 1
+   6              		.eabi_attribute 30, 4
+   7              		.eabi_attribute 34, 0
+   8              		.eabi_attribute 18, 4
+   9              		.file	"sx1280_hal.c"
+  10              		.text
+  11              	.Ltext0:
+  12              		.cfi_sections	.debug_frame
+  13              		.section	.text.sx1280_hal_wait_on_busy,"ax",%progbits
+  14              		.align	1
+  15              		.arch armv6s-m
+  16              		.syntax unified
+  17              		.code	16
+  18              		.thumb_func
+  19              		.fpu softvfp
+  21              	sx1280_hal_wait_on_busy:
+  22              	.LFB6:
+  23              		.file 1 "user_app/bsp_specific/sx1280_hal.c"
+   1:user_app/bsp_specific/sx1280_hal.c **** /*!
+   2:user_app/bsp_specific/sx1280_hal.c ****  * \file      sx1280_hal.c
+   3:user_app/bsp_specific/sx1280_hal.c ****  *
+   4:user_app/bsp_specific/sx1280_hal.c ****  * \brief     Implements the sx1280 HAL functions
+   5:user_app/bsp_specific/sx1280_hal.c ****  *
+   6:user_app/bsp_specific/sx1280_hal.c ****  * Revised BSD License
+   7:user_app/bsp_specific/sx1280_hal.c ****  * Copyright Semtech Corporation 2020. All rights reserved.
+   8:user_app/bsp_specific/sx1280_hal.c ****  *
+   9:user_app/bsp_specific/sx1280_hal.c ****  * Redistribution and use in source and binary forms, with or without
+  10:user_app/bsp_specific/sx1280_hal.c ****  * modification, are permitted provided that the following conditions are met:
+  11:user_app/bsp_specific/sx1280_hal.c ****  *     * Redistributions of source code must retain the above copyright
+  12:user_app/bsp_specific/sx1280_hal.c ****  *       notice, this list of conditions and the following disclaimer.
+  13:user_app/bsp_specific/sx1280_hal.c ****  *     * Redistributions in binary form must reproduce the above copyright
+  14:user_app/bsp_specific/sx1280_hal.c ****  *       notice, this list of conditions and the following disclaimer in the
+  15:user_app/bsp_specific/sx1280_hal.c ****  *       documentation and/or other materials provided with the distribution.
+  16:user_app/bsp_specific/sx1280_hal.c ****  *     * Neither the name of the Semtech corporation nor the
+  17:user_app/bsp_specific/sx1280_hal.c ****  *       names of its contributors may be used to endorse or promote products
+  18:user_app/bsp_specific/sx1280_hal.c ****  *       derived from this software without specific prior written permission.
+  19:user_app/bsp_specific/sx1280_hal.c ****  *
+  20:user_app/bsp_specific/sx1280_hal.c ****  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+  21:user_app/bsp_specific/sx1280_hal.c ****  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+  22:user_app/bsp_specific/sx1280_hal.c ****  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+  23:user_app/bsp_specific/sx1280_hal.c ****  * ARE DISCLAIMED. IN NO EVENT SHALL SEMTECH CORPORATION BE LIABLE FOR ANY DIRECT,
+  24:user_app/bsp_specific/sx1280_hal.c ****  * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+  25:user_app/bsp_specific/sx1280_hal.c ****  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+  26:user_app/bsp_specific/sx1280_hal.c ****  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+  27:user_app/bsp_specific/sx1280_hal.c ****  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  28:user_app/bsp_specific/sx1280_hal.c ****  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+  29:user_app/bsp_specific/sx1280_hal.c ****  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  30:user_app/bsp_specific/sx1280_hal.c ****  */
+  31:user_app/bsp_specific/sx1280_hal.c **** 
+  32:user_app/bsp_specific/sx1280_hal.c **** /*
+  33:user_app/bsp_specific/sx1280_hal.c ****  * -----------------------------------------------------------------------------
+  34:user_app/bsp_specific/sx1280_hal.c ****  * --- DEPENDENCIES ------------------------------------------------------------
+  35:user_app/bsp_specific/sx1280_hal.c ****  */
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccSVcqBO.s 			page 2
+
+
+  36:user_app/bsp_specific/sx1280_hal.c **** 
+  37:user_app/bsp_specific/sx1280_hal.c **** #include <stdint.h>   // C99 types
+  38:user_app/bsp_specific/sx1280_hal.c **** #include <stdbool.h>  // bool type
+  39:user_app/bsp_specific/sx1280_hal.c **** 
+  40:user_app/bsp_specific/sx1280_hal.c **** #include "smtc_bsp.h"
+  41:user_app/bsp_specific/sx1280_hal.c **** #include "sx1280_hal.h"
+  42:user_app/bsp_specific/sx1280_hal.c **** 
+  43:user_app/bsp_specific/sx1280_hal.c **** /*
+  44:user_app/bsp_specific/sx1280_hal.c ****  * -----------------------------------------------------------------------------
+  45:user_app/bsp_specific/sx1280_hal.c ****  * --- PRIVATE MACROS-----------------------------------------------------------
+  46:user_app/bsp_specific/sx1280_hal.c ****  */
+  47:user_app/bsp_specific/sx1280_hal.c **** 
+  48:user_app/bsp_specific/sx1280_hal.c **** /*
+  49:user_app/bsp_specific/sx1280_hal.c ****  * -----------------------------------------------------------------------------
+  50:user_app/bsp_specific/sx1280_hal.c ****  * --- PRIVATE CONSTANTS -------------------------------------------------------
+  51:user_app/bsp_specific/sx1280_hal.c ****  */
+  52:user_app/bsp_specific/sx1280_hal.c **** 
+  53:user_app/bsp_specific/sx1280_hal.c **** /*
+  54:user_app/bsp_specific/sx1280_hal.c ****  * -----------------------------------------------------------------------------
+  55:user_app/bsp_specific/sx1280_hal.c ****  * --- PRIVATE TYPES -----------------------------------------------------------
+  56:user_app/bsp_specific/sx1280_hal.c ****  */
+  57:user_app/bsp_specific/sx1280_hal.c **** 
+  58:user_app/bsp_specific/sx1280_hal.c **** /*
+  59:user_app/bsp_specific/sx1280_hal.c ****  * -----------------------------------------------------------------------------
+  60:user_app/bsp_specific/sx1280_hal.c ****  * --- PRIVATE VARIABLES -------------------------------------------------------
+  61:user_app/bsp_specific/sx1280_hal.c ****  */
+  62:user_app/bsp_specific/sx1280_hal.c **** 
+  63:user_app/bsp_specific/sx1280_hal.c **** // This variable will hold the current operating mode of the radio
+  64:user_app/bsp_specific/sx1280_hal.c **** static volatile sx1280_hal_operating_mode_t radio_opmode;
+  65:user_app/bsp_specific/sx1280_hal.c **** 
+  66:user_app/bsp_specific/sx1280_hal.c **** /*
+  67:user_app/bsp_specific/sx1280_hal.c ****  * -----------------------------------------------------------------------------
+  68:user_app/bsp_specific/sx1280_hal.c ****  * --- PRIVATE FUNCTIONS DECLARATION -------------------------------------------
+  69:user_app/bsp_specific/sx1280_hal.c ****  */
+  70:user_app/bsp_specific/sx1280_hal.c **** 
+  71:user_app/bsp_specific/sx1280_hal.c **** /**
+  72:user_app/bsp_specific/sx1280_hal.c ****  * @brief Wait until radio busy pin is reset to 0
+  73:user_app/bsp_specific/sx1280_hal.c ****  */
+  74:user_app/bsp_specific/sx1280_hal.c **** static void sx1280_hal_wait_on_busy( void );
+  75:user_app/bsp_specific/sx1280_hal.c **** 
+  76:user_app/bsp_specific/sx1280_hal.c **** /*
+  77:user_app/bsp_specific/sx1280_hal.c ****  * -----------------------------------------------------------------------------
+  78:user_app/bsp_specific/sx1280_hal.c ****  * --- PUBLIC FUNCTIONS DEFINITION ---------------------------------------------
+  79:user_app/bsp_specific/sx1280_hal.c ****  */
+  80:user_app/bsp_specific/sx1280_hal.c **** 
+  81:user_app/bsp_specific/sx1280_hal.c **** sx1280_hal_status_t sx1280_hal_write( const void* context, const uint8_t* command, const uint16_t c
+  82:user_app/bsp_specific/sx1280_hal.c ****                                       const uint8_t* data, const uint16_t data_length )
+  83:user_app/bsp_specific/sx1280_hal.c **** {
+  84:user_app/bsp_specific/sx1280_hal.c ****     sx1280_hal_wakeup( context );
+  85:user_app/bsp_specific/sx1280_hal.c **** 
+  86:user_app/bsp_specific/sx1280_hal.c ****     // Put NSS low to start spi transaction
+  87:user_app/bsp_specific/sx1280_hal.c ****     bsp_gpio_set_value( RADIO_NSS, 0 );
+  88:user_app/bsp_specific/sx1280_hal.c ****     for( uint16_t i = 0; i < command_length; i++ )
+  89:user_app/bsp_specific/sx1280_hal.c ****     {
+  90:user_app/bsp_specific/sx1280_hal.c ****         bsp_spi_in_out( BSP_RADIO_SPI_ID, command[i] );
+  91:user_app/bsp_specific/sx1280_hal.c ****     }
+  92:user_app/bsp_specific/sx1280_hal.c ****     for( uint16_t i = 0; i < data_length; i++ )
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccSVcqBO.s 			page 3
+
+
+  93:user_app/bsp_specific/sx1280_hal.c ****     {
+  94:user_app/bsp_specific/sx1280_hal.c ****         bsp_spi_in_out( BSP_RADIO_SPI_ID, data[i] );
+  95:user_app/bsp_specific/sx1280_hal.c ****     }
+  96:user_app/bsp_specific/sx1280_hal.c ****     // Put NSS high as the spi transaction is finished
+  97:user_app/bsp_specific/sx1280_hal.c ****     bsp_gpio_set_value( RADIO_NSS, 1 );
+  98:user_app/bsp_specific/sx1280_hal.c **** 
+  99:user_app/bsp_specific/sx1280_hal.c ****     // 0x84 - SX1280_SET_SLEEP opcode. In sleep mode the radio dio is struck to 1 => do not test it
+ 100:user_app/bsp_specific/sx1280_hal.c ****     if( command[0] != 0x84 )
+ 101:user_app/bsp_specific/sx1280_hal.c ****     {
+ 102:user_app/bsp_specific/sx1280_hal.c ****         sx1280_hal_wait_on_busy( );
+ 103:user_app/bsp_specific/sx1280_hal.c ****     }
+ 104:user_app/bsp_specific/sx1280_hal.c **** 
+ 105:user_app/bsp_specific/sx1280_hal.c ****     return SX1280_HAL_STATUS_OK;
+ 106:user_app/bsp_specific/sx1280_hal.c **** }
+ 107:user_app/bsp_specific/sx1280_hal.c **** 
+ 108:user_app/bsp_specific/sx1280_hal.c **** sx1280_hal_status_t sx1280_hal_read( const void* context, const uint8_t* command, const uint16_t co
+ 109:user_app/bsp_specific/sx1280_hal.c ****                                      uint8_t* data, const uint16_t data_length )
+ 110:user_app/bsp_specific/sx1280_hal.c **** {
+ 111:user_app/bsp_specific/sx1280_hal.c ****     sx1280_hal_wakeup( context );
+ 112:user_app/bsp_specific/sx1280_hal.c **** 
+ 113:user_app/bsp_specific/sx1280_hal.c ****     // Put NSS low to start spi transaction
+ 114:user_app/bsp_specific/sx1280_hal.c ****     bsp_gpio_set_value( RADIO_NSS, 0 );
+ 115:user_app/bsp_specific/sx1280_hal.c ****     for( uint16_t i = 0; i < command_length; i++ )
+ 116:user_app/bsp_specific/sx1280_hal.c ****     {
+ 117:user_app/bsp_specific/sx1280_hal.c ****         bsp_spi_in_out( BSP_RADIO_SPI_ID, command[i] );
+ 118:user_app/bsp_specific/sx1280_hal.c ****     }
+ 119:user_app/bsp_specific/sx1280_hal.c ****     for( uint16_t i = 0; i < data_length; i++ )
+ 120:user_app/bsp_specific/sx1280_hal.c ****     {
+ 121:user_app/bsp_specific/sx1280_hal.c ****         data[i] = bsp_spi_in_out( BSP_RADIO_SPI_ID, 0 );
+ 122:user_app/bsp_specific/sx1280_hal.c ****     }
+ 123:user_app/bsp_specific/sx1280_hal.c ****     // Put NSS high as the spi transaction is finished
+ 124:user_app/bsp_specific/sx1280_hal.c ****     bsp_gpio_set_value( RADIO_NSS, 1 );
+ 125:user_app/bsp_specific/sx1280_hal.c **** 
+ 126:user_app/bsp_specific/sx1280_hal.c ****     return SX1280_HAL_STATUS_OK;
+ 127:user_app/bsp_specific/sx1280_hal.c **** }
+ 128:user_app/bsp_specific/sx1280_hal.c **** 
+ 129:user_app/bsp_specific/sx1280_hal.c **** void sx1280_hal_reset( const void* context )
+ 130:user_app/bsp_specific/sx1280_hal.c **** {
+ 131:user_app/bsp_specific/sx1280_hal.c ****     bsp_gpio_set_value( RADIO_NRST, 0 );
+ 132:user_app/bsp_specific/sx1280_hal.c ****     bsp_mcu_wait_us( 5000 );
+ 133:user_app/bsp_specific/sx1280_hal.c ****     bsp_gpio_set_value( RADIO_NRST, 1 );
+ 134:user_app/bsp_specific/sx1280_hal.c ****     bsp_mcu_wait_us( 5000 );
+ 135:user_app/bsp_specific/sx1280_hal.c **** }
+ 136:user_app/bsp_specific/sx1280_hal.c **** 
+ 137:user_app/bsp_specific/sx1280_hal.c **** sx1280_hal_status_t sx1280_hal_wakeup( const void* context )
+ 138:user_app/bsp_specific/sx1280_hal.c **** {
+ 139:user_app/bsp_specific/sx1280_hal.c ****     if( radio_opmode == SX1280_HAL_OP_MODE_SLEEP )
+ 140:user_app/bsp_specific/sx1280_hal.c ****     {
+ 141:user_app/bsp_specific/sx1280_hal.c ****         // Busy is HIGH in sleep mode, wake-up the device
+ 142:user_app/bsp_specific/sx1280_hal.c ****         bsp_gpio_set_value( RADIO_NSS, 0 );
+ 143:user_app/bsp_specific/sx1280_hal.c ****         sx1280_hal_wait_on_busy( );
+ 144:user_app/bsp_specific/sx1280_hal.c ****         bsp_gpio_set_value( RADIO_NSS, 1 );
+ 145:user_app/bsp_specific/sx1280_hal.c **** 
+ 146:user_app/bsp_specific/sx1280_hal.c ****         // Radio is awake in STDBY_RC mode
+ 147:user_app/bsp_specific/sx1280_hal.c ****         radio_opmode = SX1280_HAL_OP_MODE_STDBY_RC;
+ 148:user_app/bsp_specific/sx1280_hal.c ****     }
+ 149:user_app/bsp_specific/sx1280_hal.c ****     else
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccSVcqBO.s 			page 4
+
+
+ 150:user_app/bsp_specific/sx1280_hal.c ****     {
+ 151:user_app/bsp_specific/sx1280_hal.c ****         // if the radio is awake, just wait until busy pin get low
+ 152:user_app/bsp_specific/sx1280_hal.c ****         sx1280_hal_wait_on_busy( );
+ 153:user_app/bsp_specific/sx1280_hal.c ****     }
+ 154:user_app/bsp_specific/sx1280_hal.c **** 
+ 155:user_app/bsp_specific/sx1280_hal.c ****     return SX1280_HAL_STATUS_OK;
+ 156:user_app/bsp_specific/sx1280_hal.c **** }
+ 157:user_app/bsp_specific/sx1280_hal.c **** 
+ 158:user_app/bsp_specific/sx1280_hal.c **** sx1280_hal_operating_mode_t sx1280_hal_get_operating_mode( const void* context )
+ 159:user_app/bsp_specific/sx1280_hal.c **** {
+ 160:user_app/bsp_specific/sx1280_hal.c ****     return radio_opmode;
+ 161:user_app/bsp_specific/sx1280_hal.c **** }
+ 162:user_app/bsp_specific/sx1280_hal.c **** 
+ 163:user_app/bsp_specific/sx1280_hal.c **** void sx1280_hal_set_operating_mode( const void* context, const sx1280_hal_operating_mode_t op_mode 
+ 164:user_app/bsp_specific/sx1280_hal.c **** {
+ 165:user_app/bsp_specific/sx1280_hal.c ****     radio_opmode = op_mode;
+ 166:user_app/bsp_specific/sx1280_hal.c **** }
+ 167:user_app/bsp_specific/sx1280_hal.c **** 
+ 168:user_app/bsp_specific/sx1280_hal.c **** /*
+ 169:user_app/bsp_specific/sx1280_hal.c ****  * -----------------------------------------------------------------------------
+ 170:user_app/bsp_specific/sx1280_hal.c ****  * --- PRIVATE FUNCTIONS DEFINITION --------------------------------------------
+ 171:user_app/bsp_specific/sx1280_hal.c ****  */
+ 172:user_app/bsp_specific/sx1280_hal.c **** 
+ 173:user_app/bsp_specific/sx1280_hal.c **** static void sx1280_hal_wait_on_busy( void )
+ 174:user_app/bsp_specific/sx1280_hal.c **** {
+  24              		.loc 1 174 1 view -0
+  25              		.cfi_startproc
+  26              		@ args = 0, pretend = 0, frame = 0
+  27              		@ frame_needed = 0, uses_anonymous_args = 0
+  28 0000 10B5     		push	{r4, lr}
+  29              		.cfi_def_cfa_offset 8
+  30              		.cfi_offset 4, -8
+  31              		.cfi_offset 14, -4
+  32              	.L2:
+ 175:user_app/bsp_specific/sx1280_hal.c ****     while( bsp_gpio_get_value( RADIO_BUSY_PIN ) == 1 )
+ 176:user_app/bsp_specific/sx1280_hal.c ****     {
+ 177:user_app/bsp_specific/sx1280_hal.c ****     }
+  33              		.loc 1 177 5 discriminator 1 view .LVU1
+ 175:user_app/bsp_specific/sx1280_hal.c ****     while( bsp_gpio_get_value( RADIO_BUSY_PIN ) == 1 )
+  34              		.loc 1 175 10 discriminator 1 view .LVU2
+ 175:user_app/bsp_specific/sx1280_hal.c ****     while( bsp_gpio_get_value( RADIO_BUSY_PIN ) == 1 )
+  35              		.loc 1 175 12 is_stmt 0 discriminator 1 view .LVU3
+  36 0002 1320     		movs	r0, #19
+  37 0004 FFF7FEFF 		bl	bsp_gpio_get_value
+  38              	.LVL0:
+ 175:user_app/bsp_specific/sx1280_hal.c ****     while( bsp_gpio_get_value( RADIO_BUSY_PIN ) == 1 )
+  39              		.loc 1 175 10 discriminator 1 view .LVU4
+  40 0008 0128     		cmp	r0, #1
+  41 000a FAD0     		beq	.L2
+ 178:user_app/bsp_specific/sx1280_hal.c **** }
+  42              		.loc 1 178 1 view .LVU5
+  43              		@ sp needed
+  44 000c 10BD     		pop	{r4, pc}
+  45              		.cfi_endproc
+  46              	.LFE6:
+  48              		.section	.text.sx1280_hal_reset,"ax",%progbits
+  49              		.align	1
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccSVcqBO.s 			page 5
+
+
+  50              		.global	sx1280_hal_reset
+  51              		.syntax unified
+  52              		.code	16
+  53              		.thumb_func
+  54              		.fpu softvfp
+  56              	sx1280_hal_reset:
+  57              	.LVL1:
+  58              	.LFB2:
+ 130:user_app/bsp_specific/sx1280_hal.c ****     bsp_gpio_set_value( RADIO_NRST, 0 );
+  59              		.loc 1 130 1 is_stmt 1 view -0
+  60              		.cfi_startproc
+  61              		@ args = 0, pretend = 0, frame = 0
+  62              		@ frame_needed = 0, uses_anonymous_args = 0
+ 131:user_app/bsp_specific/sx1280_hal.c ****     bsp_mcu_wait_us( 5000 );
+  63              		.loc 1 131 5 view .LVU7
+  64 0000 0021     		movs	r1, #0
+ 130:user_app/bsp_specific/sx1280_hal.c ****     bsp_gpio_set_value( RADIO_NRST, 0 );
+  65              		.loc 1 130 1 is_stmt 0 view .LVU8
+  66 0002 10B5     		push	{r4, lr}
+  67              		.cfi_def_cfa_offset 8
+  68              		.cfi_offset 4, -8
+  69              		.cfi_offset 14, -4
+ 132:user_app/bsp_specific/sx1280_hal.c ****     bsp_gpio_set_value( RADIO_NRST, 1 );
+  70              		.loc 1 132 5 view .LVU9
+  71 0004 074C     		ldr	r4, .L6
+ 131:user_app/bsp_specific/sx1280_hal.c ****     bsp_mcu_wait_us( 5000 );
+  72              		.loc 1 131 5 view .LVU10
+  73 0006 0800     		movs	r0, r1
+  74              	.LVL2:
+ 131:user_app/bsp_specific/sx1280_hal.c ****     bsp_mcu_wait_us( 5000 );
+  75              		.loc 1 131 5 view .LVU11
+  76 0008 FFF7FEFF 		bl	bsp_gpio_set_value
+  77              	.LVL3:
+ 132:user_app/bsp_specific/sx1280_hal.c ****     bsp_gpio_set_value( RADIO_NRST, 1 );
+  78              		.loc 1 132 5 is_stmt 1 view .LVU12
+  79 000c 2000     		movs	r0, r4
+  80 000e FFF7FEFF 		bl	bsp_mcu_wait_us
+  81              	.LVL4:
+ 133:user_app/bsp_specific/sx1280_hal.c ****     bsp_mcu_wait_us( 5000 );
+  82              		.loc 1 133 5 view .LVU13
+  83 0012 0121     		movs	r1, #1
+  84 0014 0020     		movs	r0, #0
+  85 0016 FFF7FEFF 		bl	bsp_gpio_set_value
+  86              	.LVL5:
+ 134:user_app/bsp_specific/sx1280_hal.c **** }
+  87              		.loc 1 134 5 view .LVU14
+  88 001a 2000     		movs	r0, r4
+  89 001c FFF7FEFF 		bl	bsp_mcu_wait_us
+  90              	.LVL6:
+ 135:user_app/bsp_specific/sx1280_hal.c **** 
+  91              		.loc 1 135 1 is_stmt 0 view .LVU15
+  92              		@ sp needed
+  93 0020 10BD     		pop	{r4, pc}
+  94              	.L7:
+  95 0022 C046     		.align	2
+  96              	.L6:
+  97 0024 88130000 		.word	5000
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccSVcqBO.s 			page 6
+
+
+  98              		.cfi_endproc
+  99              	.LFE2:
+ 101              		.section	.text.sx1280_hal_wakeup,"ax",%progbits
+ 102              		.align	1
+ 103              		.global	sx1280_hal_wakeup
+ 104              		.syntax unified
+ 105              		.code	16
+ 106              		.thumb_func
+ 107              		.fpu softvfp
+ 109              	sx1280_hal_wakeup:
+ 110              	.LVL7:
+ 111              	.LFB3:
+ 138:user_app/bsp_specific/sx1280_hal.c ****     if( radio_opmode == SX1280_HAL_OP_MODE_SLEEP )
+ 112              		.loc 1 138 1 is_stmt 1 view -0
+ 113              		.cfi_startproc
+ 114              		@ args = 0, pretend = 0, frame = 0
+ 115              		@ frame_needed = 0, uses_anonymous_args = 0
+ 139:user_app/bsp_specific/sx1280_hal.c ****     {
+ 116              		.loc 1 139 5 view .LVU17
+ 138:user_app/bsp_specific/sx1280_hal.c ****     if( radio_opmode == SX1280_HAL_OP_MODE_SLEEP )
+ 117              		.loc 1 138 1 is_stmt 0 view .LVU18
+ 118 0000 10B5     		push	{r4, lr}
+ 119              		.cfi_def_cfa_offset 8
+ 120              		.cfi_offset 4, -8
+ 121              		.cfi_offset 14, -4
+ 139:user_app/bsp_specific/sx1280_hal.c ****     {
+ 122              		.loc 1 139 22 view .LVU19
+ 123 0002 0A4C     		ldr	r4, .L11
+ 124 0004 2378     		ldrb	r3, [r4]
+ 125 0006 D9B2     		uxtb	r1, r3
+ 139:user_app/bsp_specific/sx1280_hal.c ****     {
+ 126              		.loc 1 139 7 view .LVU20
+ 127 0008 002B     		cmp	r3, #0
+ 128 000a 0CD1     		bne	.L9
+ 129              	.LBB4:
+ 130              	.LBI4:
+ 137:user_app/bsp_specific/sx1280_hal.c **** {
+ 131              		.loc 1 137 21 is_stmt 1 view .LVU21
+ 132              	.LVL8:
+ 133              	.LBB5:
+ 142:user_app/bsp_specific/sx1280_hal.c ****         sx1280_hal_wait_on_busy( );
+ 134              		.loc 1 142 9 view .LVU22
+ 135 000c 0820     		movs	r0, #8
+ 136              	.LVL9:
+ 142:user_app/bsp_specific/sx1280_hal.c ****         sx1280_hal_wait_on_busy( );
+ 137              		.loc 1 142 9 is_stmt 0 view .LVU23
+ 138 000e FFF7FEFF 		bl	bsp_gpio_set_value
+ 139              	.LVL10:
+ 143:user_app/bsp_specific/sx1280_hal.c ****         bsp_gpio_set_value( RADIO_NSS, 1 );
+ 140              		.loc 1 143 9 is_stmt 1 view .LVU24
+ 141 0012 FFF7FEFF 		bl	sx1280_hal_wait_on_busy
+ 142              	.LVL11:
+ 144:user_app/bsp_specific/sx1280_hal.c **** 
+ 143              		.loc 1 144 9 view .LVU25
+ 144 0016 0121     		movs	r1, #1
+ 145 0018 0820     		movs	r0, #8
+ 146 001a FFF7FEFF 		bl	bsp_gpio_set_value
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccSVcqBO.s 			page 7
+
+
+ 147              	.LVL12:
+ 147:user_app/bsp_specific/sx1280_hal.c ****     }
+ 148              		.loc 1 147 9 view .LVU26
+ 147:user_app/bsp_specific/sx1280_hal.c ****     }
+ 149              		.loc 1 147 22 is_stmt 0 view .LVU27
+ 150 001e 0123     		movs	r3, #1
+ 151 0020 2370     		strb	r3, [r4]
+ 152              	.LVL13:
+ 153              	.L10:
+ 147:user_app/bsp_specific/sx1280_hal.c ****     }
+ 154              		.loc 1 147 22 view .LVU28
+ 155              	.LBE5:
+ 156              	.LBE4:
+ 155:user_app/bsp_specific/sx1280_hal.c **** }
+ 157              		.loc 1 155 5 is_stmt 1 view .LVU29
+ 156:user_app/bsp_specific/sx1280_hal.c **** 
+ 158              		.loc 1 156 1 is_stmt 0 view .LVU30
+ 159 0022 0020     		movs	r0, #0
+ 160              		@ sp needed
+ 161 0024 10BD     		pop	{r4, pc}
+ 162              	.LVL14:
+ 163              	.L9:
+ 152:user_app/bsp_specific/sx1280_hal.c ****     }
+ 164              		.loc 1 152 9 is_stmt 1 view .LVU31
+ 165 0026 FFF7FEFF 		bl	sx1280_hal_wait_on_busy
+ 166              	.LVL15:
+ 152:user_app/bsp_specific/sx1280_hal.c ****     }
+ 167              		.loc 1 152 9 is_stmt 0 view .LVU32
+ 168 002a FAE7     		b	.L10
+ 169              	.L12:
+ 170              		.align	2
+ 171              	.L11:
+ 172 002c 00000000 		.word	.LANCHOR0
+ 173              		.cfi_endproc
+ 174              	.LFE3:
+ 176              		.section	.text.sx1280_hal_write,"ax",%progbits
+ 177              		.align	1
+ 178              		.global	sx1280_hal_write
+ 179              		.syntax unified
+ 180              		.code	16
+ 181              		.thumb_func
+ 182              		.fpu softvfp
+ 184              	sx1280_hal_write:
+ 185              	.LVL16:
+ 186              	.LFB0:
+  83:user_app/bsp_specific/sx1280_hal.c ****     sx1280_hal_wakeup( context );
+ 187              		.loc 1 83 1 is_stmt 1 view -0
+ 188              		.cfi_startproc
+ 189              		@ args = 4, pretend = 0, frame = 8
+ 190              		@ frame_needed = 0, uses_anonymous_args = 0
+  83:user_app/bsp_specific/sx1280_hal.c ****     sx1280_hal_wakeup( context );
+ 191              		.loc 1 83 1 is_stmt 0 view .LVU34
+ 192 0000 F7B5     		push	{r0, r1, r2, r4, r5, r6, r7, lr}
+ 193              		.cfi_def_cfa_offset 32
+ 194              		.cfi_offset 0, -32
+ 195              		.cfi_offset 1, -28
+ 196              		.cfi_offset 2, -24
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccSVcqBO.s 			page 8
+
+
+ 197              		.cfi_offset 4, -20
+ 198              		.cfi_offset 5, -16
+ 199              		.cfi_offset 6, -12
+ 200              		.cfi_offset 7, -8
+ 201              		.cfi_offset 14, -4
+  83:user_app/bsp_specific/sx1280_hal.c ****     sx1280_hal_wakeup( context );
+ 202              		.loc 1 83 1 view .LVU35
+ 203 0002 0D00     		movs	r5, r1
+ 204 0004 1C00     		movs	r4, r3
+ 205 0006 08AB     		add	r3, sp, #32
+ 206              	.LVL17:
+  83:user_app/bsp_specific/sx1280_hal.c ****     sx1280_hal_wakeup( context );
+ 207              		.loc 1 83 1 view .LVU36
+ 208 0008 1B88     		ldrh	r3, [r3]
+ 209              	.LVL18:
+  83:user_app/bsp_specific/sx1280_hal.c ****     sx1280_hal_wakeup( context );
+ 210              		.loc 1 83 1 view .LVU37
+ 211 000a 1600     		movs	r6, r2
+  84:user_app/bsp_specific/sx1280_hal.c **** 
+ 212              		.loc 1 84 5 is_stmt 1 view .LVU38
+  83:user_app/bsp_specific/sx1280_hal.c ****     sx1280_hal_wakeup( context );
+ 213              		.loc 1 83 1 is_stmt 0 view .LVU39
+ 214 000c 0193     		str	r3, [sp, #4]
+  84:user_app/bsp_specific/sx1280_hal.c **** 
+ 215              		.loc 1 84 5 view .LVU40
+ 216 000e FFF7FEFF 		bl	sx1280_hal_wakeup
+ 217              	.LVL19:
+  87:user_app/bsp_specific/sx1280_hal.c ****     for( uint16_t i = 0; i < command_length; i++ )
+ 218              		.loc 1 87 5 is_stmt 1 view .LVU41
+ 219 0012 0021     		movs	r1, #0
+ 220 0014 0820     		movs	r0, #8
+ 221 0016 FFF7FEFF 		bl	bsp_gpio_set_value
+ 222              	.LVL20:
+  88:user_app/bsp_specific/sx1280_hal.c ****     {
+ 223              		.loc 1 88 5 view .LVU42
+ 224              	.LBB6:
+  88:user_app/bsp_specific/sx1280_hal.c ****     {
+ 225              		.loc 1 88 10 view .LVU43
+  88:user_app/bsp_specific/sx1280_hal.c ****     {
+ 226              		.loc 1 88 10 is_stmt 0 view .LVU44
+ 227 001a 2F00     		movs	r7, r5
+ 228 001c 7619     		adds	r6, r6, r5
+ 229              	.LVL21:
+ 230              	.L14:
+  88:user_app/bsp_specific/sx1280_hal.c ****     {
+ 231              		.loc 1 88 26 is_stmt 1 discriminator 1 view .LVU45
+  88:user_app/bsp_specific/sx1280_hal.c ****     {
+ 232              		.loc 1 88 5 is_stmt 0 discriminator 1 view .LVU46
+ 233 001e B742     		cmp	r7, r6
+ 234 0020 0ED1     		bne	.L15
+ 235 0022 019B     		ldr	r3, [sp, #4]
+ 236 0024 E618     		adds	r6, r4, r3
+ 237              	.LVL22:
+ 238              	.L16:
+  88:user_app/bsp_specific/sx1280_hal.c ****     {
+ 239              		.loc 1 88 5 discriminator 1 view .LVU47
+ 240              	.LBE6:
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccSVcqBO.s 			page 9
+
+
+ 241              	.LBB7:
+  92:user_app/bsp_specific/sx1280_hal.c ****     {
+ 242              		.loc 1 92 26 is_stmt 1 discriminator 1 view .LVU48
+  92:user_app/bsp_specific/sx1280_hal.c ****     {
+ 243              		.loc 1 92 5 is_stmt 0 discriminator 1 view .LVU49
+ 244 0026 B442     		cmp	r4, r6
+ 245 0028 10D1     		bne	.L17
+ 246              	.LBE7:
+  97:user_app/bsp_specific/sx1280_hal.c **** 
+ 247              		.loc 1 97 5 is_stmt 1 view .LVU50
+ 248 002a 0121     		movs	r1, #1
+ 249 002c 0820     		movs	r0, #8
+ 250 002e FFF7FEFF 		bl	bsp_gpio_set_value
+ 251              	.LVL23:
+ 100:user_app/bsp_specific/sx1280_hal.c ****     {
+ 252              		.loc 1 100 5 view .LVU51
+ 100:user_app/bsp_specific/sx1280_hal.c ****     {
+ 253              		.loc 1 100 7 is_stmt 0 view .LVU52
+ 254 0032 2B78     		ldrb	r3, [r5]
+ 255 0034 842B     		cmp	r3, #132
+ 256 0036 01D0     		beq	.L18
+ 102:user_app/bsp_specific/sx1280_hal.c ****     }
+ 257              		.loc 1 102 9 is_stmt 1 view .LVU53
+ 258 0038 FFF7FEFF 		bl	sx1280_hal_wait_on_busy
+ 259              	.LVL24:
+ 260              	.L18:
+ 105:user_app/bsp_specific/sx1280_hal.c **** }
+ 261              		.loc 1 105 5 view .LVU54
+ 106:user_app/bsp_specific/sx1280_hal.c **** 
+ 262              		.loc 1 106 1 is_stmt 0 view .LVU55
+ 263 003c 0020     		movs	r0, #0
+ 264              		@ sp needed
+ 265              	.LVL25:
+ 106:user_app/bsp_specific/sx1280_hal.c **** 
+ 266              		.loc 1 106 1 view .LVU56
+ 267 003e FEBD     		pop	{r1, r2, r3, r4, r5, r6, r7, pc}
+ 268              	.LVL26:
+ 269              	.L15:
+ 270              	.LBB8:
+  90:user_app/bsp_specific/sx1280_hal.c ****     }
+ 271              		.loc 1 90 9 is_stmt 1 discriminator 3 view .LVU57
+ 272 0040 3978     		ldrb	r1, [r7]
+ 273 0042 0120     		movs	r0, #1
+ 274 0044 FFF7FEFF 		bl	bsp_spi_in_out
+ 275              	.LVL27:
+  88:user_app/bsp_specific/sx1280_hal.c ****     {
+ 276              		.loc 1 88 46 discriminator 3 view .LVU58
+  88:user_app/bsp_specific/sx1280_hal.c ****     {
+ 277              		.loc 1 88 46 is_stmt 0 discriminator 3 view .LVU59
+ 278 0048 0137     		adds	r7, r7, #1
+ 279              	.LVL28:
+  88:user_app/bsp_specific/sx1280_hal.c ****     {
+ 280              		.loc 1 88 46 discriminator 3 view .LVU60
+ 281 004a E8E7     		b	.L14
+ 282              	.LVL29:
+ 283              	.L17:
+  88:user_app/bsp_specific/sx1280_hal.c ****     {
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccSVcqBO.s 			page 10
+
+
+ 284              		.loc 1 88 46 discriminator 3 view .LVU61
+ 285              	.LBE8:
+ 286              	.LBB9:
+  94:user_app/bsp_specific/sx1280_hal.c ****     }
+ 287              		.loc 1 94 9 is_stmt 1 discriminator 3 view .LVU62
+ 288 004c 2178     		ldrb	r1, [r4]
+ 289 004e 0120     		movs	r0, #1
+ 290 0050 FFF7FEFF 		bl	bsp_spi_in_out
+ 291              	.LVL30:
+  92:user_app/bsp_specific/sx1280_hal.c ****     {
+ 292              		.loc 1 92 43 discriminator 3 view .LVU63
+  92:user_app/bsp_specific/sx1280_hal.c ****     {
+ 293              		.loc 1 92 43 is_stmt 0 discriminator 3 view .LVU64
+ 294 0054 0134     		adds	r4, r4, #1
+  92:user_app/bsp_specific/sx1280_hal.c ****     {
+ 295              		.loc 1 92 43 discriminator 3 view .LVU65
+ 296 0056 E6E7     		b	.L16
+ 297              	.LBE9:
+ 298              		.cfi_endproc
+ 299              	.LFE0:
+ 301              		.section	.text.sx1280_hal_read,"ax",%progbits
+ 302              		.align	1
+ 303              		.global	sx1280_hal_read
+ 304              		.syntax unified
+ 305              		.code	16
+ 306              		.thumb_func
+ 307              		.fpu softvfp
+ 309              	sx1280_hal_read:
+ 310              	.LVL31:
+ 311              	.LFB1:
+ 110:user_app/bsp_specific/sx1280_hal.c ****     sx1280_hal_wakeup( context );
+ 312              		.loc 1 110 1 is_stmt 1 view -0
+ 313              		.cfi_startproc
+ 314              		@ args = 4, pretend = 0, frame = 0
+ 315              		@ frame_needed = 0, uses_anonymous_args = 0
+ 110:user_app/bsp_specific/sx1280_hal.c ****     sx1280_hal_wakeup( context );
+ 316              		.loc 1 110 1 is_stmt 0 view .LVU67
+ 317 0000 F8B5     		push	{r3, r4, r5, r6, r7, lr}
+ 318              		.cfi_def_cfa_offset 24
+ 319              		.cfi_offset 3, -24
+ 320              		.cfi_offset 4, -20
+ 321              		.cfi_offset 5, -16
+ 322              		.cfi_offset 6, -12
+ 323              		.cfi_offset 7, -8
+ 324              		.cfi_offset 14, -4
+ 110:user_app/bsp_specific/sx1280_hal.c ****     sx1280_hal_wakeup( context );
+ 325              		.loc 1 110 1 view .LVU68
+ 326 0002 1C00     		movs	r4, r3
+ 327 0004 06AB     		add	r3, sp, #24
+ 328              	.LVL32:
+ 110:user_app/bsp_specific/sx1280_hal.c ****     sx1280_hal_wakeup( context );
+ 329              		.loc 1 110 1 view .LVU69
+ 330 0006 0D00     		movs	r5, r1
+ 331 0008 1700     		movs	r7, r2
+ 111:user_app/bsp_specific/sx1280_hal.c **** 
+ 332              		.loc 1 111 5 is_stmt 1 view .LVU70
+ 110:user_app/bsp_specific/sx1280_hal.c ****     sx1280_hal_wakeup( context );
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccSVcqBO.s 			page 11
+
+
+ 333              		.loc 1 110 1 is_stmt 0 view .LVU71
+ 334 000a 1E88     		ldrh	r6, [r3]
+ 111:user_app/bsp_specific/sx1280_hal.c **** 
+ 335              		.loc 1 111 5 view .LVU72
+ 336 000c FFF7FEFF 		bl	sx1280_hal_wakeup
+ 337              	.LVL33:
+ 114:user_app/bsp_specific/sx1280_hal.c ****     for( uint16_t i = 0; i < command_length; i++ )
+ 338              		.loc 1 114 5 is_stmt 1 view .LVU73
+ 339 0010 0021     		movs	r1, #0
+ 340 0012 0820     		movs	r0, #8
+ 341 0014 FFF7FEFF 		bl	bsp_gpio_set_value
+ 342              	.LVL34:
+ 115:user_app/bsp_specific/sx1280_hal.c ****     {
+ 343              		.loc 1 115 5 view .LVU74
+ 344              	.LBB10:
+ 115:user_app/bsp_specific/sx1280_hal.c ****     {
+ 345              		.loc 1 115 10 view .LVU75
+ 115:user_app/bsp_specific/sx1280_hal.c ****     {
+ 346              		.loc 1 115 10 is_stmt 0 view .LVU76
+ 347 0018 EF19     		adds	r7, r5, r7
+ 348              	.LVL35:
+ 349              	.L23:
+ 115:user_app/bsp_specific/sx1280_hal.c ****     {
+ 350              		.loc 1 115 26 is_stmt 1 discriminator 1 view .LVU77
+ 115:user_app/bsp_specific/sx1280_hal.c ****     {
+ 351              		.loc 1 115 5 is_stmt 0 discriminator 1 view .LVU78
+ 352 001a BD42     		cmp	r5, r7
+ 353 001c 08D1     		bne	.L24
+ 354 001e A619     		adds	r6, r4, r6
+ 355              	.LVL36:
+ 356              	.L25:
+ 115:user_app/bsp_specific/sx1280_hal.c ****     {
+ 357              		.loc 1 115 5 discriminator 1 view .LVU79
+ 358              	.LBE10:
+ 359              	.LBB11:
+ 119:user_app/bsp_specific/sx1280_hal.c ****     {
+ 360              		.loc 1 119 26 is_stmt 1 discriminator 1 view .LVU80
+ 119:user_app/bsp_specific/sx1280_hal.c ****     {
+ 361              		.loc 1 119 5 is_stmt 0 discriminator 1 view .LVU81
+ 362 0020 B442     		cmp	r4, r6
+ 363 0022 0BD1     		bne	.L26
+ 364              	.LBE11:
+ 124:user_app/bsp_specific/sx1280_hal.c **** 
+ 365              		.loc 1 124 5 is_stmt 1 view .LVU82
+ 366 0024 0121     		movs	r1, #1
+ 367 0026 0820     		movs	r0, #8
+ 368 0028 FFF7FEFF 		bl	bsp_gpio_set_value
+ 369              	.LVL37:
+ 126:user_app/bsp_specific/sx1280_hal.c **** }
+ 370              		.loc 1 126 5 view .LVU83
+ 127:user_app/bsp_specific/sx1280_hal.c **** 
+ 371              		.loc 1 127 1 is_stmt 0 view .LVU84
+ 372              		@ sp needed
+ 373 002c 0020     		movs	r0, #0
+ 374              	.LVL38:
+ 127:user_app/bsp_specific/sx1280_hal.c **** 
+ 375              		.loc 1 127 1 view .LVU85
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccSVcqBO.s 			page 12
+
+
+ 376 002e F8BD     		pop	{r3, r4, r5, r6, r7, pc}
+ 377              	.LVL39:
+ 378              	.L24:
+ 379              	.LBB12:
+ 117:user_app/bsp_specific/sx1280_hal.c ****     }
+ 380              		.loc 1 117 9 is_stmt 1 discriminator 3 view .LVU86
+ 381 0030 2978     		ldrb	r1, [r5]
+ 382 0032 0120     		movs	r0, #1
+ 383 0034 FFF7FEFF 		bl	bsp_spi_in_out
+ 384              	.LVL40:
+ 115:user_app/bsp_specific/sx1280_hal.c ****     {
+ 385              		.loc 1 115 46 discriminator 3 view .LVU87
+ 115:user_app/bsp_specific/sx1280_hal.c ****     {
+ 386              		.loc 1 115 46 is_stmt 0 discriminator 3 view .LVU88
+ 387 0038 0135     		adds	r5, r5, #1
+ 388              	.LVL41:
+ 115:user_app/bsp_specific/sx1280_hal.c ****     {
+ 389              		.loc 1 115 46 discriminator 3 view .LVU89
+ 390 003a EEE7     		b	.L23
+ 391              	.LVL42:
+ 392              	.L26:
+ 115:user_app/bsp_specific/sx1280_hal.c ****     {
+ 393              		.loc 1 115 46 discriminator 3 view .LVU90
+ 394              	.LBE12:
+ 395              	.LBB13:
+ 121:user_app/bsp_specific/sx1280_hal.c ****     }
+ 396              		.loc 1 121 9 is_stmt 1 discriminator 3 view .LVU91
+ 121:user_app/bsp_specific/sx1280_hal.c ****     }
+ 397              		.loc 1 121 19 is_stmt 0 discriminator 3 view .LVU92
+ 398 003c 0021     		movs	r1, #0
+ 399 003e 0120     		movs	r0, #1
+ 400 0040 FFF7FEFF 		bl	bsp_spi_in_out
+ 401              	.LVL43:
+ 121:user_app/bsp_specific/sx1280_hal.c ****     }
+ 402              		.loc 1 121 17 discriminator 3 view .LVU93
+ 403 0044 2070     		strb	r0, [r4]
+ 119:user_app/bsp_specific/sx1280_hal.c ****     {
+ 404              		.loc 1 119 43 is_stmt 1 discriminator 3 view .LVU94
+ 119:user_app/bsp_specific/sx1280_hal.c ****     {
+ 405              		.loc 1 119 43 is_stmt 0 discriminator 3 view .LVU95
+ 406 0046 0134     		adds	r4, r4, #1
+ 119:user_app/bsp_specific/sx1280_hal.c ****     {
+ 407              		.loc 1 119 43 discriminator 3 view .LVU96
+ 408 0048 EAE7     		b	.L25
+ 409              	.LBE13:
+ 410              		.cfi_endproc
+ 411              	.LFE1:
+ 413              		.section	.text.sx1280_hal_get_operating_mode,"ax",%progbits
+ 414              		.align	1
+ 415              		.global	sx1280_hal_get_operating_mode
+ 416              		.syntax unified
+ 417              		.code	16
+ 418              		.thumb_func
+ 419              		.fpu softvfp
+ 421              	sx1280_hal_get_operating_mode:
+ 422              	.LVL44:
+ 423              	.LFB4:
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccSVcqBO.s 			page 13
+
+
+ 159:user_app/bsp_specific/sx1280_hal.c ****     return radio_opmode;
+ 424              		.loc 1 159 1 is_stmt 1 view -0
+ 425              		.cfi_startproc
+ 426              		@ args = 0, pretend = 0, frame = 0
+ 427              		@ frame_needed = 0, uses_anonymous_args = 0
+ 428              		@ link register save eliminated.
+ 160:user_app/bsp_specific/sx1280_hal.c **** }
+ 429              		.loc 1 160 5 view .LVU98
+ 160:user_app/bsp_specific/sx1280_hal.c **** }
+ 430              		.loc 1 160 12 is_stmt 0 view .LVU99
+ 431 0000 014B     		ldr	r3, .L28
+ 161:user_app/bsp_specific/sx1280_hal.c **** 
+ 432              		.loc 1 161 1 view .LVU100
+ 433              		@ sp needed
+ 160:user_app/bsp_specific/sx1280_hal.c **** }
+ 434              		.loc 1 160 12 view .LVU101
+ 435 0002 1878     		ldrb	r0, [r3]
+ 436              	.LVL45:
+ 160:user_app/bsp_specific/sx1280_hal.c **** }
+ 437              		.loc 1 160 12 view .LVU102
+ 438 0004 C0B2     		uxtb	r0, r0
+ 161:user_app/bsp_specific/sx1280_hal.c **** 
+ 439              		.loc 1 161 1 view .LVU103
+ 440 0006 7047     		bx	lr
+ 441              	.L29:
+ 442              		.align	2
+ 443              	.L28:
+ 444 0008 00000000 		.word	.LANCHOR0
+ 445              		.cfi_endproc
+ 446              	.LFE4:
+ 448              		.section	.text.sx1280_hal_set_operating_mode,"ax",%progbits
+ 449              		.align	1
+ 450              		.global	sx1280_hal_set_operating_mode
+ 451              		.syntax unified
+ 452              		.code	16
+ 453              		.thumb_func
+ 454              		.fpu softvfp
+ 456              	sx1280_hal_set_operating_mode:
+ 457              	.LVL46:
+ 458              	.LFB5:
+ 164:user_app/bsp_specific/sx1280_hal.c ****     radio_opmode = op_mode;
+ 459              		.loc 1 164 1 is_stmt 1 view -0
+ 460              		.cfi_startproc
+ 461              		@ args = 0, pretend = 0, frame = 0
+ 462              		@ frame_needed = 0, uses_anonymous_args = 0
+ 463              		@ link register save eliminated.
+ 165:user_app/bsp_specific/sx1280_hal.c **** }
+ 464              		.loc 1 165 5 view .LVU105
+ 165:user_app/bsp_specific/sx1280_hal.c **** }
+ 465              		.loc 1 165 18 is_stmt 0 view .LVU106
+ 466 0000 014B     		ldr	r3, .L31
+ 166:user_app/bsp_specific/sx1280_hal.c **** 
+ 467              		.loc 1 166 1 view .LVU107
+ 468              		@ sp needed
+ 165:user_app/bsp_specific/sx1280_hal.c **** }
+ 469              		.loc 1 165 18 view .LVU108
+ 470 0002 1970     		strb	r1, [r3]
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccSVcqBO.s 			page 14
+
+
+ 166:user_app/bsp_specific/sx1280_hal.c **** 
+ 471              		.loc 1 166 1 view .LVU109
+ 472 0004 7047     		bx	lr
+ 473              	.L32:
+ 474 0006 C046     		.align	2
+ 475              	.L31:
+ 476 0008 00000000 		.word	.LANCHOR0
+ 477              		.cfi_endproc
+ 478              	.LFE5:
+ 480              		.section	.bss.radio_opmode,"aw",%nobits
+ 481              		.set	.LANCHOR0,. + 0
+ 484              	radio_opmode:
+ 485 0000 00       		.space	1
+ 486              		.text
+ 487              	.Letext0:
+ 488              		.file 2 "/Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.external
+ 489              		.file 3 "/Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.external
+ 490              		.file 4 "/Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.external
+ 491              		.file 5 "/Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.external
+ 492              		.file 6 "/Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.external
+ 493              		.file 7 "/Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.external
+ 494              		.file 8 "smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio_pin_names.h"
+ 495              		.file 9 "sx1280_driver/src/sx1280_hal.h"
+ 496              		.file 10 "smtc_bsp/smtc_bsp_gpio.h"
+ 497              		.file 11 "smtc_bsp/smtc_bsp_mcu.h"
+ 498              		.file 12 "smtc_bsp/smtc_bsp_spi.h"
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccSVcqBO.s 			page 15
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 sx1280_hal.c
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccSVcqBO.s:14     .text.sx1280_hal_wait_on_busy:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccSVcqBO.s:21     .text.sx1280_hal_wait_on_busy:0000000000000000 sx1280_hal_wait_on_busy
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccSVcqBO.s:49     .text.sx1280_hal_reset:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccSVcqBO.s:56     .text.sx1280_hal_reset:0000000000000000 sx1280_hal_reset
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccSVcqBO.s:97     .text.sx1280_hal_reset:0000000000000024 $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccSVcqBO.s:102    .text.sx1280_hal_wakeup:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccSVcqBO.s:109    .text.sx1280_hal_wakeup:0000000000000000 sx1280_hal_wakeup
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccSVcqBO.s:172    .text.sx1280_hal_wakeup:000000000000002c $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccSVcqBO.s:177    .text.sx1280_hal_write:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccSVcqBO.s:184    .text.sx1280_hal_write:0000000000000000 sx1280_hal_write
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccSVcqBO.s:302    .text.sx1280_hal_read:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccSVcqBO.s:309    .text.sx1280_hal_read:0000000000000000 sx1280_hal_read
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccSVcqBO.s:414    .text.sx1280_hal_get_operating_mode:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccSVcqBO.s:421    .text.sx1280_hal_get_operating_mode:0000000000000000 sx1280_hal_get_operating_mode
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccSVcqBO.s:444    .text.sx1280_hal_get_operating_mode:0000000000000008 $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccSVcqBO.s:449    .text.sx1280_hal_set_operating_mode:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccSVcqBO.s:456    .text.sx1280_hal_set_operating_mode:0000000000000000 sx1280_hal_set_operating_mode
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccSVcqBO.s:476    .text.sx1280_hal_set_operating_mode:0000000000000008 $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccSVcqBO.s:484    .bss.radio_opmode:0000000000000000 radio_opmode
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccSVcqBO.s:485    .bss.radio_opmode:0000000000000000 $d
+
+UNDEFINED SYMBOLS
+bsp_gpio_get_value
+bsp_gpio_set_value
+bsp_mcu_wait_us
+bsp_spi_in_out

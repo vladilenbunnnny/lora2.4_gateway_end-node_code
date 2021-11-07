@@ -1,0 +1,506 @@
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc3H5vPT.s 			page 1
+
+
+   1              		.cpu cortex-m0plus
+   2              		.eabi_attribute 23, 1
+   3              		.eabi_attribute 24, 1
+   4              		.eabi_attribute 25, 1
+   5              		.eabi_attribute 26, 1
+   6              		.eabi_attribute 30, 4
+   7              		.eabi_attribute 34, 0
+   8              		.eabi_attribute 18, 4
+   9              		.file	"lr1mac_utilities.c"
+  10              		.text
+  11              	.Ltext0:
+  12              		.cfi_sections	.debug_frame
+  13              		.section	.text.memcpy1,"ax",%progbits
+  14              		.align	1
+  15              		.global	memcpy1
+  16              		.arch armv6s-m
+  17              		.syntax unified
+  18              		.code	16
+  19              		.thumb_func
+  20              		.fpu softvfp
+  22              	memcpy1:
+  23              	.LVL0:
+  24              	.LFB4:
+  25              		.file 1 "lr1mac/src/lr1mac_utilities.c"
+   1:lr1mac/src/lr1mac_utilities.c **** /*!
+   2:lr1mac/src/lr1mac_utilities.c ****  * \file      lr1_mac_utilities.c
+   3:lr1mac/src/lr1mac_utilities.c ****  *
+   4:lr1mac/src/lr1mac_utilities.c ****  * \brief     LoRaWan utilities definition
+   5:lr1mac/src/lr1mac_utilities.c ****  *
+   6:lr1mac/src/lr1mac_utilities.c ****  * Revised BSD License
+   7:lr1mac/src/lr1mac_utilities.c ****  * Copyright Semtech Corporation 2020. All rights reserved.
+   8:lr1mac/src/lr1mac_utilities.c ****  *
+   9:lr1mac/src/lr1mac_utilities.c ****  * Redistribution and use in source and binary forms, with or without
+  10:lr1mac/src/lr1mac_utilities.c ****  * modification, are permitted provided that the following conditions are met:
+  11:lr1mac/src/lr1mac_utilities.c ****  *     * Redistributions of source code must retain the above copyright
+  12:lr1mac/src/lr1mac_utilities.c ****  *       notice, this list of conditions and the following disclaimer.
+  13:lr1mac/src/lr1mac_utilities.c ****  *     * Redistributions in binary form must reproduce the above copyright
+  14:lr1mac/src/lr1mac_utilities.c ****  *       notice, this list of conditions and the following disclaimer in the
+  15:lr1mac/src/lr1mac_utilities.c ****  *       documentation and/or other materials provided with the distribution.
+  16:lr1mac/src/lr1mac_utilities.c ****  *     * Neither the name of the Semtech corporation nor the
+  17:lr1mac/src/lr1mac_utilities.c ****  *       names of its contributors may be used to endorse or promote products
+  18:lr1mac/src/lr1mac_utilities.c ****  *       derived from this software without specific prior written permission.
+  19:lr1mac/src/lr1mac_utilities.c ****  *
+  20:lr1mac/src/lr1mac_utilities.c ****  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+  21:lr1mac/src/lr1mac_utilities.c ****  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+  22:lr1mac/src/lr1mac_utilities.c ****  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+  23:lr1mac/src/lr1mac_utilities.c ****  * ARE DISCLAIMED. IN NO EVENT SHALL SEMTECH CORPORATION BE LIABLE FOR ANY DIRECT,
+  24:lr1mac/src/lr1mac_utilities.c ****  * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+  25:lr1mac/src/lr1mac_utilities.c ****  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+  26:lr1mac/src/lr1mac_utilities.c ****  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+  27:lr1mac/src/lr1mac_utilities.c ****  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  28:lr1mac/src/lr1mac_utilities.c ****  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+  29:lr1mac/src/lr1mac_utilities.c ****  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  30:lr1mac/src/lr1mac_utilities.c ****  */
+  31:lr1mac/src/lr1mac_utilities.c **** 
+  32:lr1mac/src/lr1mac_utilities.c **** /*
+  33:lr1mac/src/lr1mac_utilities.c ****  *-----------------------------------------------------------------------------------
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc3H5vPT.s 			page 2
+
+
+  34:lr1mac/src/lr1mac_utilities.c ****  * --- DEPENDENCIES -----------------------------------------------------------------
+  35:lr1mac/src/lr1mac_utilities.c ****  */
+  36:lr1mac/src/lr1mac_utilities.c **** #include <stdlib.h>
+  37:lr1mac/src/lr1mac_utilities.c **** #include <stdio.h>
+  38:lr1mac/src/lr1mac_utilities.c **** #include <stdbool.h>
+  39:lr1mac/src/lr1mac_utilities.c **** 
+  40:lr1mac/src/lr1mac_utilities.c **** #include "lr1mac_utilities.h"
+  41:lr1mac/src/lr1mac_utilities.c **** #include "smtc_bsp.h"
+  42:lr1mac/src/lr1mac_utilities.c **** #include "lr1mac_defs.h"
+  43:lr1mac/src/lr1mac_utilities.c **** 
+  44:lr1mac/src/lr1mac_utilities.c **** void memcpy1( uint8_t* dst, const uint8_t* src, uint16_t size )
+  45:lr1mac/src/lr1mac_utilities.c **** {
+  26              		.loc 1 45 1 view -0
+  27              		.cfi_startproc
+  28              		@ args = 0, pretend = 0, frame = 0
+  29              		@ frame_needed = 0, uses_anonymous_args = 0
+  46:lr1mac/src/lr1mac_utilities.c ****     while( size-- )
+  30              		.loc 1 46 5 view .LVU1
+  31              		.loc 1 46 10 is_stmt 0 view .LVU2
+  32 0000 0023     		movs	r3, #0
+  45:lr1mac/src/lr1mac_utilities.c ****     while( size-- )
+  33              		.loc 1 45 1 view .LVU3
+  34 0002 10B5     		push	{r4, lr}
+  35              		.cfi_def_cfa_offset 8
+  36              		.cfi_offset 4, -8
+  37              		.cfi_offset 14, -4
+  38              	.LVL1:
+  39              	.L2:
+  40              		.loc 1 46 10 is_stmt 1 view .LVU4
+  41              		.loc 1 46 10 is_stmt 0 view .LVU5
+  42 0004 9342     		cmp	r3, r2
+  43 0006 00D1     		bne	.L3
+  47:lr1mac/src/lr1mac_utilities.c ****     {
+  48:lr1mac/src/lr1mac_utilities.c ****         *dst++ = *src++;
+  49:lr1mac/src/lr1mac_utilities.c ****     }
+  50:lr1mac/src/lr1mac_utilities.c **** }
+  44              		.loc 1 50 1 view .LVU6
+  45              		@ sp needed
+  46 0008 10BD     		pop	{r4, pc}
+  47              	.L3:
+  48:lr1mac/src/lr1mac_utilities.c ****     }
+  48              		.loc 1 48 9 is_stmt 1 view .LVU7
+  49              	.LVL2:
+  48:lr1mac/src/lr1mac_utilities.c ****     }
+  50              		.loc 1 48 18 is_stmt 0 view .LVU8
+  51 000a CC5C     		ldrb	r4, [r1, r3]
+  48:lr1mac/src/lr1mac_utilities.c ****     }
+  52              		.loc 1 48 16 view .LVU9
+  53 000c C454     		strb	r4, [r0, r3]
+  54 000e 0133     		adds	r3, r3, #1
+  55              	.LVL3:
+  48:lr1mac/src/lr1mac_utilities.c ****     }
+  56              		.loc 1 48 16 view .LVU10
+  57 0010 F8E7     		b	.L2
+  58              		.cfi_endproc
+  59              	.LFE4:
+  61              		.section	.text.memset1,"ax",%progbits
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc3H5vPT.s 			page 3
+
+
+  62              		.align	1
+  63              		.global	memset1
+  64              		.syntax unified
+  65              		.code	16
+  66              		.thumb_func
+  67              		.fpu softvfp
+  69              	memset1:
+  70              	.LVL4:
+  71              	.LFB5:
+  51:lr1mac/src/lr1mac_utilities.c **** 
+  52:lr1mac/src/lr1mac_utilities.c **** void memset1( uint8_t* dst, uint8_t value, uint16_t size )
+  53:lr1mac/src/lr1mac_utilities.c **** {
+  72              		.loc 1 53 1 is_stmt 1 view -0
+  73              		.cfi_startproc
+  74              		@ args = 0, pretend = 0, frame = 0
+  75              		@ frame_needed = 0, uses_anonymous_args = 0
+  76              		@ link register save eliminated.
+  54:lr1mac/src/lr1mac_utilities.c ****     while( size-- )
+  77              		.loc 1 54 5 view .LVU12
+  78              		.loc 1 54 10 is_stmt 0 view .LVU13
+  79 0000 044B     		ldr	r3, .L7
+  80              	.L5:
+  81              		.loc 1 54 10 is_stmt 1 view .LVU14
+  82              		.loc 1 54 16 is_stmt 0 view .LVU15
+  83 0002 013A     		subs	r2, r2, #1
+  84              	.LVL5:
+  85              		.loc 1 54 16 view .LVU16
+  86 0004 92B2     		uxth	r2, r2
+  87              	.LVL6:
+  88              		.loc 1 54 10 view .LVU17
+  89 0006 9A42     		cmp	r2, r3
+  90 0008 00D1     		bne	.L6
+  55:lr1mac/src/lr1mac_utilities.c ****     {
+  56:lr1mac/src/lr1mac_utilities.c ****         *dst++ = value;
+  57:lr1mac/src/lr1mac_utilities.c ****     }
+  58:lr1mac/src/lr1mac_utilities.c **** }
+  91              		.loc 1 58 1 view .LVU18
+  92              		@ sp needed
+  93 000a 7047     		bx	lr
+  94              	.L6:
+  56:lr1mac/src/lr1mac_utilities.c ****     }
+  95              		.loc 1 56 9 is_stmt 1 view .LVU19
+  96              	.LVL7:
+  56:lr1mac/src/lr1mac_utilities.c ****     }
+  97              		.loc 1 56 16 is_stmt 0 view .LVU20
+  98 000c 0170     		strb	r1, [r0]
+  99 000e 0130     		adds	r0, r0, #1
+ 100              	.LVL8:
+  56:lr1mac/src/lr1mac_utilities.c ****     }
+ 101              		.loc 1 56 16 view .LVU21
+ 102 0010 F7E7     		b	.L5
+ 103              	.L8:
+ 104 0012 C046     		.align	2
+ 105              	.L7:
+ 106 0014 FFFF0000 		.word	65535
+ 107              		.cfi_endproc
+ 108              	.LFE5:
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc3H5vPT.s 			page 4
+
+
+ 110              		.section	.text.lr1mac_utilities_crc,"ax",%progbits
+ 111              		.align	1
+ 112              		.global	lr1mac_utilities_crc
+ 113              		.syntax unified
+ 114              		.code	16
+ 115              		.thumb_func
+ 116              		.fpu softvfp
+ 118              	lr1mac_utilities_crc:
+ 119              	.LVL9:
+ 120              	.LFB6:
+  59:lr1mac/src/lr1mac_utilities.c **** 
+  60:lr1mac/src/lr1mac_utilities.c **** uint32_t lr1mac_utilities_crc( uint8_t* buf, int len )
+  61:lr1mac/src/lr1mac_utilities.c **** {
+ 121              		.loc 1 61 1 is_stmt 1 view -0
+ 122              		.cfi_startproc
+ 123              		@ args = 0, pretend = 0, frame = 0
+ 124              		@ frame_needed = 0, uses_anonymous_args = 0
+  62:lr1mac/src/lr1mac_utilities.c ****     uint32_t crc = 0xFFFFFFFA;
+ 125              		.loc 1 62 5 view .LVU23
+  63:lr1mac/src/lr1mac_utilities.c ****     while( len-- > 0 )
+ 126              		.loc 1 63 5 view .LVU24
+  62:lr1mac/src/lr1mac_utilities.c ****     uint32_t crc = 0xFFFFFFFA;
+ 127              		.loc 1 62 14 is_stmt 0 view .LVU25
+ 128 0000 0623     		movs	r3, #6
+  61:lr1mac/src/lr1mac_utilities.c ****     uint32_t crc = 0xFFFFFFFA;
+ 129              		.loc 1 61 1 view .LVU26
+ 130 0002 70B5     		push	{r4, r5, r6, lr}
+ 131              		.cfi_def_cfa_offset 16
+ 132              		.cfi_offset 4, -16
+ 133              		.cfi_offset 5, -12
+ 134              		.cfi_offset 6, -8
+ 135              		.cfi_offset 14, -4
+ 136              	.LBB2:
+ 137              	.LBB3:
+  64:lr1mac/src/lr1mac_utilities.c ****     {
+  65:lr1mac/src/lr1mac_utilities.c ****         crc = crc ^ *buf++;
+  66:lr1mac/src/lr1mac_utilities.c ****         for( int i = 0; i < 8; i++ )
+  67:lr1mac/src/lr1mac_utilities.c ****         {
+  68:lr1mac/src/lr1mac_utilities.c ****             uint32_t mask = -( crc & 1 );
+ 138              		.loc 1 68 36 view .LVU27
+ 139 0004 0124     		movs	r4, #1
+  69:lr1mac/src/lr1mac_utilities.c ****             crc           = ( crc >> 1 ) ^ ( 0xEDB88320 & mask );
+ 140              		.loc 1 69 57 view .LVU28
+ 141 0006 0B4D     		ldr	r5, .L14
+ 142              	.LBE3:
+ 143              	.LBE2:
+  62:lr1mac/src/lr1mac_utilities.c ****     while( len-- > 0 )
+ 144              		.loc 1 62 14 view .LVU29
+ 145 0008 5B42     		rsbs	r3, r3, #0
+ 146 000a 4118     		adds	r1, r0, r1
+ 147              	.LVL10:
+ 148              	.L10:
+  63:lr1mac/src/lr1mac_utilities.c ****     {
+ 149              		.loc 1 63 10 is_stmt 1 view .LVU30
+  63:lr1mac/src/lr1mac_utilities.c ****     {
+ 150              		.loc 1 63 10 is_stmt 0 view .LVU31
+ 151 000c 0A1A     		subs	r2, r1, r0
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc3H5vPT.s 			page 5
+
+
+ 152 000e 002A     		cmp	r2, #0
+ 153 0010 02DC     		bgt	.L12
+  70:lr1mac/src/lr1mac_utilities.c ****         }
+  71:lr1mac/src/lr1mac_utilities.c ****     }
+  72:lr1mac/src/lr1mac_utilities.c ****     return ~crc + 3;
+ 154              		.loc 1 72 5 is_stmt 1 view .LVU32
+ 155              		.loc 1 72 17 is_stmt 0 view .LVU33
+ 156 0012 0220     		movs	r0, #2
+ 157              	.LVL11:
+  73:lr1mac/src/lr1mac_utilities.c **** }
+ 158              		.loc 1 73 1 view .LVU34
+ 159              		@ sp needed
+  72:lr1mac/src/lr1mac_utilities.c **** }
+ 160              		.loc 1 72 17 view .LVU35
+ 161 0014 C01A     		subs	r0, r0, r3
+ 162              		.loc 1 73 1 view .LVU36
+ 163 0016 70BD     		pop	{r4, r5, r6, pc}
+ 164              	.LVL12:
+ 165              	.L12:
+  65:lr1mac/src/lr1mac_utilities.c ****         for( int i = 0; i < 8; i++ )
+ 166              		.loc 1 65 9 is_stmt 1 view .LVU37
+  65:lr1mac/src/lr1mac_utilities.c ****         for( int i = 0; i < 8; i++ )
+ 167              		.loc 1 65 21 is_stmt 0 view .LVU38
+ 168 0018 0278     		ldrb	r2, [r0]
+  65:lr1mac/src/lr1mac_utilities.c ****         for( int i = 0; i < 8; i++ )
+ 169              		.loc 1 65 13 view .LVU39
+ 170 001a 5340     		eors	r3, r2
+ 171              	.LVL13:
+  66:lr1mac/src/lr1mac_utilities.c ****         {
+ 172              		.loc 1 66 9 is_stmt 1 view .LVU40
+ 173              	.LBB5:
+  66:lr1mac/src/lr1mac_utilities.c ****         {
+ 174              		.loc 1 66 14 view .LVU41
+  66:lr1mac/src/lr1mac_utilities.c ****         {
+ 175              		.loc 1 66 25 view .LVU42
+ 176              	.LBE5:
+  65:lr1mac/src/lr1mac_utilities.c ****         for( int i = 0; i < 8; i++ )
+ 177              		.loc 1 65 13 is_stmt 0 view .LVU43
+ 178 001c 0822     		movs	r2, #8
+ 179              	.LVL14:
+ 180              	.L11:
+ 181              	.LBB6:
+ 182              	.LBB4:
+  68:lr1mac/src/lr1mac_utilities.c ****             crc           = ( crc >> 1 ) ^ ( 0xEDB88320 & mask );
+ 183              		.loc 1 68 13 is_stmt 1 discriminator 3 view .LVU44
+  69:lr1mac/src/lr1mac_utilities.c ****         }
+ 184              		.loc 1 69 13 discriminator 3 view .LVU45
+  69:lr1mac/src/lr1mac_utilities.c ****         }
+ 185              		.loc 1 69 35 is_stmt 0 discriminator 3 view .LVU46
+ 186 001e 5E08     		lsrs	r6, r3, #1
+  68:lr1mac/src/lr1mac_utilities.c ****             crc           = ( crc >> 1 ) ^ ( 0xEDB88320 & mask );
+ 187              		.loc 1 68 36 discriminator 3 view .LVU47
+ 188 0020 2340     		ands	r3, r4
+ 189              	.LVL15:
+  68:lr1mac/src/lr1mac_utilities.c ****             crc           = ( crc >> 1 ) ^ ( 0xEDB88320 & mask );
+ 190              		.loc 1 68 22 discriminator 3 view .LVU48
+ 191 0022 5B42     		rsbs	r3, r3, #0
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc3H5vPT.s 			page 6
+
+
+  69:lr1mac/src/lr1mac_utilities.c ****         }
+ 192              		.loc 1 69 57 discriminator 3 view .LVU49
+ 193 0024 2B40     		ands	r3, r5
+ 194 0026 013A     		subs	r2, r2, #1
+  69:lr1mac/src/lr1mac_utilities.c ****         }
+ 195              		.loc 1 69 27 discriminator 3 view .LVU50
+ 196 0028 7340     		eors	r3, r6
+ 197              	.LVL16:
+  69:lr1mac/src/lr1mac_utilities.c ****         }
+ 198              		.loc 1 69 27 discriminator 3 view .LVU51
+ 199              	.LBE4:
+  66:lr1mac/src/lr1mac_utilities.c ****         {
+ 200              		.loc 1 66 32 is_stmt 1 discriminator 3 view .LVU52
+  66:lr1mac/src/lr1mac_utilities.c ****         {
+ 201              		.loc 1 66 25 discriminator 3 view .LVU53
+  66:lr1mac/src/lr1mac_utilities.c ****         {
+ 202              		.loc 1 66 9 is_stmt 0 discriminator 3 view .LVU54
+ 203 002a 002A     		cmp	r2, #0
+ 204 002c F7D1     		bne	.L11
+ 205 002e 0130     		adds	r0, r0, #1
+ 206              	.LVL17:
+  66:lr1mac/src/lr1mac_utilities.c ****         {
+ 207              		.loc 1 66 9 discriminator 3 view .LVU55
+ 208 0030 ECE7     		b	.L10
+ 209              	.L15:
+ 210 0032 C046     		.align	2
+ 211              	.L14:
+ 212 0034 2083B8ED 		.word	-306674912
+ 213              	.LBE6:
+ 214              		.cfi_endproc
+ 215              	.LFE6:
+ 217              		.global	__aeabi_uidiv
+ 218              		.section	.text.lr1mac_utilities_get_symb_time_us,"ax",%progbits
+ 219              		.align	1
+ 220              		.global	lr1mac_utilities_get_symb_time_us
+ 221              		.syntax unified
+ 222              		.code	16
+ 223              		.thumb_func
+ 224              		.fpu softvfp
+ 226              	lr1mac_utilities_get_symb_time_us:
+ 227              	.LVL18:
+ 228              	.LFB7:
+  74:lr1mac/src/lr1mac_utilities.c **** 
+  75:lr1mac/src/lr1mac_utilities.c **** uint32_t lr1mac_utilities_get_symb_time_us( const uint16_t nb_symb, const ral_lora_sf_t sf, const r
+  76:lr1mac/src/lr1mac_utilities.c **** {
+ 229              		.loc 1 76 1 is_stmt 1 view -0
+ 230              		.cfi_startproc
+ 231              		@ args = 0, pretend = 0, frame = 0
+ 232              		@ frame_needed = 0, uses_anonymous_args = 0
+  77:lr1mac/src/lr1mac_utilities.c ****     uint32_t sf_val;
+ 233              		.loc 1 77 5 view .LVU57
+  78:lr1mac/src/lr1mac_utilities.c ****     uint32_t bw_khz;
+ 234              		.loc 1 78 5 view .LVU58
+  79:lr1mac/src/lr1mac_utilities.c **** 
+  80:lr1mac/src/lr1mac_utilities.c ****     // clang-format off
+  81:lr1mac/src/lr1mac_utilities.c ****     switch(sf)
+ 235              		.loc 1 81 5 view .LVU59
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc3H5vPT.s 			page 7
+
+
+  76:lr1mac/src/lr1mac_utilities.c ****     uint32_t sf_val;
+ 236              		.loc 1 76 1 is_stmt 0 view .LVU60
+ 237 0000 10B5     		push	{r4, lr}
+ 238              		.cfi_def_cfa_offset 8
+ 239              		.cfi_offset 4, -8
+ 240              		.cfi_offset 14, -4
+ 241 0002 4C1F     		subs	r4, r1, #5
+  76:lr1mac/src/lr1mac_utilities.c ****     uint32_t sf_val;
+ 242              		.loc 1 76 1 view .LVU61
+ 243 0004 0300     		movs	r3, r0
+  82:lr1mac/src/lr1mac_utilities.c ****     {
+  83:lr1mac/src/lr1mac_utilities.c ****         case RAL_LORA_SF5:  sf_val = 5;     break;
+  84:lr1mac/src/lr1mac_utilities.c ****         case RAL_LORA_SF6:  sf_val = 6;     break;
+  85:lr1mac/src/lr1mac_utilities.c ****         case RAL_LORA_SF7:  sf_val = 7;     break;
+  86:lr1mac/src/lr1mac_utilities.c ****         case RAL_LORA_SF8:  sf_val = 8;     break;
+  87:lr1mac/src/lr1mac_utilities.c ****         case RAL_LORA_SF9:  sf_val = 9;     break;
+  88:lr1mac/src/lr1mac_utilities.c ****         case RAL_LORA_SF10: sf_val = 10;    break;
+  89:lr1mac/src/lr1mac_utilities.c ****         case RAL_LORA_SF11: sf_val = 11;    break;
+  90:lr1mac/src/lr1mac_utilities.c ****         case RAL_LORA_SF12: sf_val = 12;    break;
+  91:lr1mac/src/lr1mac_utilities.c ****         default:
+  92:lr1mac/src/lr1mac_utilities.c ****             return 0;
+ 244              		.loc 1 92 20 view .LVU62
+ 245 0006 0020     		movs	r0, #0
+ 246              	.LVL19:
+ 247              		.loc 1 92 20 view .LVU63
+ 248 0008 072C     		cmp	r4, #7
+ 249 000a 0AD8     		bhi	.L16
+ 250              	.LVL20:
+  93:lr1mac/src/lr1mac_utilities.c ****             break;
+ 251              		.loc 1 93 13 is_stmt 1 view .LVU64
+  94:lr1mac/src/lr1mac_utilities.c ****     }
+  95:lr1mac/src/lr1mac_utilities.c ****     switch (bw)
+ 252              		.loc 1 95 5 view .LVU65
+ 253 000c 0D2A     		cmp	r2, #13
+ 254 000e 08D8     		bhi	.L16
+ 255              	.LVL21:
+  96:lr1mac/src/lr1mac_utilities.c ****     {
+  97:lr1mac/src/lr1mac_utilities.c ****         case RAL_LORA_BW_007_KHZ:   bw_khz = 7;      break;
+  98:lr1mac/src/lr1mac_utilities.c ****         case RAL_LORA_BW_010_KHZ:   bw_khz = 10;     break;
+  99:lr1mac/src/lr1mac_utilities.c ****         case RAL_LORA_BW_015_KHZ:   bw_khz = 15;     break;
+ 100:lr1mac/src/lr1mac_utilities.c ****         case RAL_LORA_BW_020_KHZ:   bw_khz = 20;     break;
+ 101:lr1mac/src/lr1mac_utilities.c ****         case RAL_LORA_BW_031_KHZ:   bw_khz = 31;     break;
+ 102:lr1mac/src/lr1mac_utilities.c ****         case RAL_LORA_BW_041_KHZ:   bw_khz = 41;     break;
+ 103:lr1mac/src/lr1mac_utilities.c ****         case RAL_LORA_BW_062_KHZ:   bw_khz = 62;     break;
+ 104:lr1mac/src/lr1mac_utilities.c ****         case RAL_LORA_BW_125_KHZ:   bw_khz = 125;    break;
+ 105:lr1mac/src/lr1mac_utilities.c ****         case RAL_LORA_BW_200_KHZ:   bw_khz = 203;    break;
+ 106:lr1mac/src/lr1mac_utilities.c ****         case RAL_LORA_BW_250_KHZ:   bw_khz = 250;    break;
+ 107:lr1mac/src/lr1mac_utilities.c ****         case RAL_LORA_BW_400_KHZ:   bw_khz = 406;    break;
+ 108:lr1mac/src/lr1mac_utilities.c ****         case RAL_LORA_BW_500_KHZ:   bw_khz = 500;    break;
+ 109:lr1mac/src/lr1mac_utilities.c ****         case RAL_LORA_BW_800_KHZ:   bw_khz = 812;    break;
+ 110:lr1mac/src/lr1mac_utilities.c ****         case RAL_LORA_BW_1600_KHZ:  bw_khz = 1625;   break;
+ 111:lr1mac/src/lr1mac_utilities.c ****          default:
+ 112:lr1mac/src/lr1mac_utilities.c ****             return 0;
+ 113:lr1mac/src/lr1mac_utilities.c ****             break;
+ 256              		.loc 1 113 13 view .LVU66
+ 114:lr1mac/src/lr1mac_utilities.c ****     }
+ 115:lr1mac/src/lr1mac_utilities.c ****     // clang-format on
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc3H5vPT.s 			page 8
+
+
+ 116:lr1mac/src/lr1mac_utilities.c **** 
+ 117:lr1mac/src/lr1mac_utilities.c ****     return ( ( ( uint32_t ) nb_symb * 1000 ) << sf_val ) / bw_khz;
+ 257              		.loc 1 117 5 view .LVU67
+ 258              		.loc 1 117 37 is_stmt 0 view .LVU68
+ 259 0010 FA20     		movs	r0, #250
+ 260 0012 8000     		lsls	r0, r0, #2
+ 261 0014 5843     		muls	r0, r3
+ 262              		.loc 1 117 58 view .LVU69
+ 263 0016 034B     		ldr	r3, .L20
+ 264 0018 5200     		lsls	r2, r2, #1
+ 265              	.LVL22:
+ 266              		.loc 1 117 46 view .LVU70
+ 267 001a 8840     		lsls	r0, r0, r1
+ 268              		.loc 1 117 58 view .LVU71
+ 269 001c D15A     		ldrh	r1, [r2, r3]
+ 270              	.LVL23:
+ 271              		.loc 1 117 58 view .LVU72
+ 272 001e FFF7FEFF 		bl	__aeabi_uidiv
+ 273              	.LVL24:
+ 274              	.L16:
+ 118:lr1mac/src/lr1mac_utilities.c **** }
+ 275              		.loc 1 118 1 view .LVU73
+ 276              		@ sp needed
+ 277 0022 10BD     		pop	{r4, pc}
+ 278              	.L21:
+ 279              		.align	2
+ 280              	.L20:
+ 281 0024 00000000 		.word	.LANCHOR0
+ 282              		.cfi_endproc
+ 283              	.LFE7:
+ 285              		.section	.rodata.CSWTCH.11,"a"
+ 286              		.align	1
+ 287              		.set	.LANCHOR0,. + 0
+ 290              	CSWTCH.11:
+ 291 0000 0700     		.short	7
+ 292 0002 0A00     		.short	10
+ 293 0004 0F00     		.short	15
+ 294 0006 1400     		.short	20
+ 295 0008 1F00     		.short	31
+ 296 000a 2900     		.short	41
+ 297 000c 3E00     		.short	62
+ 298 000e 7D00     		.short	125
+ 299 0010 CB00     		.short	203
+ 300 0012 FA00     		.short	250
+ 301 0014 9601     		.short	406
+ 302 0016 F401     		.short	500
+ 303 0018 2C03     		.short	812
+ 304 001a 5906     		.short	1625
+ 305              		.text
+ 306              	.Letext0:
+ 307              		.file 2 "/Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.external
+ 308              		.file 3 "/Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.external
+ 309              		.file 4 "/Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.external
+ 310              		.file 5 "/Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.external
+ 311              		.file 6 "/Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.external
+ 312              		.file 7 "/Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.external
+ 313              		.file 8 "/Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.external
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc3H5vPT.s 			page 9
+
+
+ 314              		.file 9 "smtc_ral/src/ral_defs.h"
+ 315              		.file 10 "lr1mac/src/lr1mac_defs.h"
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc3H5vPT.s 			page 10
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 lr1mac_utilities.c
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc3H5vPT.s:14     .text.memcpy1:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc3H5vPT.s:22     .text.memcpy1:0000000000000000 memcpy1
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc3H5vPT.s:62     .text.memset1:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc3H5vPT.s:69     .text.memset1:0000000000000000 memset1
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc3H5vPT.s:106    .text.memset1:0000000000000014 $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc3H5vPT.s:111    .text.lr1mac_utilities_crc:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc3H5vPT.s:118    .text.lr1mac_utilities_crc:0000000000000000 lr1mac_utilities_crc
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc3H5vPT.s:212    .text.lr1mac_utilities_crc:0000000000000034 $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc3H5vPT.s:219    .text.lr1mac_utilities_get_symb_time_us:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc3H5vPT.s:226    .text.lr1mac_utilities_get_symb_time_us:0000000000000000 lr1mac_utilities_get_symb_time_us
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc3H5vPT.s:281    .text.lr1mac_utilities_get_symb_time_us:0000000000000024 $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc3H5vPT.s:286    .rodata.CSWTCH.11:0000000000000000 $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc3H5vPT.s:290    .rodata.CSWTCH.11:0000000000000000 CSWTCH.11
+
+UNDEFINED SYMBOLS
+__aeabi_uidiv

@@ -1,0 +1,2754 @@
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cclFs5I1.s 			page 1
+
+
+   1              		.cpu cortex-m0plus
+   2              		.eabi_attribute 23, 1
+   3              		.eabi_attribute 24, 1
+   4              		.eabi_attribute 25, 1
+   5              		.eabi_attribute 26, 1
+   6              		.eabi_attribute 30, 4
+   7              		.eabi_attribute 34, 0
+   8              		.eabi_attribute 18, 4
+   9              		.file	"test_mode.c"
+  10              		.text
+  11              	.Ltext0:
+  12              		.cfi_sections	.debug_frame
+  13              		.section	.rodata.test_mode_tx_whitout_callback.str1.1,"aMS",%progbits,1
+  14              	.LC0:
+  15 0000 54455354 		.ascii	"TEST mode TX Empty callback\012\000"
+  15      206D6F64 
+  15      65205458 
+  15      20456D70 
+  15      74792063 
+  16              		.section	.text.test_mode_tx_whitout_callback,"ax",%progbits
+  17              		.align	1
+  18              		.global	test_mode_tx_whitout_callback
+  19              		.arch armv6s-m
+  20              		.syntax unified
+  21              		.code	16
+  22              		.thumb_func
+  23              		.fpu softvfp
+  25              	test_mode_tx_whitout_callback:
+  26              	.LVL0:
+  27              	.LFB11:
+  28              		.file 1 "smtc_modem_core/test_mode/test_mode.c"
+   1:smtc_modem_core/test_mode/test_mode.c **** /*!
+   2:smtc_modem_core/test_mode/test_mode.c ****  * \file      test_mode.c
+   3:smtc_modem_core/test_mode/test_mode.c ****  *
+   4:smtc_modem_core/test_mode/test_mode.c ****  * \brief     handle downlink from device management
+   5:smtc_modem_core/test_mode/test_mode.c ****  *
+   6:smtc_modem_core/test_mode/test_mode.c ****  * Revised BSD License
+   7:smtc_modem_core/test_mode/test_mode.c ****  * Copyright Semtech Corporation 2020. All rights reserved.
+   8:smtc_modem_core/test_mode/test_mode.c ****  *
+   9:smtc_modem_core/test_mode/test_mode.c ****  * Redistribution and use in source and binary forms, with or without
+  10:smtc_modem_core/test_mode/test_mode.c ****  * modification, are permitted provided that the following conditions are met:
+  11:smtc_modem_core/test_mode/test_mode.c ****  *     * Redistributions of source code must retain the above copyright
+  12:smtc_modem_core/test_mode/test_mode.c ****  *       notice, this list of conditions and the following disclaimer.
+  13:smtc_modem_core/test_mode/test_mode.c ****  *     * Redistributions in binary form must reproduce the above copyright
+  14:smtc_modem_core/test_mode/test_mode.c ****  *       notice, this list of conditions and the following disclaimer in the
+  15:smtc_modem_core/test_mode/test_mode.c ****  *       documentation and/or other materials provided with the distribution.
+  16:smtc_modem_core/test_mode/test_mode.c ****  *     * Neither the name of the Semtech corporation nor the
+  17:smtc_modem_core/test_mode/test_mode.c ****  *       names of its contributors may be used to endorse or promote products
+  18:smtc_modem_core/test_mode/test_mode.c ****  *       derived from this software without specific prior written permission.
+  19:smtc_modem_core/test_mode/test_mode.c ****  *
+  20:smtc_modem_core/test_mode/test_mode.c ****  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+  21:smtc_modem_core/test_mode/test_mode.c ****  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+  22:smtc_modem_core/test_mode/test_mode.c ****  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+  23:smtc_modem_core/test_mode/test_mode.c ****  * ARE DISCLAIMED. IN NO EVENT SHALL SEMTECH CORPORATION BE LIABLE FOR ANY DIRECT,
+  24:smtc_modem_core/test_mode/test_mode.c ****  * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+  25:smtc_modem_core/test_mode/test_mode.c ****  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+  26:smtc_modem_core/test_mode/test_mode.c ****  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cclFs5I1.s 			page 2
+
+
+  27:smtc_modem_core/test_mode/test_mode.c ****  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  28:smtc_modem_core/test_mode/test_mode.c ****  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+  29:smtc_modem_core/test_mode/test_mode.c ****  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  30:smtc_modem_core/test_mode/test_mode.c ****  */
+  31:smtc_modem_core/test_mode/test_mode.c **** 
+  32:smtc_modem_core/test_mode/test_mode.c **** /*
+  33:smtc_modem_core/test_mode/test_mode.c ****  * -----------------------------------------------------------------------------
+  34:smtc_modem_core/test_mode/test_mode.c ****  * --- DEPENDENCIES ------------------------------------------------------------
+  35:smtc_modem_core/test_mode/test_mode.c ****  */
+  36:smtc_modem_core/test_mode/test_mode.c **** 
+  37:smtc_modem_core/test_mode/test_mode.c **** #include <stdint.h>   // C99 types
+  38:smtc_modem_core/test_mode/test_mode.c **** #include <stdbool.h>  // bool type
+  39:smtc_modem_core/test_mode/test_mode.c **** 
+  40:smtc_modem_core/test_mode/test_mode.c **** #include "test_mode.h"
+  41:smtc_modem_core/test_mode/test_mode.c **** #include "modem_api.h"
+  42:smtc_modem_core/test_mode/test_mode.c **** #include "radio_planner.h"
+  43:smtc_modem_core/test_mode/test_mode.c **** #include "lorawan_api.h"
+  44:smtc_modem_core/test_mode/test_mode.c **** #include "lr1mac_core.h"
+  45:smtc_modem_core/test_mode/test_mode.c **** #include "smtc_real.h"
+  46:smtc_modem_core/test_mode/test_mode.c **** #include "smtc_bsp.h"
+  47:smtc_modem_core/test_mode/test_mode.c **** 
+  48:smtc_modem_core/test_mode/test_mode.c **** #if defined( REGION_WW2G4 )
+  49:smtc_modem_core/test_mode/test_mode.c **** #include "sx1280_hal.h"
+  50:smtc_modem_core/test_mode/test_mode.c **** #elif defined( REGION_EU_868 ) || defined( REGION_US_915 )
+  51:smtc_modem_core/test_mode/test_mode.c **** #include "sx126x_hal.h"
+  52:smtc_modem_core/test_mode/test_mode.c **** #else
+  53:smtc_modem_core/test_mode/test_mode.c **** #error "Please select region.."
+  54:smtc_modem_core/test_mode/test_mode.c **** #endif
+  55:smtc_modem_core/test_mode/test_mode.c **** 
+  56:smtc_modem_core/test_mode/test_mode.c **** /*
+  57:smtc_modem_core/test_mode/test_mode.c ****  * -----------------------------------------------------------------------------
+  58:smtc_modem_core/test_mode/test_mode.c ****  * --- PRIVATE VARIABLES -------------------------------------------------------
+  59:smtc_modem_core/test_mode/test_mode.c ****  */
+  60:smtc_modem_core/test_mode/test_mode.c **** static bool is_tst_mode_enabled = false;
+  61:smtc_modem_core/test_mode/test_mode.c **** 
+  62:smtc_modem_core/test_mode/test_mode.c **** typedef struct context
+  63:smtc_modem_core/test_mode/test_mode.c **** {
+  64:smtc_modem_core/test_mode/test_mode.c ****     radio_planner_t*  rp;
+  65:smtc_modem_core/test_mode/test_mode.c ****     ral_params_lora_t params;
+  66:smtc_modem_core/test_mode/test_mode.c **** } context_t;
+  67:smtc_modem_core/test_mode/test_mode.c **** 
+  68:smtc_modem_core/test_mode/test_mode.c **** static context_t context_test;
+  69:smtc_modem_core/test_mode/test_mode.c **** 
+  70:smtc_modem_core/test_mode/test_mode.c **** static uint8_t          test_mode_hook_id = 0xFF;
+  71:smtc_modem_core/test_mode/test_mode.c **** static radio_planner_t* test_mode_rp;
+  72:smtc_modem_core/test_mode/test_mode.c **** static lr1_stack_mac_t* lr1_mac_obj = { 0 };
+  73:smtc_modem_core/test_mode/test_mode.c **** 
+  74:smtc_modem_core/test_mode/test_mode.c **** /*
+  75:smtc_modem_core/test_mode/test_mode.c ****  * -----------------------------------------------------------------------------
+  76:smtc_modem_core/test_mode/test_mode.c ****  * --- PRIVATE FUNCTIONS DECLARATION -------------------------------------------
+  77:smtc_modem_core/test_mode/test_mode.c ****  */
+  78:smtc_modem_core/test_mode/test_mode.c **** static inline void test_mode_enable( void )
+  79:smtc_modem_core/test_mode/test_mode.c **** {
+  80:smtc_modem_core/test_mode/test_mode.c ****     is_tst_mode_enabled = true;
+  81:smtc_modem_core/test_mode/test_mode.c **** }
+  82:smtc_modem_core/test_mode/test_mode.c **** static inline void test_mode_disable( void )
+  83:smtc_modem_core/test_mode/test_mode.c **** {
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cclFs5I1.s 			page 3
+
+
+  84:smtc_modem_core/test_mode/test_mode.c ****     is_tst_mode_enabled = false;
+  85:smtc_modem_core/test_mode/test_mode.c **** }
+  86:smtc_modem_core/test_mode/test_mode.c **** 
+  87:smtc_modem_core/test_mode/test_mode.c **** void test_mode_tx_whitout_callback( context_t* context )
+  88:smtc_modem_core/test_mode/test_mode.c **** {
+  29              		.loc 1 88 1 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  89:smtc_modem_core/test_mode/test_mode.c ****     BSP_DBG_TRACE_PRINTF( "TEST mode TX Empty callback\n" );
+  33              		.loc 1 89 5 view .LVU1
+  88:smtc_modem_core/test_mode/test_mode.c ****     BSP_DBG_TRACE_PRINTF( "TEST mode TX Empty callback\n" );
+  34              		.loc 1 88 1 is_stmt 0 view .LVU2
+  35 0000 10B5     		push	{r4, lr}
+  36              		.cfi_def_cfa_offset 8
+  37              		.cfi_offset 4, -8
+  38              		.cfi_offset 14, -4
+  39              		.loc 1 89 5 view .LVU3
+  40 0002 0248     		ldr	r0, .L2
+  41              	.LVL1:
+  42              		.loc 1 89 5 view .LVU4
+  43 0004 FFF7FEFF 		bl	bsp_trace_print
+  44              	.LVL2:
+  90:smtc_modem_core/test_mode/test_mode.c **** }
+  45              		.loc 1 90 1 view .LVU5
+  46              		@ sp needed
+  47 0008 10BD     		pop	{r4, pc}
+  48              	.L3:
+  49 000a C046     		.align	2
+  50              	.L2:
+  51 000c 00000000 		.word	.LC0
+  52              		.cfi_endproc
+  53              	.LFE11:
+  55              		.section	.rodata.test_mode_tx_callback.str1.1,"aMS",%progbits,1
+  56              	.LC2:
+  57 0000 54455354 		.ascii	"TEST mode TX hook id %u\012\000"
+  57      206D6F64 
+  57      65205458 
+  57      20686F6F 
+  57      6B206964 
+  58              		.section	.text.test_mode_tx_callback,"ax",%progbits
+  59              		.align	1
+  60              		.global	test_mode_tx_callback
+  61              		.syntax unified
+  62              		.code	16
+  63              		.thumb_func
+  64              		.fpu softvfp
+  66              	test_mode_tx_callback:
+  67              	.LVL3:
+  68              	.LFB12:
+  91:smtc_modem_core/test_mode/test_mode.c **** 
+  92:smtc_modem_core/test_mode/test_mode.c **** void test_mode_tx_callback( context_t* context )
+  93:smtc_modem_core/test_mode/test_mode.c **** {
+  69              		.loc 1 93 1 is_stmt 1 view -0
+  70              		.cfi_startproc
+  71              		@ args = 0, pretend = 0, frame = 376
+  72              		@ frame_needed = 0, uses_anonymous_args = 0
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cclFs5I1.s 			page 4
+
+
+  94:smtc_modem_core/test_mode/test_mode.c ****     uint8_t my_hook_id;
+  73              		.loc 1 94 5 view .LVU7
+  95:smtc_modem_core/test_mode/test_mode.c ****     rp_hook_get_id( context->rp, context, &my_hook_id );
+  74              		.loc 1 95 5 view .LVU8
+  75 0000 0F23     		movs	r3, #15
+  93:smtc_modem_core/test_mode/test_mode.c ****     uint8_t my_hook_id;
+  76              		.loc 1 93 1 is_stmt 0 view .LVU9
+  77 0002 70B5     		push	{r4, r5, r6, lr}
+  78              		.cfi_def_cfa_offset 16
+  79              		.cfi_offset 4, -16
+  80              		.cfi_offset 5, -12
+  81              		.cfi_offset 6, -8
+  82              		.cfi_offset 14, -4
+  83 0004 E0B0     		sub	sp, sp, #384
+  84              		.cfi_def_cfa_offset 400
+  85              		.loc 1 95 5 view .LVU10
+  86 0006 6B44     		add	r3, r3, sp
+  93:smtc_modem_core/test_mode/test_mode.c ****     uint8_t my_hook_id;
+  87              		.loc 1 93 1 view .LVU11
+  88 0008 0400     		movs	r4, r0
+  89              		.loc 1 95 5 view .LVU12
+  90 000a 1A00     		movs	r2, r3
+  91 000c 0100     		movs	r1, r0
+  92 000e 0068     		ldr	r0, [r0]
+  93              	.LVL4:
+  94              		.loc 1 95 5 view .LVU13
+  95 0010 FFF7FEFF 		bl	rp_hook_get_id
+  96              	.LVL5:
+  96:smtc_modem_core/test_mode/test_mode.c ****     BSP_DBG_TRACE_PRINTF( "TEST mode TX hook id %u\n", my_hook_id );
+  97              		.loc 1 96 5 is_stmt 1 view .LVU14
+  98 0014 6B46     		mov	r3, sp
+  99 0016 1948     		ldr	r0, .L5
+ 100 0018 D97B     		ldrb	r1, [r3, #15]
+ 101 001a FFF7FEFF 		bl	bsp_trace_print
+ 102              	.LVL6:
+  97:smtc_modem_core/test_mode/test_mode.c **** 
+  98:smtc_modem_core/test_mode/test_mode.c ****     rp_radio_params_t radio_params;
+ 103              		.loc 1 98 5 view .LVU15
+  99:smtc_modem_core/test_mode/test_mode.c ****     radio_params.pkt_type                 = RAL_PKT_TYPE_LORA;
+ 104              		.loc 1 99 5 view .LVU16
+ 100:smtc_modem_core/test_mode/test_mode.c ****     radio_params.tx.lora.bw               = context->params.bw;
+ 101:smtc_modem_core/test_mode/test_mode.c ****     radio_params.tx.lora.cr               = context->params.cr;
+ 105              		.loc 1 101 60 is_stmt 0 view .LVU17
+ 106 001e A27A     		ldrb	r2, [r4, #10]
+  99:smtc_modem_core/test_mode/test_mode.c ****     radio_params.pkt_type                 = RAL_PKT_TYPE_LORA;
+ 107              		.loc 1 99 43 view .LVU18
+ 108 0020 08AD     		add	r5, sp, #32
+ 109              		.loc 1 101 43 view .LVU19
+ 110 0022 AA72     		strb	r2, [r5, #10]
+ 102:smtc_modem_core/test_mode/test_mode.c ****     radio_params.tx.lora.sf               = context->params.sf;
+ 103:smtc_modem_core/test_mode/test_mode.c ****     radio_params.tx.lora.crc_is_on        = context->params.crc_is_on;
+ 104:smtc_modem_core/test_mode/test_mode.c ****     radio_params.tx.lora.freq_in_hz       = context->params.freq_in_hz;
+ 105:smtc_modem_core/test_mode/test_mode.c ****     radio_params.tx.lora.invert_iq_is_on  = context->params.invert_iq_is_on;
+ 111              		.loc 1 105 60 view .LVU20
+ 112 0024 A27C     		ldrb	r2, [r4, #18]
+ 106:smtc_modem_core/test_mode/test_mode.c ****     radio_params.tx.lora.pbl_len_in_symb  = context->params.pbl_len_in_symb;
+ 107:smtc_modem_core/test_mode/test_mode.c ****     radio_params.tx.lora.pld_is_fix       = context->params.pld_is_fix;
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cclFs5I1.s 			page 5
+
+
+ 108:smtc_modem_core/test_mode/test_mode.c ****     radio_params.tx.lora.pld_len_in_bytes = context->params.pld_len_in_bytes;
+ 109:smtc_modem_core/test_mode/test_mode.c ****     radio_params.tx.lora.pwr_in_dbm       = context->params.pwr_in_dbm;
+ 110:smtc_modem_core/test_mode/test_mode.c ****     radio_params.tx.lora.sync_word        = context->params.sync_word;
+ 111:smtc_modem_core/test_mode/test_mode.c **** 
+ 112:smtc_modem_core/test_mode/test_mode.c ****     rp_task_t rp_task;
+ 113:smtc_modem_core/test_mode/test_mode.c ****     rp_task.hook_id          = my_hook_id;
+ 113              		.loc 1 113 30 view .LVU21
+ 114 0026 04AE     		add	r6, sp, #16
+ 105:smtc_modem_core/test_mode/test_mode.c ****     radio_params.tx.lora.pbl_len_in_symb  = context->params.pbl_len_in_symb;
+ 115              		.loc 1 105 43 view .LVU22
+ 116 0028 AA74     		strb	r2, [r5, #18]
+ 117              		.loc 1 113 30 view .LVU23
+ 118 002a 6A46     		mov	r2, sp
+ 119 002c D27B     		ldrb	r2, [r2, #15]
+  99:smtc_modem_core/test_mode/test_mode.c ****     radio_params.tx.lora.bw               = context->params.bw;
+ 120              		.loc 1 99 43 view .LVU24
+ 121 002e 0123     		movs	r3, #1
+ 122              		.loc 1 113 30 view .LVU25
+ 123 0030 3270     		strb	r2, [r6]
+ 114:smtc_modem_core/test_mode/test_mode.c ****     rp_task.duration_time_ms = 2000;  // toa;
+ 124              		.loc 1 114 30 view .LVU26
+ 125 0032 FA22     		movs	r2, #250
+ 104:smtc_modem_core/test_mode/test_mode.c ****     radio_params.tx.lora.invert_iq_is_on  = context->params.invert_iq_is_on;
+ 126              		.loc 1 104 43 view .LVU27
+ 127 0034 6168     		ldr	r1, [r4, #4]
+  99:smtc_modem_core/test_mode/test_mode.c ****     radio_params.tx.lora.bw               = context->params.bw;
+ 128              		.loc 1 99 43 view .LVU28
+ 129 0036 2B70     		strb	r3, [r5]
+ 100:smtc_modem_core/test_mode/test_mode.c ****     radio_params.tx.lora.cr               = context->params.cr;
+ 130              		.loc 1 100 5 is_stmt 1 view .LVU29
+ 101:smtc_modem_core/test_mode/test_mode.c ****     radio_params.tx.lora.sf               = context->params.sf;
+ 131              		.loc 1 101 5 view .LVU30
+ 102:smtc_modem_core/test_mode/test_mode.c ****     radio_params.tx.lora.crc_is_on        = context->params.crc_is_on;
+ 132              		.loc 1 102 5 view .LVU31
+ 103:smtc_modem_core/test_mode/test_mode.c ****     radio_params.tx.lora.freq_in_hz       = context->params.freq_in_hz;
+ 133              		.loc 1 103 5 view .LVU32
+ 104:smtc_modem_core/test_mode/test_mode.c ****     radio_params.tx.lora.invert_iq_is_on  = context->params.invert_iq_is_on;
+ 134              		.loc 1 104 5 view .LVU33
+ 105:smtc_modem_core/test_mode/test_mode.c ****     radio_params.tx.lora.pbl_len_in_symb  = context->params.pbl_len_in_symb;
+ 135              		.loc 1 105 5 view .LVU34
+ 106:smtc_modem_core/test_mode/test_mode.c ****     radio_params.tx.lora.pld_is_fix       = context->params.pld_is_fix;
+ 136              		.loc 1 106 5 view .LVU35
+ 107:smtc_modem_core/test_mode/test_mode.c ****     radio_params.tx.lora.pld_len_in_bytes = context->params.pld_len_in_bytes;
+ 137              		.loc 1 107 5 view .LVU36
+ 108:smtc_modem_core/test_mode/test_mode.c ****     radio_params.tx.lora.pwr_in_dbm       = context->params.pwr_in_dbm;
+ 138              		.loc 1 108 5 view .LVU37
+ 109:smtc_modem_core/test_mode/test_mode.c ****     radio_params.tx.lora.sync_word        = context->params.sync_word;
+ 139              		.loc 1 109 5 view .LVU38
+ 104:smtc_modem_core/test_mode/test_mode.c ****     radio_params.tx.lora.invert_iq_is_on  = context->params.invert_iq_is_on;
+ 140              		.loc 1 104 43 is_stmt 0 view .LVU39
+ 141 0038 0991     		str	r1, [sp, #36]
+ 102:smtc_modem_core/test_mode/test_mode.c ****     radio_params.tx.lora.crc_is_on        = context->params.crc_is_on;
+ 142              		.loc 1 102 43 view .LVU40
+ 143 003a 2189     		ldrh	r1, [r4, #8]
+ 144              		.loc 1 114 30 view .LVU41
+ 145 003c D200     		lsls	r2, r2, #3
+ 102:smtc_modem_core/test_mode/test_mode.c ****     radio_params.tx.lora.crc_is_on        = context->params.crc_is_on;
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cclFs5I1.s 			page 6
+
+
+ 146              		.loc 1 102 43 view .LVU42
+ 147 003e 2981     		strh	r1, [r5, #8]
+ 109:smtc_modem_core/test_mode/test_mode.c ****     radio_params.tx.lora.sync_word        = context->params.sync_word;
+ 148              		.loc 1 109 43 view .LVU43
+ 149 0040 217D     		ldrb	r1, [r4, #20]
+ 115:smtc_modem_core/test_mode/test_mode.c ****     rp_task.state            = RP_TASK_STATE_ASAP;
+ 150              		.loc 1 115 30 view .LVU44
+ 151 0042 F370     		strb	r3, [r6, #3]
+ 109:smtc_modem_core/test_mode/test_mode.c ****     radio_params.tx.lora.sync_word        = context->params.sync_word;
+ 152              		.loc 1 109 43 view .LVU45
+ 153 0044 2975     		strb	r1, [r5, #20]
+ 110:smtc_modem_core/test_mode/test_mode.c **** 
+ 154              		.loc 1 110 5 is_stmt 1 view .LVU46
+ 112:smtc_modem_core/test_mode/test_mode.c ****     rp_task.hook_id          = my_hook_id;
+ 155              		.loc 1 112 5 view .LVU47
+ 113:smtc_modem_core/test_mode/test_mode.c ****     rp_task.duration_time_ms = 2000;  // toa;
+ 156              		.loc 1 113 5 view .LVU48
+ 114:smtc_modem_core/test_mode/test_mode.c ****     rp_task.state            = RP_TASK_STATE_ASAP;
+ 157              		.loc 1 114 5 view .LVU49
+ 106:smtc_modem_core/test_mode/test_mode.c ****     radio_params.tx.lora.pld_is_fix       = context->params.pld_is_fix;
+ 158              		.loc 1 106 43 is_stmt 0 view .LVU50
+ 159 0046 E168     		ldr	r1, [r4, #12]
+ 116:smtc_modem_core/test_mode/test_mode.c ****     rp_task.type             = RP_TASK_TYPE_TX_LORA;
+ 160              		.loc 1 116 30 view .LVU51
+ 161 0048 DB18     		adds	r3, r3, r3
+ 106:smtc_modem_core/test_mode/test_mode.c ****     radio_params.tx.lora.pld_is_fix       = context->params.pld_is_fix;
+ 162              		.loc 1 106 43 view .LVU52
+ 163 004a 0B91     		str	r1, [sp, #44]
+ 108:smtc_modem_core/test_mode/test_mode.c ****     radio_params.tx.lora.pwr_in_dbm       = context->params.pwr_in_dbm;
+ 164              		.loc 1 108 43 view .LVU53
+ 165 004c 218A     		ldrh	r1, [r4, #16]
+ 166              		.loc 1 116 30 view .LVU54
+ 167 004e 7370     		strb	r3, [r6, #1]
+ 108:smtc_modem_core/test_mode/test_mode.c ****     radio_params.tx.lora.pwr_in_dbm       = context->params.pwr_in_dbm;
+ 168              		.loc 1 108 43 view .LVU55
+ 169 0050 2982     		strh	r1, [r5, #16]
+ 114:smtc_modem_core/test_mode/test_mode.c ****     rp_task.state            = RP_TASK_STATE_ASAP;
+ 170              		.loc 1 114 30 view .LVU56
+ 171 0052 0792     		str	r2, [sp, #28]
+ 115:smtc_modem_core/test_mode/test_mode.c ****     rp_task.type             = RP_TASK_TYPE_TX_LORA;
+ 172              		.loc 1 115 5 is_stmt 1 view .LVU57
+ 173              		.loc 1 116 5 view .LVU58
+ 117:smtc_modem_core/test_mode/test_mode.c ****     rp_task.start_time_ms    = bsp_rtc_get_time_ms( ) + 2;
+ 174              		.loc 1 117 5 view .LVU59
+ 175              		.loc 1 117 32 is_stmt 0 view .LVU60
+ 176 0054 FFF7FEFF 		bl	bsp_rtc_get_time_ms
+ 177              	.LVL7:
+ 118:smtc_modem_core/test_mode/test_mode.c ****     uint8_t tx_payload[255]  = { 0 };
+ 178              		.loc 1 118 13 view .LVU61
+ 179 0058 0021     		movs	r1, #0
+ 117:smtc_modem_core/test_mode/test_mode.c ****     rp_task.start_time_ms    = bsp_rtc_get_time_ms( ) + 2;
+ 180              		.loc 1 117 55 view .LVU62
+ 181 005a 0230     		adds	r0, r0, #2
+ 117:smtc_modem_core/test_mode/test_mode.c ****     rp_task.start_time_ms    = bsp_rtc_get_time_ms( ) + 2;
+ 182              		.loc 1 117 30 view .LVU63
+ 183 005c 7060     		str	r0, [r6, #4]
+ 184              		.loc 1 118 5 is_stmt 1 view .LVU64
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cclFs5I1.s 			page 7
+
+
+ 185              		.loc 1 118 13 is_stmt 0 view .LVU65
+ 186 005e FB22     		movs	r2, #251
+ 187 0060 21A8     		add	r0, sp, #132
+ 188 0062 2091     		str	r1, [sp, #128]
+ 189 0064 FFF7FEFF 		bl	memset
+ 190              	.LVL8:
+ 119:smtc_modem_core/test_mode/test_mode.c **** 
+ 120:smtc_modem_core/test_mode/test_mode.c ****     rp_task_enqueue( context->rp, &rp_task, tx_payload, context->params.pld_len_in_bytes, &radio_pa
+ 191              		.loc 1 120 5 is_stmt 1 view .LVU66
+ 192 0068 3100     		movs	r1, r6
+ 193 006a 237C     		ldrb	r3, [r4, #16]
+ 194 006c 2068     		ldr	r0, [r4]
+ 195 006e 0095     		str	r5, [sp]
+ 196 0070 20AA     		add	r2, sp, #128
+ 197 0072 FFF7FEFF 		bl	rp_task_enqueue
+ 198              	.LVL9:
+ 121:smtc_modem_core/test_mode/test_mode.c **** }
+ 199              		.loc 1 121 1 is_stmt 0 view .LVU67
+ 200 0076 60B0     		add	sp, sp, #384
+ 201              		@ sp needed
+ 202              	.LVL10:
+ 203              		.loc 1 121 1 view .LVU68
+ 204 0078 70BD     		pop	{r4, r5, r6, pc}
+ 205              	.L6:
+ 206 007a C046     		.align	2
+ 207              	.L5:
+ 208 007c 00000000 		.word	.LC2
+ 209              		.cfi_endproc
+ 210              	.LFE12:
+ 212              		.section	.rodata.test_mode_rx_callback.str1.1,"aMS",%progbits,1
+ 213              	.LC4:
+ 214 0000 2D2D2D2D 		.ascii	"------------------------\012TEST mode RX hook id %u"
+ 214      2D2D2D2D 
+ 214      2D2D2D2D 
+ 214      2D2D2D2D 
+ 214      2D2D2D2D 
+ 215 0030 0A00     		.ascii	"\012\000"
+ 216              	.LC6:
+ 217 0032 743A2025 		.ascii	"t: %lu, rp_status %u, snr: %d, rssi: %d\012\000"
+ 217      6C752C20 
+ 217      72705F73 
+ 217      74617475 
+ 217      73202575 
+ 218              	.LC8:
+ 219 005b 72785F70 		.ascii	"rx_payload\000"
+ 219      61796C6F 
+ 219      616400
+ 220              	.LC10:
+ 221 0066 2573202D 		.ascii	"%s - (%lu bytes):\012\000"
+ 221      2028256C 
+ 221      75206279 
+ 221      74657329 
+ 221      3A0A00
+ 222              	.LC12:
+ 223 0079 0A00     		.ascii	"\012\000"
+ 224              	.LC15:
+ 225 007b 20253032 		.ascii	" %02X\000"
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cclFs5I1.s 			page 8
+
+
+ 225      5800
+ 226              		.section	.text.test_mode_rx_callback,"ax",%progbits
+ 227              		.align	1
+ 228              		.global	test_mode_rx_callback
+ 229              		.syntax unified
+ 230              		.code	16
+ 231              		.thumb_func
+ 232              		.fpu softvfp
+ 234              	test_mode_rx_callback:
+ 235              	.LVL11:
+ 236              	.LFB13:
+ 122:smtc_modem_core/test_mode/test_mode.c **** static uint8_t rx_payload[255] = { 0 };
+ 123:smtc_modem_core/test_mode/test_mode.c **** 
+ 124:smtc_modem_core/test_mode/test_mode.c **** void test_mode_rx_callback( context_t* context )
+ 125:smtc_modem_core/test_mode/test_mode.c **** {
+ 237              		.loc 1 125 1 is_stmt 1 view -0
+ 238              		.cfi_startproc
+ 239              		@ args = 0, pretend = 0, frame = 120
+ 240              		@ frame_needed = 0, uses_anonymous_args = 0
+ 126:smtc_modem_core/test_mode/test_mode.c ****     uint8_t my_hook_id;
+ 241              		.loc 1 126 5 view .LVU70
+ 127:smtc_modem_core/test_mode/test_mode.c ****     rp_hook_get_id( context->rp, context, &my_hook_id );
+ 242              		.loc 1 127 5 view .LVU71
+ 243 0000 0F23     		movs	r3, #15
+ 125:smtc_modem_core/test_mode/test_mode.c ****     uint8_t my_hook_id;
+ 244              		.loc 1 125 1 is_stmt 0 view .LVU72
+ 245 0002 F0B5     		push	{r4, r5, r6, r7, lr}
+ 246              		.cfi_def_cfa_offset 20
+ 247              		.cfi_offset 4, -20
+ 248              		.cfi_offset 5, -16
+ 249              		.cfi_offset 6, -12
+ 250              		.cfi_offset 7, -8
+ 251              		.cfi_offset 14, -4
+ 252 0004 A1B0     		sub	sp, sp, #132
+ 253              		.cfi_def_cfa_offset 152
+ 254              		.loc 1 127 5 view .LVU73
+ 255 0006 6B44     		add	r3, r3, sp
+ 125:smtc_modem_core/test_mode/test_mode.c ****     uint8_t my_hook_id;
+ 256              		.loc 1 125 1 view .LVU74
+ 257 0008 0400     		movs	r4, r0
+ 258              		.loc 1 127 5 view .LVU75
+ 259 000a 1A00     		movs	r2, r3
+ 260 000c 0100     		movs	r1, r0
+ 261 000e 0068     		ldr	r0, [r0]
+ 262              	.LVL12:
+ 263              		.loc 1 127 5 view .LVU76
+ 264 0010 FFF7FEFF 		bl	rp_hook_get_id
+ 265              	.LVL13:
+ 128:smtc_modem_core/test_mode/test_mode.c ****     BSP_DBG_TRACE_PRINTF( "------------------------\nTEST mode RX hook id %u\n", my_hook_id );
+ 266              		.loc 1 128 5 is_stmt 1 view .LVU77
+ 267 0014 6B46     		mov	r3, sp
+ 268 0016 3A48     		ldr	r0, .L14
+ 269 0018 D97B     		ldrb	r1, [r3, #15]
+ 270 001a FFF7FEFF 		bl	bsp_trace_print
+ 271              	.LVL14:
+ 129:smtc_modem_core/test_mode/test_mode.c **** 
+ 130:smtc_modem_core/test_mode/test_mode.c ****     rp_radio_params_t radio_params;
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cclFs5I1.s 			page 9
+
+
+ 272              		.loc 1 130 5 view .LVU78
+ 131:smtc_modem_core/test_mode/test_mode.c ****     radio_params.pkt_type                 = RAL_PKT_TYPE_LORA;
+ 273              		.loc 1 131 5 view .LVU79
+ 274              		.loc 1 131 43 is_stmt 0 view .LVU80
+ 275 001e 2021     		movs	r1, #32
+ 276 0020 6A46     		mov	r2, sp
+ 277 0022 0123     		movs	r3, #1
+ 132:smtc_modem_core/test_mode/test_mode.c ****     radio_params.rx.lora.bw               = context->params.bw;
+ 133:smtc_modem_core/test_mode/test_mode.c ****     radio_params.rx.lora.cr               = context->params.cr;
+ 134:smtc_modem_core/test_mode/test_mode.c ****     radio_params.rx.lora.sf               = context->params.sf;
+ 278              		.loc 1 134 43 view .LVU81
+ 279 0024 5025     		movs	r5, #80
+ 280 0026 6846     		mov	r0, sp
+ 131:smtc_modem_core/test_mode/test_mode.c ****     radio_params.pkt_type                 = RAL_PKT_TYPE_LORA;
+ 281              		.loc 1 131 43 view .LVU82
+ 282 0028 5218     		adds	r2, r2, r1
+ 283 002a 1370     		strb	r3, [r2]
+ 132:smtc_modem_core/test_mode/test_mode.c ****     radio_params.rx.lora.bw               = context->params.bw;
+ 284              		.loc 1 132 5 is_stmt 1 view .LVU83
+ 133:smtc_modem_core/test_mode/test_mode.c ****     radio_params.rx.lora.sf               = context->params.sf;
+ 285              		.loc 1 133 5 view .LVU84
+ 135:smtc_modem_core/test_mode/test_mode.c ****     radio_params.rx.lora.crc_is_on        = context->params.crc_is_on;
+ 136:smtc_modem_core/test_mode/test_mode.c ****     radio_params.rx.lora.freq_in_hz       = context->params.freq_in_hz;
+ 286              		.loc 1 136 43 is_stmt 0 view .LVU85
+ 287 002c 6268     		ldr	r2, [r4, #4]
+ 134:smtc_modem_core/test_mode/test_mode.c ****     radio_params.rx.lora.crc_is_on        = context->params.crc_is_on;
+ 288              		.loc 1 134 43 view .LVU86
+ 289 002e 4019     		adds	r0, r0, r5
+ 290              		.loc 1 136 43 view .LVU87
+ 291 0030 1392     		str	r2, [sp, #76]
+ 134:smtc_modem_core/test_mode/test_mode.c ****     radio_params.rx.lora.crc_is_on        = context->params.crc_is_on;
+ 292              		.loc 1 134 43 view .LVU88
+ 293 0032 2289     		ldrh	r2, [r4, #8]
+ 133:smtc_modem_core/test_mode/test_mode.c ****     radio_params.rx.lora.sf               = context->params.sf;
+ 294              		.loc 1 133 60 view .LVU89
+ 295 0034 A17A     		ldrb	r1, [r4, #10]
+ 134:smtc_modem_core/test_mode/test_mode.c ****     radio_params.rx.lora.crc_is_on        = context->params.crc_is_on;
+ 296              		.loc 1 134 5 is_stmt 1 view .LVU90
+ 135:smtc_modem_core/test_mode/test_mode.c ****     radio_params.rx.lora.crc_is_on        = context->params.crc_is_on;
+ 297              		.loc 1 135 5 view .LVU91
+ 298              		.loc 1 136 5 view .LVU92
+ 134:smtc_modem_core/test_mode/test_mode.c ****     radio_params.rx.lora.crc_is_on        = context->params.crc_is_on;
+ 299              		.loc 1 134 43 is_stmt 0 view .LVU93
+ 300 0036 0280     		strh	r2, [r0]
+ 133:smtc_modem_core/test_mode/test_mode.c ****     radio_params.rx.lora.sf               = context->params.sf;
+ 301              		.loc 1 133 43 view .LVU94
+ 302 0038 5222     		movs	r2, #82
+ 303 003a 6A44     		add	r2, r2, sp
+ 304 003c 1170     		strb	r1, [r2]
+ 137:smtc_modem_core/test_mode/test_mode.c ****     radio_params.rx.lora.invert_iq_is_on  = context->params.invert_iq_is_on;
+ 305              		.loc 1 137 5 is_stmt 1 view .LVU95
+ 138:smtc_modem_core/test_mode/test_mode.c ****     radio_params.rx.lora.pbl_len_in_symb  = context->params.pbl_len_in_symb;
+ 306              		.loc 1 138 5 view .LVU96
+ 139:smtc_modem_core/test_mode/test_mode.c ****     radio_params.rx.lora.pld_is_fix       = context->params.pld_is_fix;
+ 307              		.loc 1 139 5 view .LVU97
+ 140:smtc_modem_core/test_mode/test_mode.c ****     radio_params.rx.lora.pld_len_in_bytes = context->params.pld_len_in_bytes;
+ 308              		.loc 1 140 5 view .LVU98
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cclFs5I1.s 			page 10
+
+
+ 141:smtc_modem_core/test_mode/test_mode.c ****     radio_params.rx.lora.symb_nb_timeout  = context->params.symb_nb_timeout;
+ 309              		.loc 1 141 5 view .LVU99
+ 142:smtc_modem_core/test_mode/test_mode.c ****     radio_params.rx.timeout_in_ms         = 0xFFFFFFFF;
+ 310              		.loc 1 142 5 view .LVU100
+ 311              		.loc 1 142 43 is_stmt 0 view .LVU101
+ 312 003e 0122     		movs	r2, #1
+ 313 0040 5242     		rsbs	r2, r2, #0
+ 314 0042 1D92     		str	r2, [sp, #116]
+ 143:smtc_modem_core/test_mode/test_mode.c ****     radio_params.rx.lora.sync_word        = context->params.sync_word;
+ 315              		.loc 1 143 5 is_stmt 1 view .LVU102
+ 138:smtc_modem_core/test_mode/test_mode.c ****     radio_params.rx.lora.pld_is_fix       = context->params.pld_is_fix;
+ 316              		.loc 1 138 43 is_stmt 0 view .LVU103
+ 317 0044 E268     		ldr	r2, [r4, #12]
+ 144:smtc_modem_core/test_mode/test_mode.c **** 
+ 145:smtc_modem_core/test_mode/test_mode.c ****     rp_task_t rp_task;
+ 146:smtc_modem_core/test_mode/test_mode.c ****     rp_task.hook_id          = my_hook_id;
+ 147:smtc_modem_core/test_mode/test_mode.c ****     rp_task.type             = RP_TASK_TYPE_RX_LORA;
+ 318              		.loc 1 147 30 view .LVU104
+ 319 0046 0025     		movs	r5, #0
+ 138:smtc_modem_core/test_mode/test_mode.c ****     radio_params.rx.lora.pld_is_fix       = context->params.pld_is_fix;
+ 320              		.loc 1 138 43 view .LVU105
+ 321 0048 1592     		str	r2, [sp, #84]
+ 140:smtc_modem_core/test_mode/test_mode.c ****     radio_params.rx.lora.symb_nb_timeout  = context->params.symb_nb_timeout;
+ 322              		.loc 1 140 43 view .LVU106
+ 323 004a 2269     		ldr	r2, [r4, #16]
+ 146:smtc_modem_core/test_mode/test_mode.c ****     rp_task.type             = RP_TASK_TYPE_RX_LORA;
+ 324              		.loc 1 146 30 view .LVU107
+ 325 004c 04AF     		add	r7, sp, #16
+ 140:smtc_modem_core/test_mode/test_mode.c ****     radio_params.rx.lora.symb_nb_timeout  = context->params.symb_nb_timeout;
+ 326              		.loc 1 140 43 view .LVU108
+ 327 004e 1692     		str	r2, [sp, #88]
+ 145:smtc_modem_core/test_mode/test_mode.c ****     rp_task.hook_id          = my_hook_id;
+ 328              		.loc 1 145 5 is_stmt 1 view .LVU109
+ 146:smtc_modem_core/test_mode/test_mode.c ****     rp_task.type             = RP_TASK_TYPE_RX_LORA;
+ 329              		.loc 1 146 5 view .LVU110
+ 146:smtc_modem_core/test_mode/test_mode.c ****     rp_task.type             = RP_TASK_TYPE_RX_LORA;
+ 330              		.loc 1 146 30 is_stmt 0 view .LVU111
+ 331 0050 6A46     		mov	r2, sp
+ 332 0052 D27B     		ldrb	r2, [r2, #15]
+ 148:smtc_modem_core/test_mode/test_mode.c ****     rp_task.state            = RP_TASK_STATE_ASAP;
+ 333              		.loc 1 148 30 view .LVU112
+ 334 0054 FB70     		strb	r3, [r7, #3]
+ 146:smtc_modem_core/test_mode/test_mode.c ****     rp_task.type             = RP_TASK_TYPE_RX_LORA;
+ 335              		.loc 1 146 30 view .LVU113
+ 336 0056 3A70     		strb	r2, [r7]
+ 147:smtc_modem_core/test_mode/test_mode.c ****     rp_task.state            = RP_TASK_STATE_ASAP;
+ 337              		.loc 1 147 5 is_stmt 1 view .LVU114
+ 147:smtc_modem_core/test_mode/test_mode.c ****     rp_task.state            = RP_TASK_STATE_ASAP;
+ 338              		.loc 1 147 30 is_stmt 0 view .LVU115
+ 339 0058 7D70     		strb	r5, [r7, #1]
+ 340              		.loc 1 148 5 is_stmt 1 view .LVU116
+ 149:smtc_modem_core/test_mode/test_mode.c ****     rp_task.start_time_ms    = bsp_rtc_get_time_ms( ) + 2;
+ 341              		.loc 1 149 5 view .LVU117
+ 342              		.loc 1 149 32 is_stmt 0 view .LVU118
+ 343 005a FFF7FEFF 		bl	bsp_rtc_get_time_ms
+ 344              	.LVL15:
+ 150:smtc_modem_core/test_mode/test_mode.c ****     rp_task.duration_time_ms = 2000;  // toa;
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cclFs5I1.s 			page 11
+
+
+ 345              		.loc 1 150 30 view .LVU119
+ 346 005e FA23     		movs	r3, #250
+ 347 0060 DB00     		lsls	r3, r3, #3
+ 348 0062 FB60     		str	r3, [r7, #12]
+ 151:smtc_modem_core/test_mode/test_mode.c **** 
+ 152:smtc_modem_core/test_mode/test_mode.c ****     int16_t snr  = context->rp->radio_params[my_hook_id].rx.lora_pkt_status.snr_pkt_in_db;
+ 349              		.loc 1 152 76 view .LVU120
+ 350 0064 6B46     		mov	r3, sp
+ 351 0066 6021     		movs	r1, #96
+ 352 0068 DE7B     		ldrb	r6, [r3, #15]
+ 149:smtc_modem_core/test_mode/test_mode.c ****     rp_task.duration_time_ms = 2000;  // toa;
+ 353              		.loc 1 149 55 view .LVU121
+ 354 006a 0230     		adds	r0, r0, #2
+ 355 006c 7143     		muls	r1, r6
+ 149:smtc_modem_core/test_mode/test_mode.c ****     rp_task.duration_time_ms = 2000;  // toa;
+ 356              		.loc 1 149 30 view .LVU122
+ 357 006e 7860     		str	r0, [r7, #4]
+ 150:smtc_modem_core/test_mode/test_mode.c ****     rp_task.duration_time_ms = 2000;  // toa;
+ 358              		.loc 1 150 5 is_stmt 1 view .LVU123
+ 359              		.loc 1 152 5 view .LVU124
+ 360              		.loc 1 152 27 is_stmt 0 view .LVU125
+ 361 0070 2068     		ldr	r0, [r4]
+ 362 0072 4118     		adds	r1, r0, r1
+ 363              	.LVL16:
+ 153:smtc_modem_core/test_mode/test_mode.c ****     int16_t rssi = context->rp->radio_params[my_hook_id].rx.lora_pkt_status.rssi_pkt_in_dbm;
+ 364              		.loc 1 153 5 is_stmt 1 view .LVU126
+ 154:smtc_modem_core/test_mode/test_mode.c **** 
+ 155:smtc_modem_core/test_mode/test_mode.c ****     uint32_t    irq_timestamp_ms = context->rp->irq_timestamp_ms[my_hook_id];
+ 365              		.loc 1 155 5 view .LVU127
+ 156:smtc_modem_core/test_mode/test_mode.c ****     rp_status_t rp_status        = context->rp->status[my_hook_id];
+ 366              		.loc 1 156 5 view .LVU128
+ 157:smtc_modem_core/test_mode/test_mode.c **** 
+ 158:smtc_modem_core/test_mode/test_mode.c ****     BSP_DBG_TRACE_PRINTF( "t: %lu, rp_status %u, snr: %d, rssi: %d\n", irq_timestamp_ms, rp_status,
+ 367              		.loc 1 158 5 view .LVU129
+ 152:smtc_modem_core/test_mode/test_mode.c ****     int16_t rssi = context->rp->radio_params[my_hook_id].rx.lora_pkt_status.rssi_pkt_in_dbm;
+ 368              		.loc 1 152 13 is_stmt 0 view .LVU130
+ 369 0074 0B00     		movs	r3, r1
+ 370 0076 6A33     		adds	r3, r3, #106
+ 371              	.LVL17:
+ 372              		.loc 1 158 5 view .LVU131
+ 373 0078 0022     		movs	r2, #0
+ 374 007a 9A5E     		ldrsh	r2, [r3, r2]
+ 375              	.LVL18:
+ 156:smtc_modem_core/test_mode/test_mode.c ****     rp_status_t rp_status        = context->rp->status[my_hook_id];
+ 376              		.loc 1 156 17 view .LVU132
+ 377 007c FA23     		movs	r3, #250
+ 378              		.loc 1 158 5 view .LVU133
+ 379 007e 9446     		mov	ip, r2
+ 156:smtc_modem_core/test_mode/test_mode.c ****     rp_status_t rp_status        = context->rp->status[my_hook_id];
+ 380              		.loc 1 156 17 view .LVU134
+ 381 0080 9B00     		lsls	r3, r3, #2
+ 382 0082 8219     		adds	r2, r0, r6
+ 153:smtc_modem_core/test_mode/test_mode.c **** 
+ 383              		.loc 1 153 13 view .LVU135
+ 384 0084 6831     		adds	r1, r1, #104
+ 385              	.LVL19:
+ 156:smtc_modem_core/test_mode/test_mode.c **** 
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cclFs5I1.s 			page 12
+
+
+ 386              		.loc 1 156 17 view .LVU136
+ 387 0086 D218     		adds	r2, r2, r3
+ 388              		.loc 1 158 5 view .LVU137
+ 389 0088 0023     		movs	r3, #0
+ 390 008a C95E     		ldrsh	r1, [r1, r3]
+ 391              	.LVL20:
+ 155:smtc_modem_core/test_mode/test_mode.c ****     rp_status_t rp_status        = context->rp->status[my_hook_id];
+ 392              		.loc 1 155 17 view .LVU138
+ 393 008c FC36     		adds	r6, r6, #252
+ 394              	.LVL21:
+ 395              		.loc 1 158 5 view .LVU139
+ 396 008e 1278     		ldrb	r2, [r2]
+ 155:smtc_modem_core/test_mode/test_mode.c ****     rp_status_t rp_status        = context->rp->status[my_hook_id];
+ 397              		.loc 1 155 17 view .LVU140
+ 398 0090 B600     		lsls	r6, r6, #2
+ 399              	.LVL22:
+ 400              		.loc 1 158 5 view .LVU141
+ 401 0092 0091     		str	r1, [sp]
+ 402              	.LVL23:
+ 403              		.loc 1 158 5 view .LVU142
+ 404 0094 3158     		ldr	r1, [r6, r0]
+ 405              	.LVL24:
+ 406              		.loc 1 158 5 view .LVU143
+ 407 0096 6346     		mov	r3, ip
+ 408 0098 1A48     		ldr	r0, .L14+4
+ 409 009a FFF7FEFF 		bl	bsp_trace_print
+ 410              	.LVL25:
+ 159:smtc_modem_core/test_mode/test_mode.c ****     BSP_DBG_TRACE_ARRAY( "rx_payload", rx_payload, context->rp->payload_size[my_hook_id] )
+ 411              		.loc 1 159 5 is_stmt 1 view .LVU144
+ 412              		.loc 1 159 5 view .LVU145
+ 413 009e 6B46     		mov	r3, sp
+ 414 00a0 DB7B     		ldrb	r3, [r3, #15]
+ 415 00a2 2268     		ldr	r2, [r4]
+ 416 00a4 D933     		adds	r3, r3, #217
+ 417 00a6 FF33     		adds	r3, r3, #255
+ 418 00a8 5B00     		lsls	r3, r3, #1
+ 419 00aa 9A5A     		ldrh	r2, [r3, r2]
+ 420 00ac 1649     		ldr	r1, .L14+8
+ 421 00ae 1748     		ldr	r0, .L14+12
+ 422 00b0 FFF7FEFF 		bl	bsp_trace_print
+ 423              	.LVL26:
+ 424              		.loc 1 159 5 view .LVU146
+ 425              	.LBB6:
+ 426              		.loc 1 159 5 view .LVU147
+ 427              	.L8:
+ 428              		.loc 1 159 5 discriminator 7 view .LVU148
+ 429 00b4 6B46     		mov	r3, sp
+ 430 00b6 DB7B     		ldrb	r3, [r3, #15]
+ 431 00b8 2268     		ldr	r2, [r4]
+ 432 00ba D933     		adds	r3, r3, #217
+ 433 00bc FF33     		adds	r3, r3, #255
+ 434 00be 5B00     		lsls	r3, r3, #1
+ 435 00c0 9B5A     		ldrh	r3, [r3, r2]
+ 436 00c2 134E     		ldr	r6, .L14+16
+ 437 00c4 AB42     		cmp	r3, r5
+ 438 00c6 0CD8     		bhi	.L10
+ 439              	.LBE6:
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cclFs5I1.s 			page 13
+
+
+ 440              		.loc 1 159 5 discriminator 9 view .LVU149
+ 441 00c8 1248     		ldr	r0, .L14+20
+ 442 00ca FFF7FEFF 		bl	bsp_trace_print
+ 443              	.LVL27:
+ 444              		.loc 1 159 5 discriminator 9 view .LVU150
+ 160:smtc_modem_core/test_mode/test_mode.c **** 
+ 161:smtc_modem_core/test_mode/test_mode.c ****     rp_task_enqueue( context->rp, &rp_task, rx_payload, context->params.pld_len_in_bytes, &radio_pa
+ 445              		.loc 1 161 5 discriminator 9 view .LVU151
+ 446 00ce 08AA     		add	r2, sp, #32
+ 447 00d0 0092     		str	r2, [sp]
+ 448 00d2 3900     		movs	r1, r7
+ 449 00d4 3200     		movs	r2, r6
+ 450 00d6 237C     		ldrb	r3, [r4, #16]
+ 451 00d8 2068     		ldr	r0, [r4]
+ 452 00da FFF7FEFF 		bl	rp_task_enqueue
+ 453              	.LVL28:
+ 162:smtc_modem_core/test_mode/test_mode.c **** }
+ 454              		.loc 1 162 1 is_stmt 0 discriminator 9 view .LVU152
+ 455 00de 21B0     		add	sp, sp, #132
+ 456              		@ sp needed
+ 457              	.LVL29:
+ 458              	.LVL30:
+ 459              		.loc 1 162 1 discriminator 9 view .LVU153
+ 460 00e0 F0BD     		pop	{r4, r5, r6, r7, pc}
+ 461              	.LVL31:
+ 462              	.L10:
+ 463              	.LBB7:
+ 159:smtc_modem_core/test_mode/test_mode.c ****     BSP_DBG_TRACE_ARRAY( "rx_payload", rx_payload, context->rp->payload_size[my_hook_id] )
+ 464              		.loc 1 159 5 is_stmt 1 discriminator 8 view .LVU154
+ 465 00e2 0F23     		movs	r3, #15
+ 466 00e4 1D42     		tst	r5, r3
+ 467 00e6 04D1     		bne	.L9
+ 159:smtc_modem_core/test_mode/test_mode.c ****     BSP_DBG_TRACE_ARRAY( "rx_payload", rx_payload, context->rp->payload_size[my_hook_id] )
+ 468              		.loc 1 159 5 is_stmt 0 discriminator 2 view .LVU155
+ 469 00e8 002D     		cmp	r5, #0
+ 470 00ea 02D0     		beq	.L9
+ 159:smtc_modem_core/test_mode/test_mode.c ****     BSP_DBG_TRACE_ARRAY( "rx_payload", rx_payload, context->rp->payload_size[my_hook_id] )
+ 471              		.loc 1 159 5 is_stmt 1 discriminator 4 view .LVU156
+ 472 00ec 0948     		ldr	r0, .L14+20
+ 473 00ee FFF7FEFF 		bl	bsp_trace_print
+ 474              	.LVL32:
+ 475              	.L9:
+ 159:smtc_modem_core/test_mode/test_mode.c ****     BSP_DBG_TRACE_ARRAY( "rx_payload", rx_payload, context->rp->payload_size[my_hook_id] )
+ 476              		.loc 1 159 5 discriminator 6 view .LVU157
+ 477 00f2 715D     		ldrb	r1, [r6, r5]
+ 478 00f4 0848     		ldr	r0, .L14+24
+ 479 00f6 FFF7FEFF 		bl	bsp_trace_print
+ 480              	.LVL33:
+ 159:smtc_modem_core/test_mode/test_mode.c ****     BSP_DBG_TRACE_ARRAY( "rx_payload", rx_payload, context->rp->payload_size[my_hook_id] )
+ 481              		.loc 1 159 5 discriminator 6 view .LVU158
+ 482 00fa 0135     		adds	r5, r5, #1
+ 483              	.LVL34:
+ 159:smtc_modem_core/test_mode/test_mode.c ****     BSP_DBG_TRACE_ARRAY( "rx_payload", rx_payload, context->rp->payload_size[my_hook_id] )
+ 484              		.loc 1 159 5 is_stmt 0 discriminator 6 view .LVU159
+ 485 00fc DAE7     		b	.L8
+ 486              	.L15:
+ 487 00fe C046     		.align	2
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cclFs5I1.s 			page 14
+
+
+ 488              	.L14:
+ 489 0100 00000000 		.word	.LC4
+ 490 0104 32000000 		.word	.LC6
+ 491 0108 5B000000 		.word	.LC8
+ 492 010c 66000000 		.word	.LC10
+ 493 0110 00000000 		.word	rx_payload
+ 494 0114 79000000 		.word	.LC12
+ 495 0118 7B000000 		.word	.LC15
+ 496              	.LBE7:
+ 497              		.cfi_endproc
+ 498              	.LFE13:
+ 500              		.section	.text.test_mode_enabled_is,"ax",%progbits
+ 501              		.align	1
+ 502              		.global	test_mode_enabled_is
+ 503              		.syntax unified
+ 504              		.code	16
+ 505              		.thumb_func
+ 506              		.fpu softvfp
+ 508              	test_mode_enabled_is:
+ 509              	.LFB14:
+ 163:smtc_modem_core/test_mode/test_mode.c **** 
+ 164:smtc_modem_core/test_mode/test_mode.c **** /*
+ 165:smtc_modem_core/test_mode/test_mode.c ****  * -----------------------------------------------------------------------------
+ 166:smtc_modem_core/test_mode/test_mode.c ****  * --- PUBLIC FUNCTIONS DEFINITION ---------------------------------------------
+ 167:smtc_modem_core/test_mode/test_mode.c ****  */
+ 168:smtc_modem_core/test_mode/test_mode.c **** 
+ 169:smtc_modem_core/test_mode/test_mode.c **** uint8_t test_mode_enabled_is( void )
+ 170:smtc_modem_core/test_mode/test_mode.c **** {
+ 510              		.loc 1 170 1 is_stmt 1 view -0
+ 511              		.cfi_startproc
+ 512              		@ args = 0, pretend = 0, frame = 0
+ 513              		@ frame_needed = 0, uses_anonymous_args = 0
+ 514              		@ link register save eliminated.
+ 171:smtc_modem_core/test_mode/test_mode.c ****     return ( is_tst_mode_enabled == true ) ? true : false;
+ 515              		.loc 1 171 5 view .LVU161
+ 516              		.loc 1 171 51 is_stmt 0 view .LVU162
+ 517 0000 014B     		ldr	r3, .L17
+ 172:smtc_modem_core/test_mode/test_mode.c **** }
+ 518              		.loc 1 172 1 view .LVU163
+ 519              		@ sp needed
+ 171:smtc_modem_core/test_mode/test_mode.c ****     return ( is_tst_mode_enabled == true ) ? true : false;
+ 520              		.loc 1 171 51 view .LVU164
+ 521 0002 1878     		ldrb	r0, [r3]
+ 522              		.loc 1 172 1 view .LVU165
+ 523 0004 7047     		bx	lr
+ 524              	.L18:
+ 525 0006 C046     		.align	2
+ 526              	.L17:
+ 527 0008 00000000 		.word	.LANCHOR0
+ 528              		.cfi_endproc
+ 529              	.LFE14:
+ 531              		.section	.rodata.test_mode_start.str1.1,"aMS",%progbits,1
+ 532              	.LC19:
+ 533 0000 1B5B303B 		.ascii	"\033[0;32m\000"
+ 533      33326D00 
+ 534              	.LC21:
+ 535 0008 494E464F 		.ascii	"INFO : \000"
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cclFs5I1.s 			page 15
+
+
+ 535      203A2000 
+ 536              	.LC23:
+ 537 0010 54535420 		.ascii	"TST MODE: START\012\000"
+ 537      4D4F4445 
+ 537      3A205354 
+ 537      4152540A 
+ 537      00
+ 538              	.LC25:
+ 539 0021 1B5B306D 		.ascii	"\033[0m\000"
+ 539      00
+ 540              		.section	.text.test_mode_start,"ax",%progbits
+ 541              		.align	1
+ 542              		.global	test_mode_start
+ 543              		.syntax unified
+ 544              		.code	16
+ 545              		.thumb_func
+ 546              		.fpu softvfp
+ 548              	test_mode_start:
+ 549              	.LFB15:
+ 173:smtc_modem_core/test_mode/test_mode.c **** 
+ 174:smtc_modem_core/test_mode/test_mode.c **** modem_return_code_t test_mode_start( void )
+ 175:smtc_modem_core/test_mode/test_mode.c **** {
+ 550              		.loc 1 175 1 is_stmt 1 view -0
+ 551              		.cfi_startproc
+ 552              		@ args = 0, pretend = 0, frame = 0
+ 553              		@ frame_needed = 0, uses_anonymous_args = 0
+ 176:smtc_modem_core/test_mode/test_mode.c ****     test_mode_enable( );
+ 554              		.loc 1 176 5 view .LVU167
+ 555              	.LBB8:
+ 556              	.LBI8:
+  78:smtc_modem_core/test_mode/test_mode.c **** {
+ 557              		.loc 1 78 20 view .LVU168
+ 558              	.LBB9:
+  80:smtc_modem_core/test_mode/test_mode.c **** }
+ 559              		.loc 1 80 5 view .LVU169
+  80:smtc_modem_core/test_mode/test_mode.c **** }
+ 560              		.loc 1 80 25 is_stmt 0 view .LVU170
+ 561 0000 0122     		movs	r2, #1
+ 562 0002 0F4B     		ldr	r3, .L20
+ 563              	.LBE9:
+ 564              	.LBE8:
+ 175:smtc_modem_core/test_mode/test_mode.c ****     test_mode_enable( );
+ 565              		.loc 1 175 1 view .LVU171
+ 566 0004 10B5     		push	{r4, lr}
+ 567              		.cfi_def_cfa_offset 8
+ 568              		.cfi_offset 4, -8
+ 569              		.cfi_offset 14, -4
+ 177:smtc_modem_core/test_mode/test_mode.c ****     BSP_DBG_TRACE_INFO( "TST MODE: START\n" );
+ 570              		.loc 1 177 5 view .LVU172
+ 571 0006 0F48     		ldr	r0, .L20+4
+ 572              	.LBB11:
+ 573              	.LBB10:
+  80:smtc_modem_core/test_mode/test_mode.c **** }
+ 574              		.loc 1 80 25 view .LVU173
+ 575 0008 1A70     		strb	r2, [r3]
+ 576              	.LBE10:
+ 577              	.LBE11:
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cclFs5I1.s 			page 16
+
+
+ 578              		.loc 1 177 5 is_stmt 1 view .LVU174
+ 579              		.loc 1 177 5 view .LVU175
+ 580 000a FFF7FEFF 		bl	bsp_trace_print
+ 581              	.LVL35:
+ 582              		.loc 1 177 5 view .LVU176
+ 583 000e 0E48     		ldr	r0, .L20+8
+ 584 0010 FFF7FEFF 		bl	bsp_trace_print
+ 585              	.LVL36:
+ 586              		.loc 1 177 5 view .LVU177
+ 587 0014 0D48     		ldr	r0, .L20+12
+ 588 0016 FFF7FEFF 		bl	bsp_trace_print
+ 589              	.LVL37:
+ 590              		.loc 1 177 5 view .LVU178
+ 591 001a 0D48     		ldr	r0, .L20+16
+ 592 001c FFF7FEFF 		bl	bsp_trace_print
+ 593              	.LVL38:
+ 594              		.loc 1 177 5 view .LVU179
+ 595              		.loc 1 177 46 view .LVU180
+ 178:smtc_modem_core/test_mode/test_mode.c **** 
+ 179:smtc_modem_core/test_mode/test_mode.c ****     test_mode_rp = modem_get_radio_planner( );
+ 596              		.loc 1 179 5 view .LVU181
+ 597              		.loc 1 179 20 is_stmt 0 view .LVU182
+ 598 0020 FFF7FEFF 		bl	modem_get_radio_planner
+ 599              	.LVL39:
+ 600              		.loc 1 179 18 view .LVU183
+ 601 0024 0B4B     		ldr	r3, .L20+20
+ 180:smtc_modem_core/test_mode/test_mode.c **** 
+ 181:smtc_modem_core/test_mode/test_mode.c ****     lorawan_api_init( test_mode_rp );
+ 182:smtc_modem_core/test_mode/test_mode.c ****     lr1_mac_obj       = lr1mac_core_stack_mac_get( );
+ 183:smtc_modem_core/test_mode/test_mode.c ****     test_mode_hook_id = lorawan_api_rp_hook_id_get( );
+ 184:smtc_modem_core/test_mode/test_mode.c ****     return RC_OK;
+ 185:smtc_modem_core/test_mode/test_mode.c **** }
+ 602              		.loc 1 185 1 view .LVU184
+ 603              		@ sp needed
+ 179:smtc_modem_core/test_mode/test_mode.c **** 
+ 604              		.loc 1 179 18 view .LVU185
+ 605 0026 1860     		str	r0, [r3]
+ 181:smtc_modem_core/test_mode/test_mode.c ****     lr1_mac_obj       = lr1mac_core_stack_mac_get( );
+ 606              		.loc 1 181 5 is_stmt 1 view .LVU186
+ 607 0028 FFF7FEFF 		bl	lorawan_api_init
+ 608              	.LVL40:
+ 182:smtc_modem_core/test_mode/test_mode.c ****     test_mode_hook_id = lorawan_api_rp_hook_id_get( );
+ 609              		.loc 1 182 5 view .LVU187
+ 182:smtc_modem_core/test_mode/test_mode.c ****     test_mode_hook_id = lorawan_api_rp_hook_id_get( );
+ 610              		.loc 1 182 25 is_stmt 0 view .LVU188
+ 611 002c FFF7FEFF 		bl	lr1mac_core_stack_mac_get
+ 612              	.LVL41:
+ 182:smtc_modem_core/test_mode/test_mode.c ****     test_mode_hook_id = lorawan_api_rp_hook_id_get( );
+ 613              		.loc 1 182 23 view .LVU189
+ 614 0030 094B     		ldr	r3, .L20+24
+ 615 0032 1860     		str	r0, [r3]
+ 183:smtc_modem_core/test_mode/test_mode.c ****     return RC_OK;
+ 616              		.loc 1 183 5 is_stmt 1 view .LVU190
+ 183:smtc_modem_core/test_mode/test_mode.c ****     return RC_OK;
+ 617              		.loc 1 183 25 is_stmt 0 view .LVU191
+ 618 0034 FFF7FEFF 		bl	lorawan_api_rp_hook_id_get
+ 619              	.LVL42:
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cclFs5I1.s 			page 17
+
+
+ 183:smtc_modem_core/test_mode/test_mode.c ****     return RC_OK;
+ 620              		.loc 1 183 23 view .LVU192
+ 621 0038 084B     		ldr	r3, .L20+28
+ 622 003a 1870     		strb	r0, [r3]
+ 184:smtc_modem_core/test_mode/test_mode.c **** }
+ 623              		.loc 1 184 5 is_stmt 1 view .LVU193
+ 624              		.loc 1 185 1 is_stmt 0 view .LVU194
+ 625 003c 0020     		movs	r0, #0
+ 626 003e 10BD     		pop	{r4, pc}
+ 627              	.L21:
+ 628              		.align	2
+ 629              	.L20:
+ 630 0040 00000000 		.word	.LANCHOR0
+ 631 0044 00000000 		.word	.LC19
+ 632 0048 08000000 		.word	.LC21
+ 633 004c 10000000 		.word	.LC23
+ 634 0050 21000000 		.word	.LC25
+ 635 0054 00000000 		.word	.LANCHOR1
+ 636 0058 00000000 		.word	.LANCHOR2
+ 637 005c 00000000 		.word	.LANCHOR3
+ 638              		.cfi_endproc
+ 639              	.LFE15:
+ 641              		.section	.text.test_mode_nop,"ax",%progbits
+ 642              		.align	1
+ 643              		.global	test_mode_nop
+ 644              		.syntax unified
+ 645              		.code	16
+ 646              		.thumb_func
+ 647              		.fpu softvfp
+ 649              	test_mode_nop:
+ 650              	.LFB16:
+ 186:smtc_modem_core/test_mode/test_mode.c **** 
+ 187:smtc_modem_core/test_mode/test_mode.c **** modem_return_code_t test_mode_nop( void )
+ 188:smtc_modem_core/test_mode/test_mode.c **** {
+ 651              		.loc 1 188 1 is_stmt 1 view -0
+ 652              		.cfi_startproc
+ 653              		@ args = 0, pretend = 0, frame = 0
+ 654              		@ frame_needed = 0, uses_anonymous_args = 0
+ 189:smtc_modem_core/test_mode/test_mode.c ****     rp_task_abort( test_mode_rp, test_mode_hook_id );
+ 655              		.loc 1 189 5 view .LVU196
+ 188:smtc_modem_core/test_mode/test_mode.c ****     rp_task_abort( test_mode_rp, test_mode_hook_id );
+ 656              		.loc 1 188 1 is_stmt 0 view .LVU197
+ 657 0000 70B5     		push	{r4, r5, r6, lr}
+ 658              		.cfi_def_cfa_offset 16
+ 659              		.cfi_offset 4, -16
+ 660              		.cfi_offset 5, -12
+ 661              		.cfi_offset 6, -8
+ 662              		.cfi_offset 14, -4
+ 190:smtc_modem_core/test_mode/test_mode.c ****     if( ral_init( test_mode_rp->ral ) != RAL_STATUS_OK )
+ 663              		.loc 1 190 31 view .LVU198
+ 664 0002 A525     		movs	r5, #165
+ 189:smtc_modem_core/test_mode/test_mode.c ****     rp_task_abort( test_mode_rp, test_mode_hook_id );
+ 665              		.loc 1 189 5 view .LVU199
+ 666 0004 0A4B     		ldr	r3, .L28
+ 667 0006 0B4C     		ldr	r4, .L28+4
+ 668 0008 1978     		ldrb	r1, [r3]
+ 669 000a 2068     		ldr	r0, [r4]
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cclFs5I1.s 			page 18
+
+
+ 670 000c FFF7FEFF 		bl	rp_task_abort
+ 671              	.LVL43:
+ 672              		.loc 1 190 5 is_stmt 1 view .LVU200
+ 673              		.loc 1 190 9 is_stmt 0 view .LVU201
+ 674 0010 2368     		ldr	r3, [r4]
+ 675              		.loc 1 190 31 view .LVU202
+ 676 0012 ED00     		lsls	r5, r5, #3
+ 677              		.loc 1 190 9 view .LVU203
+ 678 0014 5859     		ldr	r0, [r3, r5]
+ 679 0016 FFF7FEFF 		bl	ral_init
+ 680              	.LVL44:
+ 681              		.loc 1 190 7 view .LVU204
+ 682 001a 0028     		cmp	r0, #0
+ 683 001c 05D1     		bne	.L23
+ 191:smtc_modem_core/test_mode/test_mode.c ****     {
+ 192:smtc_modem_core/test_mode/test_mode.c ****         return RC_FAIL;
+ 193:smtc_modem_core/test_mode/test_mode.c ****     }
+ 194:smtc_modem_core/test_mode/test_mode.c ****     if( ral_set_sleep( test_mode_rp->ral ) != RAL_STATUS_OK )
+ 684              		.loc 1 194 5 is_stmt 1 view .LVU205
+ 685              		.loc 1 194 36 is_stmt 0 view .LVU206
+ 686 001e 2368     		ldr	r3, [r4]
+ 687              		.loc 1 194 9 view .LVU207
+ 688 0020 5859     		ldr	r0, [r3, r5]
+ 689 0022 FFF7FEFF 		bl	ral_set_sleep
+ 690              	.LVL45:
+ 691              		.loc 1 194 7 view .LVU208
+ 692 0026 0028     		cmp	r0, #0
+ 693 0028 00D0     		beq	.L24
+ 694              	.L23:
+ 195:smtc_modem_core/test_mode/test_mode.c ****     {
+ 196:smtc_modem_core/test_mode/test_mode.c ****         return RC_FAIL;
+ 695              		.loc 1 196 9 is_stmt 1 view .LVU209
+ 696              		.loc 1 196 16 is_stmt 0 view .LVU210
+ 697 002a 0620     		movs	r0, #6
+ 698              	.L24:
+ 197:smtc_modem_core/test_mode/test_mode.c ****     }
+ 198:smtc_modem_core/test_mode/test_mode.c ****     return RC_OK;
+ 199:smtc_modem_core/test_mode/test_mode.c **** }
+ 699              		.loc 1 199 1 view .LVU211
+ 700              		@ sp needed
+ 701 002c 70BD     		pop	{r4, r5, r6, pc}
+ 702              	.L29:
+ 703 002e C046     		.align	2
+ 704              	.L28:
+ 705 0030 00000000 		.word	.LANCHOR3
+ 706 0034 00000000 		.word	.LANCHOR1
+ 707              		.cfi_endproc
+ 708              	.LFE16:
+ 710              		.section	.rodata.test_mode_tx.str1.1,"aMS",%progbits,1
+ 711              	.LC33:
+ 712 0000 1B5B303B 		.ascii	"\033[0;31m\000"
+ 712      33316D00 
+ 713              	.LC35:
+ 714 0008 4552524F 		.ascii	"ERROR: \000"
+ 714      523A2000 
+ 715              	.LC37:
+ 716 0010 20496E76 		.ascii	" Invalid Frequency %lu\012\000"
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cclFs5I1.s 			page 19
+
+
+ 716      616C6964 
+ 716      20467265 
+ 716      7175656E 
+ 716      63792025 
+ 717              	.LC40:
+ 718 0028 20496E76 		.ascii	" Invalid sf %lu\012\000"
+ 718      616C6964 
+ 718      20736620 
+ 718      256C750A 
+ 718      00
+ 719              	.LC42:
+ 720 0039 20496E76 		.ascii	" Invalid bw %lu\012\000"
+ 720      616C6964 
+ 720      20627720 
+ 720      256C750A 
+ 720      00
+ 721              	.LC44:
+ 722 004a 20496E76 		.ascii	" Invalid cr %lu\012\000"
+ 722      616C6964 
+ 722      20637220 
+ 722      256C750A 
+ 722      00
+ 723              	.LC49:
+ 724 005b 5478202D 		.ascii	"Tx - Freq:%lu, Power:%d, sf:%u, bw:%u, cr:%u, lengt"
+ 724      20467265 
+ 724      713A256C 
+ 724      752C2050 
+ 724      6F776572 
+ 725 008e 683A2575 		.ascii	"h:%u\012\000"
+ 725      0A00
+ 726              		.section	.text.test_mode_tx,"ax",%progbits
+ 727              		.align	1
+ 728              		.global	test_mode_tx
+ 729              		.syntax unified
+ 730              		.code	16
+ 731              		.thumb_func
+ 732              		.fpu softvfp
+ 734              	test_mode_tx:
+ 735              	.LVL46:
+ 736              	.LFB17:
+ 200:smtc_modem_core/test_mode/test_mode.c **** 
+ 201:smtc_modem_core/test_mode/test_mode.c **** modem_return_code_t test_mode_tx( uint32_t frequency, int8_t pwr_in_dbm, host_cmd_test_sf_t sf, hos
+ 202:smtc_modem_core/test_mode/test_mode.c ****                                   host_cmd_test_cr_t cr, uint8_t payload_length, test_mode_tx_mode_
+ 203:smtc_modem_core/test_mode/test_mode.c **** {
+ 737              		.loc 1 203 1 is_stmt 1 view -0
+ 738              		.cfi_startproc
+ 739              		@ args = 12, pretend = 0, frame = 24
+ 740              		@ frame_needed = 0, uses_anonymous_args = 0
+ 204:smtc_modem_core/test_mode/test_mode.c ****     if( smtc_real_is_valid_rx_frequency( lr1_mac_obj, frequency ) != OKLORAWAN )  // current value 
+ 741              		.loc 1 204 5 view .LVU213
+ 203:smtc_modem_core/test_mode/test_mode.c ****     if( smtc_real_is_valid_rx_frequency( lr1_mac_obj, frequency ) != OKLORAWAN )  // current value 
+ 742              		.loc 1 203 1 is_stmt 0 view .LVU214
+ 743 0000 F0B5     		push	{r4, r5, r6, r7, lr}
+ 744              		.cfi_def_cfa_offset 20
+ 745              		.cfi_offset 4, -20
+ 746              		.cfi_offset 5, -16
+ 747              		.cfi_offset 6, -12
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cclFs5I1.s 			page 20
+
+
+ 748              		.cfi_offset 7, -8
+ 749              		.cfi_offset 14, -4
+ 750 0002 8BB0     		sub	sp, sp, #44
+ 751              		.cfi_def_cfa_offset 64
+ 203:smtc_modem_core/test_mode/test_mode.c ****     if( smtc_real_is_valid_rx_frequency( lr1_mac_obj, frequency ) != OKLORAWAN )  // current value 
+ 752              		.loc 1 203 1 view .LVU215
+ 753 0004 1C00     		movs	r4, r3
+ 754 0006 10AB     		add	r3, sp, #64
+ 755              	.LVL47:
+ 203:smtc_modem_core/test_mode/test_mode.c ****     if( smtc_real_is_valid_rx_frequency( lr1_mac_obj, frequency ) != OKLORAWAN )  // current value 
+ 756              		.loc 1 203 1 view .LVU216
+ 757 0008 1E78     		ldrb	r6, [r3]
+ 758 000a 11AB     		add	r3, sp, #68
+ 759              	.LVL48:
+ 203:smtc_modem_core/test_mode/test_mode.c ****     if( smtc_real_is_valid_rx_frequency( lr1_mac_obj, frequency ) != OKLORAWAN )  // current value 
+ 760              		.loc 1 203 1 view .LVU217
+ 761 000c 1B78     		ldrb	r3, [r3]
+ 762              	.LVL49:
+ 763              		.loc 1 204 9 view .LVU218
+ 764 000e 474D     		ldr	r5, .L41
+ 203:smtc_modem_core/test_mode/test_mode.c ****     if( smtc_real_is_valid_rx_frequency( lr1_mac_obj, frequency ) != OKLORAWAN )  // current value 
+ 765              		.loc 1 203 1 view .LVU219
+ 766 0010 0893     		str	r3, [sp, #32]
+ 767 0012 12AB     		add	r3, sp, #72
+ 768              	.LVL50:
+ 203:smtc_modem_core/test_mode/test_mode.c ****     if( smtc_real_is_valid_rx_frequency( lr1_mac_obj, frequency ) != OKLORAWAN )  // current value 
+ 769              		.loc 1 203 1 view .LVU220
+ 770 0014 1B78     		ldrb	r3, [r3]
+ 771              	.LVL51:
+ 203:smtc_modem_core/test_mode/test_mode.c ****     if( smtc_real_is_valid_rx_frequency( lr1_mac_obj, frequency ) != OKLORAWAN )  // current value 
+ 772              		.loc 1 203 1 view .LVU221
+ 773 0016 0791     		str	r1, [sp, #28]
+ 774 0018 0700     		movs	r7, r0
+ 775              		.loc 1 204 9 view .LVU222
+ 776 001a 0100     		movs	r1, r0
+ 777              	.LVL52:
+ 778              		.loc 1 204 9 view .LVU223
+ 779 001c 2868     		ldr	r0, [r5]
+ 780              	.LVL53:
+ 203:smtc_modem_core/test_mode/test_mode.c ****     if( smtc_real_is_valid_rx_frequency( lr1_mac_obj, frequency ) != OKLORAWAN )  // current value 
+ 781              		.loc 1 203 1 view .LVU224
+ 782 001e 0592     		str	r2, [sp, #20]
+ 783 0020 0993     		str	r3, [sp, #36]
+ 784              		.loc 1 204 9 view .LVU225
+ 785 0022 FFF7FEFF 		bl	smtc_real_is_valid_rx_frequency
+ 786              	.LVL54:
+ 787              		.loc 1 204 9 view .LVU226
+ 788 0026 0490     		str	r0, [sp, #16]
+ 789              		.loc 1 204 7 view .LVU227
+ 790 0028 0028     		cmp	r0, #0
+ 791 002a 10D0     		beq	.L31
+ 205:smtc_modem_core/test_mode/test_mode.c ****     {
+ 206:smtc_modem_core/test_mode/test_mode.c ****         BSP_DBG_TRACE_ERROR( " Invalid Frequency %lu\n", frequency );
+ 792              		.loc 1 206 9 is_stmt 1 view .LVU228
+ 793              		.loc 1 206 9 view .LVU229
+ 794 002c 4048     		ldr	r0, .L41+4
+ 795 002e FFF7FEFF 		bl	bsp_trace_print
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cclFs5I1.s 			page 21
+
+
+ 796              	.LVL55:
+ 797              		.loc 1 206 9 view .LVU230
+ 798 0032 4048     		ldr	r0, .L41+8
+ 799 0034 FFF7FEFF 		bl	bsp_trace_print
+ 800              	.LVL56:
+ 801              		.loc 1 206 9 view .LVU231
+ 802 0038 3900     		movs	r1, r7
+ 803 003a 3F48     		ldr	r0, .L41+12
+ 804              	.L40:
+ 207:smtc_modem_core/test_mode/test_mode.c ****         return RC_INVALID;
+ 208:smtc_modem_core/test_mode/test_mode.c ****     }
+ 209:smtc_modem_core/test_mode/test_mode.c ****     if( sf >= TST_SF_MAX )
+ 210:smtc_modem_core/test_mode/test_mode.c ****     {
+ 211:smtc_modem_core/test_mode/test_mode.c ****         BSP_DBG_TRACE_ERROR( " Invalid sf %lu\n", sf );
+ 212:smtc_modem_core/test_mode/test_mode.c ****         return RC_INVALID;
+ 213:smtc_modem_core/test_mode/test_mode.c ****     }
+ 214:smtc_modem_core/test_mode/test_mode.c ****     if( bw >= TST_BW_MAX )
+ 215:smtc_modem_core/test_mode/test_mode.c ****     {
+ 216:smtc_modem_core/test_mode/test_mode.c ****         BSP_DBG_TRACE_ERROR( " Invalid bw %lu\n", bw );
+ 217:smtc_modem_core/test_mode/test_mode.c ****         return RC_INVALID;
+ 218:smtc_modem_core/test_mode/test_mode.c ****     }
+ 219:smtc_modem_core/test_mode/test_mode.c ****     if( cr >= TST_CR_MAX )
+ 220:smtc_modem_core/test_mode/test_mode.c ****     {
+ 221:smtc_modem_core/test_mode/test_mode.c ****         BSP_DBG_TRACE_ERROR( " Invalid cr %lu\n", cr );
+ 805              		.loc 1 221 9 is_stmt 0 view .LVU232
+ 806 003c FFF7FEFF 		bl	bsp_trace_print
+ 807              	.LVL57:
+ 808              		.loc 1 221 9 is_stmt 1 view .LVU233
+ 809 0040 3E48     		ldr	r0, .L41+16
+ 810 0042 FFF7FEFF 		bl	bsp_trace_print
+ 811              	.LVL58:
+ 812              		.loc 1 221 9 view .LVU234
+ 813              		.loc 1 221 55 view .LVU235
+ 222:smtc_modem_core/test_mode/test_mode.c ****         return RC_INVALID;
+ 814              		.loc 1 222 9 view .LVU236
+ 815              		.loc 1 222 16 is_stmt 0 view .LVU237
+ 816 0046 0424     		movs	r4, #4
+ 817              	.L32:
+ 818              	.LVL59:
+ 223:smtc_modem_core/test_mode/test_mode.c ****     }
+ 224:smtc_modem_core/test_mode/test_mode.c **** 
+ 225:smtc_modem_core/test_mode/test_mode.c ****     ral_params_lora_t params;
+ 226:smtc_modem_core/test_mode/test_mode.c ****     params.freq_in_hz       = frequency;
+ 227:smtc_modem_core/test_mode/test_mode.c ****     params.pwr_in_dbm       = pwr_in_dbm;
+ 228:smtc_modem_core/test_mode/test_mode.c ****     params.sf               = ( ral_lora_sf_t ) host_cmd_test_sf_convert[sf];
+ 229:smtc_modem_core/test_mode/test_mode.c ****     params.bw               = ( ral_lora_bw_t ) host_cmd_test_bw_convert[bw];
+ 230:smtc_modem_core/test_mode/test_mode.c ****     params.cr               = ( ral_lora_cr_t ) host_cmd_test_cr_convert[cr];
+ 231:smtc_modem_core/test_mode/test_mode.c ****     params.pld_len_in_bytes = payload_length;
+ 232:smtc_modem_core/test_mode/test_mode.c **** 
+ 233:smtc_modem_core/test_mode/test_mode.c ****     params.pbl_len_in_symb = 8;
+ 234:smtc_modem_core/test_mode/test_mode.c ****     params.crc_is_on       = false;
+ 235:smtc_modem_core/test_mode/test_mode.c ****     params.invert_iq_is_on = false;
+ 236:smtc_modem_core/test_mode/test_mode.c ****     params.pld_is_fix      = false;
+ 237:smtc_modem_core/test_mode/test_mode.c ****     params.sync_word       = smtc_real_sync_word_get( lr1_mac_obj );
+ 238:smtc_modem_core/test_mode/test_mode.c **** 
+ 239:smtc_modem_core/test_mode/test_mode.c ****     BSP_DBG_TRACE_PRINTF( "Tx - Freq:%lu, Power:%d, sf:%u, bw:%u, cr:%u, length:%u\n", params.freq_
+ 240:smtc_modem_core/test_mode/test_mode.c ****                           params.pwr_in_dbm, params.sf, params.bw, params.cr, params.pld_len_in_byt
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cclFs5I1.s 			page 22
+
+
+ 241:smtc_modem_core/test_mode/test_mode.c **** 
+ 242:smtc_modem_core/test_mode/test_mode.c ****     context_test.params = params;
+ 243:smtc_modem_core/test_mode/test_mode.c ****     context_test.rp     = test_mode_rp;
+ 244:smtc_modem_core/test_mode/test_mode.c **** 
+ 245:smtc_modem_core/test_mode/test_mode.c ****     rp_task_abort( test_mode_rp, test_mode_hook_id );
+ 246:smtc_modem_core/test_mode/test_mode.c ****     if( ral_init( test_mode_rp->ral ) != RAL_STATUS_OK )
+ 247:smtc_modem_core/test_mode/test_mode.c ****     {
+ 248:smtc_modem_core/test_mode/test_mode.c ****         return RC_FAIL;
+ 249:smtc_modem_core/test_mode/test_mode.c ****     }
+ 250:smtc_modem_core/test_mode/test_mode.c **** 
+ 251:smtc_modem_core/test_mode/test_mode.c ****     if( tx_mode == TEST_MODE_TX_SINGLE )
+ 252:smtc_modem_core/test_mode/test_mode.c ****     {
+ 253:smtc_modem_core/test_mode/test_mode.c ****         rp_hook_init( context_test.rp, test_mode_hook_id, ( void ( * )( void* ) )( test_mode_tx_whi
+ 254:smtc_modem_core/test_mode/test_mode.c ****                       &context_test );
+ 255:smtc_modem_core/test_mode/test_mode.c ****     }
+ 256:smtc_modem_core/test_mode/test_mode.c ****     else
+ 257:smtc_modem_core/test_mode/test_mode.c ****     {
+ 258:smtc_modem_core/test_mode/test_mode.c ****         rp_hook_init( context_test.rp, test_mode_hook_id, ( void ( * )( void* ) )( test_mode_tx_cal
+ 259:smtc_modem_core/test_mode/test_mode.c ****                       &context_test );
+ 260:smtc_modem_core/test_mode/test_mode.c ****     }
+ 261:smtc_modem_core/test_mode/test_mode.c ****     test_mode_tx_callback( &context_test );
+ 262:smtc_modem_core/test_mode/test_mode.c ****     return RC_OK;
+ 263:smtc_modem_core/test_mode/test_mode.c **** }
+ 819              		.loc 1 263 1 view .LVU238
+ 820 0048 2000     		movs	r0, r4
+ 821 004a 0BB0     		add	sp, sp, #44
+ 822              		@ sp needed
+ 823              	.LVL60:
+ 824              		.loc 1 263 1 view .LVU239
+ 825 004c F0BD     		pop	{r4, r5, r6, r7, pc}
+ 826              	.LVL61:
+ 827              	.L31:
+ 209:smtc_modem_core/test_mode/test_mode.c ****     {
+ 828              		.loc 1 209 5 is_stmt 1 view .LVU240
+ 209:smtc_modem_core/test_mode/test_mode.c ****     {
+ 829              		.loc 1 209 7 is_stmt 0 view .LVU241
+ 830 004e 059B     		ldr	r3, [sp, #20]
+ 831 0050 082B     		cmp	r3, #8
+ 832 0052 08D9     		bls	.L33
+ 211:smtc_modem_core/test_mode/test_mode.c ****         return RC_INVALID;
+ 833              		.loc 1 211 9 is_stmt 1 view .LVU242
+ 211:smtc_modem_core/test_mode/test_mode.c ****         return RC_INVALID;
+ 834              		.loc 1 211 9 view .LVU243
+ 835 0054 3648     		ldr	r0, .L41+4
+ 836 0056 FFF7FEFF 		bl	bsp_trace_print
+ 837              	.LVL62:
+ 211:smtc_modem_core/test_mode/test_mode.c ****         return RC_INVALID;
+ 838              		.loc 1 211 9 view .LVU244
+ 839 005a 3648     		ldr	r0, .L41+8
+ 840 005c FFF7FEFF 		bl	bsp_trace_print
+ 841              	.LVL63:
+ 211:smtc_modem_core/test_mode/test_mode.c ****         return RC_INVALID;
+ 842              		.loc 1 211 9 view .LVU245
+ 843 0060 0599     		ldr	r1, [sp, #20]
+ 844 0062 3748     		ldr	r0, .L41+20
+ 845 0064 EAE7     		b	.L40
+ 846              	.L33:
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cclFs5I1.s 			page 23
+
+
+ 214:smtc_modem_core/test_mode/test_mode.c ****     {
+ 847              		.loc 1 214 5 view .LVU246
+ 214:smtc_modem_core/test_mode/test_mode.c ****     {
+ 848              		.loc 1 214 7 is_stmt 0 view .LVU247
+ 849 0066 062C     		cmp	r4, #6
+ 850 0068 08D9     		bls	.L34
+ 216:smtc_modem_core/test_mode/test_mode.c ****         return RC_INVALID;
+ 851              		.loc 1 216 9 is_stmt 1 view .LVU248
+ 216:smtc_modem_core/test_mode/test_mode.c ****         return RC_INVALID;
+ 852              		.loc 1 216 9 view .LVU249
+ 853 006a 3148     		ldr	r0, .L41+4
+ 854 006c FFF7FEFF 		bl	bsp_trace_print
+ 855              	.LVL64:
+ 216:smtc_modem_core/test_mode/test_mode.c ****         return RC_INVALID;
+ 856              		.loc 1 216 9 view .LVU250
+ 857 0070 3048     		ldr	r0, .L41+8
+ 858 0072 FFF7FEFF 		bl	bsp_trace_print
+ 859              	.LVL65:
+ 216:smtc_modem_core/test_mode/test_mode.c ****         return RC_INVALID;
+ 860              		.loc 1 216 9 view .LVU251
+ 861 0076 2100     		movs	r1, r4
+ 862 0078 3248     		ldr	r0, .L41+24
+ 863 007a DFE7     		b	.L40
+ 864              	.L34:
+ 219:smtc_modem_core/test_mode/test_mode.c ****     {
+ 865              		.loc 1 219 5 view .LVU252
+ 219:smtc_modem_core/test_mode/test_mode.c ****     {
+ 866              		.loc 1 219 7 is_stmt 0 view .LVU253
+ 867 007c 062E     		cmp	r6, #6
+ 868 007e 08D9     		bls	.L35
+ 221:smtc_modem_core/test_mode/test_mode.c ****         return RC_INVALID;
+ 869              		.loc 1 221 9 is_stmt 1 view .LVU254
+ 221:smtc_modem_core/test_mode/test_mode.c ****         return RC_INVALID;
+ 870              		.loc 1 221 9 view .LVU255
+ 871 0080 2B48     		ldr	r0, .L41+4
+ 872 0082 FFF7FEFF 		bl	bsp_trace_print
+ 873              	.LVL66:
+ 221:smtc_modem_core/test_mode/test_mode.c ****         return RC_INVALID;
+ 874              		.loc 1 221 9 view .LVU256
+ 875 0086 2B48     		ldr	r0, .L41+8
+ 876 0088 FFF7FEFF 		bl	bsp_trace_print
+ 877              	.LVL67:
+ 221:smtc_modem_core/test_mode/test_mode.c ****         return RC_INVALID;
+ 878              		.loc 1 221 9 view .LVU257
+ 879 008c 3100     		movs	r1, r6
+ 880 008e 2E48     		ldr	r0, .L41+28
+ 881 0090 D4E7     		b	.L40
+ 882              	.L35:
+ 225:smtc_modem_core/test_mode/test_mode.c ****     params.freq_in_hz       = frequency;
+ 883              		.loc 1 225 5 view .LVU258
+ 226:smtc_modem_core/test_mode/test_mode.c ****     params.pwr_in_dbm       = pwr_in_dbm;
+ 884              		.loc 1 226 5 view .LVU259
+ 885              	.LVL68:
+ 227:smtc_modem_core/test_mode/test_mode.c ****     params.sf               = ( ral_lora_sf_t ) host_cmd_test_sf_convert[sf];
+ 886              		.loc 1 227 5 view .LVU260
+ 228:smtc_modem_core/test_mode/test_mode.c ****     params.bw               = ( ral_lora_bw_t ) host_cmd_test_bw_convert[bw];
+ 887              		.loc 1 228 5 view .LVU261
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cclFs5I1.s 			page 24
+
+
+ 228:smtc_modem_core/test_mode/test_mode.c ****     params.bw               = ( ral_lora_bw_t ) host_cmd_test_bw_convert[bw];
+ 888              		.loc 1 228 73 is_stmt 0 view .LVU262
+ 889 0092 059A     		ldr	r2, [sp, #20]
+ 890 0094 2D4B     		ldr	r3, .L41+32
+ 237:smtc_modem_core/test_mode/test_mode.c **** 
+ 891              		.loc 1 237 30 view .LVU263
+ 892 0096 2868     		ldr	r0, [r5]
+ 228:smtc_modem_core/test_mode/test_mode.c ****     params.bw               = ( ral_lora_bw_t ) host_cmd_test_bw_convert[bw];
+ 893              		.loc 1 228 73 view .LVU264
+ 894 0098 9B5C     		ldrb	r3, [r3, r2]
+ 895 009a 0593     		str	r3, [sp, #20]
+ 896              	.LVL69:
+ 229:smtc_modem_core/test_mode/test_mode.c ****     params.cr               = ( ral_lora_cr_t ) host_cmd_test_cr_convert[cr];
+ 897              		.loc 1 229 5 is_stmt 1 view .LVU265
+ 229:smtc_modem_core/test_mode/test_mode.c ****     params.cr               = ( ral_lora_cr_t ) host_cmd_test_cr_convert[cr];
+ 898              		.loc 1 229 73 is_stmt 0 view .LVU266
+ 899 009c 2C4B     		ldr	r3, .L41+36
+ 900 009e 1B5D     		ldrb	r3, [r3, r4]
+ 901 00a0 0693     		str	r3, [sp, #24]
+ 902              	.LVL70:
+ 230:smtc_modem_core/test_mode/test_mode.c ****     params.pld_len_in_bytes = payload_length;
+ 903              		.loc 1 230 5 is_stmt 1 view .LVU267
+ 230:smtc_modem_core/test_mode/test_mode.c ****     params.pld_len_in_bytes = payload_length;
+ 904              		.loc 1 230 73 is_stmt 0 view .LVU268
+ 905 00a2 2C4B     		ldr	r3, .L41+40
+ 906 00a4 9C5D     		ldrb	r4, [r3, r6]
+ 907              	.LVL71:
+ 231:smtc_modem_core/test_mode/test_mode.c **** 
+ 908              		.loc 1 231 5 is_stmt 1 view .LVU269
+ 233:smtc_modem_core/test_mode/test_mode.c ****     params.crc_is_on       = false;
+ 909              		.loc 1 233 5 view .LVU270
+ 234:smtc_modem_core/test_mode/test_mode.c ****     params.invert_iq_is_on = false;
+ 910              		.loc 1 234 5 view .LVU271
+ 235:smtc_modem_core/test_mode/test_mode.c ****     params.pld_is_fix      = false;
+ 911              		.loc 1 235 5 view .LVU272
+ 236:smtc_modem_core/test_mode/test_mode.c ****     params.sync_word       = smtc_real_sync_word_get( lr1_mac_obj );
+ 912              		.loc 1 236 5 view .LVU273
+ 237:smtc_modem_core/test_mode/test_mode.c **** 
+ 913              		.loc 1 237 5 view .LVU274
+ 237:smtc_modem_core/test_mode/test_mode.c **** 
+ 914              		.loc 1 237 30 is_stmt 0 view .LVU275
+ 915 00a6 FFF7FEFF 		bl	smtc_real_sync_word_get
+ 916              	.LVL72:
+ 239:smtc_modem_core/test_mode/test_mode.c ****                           params.pwr_in_dbm, params.sf, params.bw, params.cr, params.pld_len_in_byt
+ 917              		.loc 1 239 5 view .LVU276
+ 918 00aa 089B     		ldr	r3, [sp, #32]
+ 237:smtc_modem_core/test_mode/test_mode.c **** 
+ 919              		.loc 1 237 30 view .LVU277
+ 920 00ac 0600     		movs	r6, r0
+ 921              	.LVL73:
+ 239:smtc_modem_core/test_mode/test_mode.c ****                           params.pwr_in_dbm, params.sf, params.bw, params.cr, params.pld_len_in_byt
+ 922              		.loc 1 239 5 is_stmt 1 view .LVU278
+ 923 00ae 0293     		str	r3, [sp, #8]
+ 924 00b0 069B     		ldr	r3, [sp, #24]
+ 925 00b2 079A     		ldr	r2, [sp, #28]
+ 926 00b4 3900     		movs	r1, r7
+ 927 00b6 2848     		ldr	r0, .L41+44
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cclFs5I1.s 			page 25
+
+
+ 928 00b8 0194     		str	r4, [sp, #4]
+ 929 00ba 0093     		str	r3, [sp]
+ 930 00bc 059B     		ldr	r3, [sp, #20]
+ 931 00be FFF7FEFF 		bl	bsp_trace_print
+ 932              	.LVL74:
+ 242:smtc_modem_core/test_mode/test_mode.c ****     context_test.rp     = test_mode_rp;
+ 933              		.loc 1 242 5 view .LVU279
+ 242:smtc_modem_core/test_mode/test_mode.c ****     context_test.rp     = test_mode_rp;
+ 934              		.loc 1 242 25 is_stmt 0 view .LVU280
+ 935 00c2 264D     		ldr	r5, .L41+48
+ 936 00c4 059B     		ldr	r3, [sp, #20]
+ 937 00c6 AC72     		strb	r4, [r5, #10]
+ 938 00c8 2B72     		strb	r3, [r5, #8]
+ 939 00ca 069B     		ldr	r3, [sp, #24]
+ 243:smtc_modem_core/test_mode/test_mode.c **** 
+ 940              		.loc 1 243 25 view .LVU281
+ 941 00cc 244C     		ldr	r4, .L41+52
+ 942              	.LVL75:
+ 242:smtc_modem_core/test_mode/test_mode.c ****     context_test.rp     = test_mode_rp;
+ 943              		.loc 1 242 25 view .LVU282
+ 944 00ce 6B72     		strb	r3, [r5, #9]
+ 945 00d0 0823     		movs	r3, #8
+ 946 00d2 AB81     		strh	r3, [r5, #12]
+ 947 00d4 049B     		ldr	r3, [sp, #16]
+ 948 00d6 AE73     		strb	r6, [r5, #14]
+ 949 00d8 EB73     		strb	r3, [r5, #15]
+ 950 00da 089B     		ldr	r3, [sp, #32]
+ 245:smtc_modem_core/test_mode/test_mode.c ****     if( ral_init( test_mode_rp->ral ) != RAL_STATUS_OK )
+ 951              		.loc 1 245 5 view .LVU283
+ 952 00dc 214E     		ldr	r6, .L41+56
+ 953              	.LVL76:
+ 242:smtc_modem_core/test_mode/test_mode.c ****     context_test.rp     = test_mode_rp;
+ 954              		.loc 1 242 25 view .LVU284
+ 955 00de 2B74     		strb	r3, [r5, #16]
+ 956 00e0 049B     		ldr	r3, [sp, #16]
+ 245:smtc_modem_core/test_mode/test_mode.c ****     if( ral_init( test_mode_rp->ral ) != RAL_STATUS_OK )
+ 957              		.loc 1 245 5 view .LVU285
+ 958 00e2 3178     		ldrb	r1, [r6]
+ 242:smtc_modem_core/test_mode/test_mode.c ****     context_test.rp     = test_mode_rp;
+ 959              		.loc 1 242 25 view .LVU286
+ 960 00e4 6B74     		strb	r3, [r5, #17]
+ 961 00e6 AB74     		strb	r3, [r5, #18]
+ 962 00e8 079B     		ldr	r3, [sp, #28]
+ 963 00ea 6F60     		str	r7, [r5, #4]
+ 964 00ec 2B75     		strb	r3, [r5, #20]
+ 243:smtc_modem_core/test_mode/test_mode.c **** 
+ 965              		.loc 1 243 5 is_stmt 1 view .LVU287
+ 243:smtc_modem_core/test_mode/test_mode.c **** 
+ 966              		.loc 1 243 25 is_stmt 0 view .LVU288
+ 967 00ee 2368     		ldr	r3, [r4]
+ 245:smtc_modem_core/test_mode/test_mode.c ****     if( ral_init( test_mode_rp->ral ) != RAL_STATUS_OK )
+ 968              		.loc 1 245 5 view .LVU289
+ 969 00f0 1800     		movs	r0, r3
+ 243:smtc_modem_core/test_mode/test_mode.c **** 
+ 970              		.loc 1 243 25 view .LVU290
+ 971 00f2 2B60     		str	r3, [r5]
+ 245:smtc_modem_core/test_mode/test_mode.c ****     if( ral_init( test_mode_rp->ral ) != RAL_STATUS_OK )
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cclFs5I1.s 			page 26
+
+
+ 972              		.loc 1 245 5 is_stmt 1 view .LVU291
+ 973 00f4 FFF7FEFF 		bl	rp_task_abort
+ 974              	.LVL77:
+ 246:smtc_modem_core/test_mode/test_mode.c ****     {
+ 975              		.loc 1 246 5 view .LVU292
+ 246:smtc_modem_core/test_mode/test_mode.c ****     {
+ 976              		.loc 1 246 31 is_stmt 0 view .LVU293
+ 977 00f8 A523     		movs	r3, #165
+ 978 00fa 2268     		ldr	r2, [r4]
+ 979 00fc DB00     		lsls	r3, r3, #3
+ 246:smtc_modem_core/test_mode/test_mode.c ****     {
+ 980              		.loc 1 246 9 view .LVU294
+ 981 00fe D058     		ldr	r0, [r2, r3]
+ 982 0100 FFF7FEFF 		bl	ral_init
+ 983              	.LVL78:
+ 984 0104 041E     		subs	r4, r0, #0
+ 246:smtc_modem_core/test_mode/test_mode.c ****     {
+ 985              		.loc 1 246 7 view .LVU295
+ 986 0106 0FD1     		bne	.L38
+ 251:smtc_modem_core/test_mode/test_mode.c ****     {
+ 987              		.loc 1 251 5 is_stmt 1 view .LVU296
+ 251:smtc_modem_core/test_mode/test_mode.c ****     {
+ 988              		.loc 1 251 7 is_stmt 0 view .LVU297
+ 989 0108 099B     		ldr	r3, [sp, #36]
+ 990 010a 2868     		ldr	r0, [r5]
+ 991 010c 3178     		ldrb	r1, [r6]
+ 992 010e 002B     		cmp	r3, #0
+ 993 0110 07D1     		bne	.L36
+ 253:smtc_modem_core/test_mode/test_mode.c ****                       &context_test );
+ 994              		.loc 1 253 9 is_stmt 1 view .LVU298
+ 995 0112 2B00     		movs	r3, r5
+ 996 0114 144A     		ldr	r2, .L41+60
+ 997              	.L39:
+ 258:smtc_modem_core/test_mode/test_mode.c ****                       &context_test );
+ 998              		.loc 1 258 9 is_stmt 0 view .LVU299
+ 999 0116 FFF7FEFF 		bl	rp_hook_init
+ 1000              	.LVL79:
+ 261:smtc_modem_core/test_mode/test_mode.c ****     return RC_OK;
+ 1001              		.loc 1 261 5 is_stmt 1 view .LVU300
+ 1002 011a 2800     		movs	r0, r5
+ 1003 011c FFF7FEFF 		bl	test_mode_tx_callback
+ 1004              	.LVL80:
+ 262:smtc_modem_core/test_mode/test_mode.c **** }
+ 1005              		.loc 1 262 5 view .LVU301
+ 262:smtc_modem_core/test_mode/test_mode.c **** }
+ 1006              		.loc 1 262 12 is_stmt 0 view .LVU302
+ 1007 0120 92E7     		b	.L32
+ 1008              	.L36:
+ 258:smtc_modem_core/test_mode/test_mode.c ****                       &context_test );
+ 1009              		.loc 1 258 9 is_stmt 1 view .LVU303
+ 1010 0122 2B00     		movs	r3, r5
+ 1011 0124 114A     		ldr	r2, .L41+64
+ 1012 0126 F6E7     		b	.L39
+ 1013              	.L38:
+ 248:smtc_modem_core/test_mode/test_mode.c ****     }
+ 1014              		.loc 1 248 16 is_stmt 0 view .LVU304
+ 1015 0128 0624     		movs	r4, #6
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cclFs5I1.s 			page 27
+
+
+ 1016 012a 8DE7     		b	.L32
+ 1017              	.L42:
+ 1018              		.align	2
+ 1019              	.L41:
+ 1020 012c 00000000 		.word	.LANCHOR2
+ 1021 0130 00000000 		.word	.LC33
+ 1022 0134 08000000 		.word	.LC35
+ 1023 0138 10000000 		.word	.LC37
+ 1024 013c 21000000 		.word	.LC25
+ 1025 0140 28000000 		.word	.LC40
+ 1026 0144 39000000 		.word	.LC42
+ 1027 0148 4A000000 		.word	.LC44
+ 1028 014c 00000000 		.word	.LANCHOR4
+ 1029 0150 00000000 		.word	.LANCHOR5
+ 1030 0154 00000000 		.word	.LANCHOR6
+ 1031 0158 5B000000 		.word	.LC49
+ 1032 015c 00000000 		.word	.LANCHOR7
+ 1033 0160 00000000 		.word	.LANCHOR1
+ 1034 0164 00000000 		.word	.LANCHOR3
+ 1035 0168 00000000 		.word	test_mode_tx_whitout_callback
+ 1036 016c 00000000 		.word	test_mode_tx_callback
+ 1037              		.cfi_endproc
+ 1038              	.LFE17:
+ 1040              		.section	.rodata.test_mode_cw.str1.1,"aMS",%progbits,1
+ 1041              	.LC61:
+ 1042 0000 54782043 		.ascii	"Tx CW - Freq:%lu, Power:%d\012\000"
+ 1042      57202D20 
+ 1042      46726571 
+ 1042      3A256C75 
+ 1042      2C20506F 
+ 1043              		.section	.text.test_mode_cw,"ax",%progbits
+ 1044              		.align	1
+ 1045              		.global	test_mode_cw
+ 1046              		.syntax unified
+ 1047              		.code	16
+ 1048              		.thumb_func
+ 1049              		.fpu softvfp
+ 1051              	test_mode_cw:
+ 1052              	.LVL81:
+ 1053              	.LFB18:
+ 264:smtc_modem_core/test_mode/test_mode.c **** 
+ 265:smtc_modem_core/test_mode/test_mode.c **** modem_return_code_t test_mode_cw( uint32_t frequency, int8_t pwr_in_dbm )
+ 266:smtc_modem_core/test_mode/test_mode.c **** {
+ 1054              		.loc 1 266 1 is_stmt 1 view -0
+ 1055              		.cfi_startproc
+ 1056              		@ args = 0, pretend = 0, frame = 24
+ 1057              		@ frame_needed = 0, uses_anonymous_args = 0
+ 267:smtc_modem_core/test_mode/test_mode.c ****     if( smtc_real_is_valid_rx_frequency( lr1_mac_obj, frequency ) != OKLORAWAN )
+ 1058              		.loc 1 267 5 view .LVU306
+ 266:smtc_modem_core/test_mode/test_mode.c ****     if( smtc_real_is_valid_rx_frequency( lr1_mac_obj, frequency ) != OKLORAWAN )
+ 1059              		.loc 1 266 1 is_stmt 0 view .LVU307
+ 1060 0000 F0B5     		push	{r4, r5, r6, r7, lr}
+ 1061              		.cfi_def_cfa_offset 20
+ 1062              		.cfi_offset 4, -20
+ 1063              		.cfi_offset 5, -16
+ 1064              		.cfi_offset 6, -12
+ 1065              		.cfi_offset 7, -8
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cclFs5I1.s 			page 28
+
+
+ 1066              		.cfi_offset 14, -4
+ 1067              		.loc 1 267 9 view .LVU308
+ 1068 0002 224F     		ldr	r7, .L50
+ 266:smtc_modem_core/test_mode/test_mode.c ****     if( smtc_real_is_valid_rx_frequency( lr1_mac_obj, frequency ) != OKLORAWAN )
+ 1069              		.loc 1 266 1 view .LVU309
+ 1070 0004 0400     		movs	r4, r0
+ 1071 0006 0E00     		movs	r6, r1
+ 1072 0008 87B0     		sub	sp, sp, #28
+ 1073              		.cfi_def_cfa_offset 48
+ 1074              		.loc 1 267 9 view .LVU310
+ 1075 000a 0100     		movs	r1, r0
+ 1076              	.LVL82:
+ 1077              		.loc 1 267 9 view .LVU311
+ 1078 000c 3868     		ldr	r0, [r7]
+ 1079              	.LVL83:
+ 1080              		.loc 1 267 9 view .LVU312
+ 1081 000e FFF7FEFF 		bl	smtc_real_is_valid_rx_frequency
+ 1082              	.LVL84:
+ 1083              		.loc 1 267 7 view .LVU313
+ 1084 0012 0028     		cmp	r0, #0
+ 1085 0014 0FD0     		beq	.L44
+ 268:smtc_modem_core/test_mode/test_mode.c ****     {
+ 269:smtc_modem_core/test_mode/test_mode.c ****         BSP_DBG_TRACE_ERROR( " Invalid Frequency %lu\n", frequency );
+ 1086              		.loc 1 269 9 is_stmt 1 view .LVU314
+ 1087              		.loc 1 269 9 view .LVU315
+ 1088 0016 1E48     		ldr	r0, .L50+4
+ 1089 0018 FFF7FEFF 		bl	bsp_trace_print
+ 1090              	.LVL85:
+ 1091              		.loc 1 269 9 view .LVU316
+ 1092 001c 1D48     		ldr	r0, .L50+8
+ 1093 001e FFF7FEFF 		bl	bsp_trace_print
+ 1094              	.LVL86:
+ 1095              		.loc 1 269 9 view .LVU317
+ 1096 0022 2100     		movs	r1, r4
+ 1097 0024 1C48     		ldr	r0, .L50+12
+ 1098 0026 FFF7FEFF 		bl	bsp_trace_print
+ 1099              	.LVL87:
+ 1100              		.loc 1 269 9 view .LVU318
+ 1101 002a 1C48     		ldr	r0, .L50+16
+ 1102 002c FFF7FEFF 		bl	bsp_trace_print
+ 1103              	.LVL88:
+ 1104              		.loc 1 269 9 view .LVU319
+ 1105              		.loc 1 269 69 view .LVU320
+ 270:smtc_modem_core/test_mode/test_mode.c ****         return RC_INVALID;
+ 1106              		.loc 1 270 9 view .LVU321
+ 1107              		.loc 1 270 16 is_stmt 0 view .LVU322
+ 1108 0030 0420     		movs	r0, #4
+ 1109              	.LVL89:
+ 1110              	.L45:
+ 271:smtc_modem_core/test_mode/test_mode.c ****     }
+ 272:smtc_modem_core/test_mode/test_mode.c **** 
+ 273:smtc_modem_core/test_mode/test_mode.c ****     ral_params_lora_t params;
+ 274:smtc_modem_core/test_mode/test_mode.c ****     params.freq_in_hz = frequency;
+ 275:smtc_modem_core/test_mode/test_mode.c ****     params.pwr_in_dbm = pwr_in_dbm;
+ 276:smtc_modem_core/test_mode/test_mode.c ****     params.sf         = RAL_LORA_SF12;
+ 277:smtc_modem_core/test_mode/test_mode.c ****     params.bw         = RAL_LORA_BW_800_KHZ;
+ 278:smtc_modem_core/test_mode/test_mode.c ****     params.cr         = smtc_real_coding_rate_get( lr1_mac_obj );
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cclFs5I1.s 			page 29
+
+
+ 279:smtc_modem_core/test_mode/test_mode.c ****     params.sync_word  = smtc_real_sync_word_get( lr1_mac_obj );
+ 280:smtc_modem_core/test_mode/test_mode.c **** 
+ 281:smtc_modem_core/test_mode/test_mode.c ****     BSP_DBG_TRACE_PRINTF( "Tx CW - Freq:%lu, Power:%d\n", frequency, pwr_in_dbm );
+ 282:smtc_modem_core/test_mode/test_mode.c ****     if( ral_init( test_mode_rp->ral ) != RAL_STATUS_OK )
+ 283:smtc_modem_core/test_mode/test_mode.c ****     {
+ 284:smtc_modem_core/test_mode/test_mode.c ****         return RC_FAIL;
+ 285:smtc_modem_core/test_mode/test_mode.c ****     }
+ 286:smtc_modem_core/test_mode/test_mode.c ****     if( ral_setup_tx_lora( test_mode_rp->ral, &params ) != RAL_STATUS_OK )
+ 287:smtc_modem_core/test_mode/test_mode.c ****     {
+ 288:smtc_modem_core/test_mode/test_mode.c ****         return RC_FAIL;
+ 289:smtc_modem_core/test_mode/test_mode.c ****     }
+ 290:smtc_modem_core/test_mode/test_mode.c ****     if( ral_set_tx_cw( test_mode_rp->ral ) != RAL_STATUS_OK )
+ 291:smtc_modem_core/test_mode/test_mode.c ****     {
+ 292:smtc_modem_core/test_mode/test_mode.c ****         return RC_FAIL;
+ 293:smtc_modem_core/test_mode/test_mode.c ****     }
+ 294:smtc_modem_core/test_mode/test_mode.c ****     return RC_OK;
+ 295:smtc_modem_core/test_mode/test_mode.c **** }
+ 1111              		.loc 1 295 1 view .LVU323
+ 1112 0032 07B0     		add	sp, sp, #28
+ 1113              		@ sp needed
+ 1114 0034 F0BD     		pop	{r4, r5, r6, r7, pc}
+ 1115              	.LVL90:
+ 1116              	.L44:
+ 273:smtc_modem_core/test_mode/test_mode.c ****     params.freq_in_hz = frequency;
+ 1117              		.loc 1 273 5 is_stmt 1 view .LVU324
+ 274:smtc_modem_core/test_mode/test_mode.c ****     params.pwr_in_dbm = pwr_in_dbm;
+ 1118              		.loc 1 274 5 view .LVU325
+ 276:smtc_modem_core/test_mode/test_mode.c ****     params.bw         = RAL_LORA_BW_800_KHZ;
+ 1119              		.loc 1 276 23 is_stmt 0 view .LVU326
+ 1120 0036 1A4B     		ldr	r3, .L50+20
+ 274:smtc_modem_core/test_mode/test_mode.c ****     params.pwr_in_dbm = pwr_in_dbm;
+ 1121              		.loc 1 274 23 view .LVU327
+ 1122 0038 01AD     		add	r5, sp, #4
+ 278:smtc_modem_core/test_mode/test_mode.c ****     params.sync_word  = smtc_real_sync_word_get( lr1_mac_obj );
+ 1123              		.loc 1 278 25 view .LVU328
+ 1124 003a 3868     		ldr	r0, [r7]
+ 276:smtc_modem_core/test_mode/test_mode.c ****     params.bw         = RAL_LORA_BW_800_KHZ;
+ 1125              		.loc 1 276 23 view .LVU329
+ 1126 003c AB80     		strh	r3, [r5, #4]
+ 274:smtc_modem_core/test_mode/test_mode.c ****     params.pwr_in_dbm = pwr_in_dbm;
+ 1127              		.loc 1 274 23 view .LVU330
+ 1128 003e 0194     		str	r4, [sp, #4]
+ 275:smtc_modem_core/test_mode/test_mode.c ****     params.sf         = RAL_LORA_SF12;
+ 1129              		.loc 1 275 5 is_stmt 1 view .LVU331
+ 275:smtc_modem_core/test_mode/test_mode.c ****     params.sf         = RAL_LORA_SF12;
+ 1130              		.loc 1 275 23 is_stmt 0 view .LVU332
+ 1131 0040 2E74     		strb	r6, [r5, #16]
+ 276:smtc_modem_core/test_mode/test_mode.c ****     params.bw         = RAL_LORA_BW_800_KHZ;
+ 1132              		.loc 1 276 5 is_stmt 1 view .LVU333
+ 277:smtc_modem_core/test_mode/test_mode.c ****     params.cr         = smtc_real_coding_rate_get( lr1_mac_obj );
+ 1133              		.loc 1 277 5 view .LVU334
+ 278:smtc_modem_core/test_mode/test_mode.c ****     params.sync_word  = smtc_real_sync_word_get( lr1_mac_obj );
+ 1134              		.loc 1 278 5 view .LVU335
+ 278:smtc_modem_core/test_mode/test_mode.c ****     params.sync_word  = smtc_real_sync_word_get( lr1_mac_obj );
+ 1135              		.loc 1 278 25 is_stmt 0 view .LVU336
+ 1136 0042 FFF7FEFF 		bl	smtc_real_coding_rate_get
+ 1137              	.LVL91:
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cclFs5I1.s 			page 30
+
+
+ 278:smtc_modem_core/test_mode/test_mode.c ****     params.sync_word  = smtc_real_sync_word_get( lr1_mac_obj );
+ 1138              		.loc 1 278 23 view .LVU337
+ 1139 0046 A871     		strb	r0, [r5, #6]
+ 279:smtc_modem_core/test_mode/test_mode.c **** 
+ 1140              		.loc 1 279 5 is_stmt 1 view .LVU338
+ 279:smtc_modem_core/test_mode/test_mode.c **** 
+ 1141              		.loc 1 279 25 is_stmt 0 view .LVU339
+ 1142 0048 3868     		ldr	r0, [r7]
+ 1143 004a FFF7FEFF 		bl	smtc_real_sync_word_get
+ 1144              	.LVL92:
+ 281:smtc_modem_core/test_mode/test_mode.c ****     if( ral_init( test_mode_rp->ral ) != RAL_STATUS_OK )
+ 1145              		.loc 1 281 5 view .LVU340
+ 1146 004e 2100     		movs	r1, r4
+ 282:smtc_modem_core/test_mode/test_mode.c ****     {
+ 1147              		.loc 1 282 31 view .LVU341
+ 1148 0050 A524     		movs	r4, #165
+ 1149              	.LVL93:
+ 281:smtc_modem_core/test_mode/test_mode.c ****     if( ral_init( test_mode_rp->ral ) != RAL_STATUS_OK )
+ 1150              		.loc 1 281 5 view .LVU342
+ 1151 0052 3200     		movs	r2, r6
+ 279:smtc_modem_core/test_mode/test_mode.c **** 
+ 1152              		.loc 1 279 23 view .LVU343
+ 1153 0054 A872     		strb	r0, [r5, #10]
+ 281:smtc_modem_core/test_mode/test_mode.c ****     if( ral_init( test_mode_rp->ral ) != RAL_STATUS_OK )
+ 1154              		.loc 1 281 5 is_stmt 1 view .LVU344
+ 1155 0056 1348     		ldr	r0, .L50+24
+ 1156 0058 FFF7FEFF 		bl	bsp_trace_print
+ 1157              	.LVL94:
+ 282:smtc_modem_core/test_mode/test_mode.c ****     {
+ 1158              		.loc 1 282 5 view .LVU345
+ 282:smtc_modem_core/test_mode/test_mode.c ****     {
+ 1159              		.loc 1 282 31 is_stmt 0 view .LVU346
+ 1160 005c 124E     		ldr	r6, .L50+28
+ 1161 005e E400     		lsls	r4, r4, #3
+ 282:smtc_modem_core/test_mode/test_mode.c ****     {
+ 1162              		.loc 1 282 9 view .LVU347
+ 1163 0060 3368     		ldr	r3, [r6]
+ 1164 0062 1859     		ldr	r0, [r3, r4]
+ 1165 0064 FFF7FEFF 		bl	ral_init
+ 1166              	.LVL95:
+ 282:smtc_modem_core/test_mode/test_mode.c ****     {
+ 1167              		.loc 1 282 7 view .LVU348
+ 1168 0068 0028     		cmp	r0, #0
+ 1169 006a 0CD1     		bne	.L46
+ 286:smtc_modem_core/test_mode/test_mode.c ****     {
+ 1170              		.loc 1 286 5 is_stmt 1 view .LVU349
+ 286:smtc_modem_core/test_mode/test_mode.c ****     {
+ 1171              		.loc 1 286 9 is_stmt 0 view .LVU350
+ 1172 006c 3368     		ldr	r3, [r6]
+ 1173 006e 2900     		movs	r1, r5
+ 1174 0070 1859     		ldr	r0, [r3, r4]
+ 1175 0072 FFF7FEFF 		bl	ral_setup_tx_lora
+ 1176              	.LVL96:
+ 286:smtc_modem_core/test_mode/test_mode.c ****     {
+ 1177              		.loc 1 286 7 view .LVU351
+ 1178 0076 0028     		cmp	r0, #0
+ 1179 0078 05D1     		bne	.L46
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cclFs5I1.s 			page 31
+
+
+ 290:smtc_modem_core/test_mode/test_mode.c ****     {
+ 1180              		.loc 1 290 5 is_stmt 1 view .LVU352
+ 290:smtc_modem_core/test_mode/test_mode.c ****     {
+ 1181              		.loc 1 290 36 is_stmt 0 view .LVU353
+ 1182 007a 3368     		ldr	r3, [r6]
+ 290:smtc_modem_core/test_mode/test_mode.c ****     {
+ 1183              		.loc 1 290 9 view .LVU354
+ 1184 007c 1859     		ldr	r0, [r3, r4]
+ 1185 007e FFF7FEFF 		bl	ral_set_tx_cw
+ 1186              	.LVL97:
+ 290:smtc_modem_core/test_mode/test_mode.c ****     {
+ 1187              		.loc 1 290 7 view .LVU355
+ 1188 0082 0028     		cmp	r0, #0
+ 1189 0084 D5D0     		beq	.L45
+ 1190              	.L46:
+ 292:smtc_modem_core/test_mode/test_mode.c ****     }
+ 1191              		.loc 1 292 9 is_stmt 1 view .LVU356
+ 292:smtc_modem_core/test_mode/test_mode.c ****     }
+ 1192              		.loc 1 292 16 is_stmt 0 view .LVU357
+ 1193 0086 0620     		movs	r0, #6
+ 1194 0088 D3E7     		b	.L45
+ 1195              	.L51:
+ 1196 008a C046     		.align	2
+ 1197              	.L50:
+ 1198 008c 00000000 		.word	.LANCHOR2
+ 1199 0090 00000000 		.word	.LC33
+ 1200 0094 08000000 		.word	.LC35
+ 1201 0098 10000000 		.word	.LC37
+ 1202 009c 21000000 		.word	.LC25
+ 1203 00a0 0C0C0000 		.word	3084
+ 1204 00a4 00000000 		.word	.LC61
+ 1205 00a8 00000000 		.word	.LANCHOR1
+ 1206              		.cfi_endproc
+ 1207              	.LFE18:
+ 1209              		.section	.rodata.test_mode_rx_cont.str1.1,"aMS",%progbits,1
+ 1210              	.LC77:
+ 1211 0000 5478202D 		.ascii	"Tx - Freq:%lu, sf:%u, bw:%u, cr:%u\012\000"
+ 1211      20467265 
+ 1211      713A256C 
+ 1211      752C2073 
+ 1211      663A2575 
+ 1212              		.section	.text.test_mode_rx_cont,"ax",%progbits
+ 1213              		.align	1
+ 1214              		.global	test_mode_rx_cont
+ 1215              		.syntax unified
+ 1216              		.code	16
+ 1217              		.thumb_func
+ 1218              		.fpu softvfp
+ 1220              	test_mode_rx_cont:
+ 1221              	.LVL98:
+ 1222              	.LFB19:
+ 296:smtc_modem_core/test_mode/test_mode.c **** 
+ 297:smtc_modem_core/test_mode/test_mode.c **** modem_return_code_t test_mode_rx_cont( uint32_t frequency, host_cmd_test_sf_t sf, host_cmd_test_bw_
+ 298:smtc_modem_core/test_mode/test_mode.c ****                                        host_cmd_test_cr_t cr )
+ 299:smtc_modem_core/test_mode/test_mode.c **** {
+ 1223              		.loc 1 299 1 is_stmt 1 view -0
+ 1224              		.cfi_startproc
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cclFs5I1.s 			page 32
+
+
+ 1225              		@ args = 0, pretend = 0, frame = 16
+ 1226              		@ frame_needed = 0, uses_anonymous_args = 0
+ 300:smtc_modem_core/test_mode/test_mode.c ****     if( smtc_real_is_valid_rx_frequency( lr1_mac_obj, frequency ) != OKLORAWAN )  // current value 
+ 1227              		.loc 1 300 5 view .LVU359
+ 299:smtc_modem_core/test_mode/test_mode.c ****     if( smtc_real_is_valid_rx_frequency( lr1_mac_obj, frequency ) != OKLORAWAN )  // current value 
+ 1228              		.loc 1 299 1 is_stmt 0 view .LVU360
+ 1229 0000 F0B5     		push	{r4, r5, r6, r7, lr}
+ 1230              		.cfi_def_cfa_offset 20
+ 1231              		.cfi_offset 4, -20
+ 1232              		.cfi_offset 5, -16
+ 1233              		.cfi_offset 6, -12
+ 1234              		.cfi_offset 7, -8
+ 1235              		.cfi_offset 14, -4
+ 1236              		.loc 1 300 9 view .LVU361
+ 1237 0002 3F4D     		ldr	r5, .L60
+ 299:smtc_modem_core/test_mode/test_mode.c ****     if( smtc_real_is_valid_rx_frequency( lr1_mac_obj, frequency ) != OKLORAWAN )  // current value 
+ 1238              		.loc 1 299 1 view .LVU362
+ 1239 0004 87B0     		sub	sp, sp, #28
+ 1240              		.cfi_def_cfa_offset 48
+ 299:smtc_modem_core/test_mode/test_mode.c ****     if( smtc_real_is_valid_rx_frequency( lr1_mac_obj, frequency ) != OKLORAWAN )  // current value 
+ 1241              		.loc 1 299 1 view .LVU363
+ 1242 0006 0400     		movs	r4, r0
+ 1243 0008 0F00     		movs	r7, r1
+ 1244              		.loc 1 300 9 view .LVU364
+ 1245 000a 0100     		movs	r1, r0
+ 1246              	.LVL99:
+ 1247              		.loc 1 300 9 view .LVU365
+ 1248 000c 2868     		ldr	r0, [r5]
+ 1249              	.LVL100:
+ 299:smtc_modem_core/test_mode/test_mode.c ****     if( smtc_real_is_valid_rx_frequency( lr1_mac_obj, frequency ) != OKLORAWAN )  // current value 
+ 1250              		.loc 1 299 1 view .LVU366
+ 1251 000e 1600     		movs	r6, r2
+ 1252 0010 0393     		str	r3, [sp, #12]
+ 1253              		.loc 1 300 9 view .LVU367
+ 1254 0012 FFF7FEFF 		bl	smtc_real_is_valid_rx_frequency
+ 1255              	.LVL101:
+ 1256              		.loc 1 300 9 view .LVU368
+ 1257 0016 0590     		str	r0, [sp, #20]
+ 1258              		.loc 1 300 7 view .LVU369
+ 1259 0018 0028     		cmp	r0, #0
+ 1260 001a 10D0     		beq	.L53
+ 301:smtc_modem_core/test_mode/test_mode.c ****     {
+ 302:smtc_modem_core/test_mode/test_mode.c ****         BSP_DBG_TRACE_ERROR( " Invalid Frequency %lu\n", frequency );
+ 1261              		.loc 1 302 9 is_stmt 1 view .LVU370
+ 1262              		.loc 1 302 9 view .LVU371
+ 1263 001c 3948     		ldr	r0, .L60+4
+ 1264 001e FFF7FEFF 		bl	bsp_trace_print
+ 1265              	.LVL102:
+ 1266              		.loc 1 302 9 view .LVU372
+ 1267 0022 3948     		ldr	r0, .L60+8
+ 1268 0024 FFF7FEFF 		bl	bsp_trace_print
+ 1269              	.LVL103:
+ 1270              		.loc 1 302 9 view .LVU373
+ 1271 0028 2100     		movs	r1, r4
+ 1272 002a 3848     		ldr	r0, .L60+12
+ 1273              	.L59:
+ 303:smtc_modem_core/test_mode/test_mode.c ****         return RC_INVALID;
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cclFs5I1.s 			page 33
+
+
+ 304:smtc_modem_core/test_mode/test_mode.c ****     }
+ 305:smtc_modem_core/test_mode/test_mode.c ****     if( sf >= TST_SF_MAX )
+ 306:smtc_modem_core/test_mode/test_mode.c ****     {
+ 307:smtc_modem_core/test_mode/test_mode.c ****         BSP_DBG_TRACE_ERROR( " Invalid sf %lu\n", sf );
+ 308:smtc_modem_core/test_mode/test_mode.c ****         return RC_INVALID;
+ 309:smtc_modem_core/test_mode/test_mode.c ****     }
+ 310:smtc_modem_core/test_mode/test_mode.c ****     if( bw >= TST_BW_MAX )
+ 311:smtc_modem_core/test_mode/test_mode.c ****     {
+ 312:smtc_modem_core/test_mode/test_mode.c ****         BSP_DBG_TRACE_ERROR( " Invalid bw %lu\n", bw );
+ 313:smtc_modem_core/test_mode/test_mode.c ****         return RC_INVALID;
+ 314:smtc_modem_core/test_mode/test_mode.c ****     }
+ 315:smtc_modem_core/test_mode/test_mode.c ****     if( cr >= TST_CR_MAX )
+ 316:smtc_modem_core/test_mode/test_mode.c ****     {
+ 317:smtc_modem_core/test_mode/test_mode.c ****         BSP_DBG_TRACE_ERROR( " Invalid cr %lu\n", cr );
+ 1274              		.loc 1 317 9 is_stmt 0 view .LVU374
+ 1275 002c FFF7FEFF 		bl	bsp_trace_print
+ 1276              	.LVL104:
+ 1277              		.loc 1 317 9 is_stmt 1 view .LVU375
+ 1278 0030 3748     		ldr	r0, .L60+16
+ 1279 0032 FFF7FEFF 		bl	bsp_trace_print
+ 1280              	.LVL105:
+ 1281              		.loc 1 317 9 view .LVU376
+ 1282              		.loc 1 317 55 view .LVU377
+ 318:smtc_modem_core/test_mode/test_mode.c ****         return RC_INVALID;
+ 1283              		.loc 1 318 9 view .LVU378
+ 1284              		.loc 1 318 16 is_stmt 0 view .LVU379
+ 1285 0036 0424     		movs	r4, #4
+ 1286              	.LVL106:
+ 1287              	.L54:
+ 319:smtc_modem_core/test_mode/test_mode.c ****     }
+ 320:smtc_modem_core/test_mode/test_mode.c **** 
+ 321:smtc_modem_core/test_mode/test_mode.c ****     ral_params_lora_t params;
+ 322:smtc_modem_core/test_mode/test_mode.c ****     params.freq_in_hz       = frequency;
+ 323:smtc_modem_core/test_mode/test_mode.c ****     params.sf               = ( ral_lora_sf_t ) host_cmd_test_sf_convert[sf];
+ 324:smtc_modem_core/test_mode/test_mode.c ****     params.bw               = ( ral_lora_bw_t ) host_cmd_test_bw_convert[bw];
+ 325:smtc_modem_core/test_mode/test_mode.c ****     params.cr               = ( ral_lora_cr_t ) host_cmd_test_cr_convert[cr];
+ 326:smtc_modem_core/test_mode/test_mode.c ****     params.crc_is_on        = true;
+ 327:smtc_modem_core/test_mode/test_mode.c ****     params.invert_iq_is_on  = true;
+ 328:smtc_modem_core/test_mode/test_mode.c ****     params.pbl_len_in_symb  = 8;
+ 329:smtc_modem_core/test_mode/test_mode.c ****     params.pld_is_fix       = false;
+ 330:smtc_modem_core/test_mode/test_mode.c ****     params.pld_len_in_bytes = 255;
+ 331:smtc_modem_core/test_mode/test_mode.c ****     params.symb_nb_timeout  = 8;
+ 332:smtc_modem_core/test_mode/test_mode.c ****     params.sync_word        = smtc_real_sync_word_get( lr1_mac_obj );
+ 333:smtc_modem_core/test_mode/test_mode.c **** 
+ 334:smtc_modem_core/test_mode/test_mode.c ****     context_test.params = params;
+ 335:smtc_modem_core/test_mode/test_mode.c ****     context_test.rp     = test_mode_rp;
+ 336:smtc_modem_core/test_mode/test_mode.c ****     BSP_DBG_TRACE_PRINTF( "Tx - Freq:%lu, sf:%u, bw:%u, cr:%u\n", params.freq_in_hz, params.sf, par
+ 337:smtc_modem_core/test_mode/test_mode.c **** 
+ 338:smtc_modem_core/test_mode/test_mode.c ****     rp_task_abort( context_test.rp, test_mode_hook_id );
+ 339:smtc_modem_core/test_mode/test_mode.c ****     if( ral_init( test_mode_rp->ral ) != RAL_STATUS_OK )
+ 340:smtc_modem_core/test_mode/test_mode.c ****     {
+ 341:smtc_modem_core/test_mode/test_mode.c ****         return RC_FAIL;
+ 342:smtc_modem_core/test_mode/test_mode.c ****     }
+ 343:smtc_modem_core/test_mode/test_mode.c ****     rp_hook_init( context_test.rp, test_mode_hook_id, ( void ( * )( void* ) )( test_mode_rx_callbac
+ 344:smtc_modem_core/test_mode/test_mode.c ****     test_mode_rx_callback( &context_test );
+ 345:smtc_modem_core/test_mode/test_mode.c ****     return RC_OK;
+ 346:smtc_modem_core/test_mode/test_mode.c **** }
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cclFs5I1.s 			page 34
+
+
+ 1288              		.loc 1 346 1 view .LVU380
+ 1289 0038 2000     		movs	r0, r4
+ 1290 003a 07B0     		add	sp, sp, #28
+ 1291              		@ sp needed
+ 1292 003c F0BD     		pop	{r4, r5, r6, r7, pc}
+ 1293              	.LVL107:
+ 1294              	.L53:
+ 305:smtc_modem_core/test_mode/test_mode.c ****     {
+ 1295              		.loc 1 305 5 is_stmt 1 view .LVU381
+ 305:smtc_modem_core/test_mode/test_mode.c ****     {
+ 1296              		.loc 1 305 7 is_stmt 0 view .LVU382
+ 1297 003e 082F     		cmp	r7, #8
+ 1298 0040 08D9     		bls	.L55
+ 307:smtc_modem_core/test_mode/test_mode.c ****         return RC_INVALID;
+ 1299              		.loc 1 307 9 is_stmt 1 view .LVU383
+ 307:smtc_modem_core/test_mode/test_mode.c ****         return RC_INVALID;
+ 1300              		.loc 1 307 9 view .LVU384
+ 1301 0042 3048     		ldr	r0, .L60+4
+ 1302 0044 FFF7FEFF 		bl	bsp_trace_print
+ 1303              	.LVL108:
+ 307:smtc_modem_core/test_mode/test_mode.c ****         return RC_INVALID;
+ 1304              		.loc 1 307 9 view .LVU385
+ 1305 0048 2F48     		ldr	r0, .L60+8
+ 1306 004a FFF7FEFF 		bl	bsp_trace_print
+ 1307              	.LVL109:
+ 307:smtc_modem_core/test_mode/test_mode.c ****         return RC_INVALID;
+ 1308              		.loc 1 307 9 view .LVU386
+ 1309 004e 3900     		movs	r1, r7
+ 1310 0050 3048     		ldr	r0, .L60+20
+ 1311 0052 EBE7     		b	.L59
+ 1312              	.L55:
+ 310:smtc_modem_core/test_mode/test_mode.c ****     {
+ 1313              		.loc 1 310 5 view .LVU387
+ 310:smtc_modem_core/test_mode/test_mode.c ****     {
+ 1314              		.loc 1 310 7 is_stmt 0 view .LVU388
+ 1315 0054 062E     		cmp	r6, #6
+ 1316 0056 08D9     		bls	.L56
+ 312:smtc_modem_core/test_mode/test_mode.c ****         return RC_INVALID;
+ 1317              		.loc 1 312 9 is_stmt 1 view .LVU389
+ 312:smtc_modem_core/test_mode/test_mode.c ****         return RC_INVALID;
+ 1318              		.loc 1 312 9 view .LVU390
+ 1319 0058 2A48     		ldr	r0, .L60+4
+ 1320 005a FFF7FEFF 		bl	bsp_trace_print
+ 1321              	.LVL110:
+ 312:smtc_modem_core/test_mode/test_mode.c ****         return RC_INVALID;
+ 1322              		.loc 1 312 9 view .LVU391
+ 1323 005e 2A48     		ldr	r0, .L60+8
+ 1324 0060 FFF7FEFF 		bl	bsp_trace_print
+ 1325              	.LVL111:
+ 312:smtc_modem_core/test_mode/test_mode.c ****         return RC_INVALID;
+ 1326              		.loc 1 312 9 view .LVU392
+ 1327 0064 3100     		movs	r1, r6
+ 1328 0066 2C48     		ldr	r0, .L60+24
+ 1329 0068 E0E7     		b	.L59
+ 1330              	.L56:
+ 315:smtc_modem_core/test_mode/test_mode.c ****     {
+ 1331              		.loc 1 315 5 view .LVU393
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cclFs5I1.s 			page 35
+
+
+ 315:smtc_modem_core/test_mode/test_mode.c ****     {
+ 1332              		.loc 1 315 7 is_stmt 0 view .LVU394
+ 1333 006a 039B     		ldr	r3, [sp, #12]
+ 1334 006c 062B     		cmp	r3, #6
+ 1335 006e 08D9     		bls	.L57
+ 317:smtc_modem_core/test_mode/test_mode.c ****         return RC_INVALID;
+ 1336              		.loc 1 317 9 is_stmt 1 view .LVU395
+ 317:smtc_modem_core/test_mode/test_mode.c ****         return RC_INVALID;
+ 1337              		.loc 1 317 9 view .LVU396
+ 1338 0070 2448     		ldr	r0, .L60+4
+ 1339 0072 FFF7FEFF 		bl	bsp_trace_print
+ 1340              	.LVL112:
+ 317:smtc_modem_core/test_mode/test_mode.c ****         return RC_INVALID;
+ 1341              		.loc 1 317 9 view .LVU397
+ 1342 0076 2448     		ldr	r0, .L60+8
+ 1343 0078 FFF7FEFF 		bl	bsp_trace_print
+ 1344              	.LVL113:
+ 317:smtc_modem_core/test_mode/test_mode.c ****         return RC_INVALID;
+ 1345              		.loc 1 317 9 view .LVU398
+ 1346 007c 0399     		ldr	r1, [sp, #12]
+ 1347 007e 2748     		ldr	r0, .L60+28
+ 1348 0080 D4E7     		b	.L59
+ 1349              	.L57:
+ 321:smtc_modem_core/test_mode/test_mode.c ****     params.freq_in_hz       = frequency;
+ 1350              		.loc 1 321 5 view .LVU399
+ 322:smtc_modem_core/test_mode/test_mode.c ****     params.sf               = ( ral_lora_sf_t ) host_cmd_test_sf_convert[sf];
+ 1351              		.loc 1 322 5 view .LVU400
+ 1352              	.LVL114:
+ 323:smtc_modem_core/test_mode/test_mode.c ****     params.bw               = ( ral_lora_bw_t ) host_cmd_test_bw_convert[bw];
+ 1353              		.loc 1 323 5 view .LVU401
+ 323:smtc_modem_core/test_mode/test_mode.c ****     params.bw               = ( ral_lora_bw_t ) host_cmd_test_bw_convert[bw];
+ 1354              		.loc 1 323 73 is_stmt 0 view .LVU402
+ 1355 0082 274B     		ldr	r3, .L60+32
+ 325:smtc_modem_core/test_mode/test_mode.c ****     params.crc_is_on        = true;
+ 1356              		.loc 1 325 73 view .LVU403
+ 1357 0084 039A     		ldr	r2, [sp, #12]
+ 323:smtc_modem_core/test_mode/test_mode.c ****     params.bw               = ( ral_lora_bw_t ) host_cmd_test_bw_convert[bw];
+ 1358              		.loc 1 323 73 view .LVU404
+ 1359 0086 DB5D     		ldrb	r3, [r3, r7]
+ 332:smtc_modem_core/test_mode/test_mode.c **** 
+ 1360              		.loc 1 332 31 view .LVU405
+ 1361 0088 2868     		ldr	r0, [r5]
+ 323:smtc_modem_core/test_mode/test_mode.c ****     params.bw               = ( ral_lora_bw_t ) host_cmd_test_bw_convert[bw];
+ 1362              		.loc 1 323 73 view .LVU406
+ 1363 008a 0493     		str	r3, [sp, #16]
+ 1364              	.LVL115:
+ 324:smtc_modem_core/test_mode/test_mode.c ****     params.cr               = ( ral_lora_cr_t ) host_cmd_test_cr_convert[cr];
+ 1365              		.loc 1 324 5 is_stmt 1 view .LVU407
+ 324:smtc_modem_core/test_mode/test_mode.c ****     params.cr               = ( ral_lora_cr_t ) host_cmd_test_cr_convert[cr];
+ 1366              		.loc 1 324 73 is_stmt 0 view .LVU408
+ 1367 008c 254B     		ldr	r3, .L60+36
+ 1368 008e 9E5D     		ldrb	r6, [r3, r6]
+ 1369              	.LVL116:
+ 325:smtc_modem_core/test_mode/test_mode.c ****     params.crc_is_on        = true;
+ 1370              		.loc 1 325 5 is_stmt 1 view .LVU409
+ 325:smtc_modem_core/test_mode/test_mode.c ****     params.crc_is_on        = true;
+ 1371              		.loc 1 325 73 is_stmt 0 view .LVU410
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cclFs5I1.s 			page 36
+
+
+ 1372 0090 254B     		ldr	r3, .L60+40
+ 1373 0092 9B5C     		ldrb	r3, [r3, r2]
+ 1374 0094 0393     		str	r3, [sp, #12]
+ 1375              	.LVL117:
+ 326:smtc_modem_core/test_mode/test_mode.c ****     params.invert_iq_is_on  = true;
+ 1376              		.loc 1 326 5 is_stmt 1 view .LVU411
+ 327:smtc_modem_core/test_mode/test_mode.c ****     params.pbl_len_in_symb  = 8;
+ 1377              		.loc 1 327 5 view .LVU412
+ 328:smtc_modem_core/test_mode/test_mode.c ****     params.pld_is_fix       = false;
+ 1378              		.loc 1 328 5 view .LVU413
+ 329:smtc_modem_core/test_mode/test_mode.c ****     params.pld_len_in_bytes = 255;
+ 1379              		.loc 1 329 5 view .LVU414
+ 330:smtc_modem_core/test_mode/test_mode.c ****     params.symb_nb_timeout  = 8;
+ 1380              		.loc 1 330 5 view .LVU415
+ 331:smtc_modem_core/test_mode/test_mode.c ****     params.sync_word        = smtc_real_sync_word_get( lr1_mac_obj );
+ 1381              		.loc 1 331 5 view .LVU416
+ 332:smtc_modem_core/test_mode/test_mode.c **** 
+ 1382              		.loc 1 332 5 view .LVU417
+ 332:smtc_modem_core/test_mode/test_mode.c **** 
+ 1383              		.loc 1 332 31 is_stmt 0 view .LVU418
+ 1384 0096 FFF7FEFF 		bl	smtc_real_sync_word_get
+ 1385              	.LVL118:
+ 334:smtc_modem_core/test_mode/test_mode.c ****     context_test.rp     = test_mode_rp;
+ 1386              		.loc 1 334 5 is_stmt 1 view .LVU419
+ 334:smtc_modem_core/test_mode/test_mode.c ****     context_test.rp     = test_mode_rp;
+ 1387              		.loc 1 334 25 is_stmt 0 view .LVU420
+ 1388 009a 244D     		ldr	r5, .L60+44
+ 1389 009c 049B     		ldr	r3, [sp, #16]
+ 335:smtc_modem_core/test_mode/test_mode.c ****     BSP_DBG_TRACE_PRINTF( "Tx - Freq:%lu, sf:%u, bw:%u, cr:%u\n", params.freq_in_hz, params.sf, par
+ 1390              		.loc 1 335 25 view .LVU421
+ 1391 009e 244F     		ldr	r7, .L60+48
+ 334:smtc_modem_core/test_mode/test_mode.c ****     context_test.rp     = test_mode_rp;
+ 1392              		.loc 1 334 25 view .LVU422
+ 1393 00a0 2B72     		strb	r3, [r5, #8]
+ 1394 00a2 039B     		ldr	r3, [sp, #12]
+ 336:smtc_modem_core/test_mode/test_mode.c **** 
+ 1395              		.loc 1 336 5 view .LVU423
+ 1396 00a4 2100     		movs	r1, r4
+ 334:smtc_modem_core/test_mode/test_mode.c ****     context_test.rp     = test_mode_rp;
+ 1397              		.loc 1 334 25 view .LVU424
+ 1398 00a6 AB72     		strb	r3, [r5, #10]
+ 1399 00a8 0823     		movs	r3, #8
+ 1400 00aa AB81     		strh	r3, [r5, #12]
+ 1401 00ac 059B     		ldr	r3, [sp, #20]
+ 336:smtc_modem_core/test_mode/test_mode.c **** 
+ 1402              		.loc 1 336 5 view .LVU425
+ 1403 00ae 049A     		ldr	r2, [sp, #16]
+ 334:smtc_modem_core/test_mode/test_mode.c ****     context_test.rp     = test_mode_rp;
+ 1404              		.loc 1 334 25 view .LVU426
+ 1405 00b0 EB73     		strb	r3, [r5, #15]
+ 1406 00b2 204B     		ldr	r3, .L60+52
+ 1407 00b4 6C60     		str	r4, [r5, #4]
+ 1408 00b6 2B61     		str	r3, [r5, #16]
+ 335:smtc_modem_core/test_mode/test_mode.c ****     BSP_DBG_TRACE_PRINTF( "Tx - Freq:%lu, sf:%u, bw:%u, cr:%u\n", params.freq_in_hz, params.sf, par
+ 1409              		.loc 1 335 5 is_stmt 1 view .LVU427
+ 335:smtc_modem_core/test_mode/test_mode.c ****     BSP_DBG_TRACE_PRINTF( "Tx - Freq:%lu, sf:%u, bw:%u, cr:%u\n", params.freq_in_hz, params.sf, par
+ 1410              		.loc 1 335 25 is_stmt 0 view .LVU428
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cclFs5I1.s 			page 37
+
+
+ 1411 00b8 3B68     		ldr	r3, [r7]
+ 334:smtc_modem_core/test_mode/test_mode.c ****     context_test.rp     = test_mode_rp;
+ 1412              		.loc 1 334 25 view .LVU429
+ 1413 00ba 6E72     		strb	r6, [r5, #9]
+ 335:smtc_modem_core/test_mode/test_mode.c ****     BSP_DBG_TRACE_PRINTF( "Tx - Freq:%lu, sf:%u, bw:%u, cr:%u\n", params.freq_in_hz, params.sf, par
+ 1414              		.loc 1 335 25 view .LVU430
+ 1415 00bc 2B60     		str	r3, [r5]
+ 336:smtc_modem_core/test_mode/test_mode.c **** 
+ 1416              		.loc 1 336 5 is_stmt 1 view .LVU431
+ 1417 00be 039B     		ldr	r3, [sp, #12]
+ 334:smtc_modem_core/test_mode/test_mode.c ****     context_test.rp     = test_mode_rp;
+ 1418              		.loc 1 334 25 is_stmt 0 view .LVU432
+ 1419 00c0 A873     		strb	r0, [r5, #14]
+ 336:smtc_modem_core/test_mode/test_mode.c **** 
+ 1420              		.loc 1 336 5 view .LVU433
+ 1421 00c2 1D48     		ldr	r0, .L60+56
+ 1422              	.LVL119:
+ 336:smtc_modem_core/test_mode/test_mode.c **** 
+ 1423              		.loc 1 336 5 view .LVU434
+ 1424 00c4 0093     		str	r3, [sp]
+ 1425 00c6 3300     		movs	r3, r6
+ 1426 00c8 FFF7FEFF 		bl	bsp_trace_print
+ 1427              	.LVL120:
+ 338:smtc_modem_core/test_mode/test_mode.c ****     if( ral_init( test_mode_rp->ral ) != RAL_STATUS_OK )
+ 1428              		.loc 1 338 5 is_stmt 1 view .LVU435
+ 1429 00cc 1B4E     		ldr	r6, .L60+60
+ 1430              	.LVL121:
+ 338:smtc_modem_core/test_mode/test_mode.c ****     if( ral_init( test_mode_rp->ral ) != RAL_STATUS_OK )
+ 1431              		.loc 1 338 5 is_stmt 0 view .LVU436
+ 1432 00ce 2868     		ldr	r0, [r5]
+ 1433 00d0 3178     		ldrb	r1, [r6]
+ 1434 00d2 FFF7FEFF 		bl	rp_task_abort
+ 1435              	.LVL122:
+ 339:smtc_modem_core/test_mode/test_mode.c ****     {
+ 1436              		.loc 1 339 5 is_stmt 1 view .LVU437
+ 339:smtc_modem_core/test_mode/test_mode.c ****     {
+ 1437              		.loc 1 339 31 is_stmt 0 view .LVU438
+ 1438 00d6 A523     		movs	r3, #165
+ 1439 00d8 3A68     		ldr	r2, [r7]
+ 1440 00da DB00     		lsls	r3, r3, #3
+ 339:smtc_modem_core/test_mode/test_mode.c ****     {
+ 1441              		.loc 1 339 9 view .LVU439
+ 1442 00dc D058     		ldr	r0, [r2, r3]
+ 1443 00de FFF7FEFF 		bl	ral_init
+ 1444              	.LVL123:
+ 1445 00e2 041E     		subs	r4, r0, #0
+ 1446              	.LVL124:
+ 339:smtc_modem_core/test_mode/test_mode.c ****     {
+ 1447              		.loc 1 339 7 view .LVU440
+ 1448 00e4 09D1     		bne	.L58
+ 343:smtc_modem_core/test_mode/test_mode.c ****     test_mode_rx_callback( &context_test );
+ 1449              		.loc 1 343 5 is_stmt 1 view .LVU441
+ 1450 00e6 2B00     		movs	r3, r5
+ 1451 00e8 3178     		ldrb	r1, [r6]
+ 1452 00ea 154A     		ldr	r2, .L60+64
+ 1453 00ec 2868     		ldr	r0, [r5]
+ 1454 00ee FFF7FEFF 		bl	rp_hook_init
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cclFs5I1.s 			page 38
+
+
+ 1455              	.LVL125:
+ 344:smtc_modem_core/test_mode/test_mode.c ****     return RC_OK;
+ 1456              		.loc 1 344 5 view .LVU442
+ 1457 00f2 2800     		movs	r0, r5
+ 1458 00f4 FFF7FEFF 		bl	test_mode_rx_callback
+ 1459              	.LVL126:
+ 345:smtc_modem_core/test_mode/test_mode.c **** }
+ 1460              		.loc 1 345 5 view .LVU443
+ 345:smtc_modem_core/test_mode/test_mode.c **** }
+ 1461              		.loc 1 345 12 is_stmt 0 view .LVU444
+ 1462 00f8 9EE7     		b	.L54
+ 1463              	.L58:
+ 341:smtc_modem_core/test_mode/test_mode.c ****     }
+ 1464              		.loc 1 341 16 view .LVU445
+ 1465 00fa 0624     		movs	r4, #6
+ 1466 00fc 9CE7     		b	.L54
+ 1467              	.L61:
+ 1468 00fe C046     		.align	2
+ 1469              	.L60:
+ 1470 0100 00000000 		.word	.LANCHOR2
+ 1471 0104 00000000 		.word	.LC33
+ 1472 0108 08000000 		.word	.LC35
+ 1473 010c 10000000 		.word	.LC37
+ 1474 0110 21000000 		.word	.LC25
+ 1475 0114 28000000 		.word	.LC40
+ 1476 0118 39000000 		.word	.LC42
+ 1477 011c 4A000000 		.word	.LC44
+ 1478 0120 00000000 		.word	.LANCHOR4
+ 1479 0124 00000000 		.word	.LANCHOR5
+ 1480 0128 00000000 		.word	.LANCHOR6
+ 1481 012c 00000000 		.word	.LANCHOR7
+ 1482 0130 00000000 		.word	.LANCHOR1
+ 1483 0134 FF010108 		.word	134283775
+ 1484 0138 00000000 		.word	.LC77
+ 1485 013c 00000000 		.word	.LANCHOR3
+ 1486 0140 00000000 		.word	test_mode_rx_callback
+ 1487              		.cfi_endproc
+ 1488              	.LFE19:
+ 1490              		.section	.text.test_mode_radio_reset,"ax",%progbits
+ 1491              		.align	1
+ 1492              		.global	test_mode_radio_reset
+ 1493              		.syntax unified
+ 1494              		.code	16
+ 1495              		.thumb_func
+ 1496              		.fpu softvfp
+ 1498              	test_mode_radio_reset:
+ 1499              	.LFB20:
+ 347:smtc_modem_core/test_mode/test_mode.c **** 
+ 348:smtc_modem_core/test_mode/test_mode.c **** modem_return_code_t test_mode_radio_reset( void )
+ 349:smtc_modem_core/test_mode/test_mode.c **** {
+ 1500              		.loc 1 349 1 is_stmt 1 view -0
+ 1501              		.cfi_startproc
+ 1502              		@ args = 0, pretend = 0, frame = 0
+ 1503              		@ frame_needed = 0, uses_anonymous_args = 0
+ 350:smtc_modem_core/test_mode/test_mode.c ****     if( ral_init( test_mode_rp->ral ) != RAL_STATUS_OK )
+ 1504              		.loc 1 350 5 view .LVU447
+ 349:smtc_modem_core/test_mode/test_mode.c ****     if( ral_init( test_mode_rp->ral ) != RAL_STATUS_OK )
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cclFs5I1.s 			page 39
+
+
+ 1505              		.loc 1 349 1 is_stmt 0 view .LVU448
+ 1506 0000 70B5     		push	{r4, r5, r6, lr}
+ 1507              		.cfi_def_cfa_offset 16
+ 1508              		.cfi_offset 4, -16
+ 1509              		.cfi_offset 5, -12
+ 1510              		.cfi_offset 6, -8
+ 1511              		.cfi_offset 14, -4
+ 1512              		.loc 1 350 31 view .LVU449
+ 1513 0002 A524     		movs	r4, #165
+ 1514 0004 074D     		ldr	r5, .L68
+ 1515 0006 E400     		lsls	r4, r4, #3
+ 1516              		.loc 1 350 9 view .LVU450
+ 1517 0008 2B68     		ldr	r3, [r5]
+ 1518 000a 1859     		ldr	r0, [r3, r4]
+ 1519 000c FFF7FEFF 		bl	ral_init
+ 1520              	.LVL127:
+ 1521              		.loc 1 350 7 view .LVU451
+ 1522 0010 0028     		cmp	r0, #0
+ 1523 0012 05D1     		bne	.L63
+ 351:smtc_modem_core/test_mode/test_mode.c ****     {
+ 352:smtc_modem_core/test_mode/test_mode.c ****         return RC_FAIL;
+ 353:smtc_modem_core/test_mode/test_mode.c ****     }
+ 354:smtc_modem_core/test_mode/test_mode.c ****     if( ral_set_sleep( test_mode_rp->ral ) != RAL_STATUS_OK )
+ 1524              		.loc 1 354 5 is_stmt 1 view .LVU452
+ 1525              		.loc 1 354 36 is_stmt 0 view .LVU453
+ 1526 0014 2B68     		ldr	r3, [r5]
+ 1527              		.loc 1 354 9 view .LVU454
+ 1528 0016 1859     		ldr	r0, [r3, r4]
+ 1529 0018 FFF7FEFF 		bl	ral_set_sleep
+ 1530              	.LVL128:
+ 1531              		.loc 1 354 7 view .LVU455
+ 1532 001c 0028     		cmp	r0, #0
+ 1533 001e 00D0     		beq	.L64
+ 1534              	.L63:
+ 355:smtc_modem_core/test_mode/test_mode.c ****     {
+ 356:smtc_modem_core/test_mode/test_mode.c ****         return RC_FAIL;
+ 1535              		.loc 1 356 9 is_stmt 1 view .LVU456
+ 1536              		.loc 1 356 16 is_stmt 0 view .LVU457
+ 1537 0020 0620     		movs	r0, #6
+ 1538              	.L64:
+ 357:smtc_modem_core/test_mode/test_mode.c ****     }
+ 358:smtc_modem_core/test_mode/test_mode.c ****     return RC_OK;
+ 359:smtc_modem_core/test_mode/test_mode.c **** }
+ 1539              		.loc 1 359 1 view .LVU458
+ 1540              		@ sp needed
+ 1541 0022 70BD     		pop	{r4, r5, r6, pc}
+ 1542              	.L69:
+ 1543              		.align	2
+ 1544              	.L68:
+ 1545 0024 00000000 		.word	.LANCHOR1
+ 1546              		.cfi_endproc
+ 1547              	.LFE20:
+ 1549              		.section	.text.test_mode_exit,"ax",%progbits
+ 1550              		.align	1
+ 1551              		.global	test_mode_exit
+ 1552              		.syntax unified
+ 1553              		.code	16
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cclFs5I1.s 			page 40
+
+
+ 1554              		.thumb_func
+ 1555              		.fpu softvfp
+ 1557              	test_mode_exit:
+ 1558              	.LFB21:
+ 360:smtc_modem_core/test_mode/test_mode.c **** 
+ 361:smtc_modem_core/test_mode/test_mode.c **** modem_return_code_t test_mode_exit( void )
+ 362:smtc_modem_core/test_mode/test_mode.c **** {
+ 1559              		.loc 1 362 1 is_stmt 1 view -0
+ 1560              		.cfi_startproc
+ 1561              		@ args = 0, pretend = 0, frame = 0
+ 1562              		@ frame_needed = 0, uses_anonymous_args = 0
+ 363:smtc_modem_core/test_mode/test_mode.c ****     rp_task_abort( test_mode_rp, test_mode_hook_id );
+ 1563              		.loc 1 363 5 view .LVU460
+ 362:smtc_modem_core/test_mode/test_mode.c ****     rp_task_abort( test_mode_rp, test_mode_hook_id );
+ 1564              		.loc 1 362 1 is_stmt 0 view .LVU461
+ 1565 0000 10B5     		push	{r4, lr}
+ 1566              		.cfi_def_cfa_offset 8
+ 1567              		.cfi_offset 4, -8
+ 1568              		.cfi_offset 14, -4
+ 1569              		.loc 1 363 5 view .LVU462
+ 1570 0002 064B     		ldr	r3, .L71
+ 1571 0004 064C     		ldr	r4, .L71+4
+ 1572 0006 1978     		ldrb	r1, [r3]
+ 1573 0008 2068     		ldr	r0, [r4]
+ 1574 000a FFF7FEFF 		bl	rp_task_abort
+ 1575              	.LVL129:
+ 364:smtc_modem_core/test_mode/test_mode.c ****     lorawan_api_init( test_mode_rp );
+ 1576              		.loc 1 364 5 is_stmt 1 view .LVU463
+ 1577 000e 2068     		ldr	r0, [r4]
+ 1578 0010 FFF7FEFF 		bl	lorawan_api_init
+ 1579              	.LVL130:
+ 365:smtc_modem_core/test_mode/test_mode.c ****     test_mode_disable( );
+ 1580              		.loc 1 365 5 view .LVU464
+ 1581              	.LBB12:
+ 1582              	.LBI12:
+  82:smtc_modem_core/test_mode/test_mode.c **** {
+ 1583              		.loc 1 82 20 view .LVU465
+ 1584              	.LBB13:
+  84:smtc_modem_core/test_mode/test_mode.c **** }
+ 1585              		.loc 1 84 5 view .LVU466
+  84:smtc_modem_core/test_mode/test_mode.c **** }
+ 1586              		.loc 1 84 25 is_stmt 0 view .LVU467
+ 1587 0014 0020     		movs	r0, #0
+ 1588 0016 034B     		ldr	r3, .L71+8
+ 1589              	.LBE13:
+ 1590              	.LBE12:
+ 366:smtc_modem_core/test_mode/test_mode.c ****     return RC_OK;
+ 367:smtc_modem_core/test_mode/test_mode.c **** }
+ 1591              		.loc 1 367 1 view .LVU468
+ 1592              		@ sp needed
+ 1593              	.LBB15:
+ 1594              	.LBB14:
+  84:smtc_modem_core/test_mode/test_mode.c **** }
+ 1595              		.loc 1 84 25 view .LVU469
+ 1596 0018 1870     		strb	r0, [r3]
+ 1597              	.LBE14:
+ 1598              	.LBE15:
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cclFs5I1.s 			page 41
+
+
+ 366:smtc_modem_core/test_mode/test_mode.c ****     return RC_OK;
+ 1599              		.loc 1 366 5 is_stmt 1 view .LVU470
+ 1600              		.loc 1 367 1 is_stmt 0 view .LVU471
+ 1601 001a 10BD     		pop	{r4, pc}
+ 1602              	.L72:
+ 1603              		.align	2
+ 1604              	.L71:
+ 1605 001c 00000000 		.word	.LANCHOR3
+ 1606 0020 00000000 		.word	.LANCHOR1
+ 1607 0024 00000000 		.word	.LANCHOR0
+ 1608              		.cfi_endproc
+ 1609              	.LFE21:
+ 1611              		.section	.text.test_mode_radio_write,"ax",%progbits
+ 1612              		.align	1
+ 1613              		.global	test_mode_radio_write
+ 1614              		.syntax unified
+ 1615              		.code	16
+ 1616              		.thumb_func
+ 1617              		.fpu softvfp
+ 1619              	test_mode_radio_write:
+ 1620              	.LVL131:
+ 1621              	.LFB22:
+ 368:smtc_modem_core/test_mode/test_mode.c **** 
+ 369:smtc_modem_core/test_mode/test_mode.c **** modem_return_code_t test_mode_radio_write( uint8_t* command, uint16_t command_length, uint8_t* data
+ 370:smtc_modem_core/test_mode/test_mode.c ****                                            uint16_t data_length )
+ 371:smtc_modem_core/test_mode/test_mode.c **** {
+ 1622              		.loc 1 371 1 is_stmt 1 view -0
+ 1623              		.cfi_startproc
+ 1624              		@ args = 0, pretend = 0, frame = 0
+ 1625              		@ frame_needed = 0, uses_anonymous_args = 0
+ 372:smtc_modem_core/test_mode/test_mode.c **** #if defined( SX1280 )
+ 373:smtc_modem_core/test_mode/test_mode.c ****     if( sx1280_hal_write( test_mode_rp->ral->context, command, command_length, data, data_length ) 
+ 1626              		.loc 1 373 5 view .LVU473
+ 371:smtc_modem_core/test_mode/test_mode.c **** #if defined( SX1280 )
+ 1627              		.loc 1 371 1 is_stmt 0 view .LVU474
+ 1628 0000 37B5     		push	{r0, r1, r2, r4, r5, lr}
+ 1629              		.cfi_def_cfa_offset 24
+ 1630              		.cfi_offset 0, -24
+ 1631              		.cfi_offset 1, -20
+ 1632              		.cfi_offset 2, -16
+ 1633              		.cfi_offset 4, -12
+ 1634              		.cfi_offset 5, -8
+ 1635              		.cfi_offset 14, -4
+ 1636              		.loc 1 373 39 view .LVU475
+ 1637 0002 084C     		ldr	r4, .L78
+ 1638 0004 2568     		ldr	r5, [r4]
+ 1639              		.loc 1 373 9 view .LVU476
+ 1640 0006 A524     		movs	r4, #165
+ 1641 0008 E400     		lsls	r4, r4, #3
+ 1642 000a 2C59     		ldr	r4, [r5, r4]
+ 1643 000c 0093     		str	r3, [sp]
+ 1644 000e 1300     		movs	r3, r2
+ 1645              	.LVL132:
+ 1646              		.loc 1 373 9 view .LVU477
+ 1647 0010 0A00     		movs	r2, r1
+ 1648              	.LVL133:
+ 1649              		.loc 1 373 9 view .LVU478
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cclFs5I1.s 			page 42
+
+
+ 1650 0012 0100     		movs	r1, r0
+ 1651              	.LVL134:
+ 1652              		.loc 1 373 9 view .LVU479
+ 1653 0014 2068     		ldr	r0, [r4]
+ 1654              	.LVL135:
+ 1655              		.loc 1 373 9 view .LVU480
+ 1656 0016 FFF7FEFF 		bl	sx1280_hal_write
+ 1657              	.LVL136:
+ 1658              		.loc 1 373 7 view .LVU481
+ 1659 001a 0028     		cmp	r0, #0
+ 1660 001c 00D0     		beq	.L74
+ 374:smtc_modem_core/test_mode/test_mode.c ****         SX1280_HAL_STATUS_OK )
+ 375:smtc_modem_core/test_mode/test_mode.c **** 
+ 376:smtc_modem_core/test_mode/test_mode.c **** #elif defined( SX126X )
+ 377:smtc_modem_core/test_mode/test_mode.c ****     if( sx126x_hal_write( test_mode_rp->ral->context, command, command_length, data, data_length ) 
+ 378:smtc_modem_core/test_mode/test_mode.c ****         SX126X_HAL_STATUS_OK )
+ 379:smtc_modem_core/test_mode/test_mode.c **** #else
+ 380:smtc_modem_core/test_mode/test_mode.c **** #error "Please select radio board.."
+ 381:smtc_modem_core/test_mode/test_mode.c **** #endif
+ 382:smtc_modem_core/test_mode/test_mode.c ****     {
+ 383:smtc_modem_core/test_mode/test_mode.c ****         return RC_FAIL;
+ 1661              		.loc 1 383 16 view .LVU482
+ 1662 001e 0620     		movs	r0, #6
+ 1663              	.L74:
+ 384:smtc_modem_core/test_mode/test_mode.c ****     }
+ 385:smtc_modem_core/test_mode/test_mode.c ****     return RC_OK;
+ 386:smtc_modem_core/test_mode/test_mode.c **** }
+ 1664              		.loc 1 386 1 view .LVU483
+ 1665              		@ sp needed
+ 1666 0020 3EBD     		pop	{r1, r2, r3, r4, r5, pc}
+ 1667              	.L79:
+ 1668 0022 C046     		.align	2
+ 1669              	.L78:
+ 1670 0024 00000000 		.word	.LANCHOR1
+ 1671              		.cfi_endproc
+ 1672              	.LFE22:
+ 1674              		.section	.text.test_mode_radio_read,"ax",%progbits
+ 1675              		.align	1
+ 1676              		.global	test_mode_radio_read
+ 1677              		.syntax unified
+ 1678              		.code	16
+ 1679              		.thumb_func
+ 1680              		.fpu softvfp
+ 1682              	test_mode_radio_read:
+ 1683              	.LVL137:
+ 1684              	.LFB23:
+ 387:smtc_modem_core/test_mode/test_mode.c **** 
+ 388:smtc_modem_core/test_mode/test_mode.c **** modem_return_code_t test_mode_radio_read( uint8_t* command, uint16_t command_length, uint8_t* data,
+ 389:smtc_modem_core/test_mode/test_mode.c ****                                           uint16_t data_length )
+ 390:smtc_modem_core/test_mode/test_mode.c **** {
+ 1685              		.loc 1 390 1 is_stmt 1 view -0
+ 1686              		.cfi_startproc
+ 1687              		@ args = 0, pretend = 0, frame = 0
+ 1688              		@ frame_needed = 0, uses_anonymous_args = 0
+ 391:smtc_modem_core/test_mode/test_mode.c **** #if defined( SX1280 )
+ 392:smtc_modem_core/test_mode/test_mode.c ****     if( sx1280_hal_read( test_mode_rp->ral->context, command, command_length, data, data_length ) !
+ 1689              		.loc 1 392 5 view .LVU485
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cclFs5I1.s 			page 43
+
+
+ 390:smtc_modem_core/test_mode/test_mode.c **** #if defined( SX1280 )
+ 1690              		.loc 1 390 1 is_stmt 0 view .LVU486
+ 1691 0000 37B5     		push	{r0, r1, r2, r4, r5, lr}
+ 1692              		.cfi_def_cfa_offset 24
+ 1693              		.cfi_offset 0, -24
+ 1694              		.cfi_offset 1, -20
+ 1695              		.cfi_offset 2, -16
+ 1696              		.cfi_offset 4, -12
+ 1697              		.cfi_offset 5, -8
+ 1698              		.cfi_offset 14, -4
+ 1699              		.loc 1 392 38 view .LVU487
+ 1700 0002 084C     		ldr	r4, .L85
+ 1701 0004 2568     		ldr	r5, [r4]
+ 1702              		.loc 1 392 9 view .LVU488
+ 1703 0006 A524     		movs	r4, #165
+ 1704 0008 E400     		lsls	r4, r4, #3
+ 1705 000a 2C59     		ldr	r4, [r5, r4]
+ 1706 000c 0093     		str	r3, [sp]
+ 1707 000e 1300     		movs	r3, r2
+ 1708              	.LVL138:
+ 1709              		.loc 1 392 9 view .LVU489
+ 1710 0010 0A00     		movs	r2, r1
+ 1711              	.LVL139:
+ 1712              		.loc 1 392 9 view .LVU490
+ 1713 0012 0100     		movs	r1, r0
+ 1714              	.LVL140:
+ 1715              		.loc 1 392 9 view .LVU491
+ 1716 0014 2068     		ldr	r0, [r4]
+ 1717              	.LVL141:
+ 1718              		.loc 1 392 9 view .LVU492
+ 1719 0016 FFF7FEFF 		bl	sx1280_hal_read
+ 1720              	.LVL142:
+ 1721              		.loc 1 392 7 view .LVU493
+ 1722 001a 0028     		cmp	r0, #0
+ 1723 001c 00D0     		beq	.L81
+ 393:smtc_modem_core/test_mode/test_mode.c ****         SX1280_HAL_STATUS_OK )
+ 394:smtc_modem_core/test_mode/test_mode.c **** #elif defined( SX126X )
+ 395:smtc_modem_core/test_mode/test_mode.c ****     if( sx126x_hal_read( test_mode_rp->ral->context, command, command_length, data, data_length ) !
+ 396:smtc_modem_core/test_mode/test_mode.c ****         SX126X_HAL_STATUS_OK )
+ 397:smtc_modem_core/test_mode/test_mode.c **** #else
+ 398:smtc_modem_core/test_mode/test_mode.c **** #error "Please select radio board.."
+ 399:smtc_modem_core/test_mode/test_mode.c **** #endif
+ 400:smtc_modem_core/test_mode/test_mode.c ****     {
+ 401:smtc_modem_core/test_mode/test_mode.c ****         return RC_FAIL;
+ 1724              		.loc 1 401 16 view .LVU494
+ 1725 001e 0620     		movs	r0, #6
+ 1726              	.L81:
+ 402:smtc_modem_core/test_mode/test_mode.c ****     }
+ 403:smtc_modem_core/test_mode/test_mode.c ****     return RC_OK;
+ 404:smtc_modem_core/test_mode/test_mode.c **** }
+ 1727              		.loc 1 404 1 view .LVU495
+ 1728              		@ sp needed
+ 1729 0020 3EBD     		pop	{r1, r2, r3, r4, r5, pc}
+ 1730              	.L86:
+ 1731 0022 C046     		.align	2
+ 1732              	.L85:
+ 1733 0024 00000000 		.word	.LANCHOR1
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cclFs5I1.s 			page 44
+
+
+ 1734              		.cfi_endproc
+ 1735              	.LFE23:
+ 1737              		.section	.bss.context_test,"aw",%nobits
+ 1738              		.align	2
+ 1739              		.set	.LANCHOR7,. + 0
+ 1742              	context_test:
+ 1743 0000 00000000 		.space	24
+ 1743      00000000 
+ 1743      00000000 
+ 1743      00000000 
+ 1743      00000000 
+ 1744              		.section	.bss.is_tst_mode_enabled,"aw",%nobits
+ 1745              		.set	.LANCHOR0,. + 0
+ 1748              	is_tst_mode_enabled:
+ 1749 0000 00       		.space	1
+ 1750              		.section	.bss.lr1_mac_obj,"aw",%nobits
+ 1751              		.align	2
+ 1752              		.set	.LANCHOR2,. + 0
+ 1755              	lr1_mac_obj:
+ 1756 0000 00000000 		.space	4
+ 1757              		.section	.bss.rx_payload,"aw",%nobits
+ 1758              		.align	2
+ 1761              	rx_payload:
+ 1762 0000 00000000 		.space	255
+ 1762      00000000 
+ 1762      00000000 
+ 1762      00000000 
+ 1762      00000000 
+ 1763              		.section	.bss.test_mode_rp,"aw",%nobits
+ 1764              		.align	2
+ 1765              		.set	.LANCHOR1,. + 0
+ 1768              	test_mode_rp:
+ 1769 0000 00000000 		.space	4
+ 1770              		.section	.data.test_mode_hook_id,"aw"
+ 1771              		.set	.LANCHOR3,. + 0
+ 1774              	test_mode_hook_id:
+ 1775 0000 FF       		.byte	-1
+ 1776              		.section	.rodata.host_cmd_test_bw_convert,"a"
+ 1777              		.align	2
+ 1778              		.set	.LANCHOR5,. + 0
+ 1781              	host_cmd_test_bw_convert:
+ 1782 0000 07090B08 		.ascii	"\007\011\013\010\012\014\015"
+ 1782      0A0C0D
+ 1783              		.section	.rodata.host_cmd_test_cr_convert,"a"
+ 1784              		.align	2
+ 1785              		.set	.LANCHOR6,. + 0
+ 1788              	host_cmd_test_cr_convert:
+ 1789 0000 00010203 		.ascii	"\000\001\002\003\004\005\006"
+ 1789      040506
+ 1790              		.section	.rodata.host_cmd_test_sf_convert,"a"
+ 1791              		.align	2
+ 1792              		.set	.LANCHOR4,. + 0
+ 1795              	host_cmd_test_sf_convert:
+ 1796 0000 06070809 		.ascii	"\006\007\010\011\012\013\014\005\006"
+ 1796      0A0B0C05 
+ 1796      06
+ 1797              		.text
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cclFs5I1.s 			page 45
+
+
+ 1798              	.Letext0:
+ 1799              		.file 2 "/Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.external
+ 1800              		.file 3 "/Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.external
+ 1801              		.file 4 "smtc_ral/src/ral_defs.h"
+ 1802              		.file 5 "/Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.external
+ 1803              		.file 6 "/Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.external
+ 1804              		.file 7 "/Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.external
+ 1805              		.file 8 "/Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.external
+ 1806              		.file 9 "smtc_modem_core/device_management/device_management_defs.h"
+ 1807              		.file 10 "radio_planner/src/radio_planner_types.h"
+ 1808              		.file 11 "radio_planner/src/radio_planner_stats.h"
+ 1809              		.file 12 "radio_planner/src/radio_planner.h"
+ 1810              		.file 13 "lr1mac/src/lr1mac_defs.h"
+ 1811              		.file 14 "smtc_modem_core/modem_api.h"
+ 1812              		.file 15 "smtc_modem_core/test_mode/test_mode.h"
+ 1813              		.file 16 "lr1mac/src/smtc_real/src/smtc_real_defs.h"
+ 1814              		.file 17 "lr1mac/src/lr1_stack_mac_layer.h"
+ 1815              		.file 18 "sx1280_driver/src/sx1280_hal.h"
+ 1816              		.file 19 "smtc_modem_core/lorawan_api/lorawan_api.h"
+ 1817              		.file 20 "smtc_ral/src/ral.h"
+ 1818              		.file 21 "lr1mac/src/smtc_real/src/smtc_real.h"
+ 1819              		.file 22 "smtc_bsp/smtc_bsp_mcu.h"
+ 1820              		.file 23 "lr1mac/src/lr1mac_core.h"
+ 1821              		.file 24 "smtc_bsp/smtc_bsp_rtc.h"
+ 1822              		.file 25 "<built-in>"
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cclFs5I1.s 			page 46
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 test_mode.c
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cclFs5I1.s:17     .text.test_mode_tx_whitout_callback:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cclFs5I1.s:25     .text.test_mode_tx_whitout_callback:0000000000000000 test_mode_tx_whitout_callback
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cclFs5I1.s:51     .text.test_mode_tx_whitout_callback:000000000000000c $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cclFs5I1.s:59     .text.test_mode_tx_callback:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cclFs5I1.s:66     .text.test_mode_tx_callback:0000000000000000 test_mode_tx_callback
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cclFs5I1.s:208    .text.test_mode_tx_callback:000000000000007c $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cclFs5I1.s:227    .text.test_mode_rx_callback:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cclFs5I1.s:234    .text.test_mode_rx_callback:0000000000000000 test_mode_rx_callback
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cclFs5I1.s:489    .text.test_mode_rx_callback:0000000000000100 $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cclFs5I1.s:1761   .bss.rx_payload:0000000000000000 rx_payload
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cclFs5I1.s:501    .text.test_mode_enabled_is:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cclFs5I1.s:508    .text.test_mode_enabled_is:0000000000000000 test_mode_enabled_is
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cclFs5I1.s:527    .text.test_mode_enabled_is:0000000000000008 $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cclFs5I1.s:541    .text.test_mode_start:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cclFs5I1.s:548    .text.test_mode_start:0000000000000000 test_mode_start
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cclFs5I1.s:630    .text.test_mode_start:0000000000000040 $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cclFs5I1.s:642    .text.test_mode_nop:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cclFs5I1.s:649    .text.test_mode_nop:0000000000000000 test_mode_nop
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cclFs5I1.s:705    .text.test_mode_nop:0000000000000030 $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cclFs5I1.s:727    .text.test_mode_tx:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cclFs5I1.s:734    .text.test_mode_tx:0000000000000000 test_mode_tx
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cclFs5I1.s:1020   .text.test_mode_tx:000000000000012c $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cclFs5I1.s:1044   .text.test_mode_cw:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cclFs5I1.s:1051   .text.test_mode_cw:0000000000000000 test_mode_cw
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cclFs5I1.s:1198   .text.test_mode_cw:000000000000008c $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cclFs5I1.s:1213   .text.test_mode_rx_cont:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cclFs5I1.s:1220   .text.test_mode_rx_cont:0000000000000000 test_mode_rx_cont
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cclFs5I1.s:1470   .text.test_mode_rx_cont:0000000000000100 $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cclFs5I1.s:1491   .text.test_mode_radio_reset:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cclFs5I1.s:1498   .text.test_mode_radio_reset:0000000000000000 test_mode_radio_reset
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cclFs5I1.s:1545   .text.test_mode_radio_reset:0000000000000024 $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cclFs5I1.s:1550   .text.test_mode_exit:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cclFs5I1.s:1557   .text.test_mode_exit:0000000000000000 test_mode_exit
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cclFs5I1.s:1605   .text.test_mode_exit:000000000000001c $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cclFs5I1.s:1612   .text.test_mode_radio_write:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cclFs5I1.s:1619   .text.test_mode_radio_write:0000000000000000 test_mode_radio_write
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cclFs5I1.s:1670   .text.test_mode_radio_write:0000000000000024 $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cclFs5I1.s:1675   .text.test_mode_radio_read:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cclFs5I1.s:1682   .text.test_mode_radio_read:0000000000000000 test_mode_radio_read
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cclFs5I1.s:1733   .text.test_mode_radio_read:0000000000000024 $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cclFs5I1.s:1738   .bss.context_test:0000000000000000 $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cclFs5I1.s:1742   .bss.context_test:0000000000000000 context_test
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cclFs5I1.s:1748   .bss.is_tst_mode_enabled:0000000000000000 is_tst_mode_enabled
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cclFs5I1.s:1749   .bss.is_tst_mode_enabled:0000000000000000 $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cclFs5I1.s:1751   .bss.lr1_mac_obj:0000000000000000 $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cclFs5I1.s:1755   .bss.lr1_mac_obj:0000000000000000 lr1_mac_obj
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cclFs5I1.s:1758   .bss.rx_payload:0000000000000000 $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cclFs5I1.s:1764   .bss.test_mode_rp:0000000000000000 $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cclFs5I1.s:1768   .bss.test_mode_rp:0000000000000000 test_mode_rp
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cclFs5I1.s:1774   .data.test_mode_hook_id:0000000000000000 test_mode_hook_id
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cclFs5I1.s:1777   .rodata.host_cmd_test_bw_convert:0000000000000000 $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cclFs5I1.s:1781   .rodata.host_cmd_test_bw_convert:0000000000000000 host_cmd_test_bw_convert
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cclFs5I1.s:1784   .rodata.host_cmd_test_cr_convert:0000000000000000 $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cclFs5I1.s:1788   .rodata.host_cmd_test_cr_convert:0000000000000000 host_cmd_test_cr_convert
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cclFs5I1.s:1791   .rodata.host_cmd_test_sf_convert:0000000000000000 $d
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cclFs5I1.s 			page 47
+
+
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cclFs5I1.s:1795   .rodata.host_cmd_test_sf_convert:0000000000000000 host_cmd_test_sf_convert
+
+UNDEFINED SYMBOLS
+bsp_trace_print
+rp_hook_get_id
+bsp_rtc_get_time_ms
+memset
+rp_task_enqueue
+modem_get_radio_planner
+lorawan_api_init
+lr1mac_core_stack_mac_get
+lorawan_api_rp_hook_id_get
+rp_task_abort
+ral_init
+ral_set_sleep
+smtc_real_is_valid_rx_frequency
+smtc_real_sync_word_get
+rp_hook_init
+smtc_real_coding_rate_get
+ral_setup_tx_lora
+ral_set_tx_cw
+sx1280_hal_write
+sx1280_hal_read

@@ -1,0 +1,1388 @@
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccai0XQR.s 			page 1
+
+
+   1              		.cpu cortex-m0plus
+   2              		.eabi_attribute 23, 1
+   3              		.eabi_attribute 24, 1
+   4              		.eabi_attribute 25, 1
+   5              		.eabi_attribute 26, 1
+   6              		.eabi_attribute 30, 4
+   7              		.eabi_attribute 34, 0
+   8              		.eabi_attribute 18, 4
+   9              		.file	"dm_downlink.c"
+  10              		.text
+  11              	.Ltext0:
+  12              		.cfi_sections	.debug_frame
+  13              		.section	.rodata.dm_parse_cmd.str1.1,"aMS",%progbits,1
+  14              	.LC0:
+  15 0000 1B5B303B 		.ascii	"\033[0;31m\000"
+  15      33316D00 
+  16              	.LC2:
+  17 0008 4552524F 		.ascii	"ERROR: \000"
+  17      523A2000 
+  18              	.LC4:
+  19 0010 496E7661 		.ascii	"Invalid DM command %x\012\000"
+  19      6C696420 
+  19      444D2063 
+  19      6F6D6D61 
+  19      6E642025 
+  20              	.LC6:
+  21 0027 1B5B306D 		.ascii	"\033[0m\000"
+  21      00
+  22              	.LC9:
+  23 002c 496E7661 		.ascii	"Invalid DM command size (too small)\012\000"
+  23      6C696420 
+  23      444D2063 
+  23      6F6D6D61 
+  23      6E642073 
+  24              	.LC11:
+  25 0051 496E7661 		.ascii	"Invalid DM command size (too long)\012\000"
+  25      6C696420 
+  25      444D2063 
+  25      6F6D6D61 
+  25      6E642073 
+  26              	.LC13:
+  27 0075 1B5B303B 		.ascii	"\033[0;33m\000"
+  27      33336D00 
+  28              	.LC15:
+  29 007d 5741524E 		.ascii	"WARN : \000"
+  29      203A2000 
+  30              	.LC18:
+  31 0085 444D5F25 		.ascii	"DM_%s (0x%02x)\012\000"
+  31      73202830 
+  31      78253032 
+  31      78290A00 
+  32              	.LC20:
+  33 0095 696E7661 		.ascii	"invalid DM reset code (0x%02x)\012\000"
+  33      6C696420 
+  33      444D2072 
+  33      65736574 
+  33      20636F64 
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccai0XQR.s 			page 2
+
+
+  34              	.LC22:
+  35 00b5 696E7661 		.ascii	"invalid DM reset session code\012\000"
+  35      6C696420 
+  35      444D2072 
+  35      65736574 
+  35      20736573 
+  36              	.LC24:
+  37 00d4 4E4F5420 		.ascii	"NOT RESET !!!\012\000"
+  37      52455345 
+  37      54202121 
+  37      210A00
+  38              	.LC26:
+  39 00e3 444D5F46 		.ascii	"DM_FILE_DONE donwlink\012\000"
+  39      494C455F 
+  39      444F4E45 
+  39      20646F6E 
+  39      776C696E 
+  40              	.LC28:
+  41 00fa 4E6F2046 		.ascii	"No FileUpload ongoing\012\000"
+  41      696C6555 
+  41      706C6F61 
+  41      64206F6E 
+  41      676F696E 
+  42              	.LC30:
+  43 0111 444D5F46 		.ascii	"DM_FILE_DONE bad session_counter %d compare to %d\012"
+  43      494C455F 
+  43      444F4E45 
+  43      20626164 
+  43      20736573 
+  44 0143 00       		.ascii	"\000"
+  45              		.section	.text.dm_parse_cmd,"ax",%progbits
+  46              		.align	1
+  47              		.global	dm_parse_cmd
+  48              		.arch armv6s-m
+  49              		.syntax unified
+  50              		.code	16
+  51              		.thumb_func
+  52              		.fpu softvfp
+  54              	dm_parse_cmd:
+  55              	.LVL0:
+  56              	.LFB10:
+  57              		.file 1 "smtc_modem_core/device_management/dm_downlink.c"
+   1:smtc_modem_core/device_management/dm_downlink.c **** /*!
+   2:smtc_modem_core/device_management/dm_downlink.c ****  * \file      dm_downlink.c
+   3:smtc_modem_core/device_management/dm_downlink.c ****  *
+   4:smtc_modem_core/device_management/dm_downlink.c ****  * \brief     handle downlink from device management
+   5:smtc_modem_core/device_management/dm_downlink.c ****  *
+   6:smtc_modem_core/device_management/dm_downlink.c ****  * Revised BSD License
+   7:smtc_modem_core/device_management/dm_downlink.c ****  * Copyright Semtech Corporation 2020. All rights reserved.
+   8:smtc_modem_core/device_management/dm_downlink.c ****  *
+   9:smtc_modem_core/device_management/dm_downlink.c ****  * Redistribution and use in source and binary forms, with or without
+  10:smtc_modem_core/device_management/dm_downlink.c ****  * modification, are permitted provided that the following conditions are met:
+  11:smtc_modem_core/device_management/dm_downlink.c ****  *     * Redistributions of source code must retain the above copyright
+  12:smtc_modem_core/device_management/dm_downlink.c ****  *       notice, this list of conditions and the following disclaimer.
+  13:smtc_modem_core/device_management/dm_downlink.c ****  *     * Redistributions in binary form must reproduce the above copyright
+  14:smtc_modem_core/device_management/dm_downlink.c ****  *       notice, this list of conditions and the following disclaimer in the
+  15:smtc_modem_core/device_management/dm_downlink.c ****  *       documentation and/or other materials provided with the distribution.
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccai0XQR.s 			page 3
+
+
+  16:smtc_modem_core/device_management/dm_downlink.c ****  *     * Neither the name of the Semtech corporation nor the
+  17:smtc_modem_core/device_management/dm_downlink.c ****  *       names of its contributors may be used to endorse or promote products
+  18:smtc_modem_core/device_management/dm_downlink.c ****  *       derived from this software without specific prior written permission.
+  19:smtc_modem_core/device_management/dm_downlink.c ****  *
+  20:smtc_modem_core/device_management/dm_downlink.c ****  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+  21:smtc_modem_core/device_management/dm_downlink.c ****  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+  22:smtc_modem_core/device_management/dm_downlink.c ****  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+  23:smtc_modem_core/device_management/dm_downlink.c ****  * ARE DISCLAIMED. IN NO EVENT SHALL SEMTECH CORPORATION BE LIABLE FOR ANY DIRECT,
+  24:smtc_modem_core/device_management/dm_downlink.c ****  * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+  25:smtc_modem_core/device_management/dm_downlink.c ****  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+  26:smtc_modem_core/device_management/dm_downlink.c ****  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+  27:smtc_modem_core/device_management/dm_downlink.c ****  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  28:smtc_modem_core/device_management/dm_downlink.c ****  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+  29:smtc_modem_core/device_management/dm_downlink.c ****  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  30:smtc_modem_core/device_management/dm_downlink.c ****  */
+  31:smtc_modem_core/device_management/dm_downlink.c **** 
+  32:smtc_modem_core/device_management/dm_downlink.c **** /*
+  33:smtc_modem_core/device_management/dm_downlink.c ****  * -----------------------------------------------------------------------------
+  34:smtc_modem_core/device_management/dm_downlink.c ****  * --- DEPENDENCIES ------------------------------------------------------------
+  35:smtc_modem_core/device_management/dm_downlink.c ****  */
+  36:smtc_modem_core/device_management/dm_downlink.c **** 
+  37:smtc_modem_core/device_management/dm_downlink.c **** #include <stdint.h>   // C99 types
+  38:smtc_modem_core/device_management/dm_downlink.c **** #include <stdbool.h>  // bool type
+  39:smtc_modem_core/device_management/dm_downlink.c **** 
+  40:smtc_modem_core/device_management/dm_downlink.c **** #include "smtc_bsp.h"
+  41:smtc_modem_core/device_management/dm_downlink.c **** #include "dm_downlink.h"
+  42:smtc_modem_core/device_management/dm_downlink.c **** #include "device_management_defs.h"
+  43:smtc_modem_core/device_management/dm_downlink.c **** #include "modem_context.h"
+  44:smtc_modem_core/device_management/dm_downlink.c **** #include "lorawan_api.h"
+  45:smtc_modem_core/device_management/dm_downlink.c **** 
+  46:smtc_modem_core/device_management/dm_downlink.c **** /*
+  47:smtc_modem_core/device_management/dm_downlink.c ****  * -----------------------------------------------------------------------------
+  48:smtc_modem_core/device_management/dm_downlink.c ****  * --- PRIVATE VARIABLES -------------------------------------------------------
+  49:smtc_modem_core/device_management/dm_downlink.c ****  */
+  50:smtc_modem_core/device_management/dm_downlink.c **** 
+  51:smtc_modem_core/device_management/dm_downlink.c **** #if BSP_DBG_TRACE == BSP_FEATURE_ON
+  52:smtc_modem_core/device_management/dm_downlink.c **** static const char* dm_cmd_str[DM_CMD_MAX] = {
+  53:smtc_modem_core/device_management/dm_downlink.c ****     [DM_RESET]       = "RESET",        //
+  54:smtc_modem_core/device_management/dm_downlink.c ****     [DM_FUOTA]       = "FUOTA",        //
+  55:smtc_modem_core/device_management/dm_downlink.c ****     [DM_FILE_DONE]   = "FILE_DONE",    //
+  56:smtc_modem_core/device_management/dm_downlink.c ****     [DM_GET_INFO]    = "GET_INFO",     //
+  57:smtc_modem_core/device_management/dm_downlink.c ****     [DM_SET_CONF]    = "SET_CONF",     //
+  58:smtc_modem_core/device_management/dm_downlink.c ****     [DM_REJOIN]      = "REJOIN",       //
+  59:smtc_modem_core/device_management/dm_downlink.c ****     [DM_MUTE]        = "MUTE",         //
+  60:smtc_modem_core/device_management/dm_downlink.c ****     [DM_SET_DM_INFO] = "SET_DM_INFO",  //
+  61:smtc_modem_core/device_management/dm_downlink.c ****     [DM_STREAM]      = "STREAM",       //
+  62:smtc_modem_core/device_management/dm_downlink.c ****     [DM_ALC_SYNC]    = "ALC_SYNC"      //
+  63:smtc_modem_core/device_management/dm_downlink.c **** };
+  64:smtc_modem_core/device_management/dm_downlink.c **** #endif
+  65:smtc_modem_core/device_management/dm_downlink.c **** 
+  66:smtc_modem_core/device_management/dm_downlink.c **** /*
+  67:smtc_modem_core/device_management/dm_downlink.c ****  * -----------------------------------------------------------------------------
+  68:smtc_modem_core/device_management/dm_downlink.c ****  * --- PRIVATE FUNCTIONS DECLARATION -------------------------------------------
+  69:smtc_modem_core/device_management/dm_downlink.c ****  */
+  70:smtc_modem_core/device_management/dm_downlink.c **** 
+  71:smtc_modem_core/device_management/dm_downlink.c **** /*!
+  72:smtc_modem_core/device_management/dm_downlink.c ****  * \brief   check DM cmd Size
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccai0XQR.s 			page 4
+
+
+  73:smtc_modem_core/device_management/dm_downlink.c ****  *
+  74:smtc_modem_core/device_management/dm_downlink.c ****  * \param [in]  cmd                         Current dm code that must be checked
+  75:smtc_modem_core/device_management/dm_downlink.c ****  * \param [in]  length                      Length of the tested requested code
+  76:smtc_modem_core/device_management/dm_downlink.c ****  * \param [out] e_dm_cmd_length_valid       Return valid length or not
+  77:smtc_modem_core/device_management/dm_downlink.c ****  */
+  78:smtc_modem_core/device_management/dm_downlink.c **** static e_dm_cmd_length_valid dm_check_cmd_size( e_dm_cmd_t cmd, uint8_t length );
+  79:smtc_modem_core/device_management/dm_downlink.c **** 
+  80:smtc_modem_core/device_management/dm_downlink.c **** /*!
+  81:smtc_modem_core/device_management/dm_downlink.c ****  * \brief   DM Reset
+  82:smtc_modem_core/device_management/dm_downlink.c ****  *
+  83:smtc_modem_core/device_management/dm_downlink.c ****  * \param [in]  reset_code                  Type of requested reset
+  84:smtc_modem_core/device_management/dm_downlink.c ****  * \param [in]  reset_session               reset Session is compare to the current number of modem
+  85:smtc_modem_core/device_management/dm_downlink.c ****  * \param [out] e_dm_error_t                Return valid or not
+  86:smtc_modem_core/device_management/dm_downlink.c ****  */
+  87:smtc_modem_core/device_management/dm_downlink.c **** static e_dm_error_t dm_reset( e_dm_reset_code_t reset_code, uint16_t reset_session );
+  88:smtc_modem_core/device_management/dm_downlink.c **** 
+  89:smtc_modem_core/device_management/dm_downlink.c **** /*
+  90:smtc_modem_core/device_management/dm_downlink.c ****  * -----------------------------------------------------------------------------
+  91:smtc_modem_core/device_management/dm_downlink.c ****  * --- PUBLIC FUNCTIONS DEFINITION ---------------------------------------------
+  92:smtc_modem_core/device_management/dm_downlink.c ****  */
+  93:smtc_modem_core/device_management/dm_downlink.c **** 
+  94:smtc_modem_core/device_management/dm_downlink.c **** e_dm_error_t dm_downlink( uint8_t* data, uint8_t length )
+  95:smtc_modem_core/device_management/dm_downlink.c **** {
+  96:smtc_modem_core/device_management/dm_downlink.c ****     s_dm_cmd_input_t dm_input;
+  97:smtc_modem_core/device_management/dm_downlink.c ****     if( length <= DM_DOWNLINK_HEADER_LENGTH )
+  98:smtc_modem_core/device_management/dm_downlink.c ****     {
+  99:smtc_modem_core/device_management/dm_downlink.c ****         BSP_DBG_TRACE_ERROR( "DM Downlink must contain at least 4 bytes\n" );
+ 100:smtc_modem_core/device_management/dm_downlink.c ****         return DM_ERROR;
+ 101:smtc_modem_core/device_management/dm_downlink.c ****     }
+ 102:smtc_modem_core/device_management/dm_downlink.c **** 
+ 103:smtc_modem_core/device_management/dm_downlink.c ****     dm_input.up_count     = data[0];
+ 104:smtc_modem_core/device_management/dm_downlink.c ****     dm_input.up_delay     = data[1];
+ 105:smtc_modem_core/device_management/dm_downlink.c ****     dm_input.request_code = ( e_dm_cmd_t ) data[2];
+ 106:smtc_modem_core/device_management/dm_downlink.c ****     dm_input.buffer       = &data[3];
+ 107:smtc_modem_core/device_management/dm_downlink.c ****     dm_input.buffer_len   = length - DM_DOWNLINK_HEADER_LENGTH;
+ 108:smtc_modem_core/device_management/dm_downlink.c **** 
+ 109:smtc_modem_core/device_management/dm_downlink.c ****     set_dm_retrieve_pending_dl( dm_input.up_count, dm_input.up_delay );
+ 110:smtc_modem_core/device_management/dm_downlink.c **** 
+ 111:smtc_modem_core/device_management/dm_downlink.c ****     if( dm_input.up_count > 0 )
+ 112:smtc_modem_core/device_management/dm_downlink.c ****     {
+ 113:smtc_modem_core/device_management/dm_downlink.c ****         modem_supervisor_add_task_retrieve_dl( dm_input.up_delay );
+ 114:smtc_modem_core/device_management/dm_downlink.c ****     }
+ 115:smtc_modem_core/device_management/dm_downlink.c **** 
+ 116:smtc_modem_core/device_management/dm_downlink.c ****     return dm_parse_cmd( &dm_input );
+ 117:smtc_modem_core/device_management/dm_downlink.c **** }
+ 118:smtc_modem_core/device_management/dm_downlink.c **** 
+ 119:smtc_modem_core/device_management/dm_downlink.c **** e_dm_error_t dm_parse_cmd( s_dm_cmd_input_t* cmd_input )
+ 120:smtc_modem_core/device_management/dm_downlink.c **** {
+  58              		.loc 1 120 1 view -0
+  59              		.cfi_startproc
+  60              		@ args = 0, pretend = 0, frame = 0
+  61              		@ frame_needed = 0, uses_anonymous_args = 0
+ 121:smtc_modem_core/device_management/dm_downlink.c ****     e_dm_error_t ret = DM_OK;
+  62              		.loc 1 121 5 view .LVU1
+ 122:smtc_modem_core/device_management/dm_downlink.c ****     if( dm_check_cmd_size( cmd_input->request_code, cmd_input->buffer_len ) != DM_CMD_LENGTH_VALID 
+  63              		.loc 1 122 5 view .LVU2
+ 120:smtc_modem_core/device_management/dm_downlink.c ****     e_dm_error_t ret = DM_OK;
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccai0XQR.s 			page 5
+
+
+  64              		.loc 1 120 1 is_stmt 0 view .LVU3
+  65 0000 F8B5     		push	{r3, r4, r5, r6, r7, lr}
+  66              		.cfi_def_cfa_offset 24
+  67              		.cfi_offset 3, -24
+  68              		.cfi_offset 4, -20
+  69              		.cfi_offset 5, -16
+  70              		.cfi_offset 6, -12
+  71              		.cfi_offset 7, -8
+  72              		.cfi_offset 14, -4
+  73              		.loc 1 122 9 view .LVU4
+  74 0002 8478     		ldrb	r4, [r0, #2]
+ 120:smtc_modem_core/device_management/dm_downlink.c ****     e_dm_error_t ret = DM_OK;
+  75              		.loc 1 120 1 view .LVU5
+  76 0004 0500     		movs	r5, r0
+  77              		.loc 1 122 9 view .LVU6
+  78 0006 027A     		ldrb	r2, [r0, #8]
+  79              	.LVL1:
+  80              	.LBB10:
+  81              	.LBI10:
+ 123:smtc_modem_core/device_management/dm_downlink.c ****     {
+ 124:smtc_modem_core/device_management/dm_downlink.c ****         return DM_ERROR;
+ 125:smtc_modem_core/device_management/dm_downlink.c ****     }
+ 126:smtc_modem_core/device_management/dm_downlink.c **** #if BSP_DBG_TRACE == BSP_FEATURE_ON
+ 127:smtc_modem_core/device_management/dm_downlink.c ****     BSP_DBG_TRACE_WARNING( "DM_%s (0x%02x)\n", dm_cmd_str[cmd_input->request_code], cmd_input->requ
+ 128:smtc_modem_core/device_management/dm_downlink.c **** #endif
+ 129:smtc_modem_core/device_management/dm_downlink.c **** 
+ 130:smtc_modem_core/device_management/dm_downlink.c ****     switch( cmd_input->request_code )
+ 131:smtc_modem_core/device_management/dm_downlink.c ****     {
+ 132:smtc_modem_core/device_management/dm_downlink.c ****     case DM_RESET:
+ 133:smtc_modem_core/device_management/dm_downlink.c **** 
+ 134:smtc_modem_core/device_management/dm_downlink.c ****         if( dm_reset( ( e_dm_reset_code_t ) cmd_input->buffer[0],
+ 135:smtc_modem_core/device_management/dm_downlink.c ****                       cmd_input->buffer[1] | ( cmd_input->buffer[2] << 8 ) ) != DM_OK )
+ 136:smtc_modem_core/device_management/dm_downlink.c ****         {
+ 137:smtc_modem_core/device_management/dm_downlink.c ****             BSP_DBG_TRACE_ERROR( "NOT RESET !!!\n" );
+ 138:smtc_modem_core/device_management/dm_downlink.c ****             ret = DM_ERROR;
+ 139:smtc_modem_core/device_management/dm_downlink.c ****             break;
+ 140:smtc_modem_core/device_management/dm_downlink.c ****         }
+ 141:smtc_modem_core/device_management/dm_downlink.c ****         break;
+ 142:smtc_modem_core/device_management/dm_downlink.c ****     case DM_FUOTA:
+ 143:smtc_modem_core/device_management/dm_downlink.c ****         // Not supported yet
+ 144:smtc_modem_core/device_management/dm_downlink.c ****         break;
+ 145:smtc_modem_core/device_management/dm_downlink.c ****     case DM_FILE_DONE:
+ 146:smtc_modem_core/device_management/dm_downlink.c ****         BSP_DBG_TRACE_WARNING( "DM_FILE_DONE donwlink\n" );
+ 147:smtc_modem_core/device_management/dm_downlink.c ****         if( modem_get_upload_state( ) != MODEM_UPLOAD_START )
+ 148:smtc_modem_core/device_management/dm_downlink.c ****         {
+ 149:smtc_modem_core/device_management/dm_downlink.c ****             BSP_DBG_TRACE_ERROR( "No FileUpload ongoing\n" );
+ 150:smtc_modem_core/device_management/dm_downlink.c ****             break;
+ 151:smtc_modem_core/device_management/dm_downlink.c ****         }
+ 152:smtc_modem_core/device_management/dm_downlink.c **** 
+ 153:smtc_modem_core/device_management/dm_downlink.c ****         if( modem_get_dm_upload_sctr( ) == ( cmd_input->buffer[0] & 0xf ) )  // Be careful : Sessio
+ 154:smtc_modem_core/device_management/dm_downlink.c ****         {
+ 155:smtc_modem_core/device_management/dm_downlink.c ****             set_modem_status_file_upload( false );  // to terminate the file upload
+ 156:smtc_modem_core/device_management/dm_downlink.c ****             increment_asynchronous_msgnumber( RSP_FILEDONE, 0x01 );
+ 157:smtc_modem_core/device_management/dm_downlink.c ****             modem_set_upload_state( MODEM_UPLOAD_NOT_INIT );
+ 158:smtc_modem_core/device_management/dm_downlink.c ****             modem_supervisor_remove_task( FILE_UPLOAD_TASK );
+ 159:smtc_modem_core/device_management/dm_downlink.c ****         }
+ 160:smtc_modem_core/device_management/dm_downlink.c ****         else
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccai0XQR.s 			page 6
+
+
+ 161:smtc_modem_core/device_management/dm_downlink.c ****         {
+ 162:smtc_modem_core/device_management/dm_downlink.c ****             BSP_DBG_TRACE_ERROR( "DM_FILE_DONE bad session_counter %d compare to %d\n", cmd_input->
+ 163:smtc_modem_core/device_management/dm_downlink.c ****                                  modem_get_dm_upload_sctr( ) );
+ 164:smtc_modem_core/device_management/dm_downlink.c ****         }
+ 165:smtc_modem_core/device_management/dm_downlink.c **** 
+ 166:smtc_modem_core/device_management/dm_downlink.c ****         break;
+ 167:smtc_modem_core/device_management/dm_downlink.c ****     case DM_GET_INFO:
+ 168:smtc_modem_core/device_management/dm_downlink.c ****         if( set_dm_info( cmd_input->buffer, cmd_input->buffer_len, DM_INFO_NOW ) != SET_OK )
+ 169:smtc_modem_core/device_management/dm_downlink.c ****         {
+ 170:smtc_modem_core/device_management/dm_downlink.c ****             ret = DM_ERROR;
+ 171:smtc_modem_core/device_management/dm_downlink.c ****             break;
+ 172:smtc_modem_core/device_management/dm_downlink.c ****         }
+ 173:smtc_modem_core/device_management/dm_downlink.c ****         modem_supervisor_add_task_dm_status_now( );
+ 174:smtc_modem_core/device_management/dm_downlink.c ****         break;
+ 175:smtc_modem_core/device_management/dm_downlink.c ****     case DM_SET_CONF:
+ 176:smtc_modem_core/device_management/dm_downlink.c ****         if( dm_set_conf( ( e_dm_info_t ) cmd_input->buffer[0], cmd_input->buffer + 1, cmd_input->bu
+ 177:smtc_modem_core/device_management/dm_downlink.c ****             DM_OK )
+ 178:smtc_modem_core/device_management/dm_downlink.c ****         {
+ 179:smtc_modem_core/device_management/dm_downlink.c ****             ret = DM_ERROR;
+ 180:smtc_modem_core/device_management/dm_downlink.c ****             break;
+ 181:smtc_modem_core/device_management/dm_downlink.c ****         }
+ 182:smtc_modem_core/device_management/dm_downlink.c **** 
+ 183:smtc_modem_core/device_management/dm_downlink.c ****         break;
+ 184:smtc_modem_core/device_management/dm_downlink.c ****     case DM_REJOIN: {
+ 185:smtc_modem_core/device_management/dm_downlink.c ****         uint16_t dev_nonce = ( cmd_input->buffer[1] << 8 ) | cmd_input->buffer[0];
+ 186:smtc_modem_core/device_management/dm_downlink.c ****         if( lorawan_api_devnonce_get( ) != dev_nonce )
+ 187:smtc_modem_core/device_management/dm_downlink.c ****         {
+ 188:smtc_modem_core/device_management/dm_downlink.c ****             ret = DM_ERROR;
+ 189:smtc_modem_core/device_management/dm_downlink.c ****             break;
+ 190:smtc_modem_core/device_management/dm_downlink.c ****         }
+ 191:smtc_modem_core/device_management/dm_downlink.c ****         set_modem_status_modem_joined( false );
+ 192:smtc_modem_core/device_management/dm_downlink.c ****         lorawan_api_join_status_clear( );
+ 193:smtc_modem_core/device_management/dm_downlink.c ****         modem_supervisor_add_task_join( );
+ 194:smtc_modem_core/device_management/dm_downlink.c ****         break;
+ 195:smtc_modem_core/device_management/dm_downlink.c ****     }
+ 196:smtc_modem_core/device_management/dm_downlink.c ****     case DM_MUTE:
+ 197:smtc_modem_core/device_management/dm_downlink.c ****         dm_set_number_of_days_mute( cmd_input->buffer[0] );
+ 198:smtc_modem_core/device_management/dm_downlink.c ****         if( get_modem_muted( ) == MODEM_TEMPORARY_MUTE )
+ 199:smtc_modem_core/device_management/dm_downlink.c ****         {
+ 200:smtc_modem_core/device_management/dm_downlink.c ****             modem_supervisor_add_task_modem_mute( );
+ 201:smtc_modem_core/device_management/dm_downlink.c ****         }
+ 202:smtc_modem_core/device_management/dm_downlink.c ****         increment_asynchronous_msgnumber( RSP_MUTE, 0 );
+ 203:smtc_modem_core/device_management/dm_downlink.c ****         break;
+ 204:smtc_modem_core/device_management/dm_downlink.c ****     case DM_SET_DM_INFO:
+ 205:smtc_modem_core/device_management/dm_downlink.c ****         if( set_dm_info( cmd_input->buffer, cmd_input->buffer_len, DM_INFO_PERIODIC ) != SET_OK )
+ 206:smtc_modem_core/device_management/dm_downlink.c ****         {
+ 207:smtc_modem_core/device_management/dm_downlink.c ****             ret = DM_ERROR;
+ 208:smtc_modem_core/device_management/dm_downlink.c ****             break;
+ 209:smtc_modem_core/device_management/dm_downlink.c ****         }
+ 210:smtc_modem_core/device_management/dm_downlink.c **** 
+ 211:smtc_modem_core/device_management/dm_downlink.c ****         break;
+ 212:smtc_modem_core/device_management/dm_downlink.c ****     case DM_STREAM:
+ 213:smtc_modem_core/device_management/dm_downlink.c ****         // Not supported yet
+ 214:smtc_modem_core/device_management/dm_downlink.c ****         break;
+ 215:smtc_modem_core/device_management/dm_downlink.c ****     case DM_ALC_SYNC:
+ 216:smtc_modem_core/device_management/dm_downlink.c ****         // Not supported yet
+ 217:smtc_modem_core/device_management/dm_downlink.c ****         break;
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccai0XQR.s 			page 7
+
+
+ 218:smtc_modem_core/device_management/dm_downlink.c ****     default:
+ 219:smtc_modem_core/device_management/dm_downlink.c ****         ret = DM_ERROR;
+ 220:smtc_modem_core/device_management/dm_downlink.c ****         break;
+ 221:smtc_modem_core/device_management/dm_downlink.c ****     }
+ 222:smtc_modem_core/device_management/dm_downlink.c **** 
+ 223:smtc_modem_core/device_management/dm_downlink.c ****     return ret;
+ 224:smtc_modem_core/device_management/dm_downlink.c **** }
+ 225:smtc_modem_core/device_management/dm_downlink.c **** 
+ 226:smtc_modem_core/device_management/dm_downlink.c **** /*
+ 227:smtc_modem_core/device_management/dm_downlink.c ****  * -----------------------------------------------------------------------------
+ 228:smtc_modem_core/device_management/dm_downlink.c ****  * --- PRIVATE FUNCTIONS DEFINITION --------------------------------------------
+ 229:smtc_modem_core/device_management/dm_downlink.c ****  */
+ 230:smtc_modem_core/device_management/dm_downlink.c **** 
+ 231:smtc_modem_core/device_management/dm_downlink.c **** static e_dm_cmd_length_valid dm_check_cmd_size( e_dm_cmd_t cmd, uint8_t length )
+  82              		.loc 1 231 30 is_stmt 1 view .LVU7
+  83              	.LBB11:
+ 232:smtc_modem_core/device_management/dm_downlink.c **** {
+ 233:smtc_modem_core/device_management/dm_downlink.c ****     if( cmd >= DM_CMD_MAX )
+  84              		.loc 1 233 5 view .LVU8
+  85 0008 824E     		ldr	r6, .L30
+  86              		.loc 1 233 7 is_stmt 0 view .LVU9
+  87 000a 092C     		cmp	r4, #9
+  88 000c 0FD9     		bls	.L2
+ 234:smtc_modem_core/device_management/dm_downlink.c ****     {
+ 235:smtc_modem_core/device_management/dm_downlink.c ****         BSP_DBG_TRACE_ERROR( "Invalid DM command %x\n", cmd );
+  89              		.loc 1 235 9 is_stmt 1 view .LVU10
+  90              		.loc 1 235 9 view .LVU11
+  91 000e 8248     		ldr	r0, .L30+4
+  92              	.LVL2:
+  93              		.loc 1 235 9 is_stmt 0 view .LVU12
+  94 0010 FFF7FEFF 		bl	bsp_trace_print
+  95              	.LVL3:
+  96              		.loc 1 235 9 is_stmt 1 view .LVU13
+  97 0014 8148     		ldr	r0, .L30+8
+  98 0016 FFF7FEFF 		bl	bsp_trace_print
+  99              	.LVL4:
+ 100              		.loc 1 235 9 view .LVU14
+ 101 001a 2100     		movs	r1, r4
+ 102 001c 8048     		ldr	r0, .L30+12
+ 103 001e FFF7FEFF 		bl	bsp_trace_print
+ 104              	.LVL5:
+ 105              		.loc 1 235 9 view .LVU15
+ 106              	.L25:
+ 236:smtc_modem_core/device_management/dm_downlink.c ****         return DM_CMD_NOT_VALID;
+ 237:smtc_modem_core/device_management/dm_downlink.c ****     }
+ 238:smtc_modem_core/device_management/dm_downlink.c ****     // cmd len too small
+ 239:smtc_modem_core/device_management/dm_downlink.c ****     if( length < dm_cmd_len[cmd][0] )
+ 240:smtc_modem_core/device_management/dm_downlink.c ****     {
+ 241:smtc_modem_core/device_management/dm_downlink.c ****         BSP_DBG_TRACE_ERROR( "Invalid DM command size (too small)\n" );
+ 107              		.loc 1 241 9 view .LVU16
+ 108 0022 3000     		movs	r0, r6
+ 109 0024 FFF7FEFF 		bl	bsp_trace_print
+ 110              	.LVL6:
+ 111              	.L26:
+ 112              		.loc 1 241 9 view .LVU17
+ 113              		.loc 1 241 71 view .LVU18
+ 242:smtc_modem_core/device_management/dm_downlink.c ****         return DM_CMD_LENGTH_NOT_VALID;
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccai0XQR.s 			page 8
+
+
+ 114              		.loc 1 242 9 view .LVU19
+ 115              	.LBE11:
+ 116              	.LBE10:
+ 124:smtc_modem_core/device_management/dm_downlink.c ****     }
+ 117              		.loc 1 124 16 is_stmt 0 view .LVU20
+ 118 0028 0024     		movs	r4, #0
+ 119              	.LVL7:
+ 120              	.L3:
+ 224:smtc_modem_core/device_management/dm_downlink.c **** 
+ 121              		.loc 1 224 1 view .LVU21
+ 122 002a 2000     		movs	r0, r4
+ 123              		@ sp needed
+ 124 002c F8BD     		pop	{r3, r4, r5, r6, r7, pc}
+ 125              	.LVL8:
+ 126              	.L2:
+ 127              	.LBB13:
+ 128              	.LBB12:
+ 239:smtc_modem_core/device_management/dm_downlink.c ****     {
+ 129              		.loc 1 239 5 is_stmt 1 view .LVU22
+ 239:smtc_modem_core/device_management/dm_downlink.c ****     {
+ 130              		.loc 1 239 33 is_stmt 0 view .LVU23
+ 131 002e 7D4B     		ldr	r3, .L30+16
+ 132 0030 6400     		lsls	r4, r4, #1
+ 133              	.LVL9:
+ 239:smtc_modem_core/device_management/dm_downlink.c ****     {
+ 134              		.loc 1 239 7 view .LVU24
+ 135 0032 E15C     		ldrb	r1, [r4, r3]
+ 136 0034 9142     		cmp	r1, r2
+ 137 0036 09D9     		bls	.L4
+ 241:smtc_modem_core/device_management/dm_downlink.c ****         return DM_CMD_LENGTH_NOT_VALID;
+ 138              		.loc 1 241 9 is_stmt 1 view .LVU25
+ 241:smtc_modem_core/device_management/dm_downlink.c ****         return DM_CMD_LENGTH_NOT_VALID;
+ 139              		.loc 1 241 9 view .LVU26
+ 140 0038 7748     		ldr	r0, .L30+4
+ 141              	.LVL10:
+ 241:smtc_modem_core/device_management/dm_downlink.c ****         return DM_CMD_LENGTH_NOT_VALID;
+ 142              		.loc 1 241 9 is_stmt 0 view .LVU27
+ 143 003a FFF7FEFF 		bl	bsp_trace_print
+ 144              	.LVL11:
+ 241:smtc_modem_core/device_management/dm_downlink.c ****         return DM_CMD_LENGTH_NOT_VALID;
+ 145              		.loc 1 241 9 is_stmt 1 view .LVU28
+ 146 003e 7748     		ldr	r0, .L30+8
+ 147 0040 FFF7FEFF 		bl	bsp_trace_print
+ 148              	.LVL12:
+ 241:smtc_modem_core/device_management/dm_downlink.c ****         return DM_CMD_LENGTH_NOT_VALID;
+ 149              		.loc 1 241 9 view .LVU29
+ 150 0044 7848     		ldr	r0, .L30+20
+ 151              	.L27:
+ 152 0046 FFF7FEFF 		bl	bsp_trace_print
+ 153              	.LVL13:
+ 154 004a EAE7     		b	.L25
+ 155              	.LVL14:
+ 156              	.L4:
+ 243:smtc_modem_core/device_management/dm_downlink.c ****     }
+ 244:smtc_modem_core/device_management/dm_downlink.c ****     // cmd len too long
+ 245:smtc_modem_core/device_management/dm_downlink.c ****     if( length > dm_cmd_len[cmd][1] )
+ 157              		.loc 1 245 5 view .LVU30
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccai0XQR.s 			page 9
+
+
+ 158              		.loc 1 245 33 is_stmt 0 view .LVU31
+ 159 004c 1C19     		adds	r4, r3, r4
+ 160              		.loc 1 245 7 view .LVU32
+ 161 004e 6378     		ldrb	r3, [r4, #1]
+ 162 0050 9342     		cmp	r3, r2
+ 163 0052 07D2     		bcs	.L5
+ 246:smtc_modem_core/device_management/dm_downlink.c ****     {
+ 247:smtc_modem_core/device_management/dm_downlink.c ****         BSP_DBG_TRACE_ERROR( "Invalid DM command size (too long)\n" );
+ 164              		.loc 1 247 9 is_stmt 1 view .LVU33
+ 165              		.loc 1 247 9 view .LVU34
+ 166 0054 7048     		ldr	r0, .L30+4
+ 167              	.LVL15:
+ 168              		.loc 1 247 9 is_stmt 0 view .LVU35
+ 169 0056 FFF7FEFF 		bl	bsp_trace_print
+ 170              	.LVL16:
+ 171              		.loc 1 247 9 is_stmt 1 view .LVU36
+ 172 005a 7048     		ldr	r0, .L30+8
+ 173 005c FFF7FEFF 		bl	bsp_trace_print
+ 174              	.LVL17:
+ 175              		.loc 1 247 9 view .LVU37
+ 176 0060 7248     		ldr	r0, .L30+24
+ 177 0062 F0E7     		b	.L27
+ 178              	.LVL18:
+ 179              	.L5:
+ 180              		.loc 1 247 9 is_stmt 0 view .LVU38
+ 181              	.LBE12:
+ 182              	.LBE13:
+ 183              	.LBB14:
+ 184              	.LBI14:
+ 119:smtc_modem_core/device_management/dm_downlink.c **** {
+ 185              		.loc 1 119 14 is_stmt 1 view .LVU39
+ 186              	.LBB15:
+ 127:smtc_modem_core/device_management/dm_downlink.c **** #endif
+ 187              		.loc 1 127 5 view .LVU40
+ 127:smtc_modem_core/device_management/dm_downlink.c **** #endif
+ 188              		.loc 1 127 5 view .LVU41
+ 189 0064 724F     		ldr	r7, .L30+28
+ 190 0066 3800     		movs	r0, r7
+ 191              	.LVL19:
+ 127:smtc_modem_core/device_management/dm_downlink.c **** #endif
+ 192              		.loc 1 127 5 is_stmt 0 view .LVU42
+ 193 0068 FFF7FEFF 		bl	bsp_trace_print
+ 194              	.LVL20:
+ 127:smtc_modem_core/device_management/dm_downlink.c **** #endif
+ 195              		.loc 1 127 5 is_stmt 1 view .LVU43
+ 196 006c 7148     		ldr	r0, .L30+32
+ 197 006e FFF7FEFF 		bl	bsp_trace_print
+ 198              	.LVL21:
+ 127:smtc_modem_core/device_management/dm_downlink.c **** #endif
+ 199              		.loc 1 127 5 view .LVU44
+ 200 0072 AA78     		ldrb	r2, [r5, #2]
+ 201 0074 704B     		ldr	r3, .L30+36
+ 202 0076 9100     		lsls	r1, r2, #2
+ 203 0078 C958     		ldr	r1, [r1, r3]
+ 204 007a 7048     		ldr	r0, .L30+40
+ 205 007c FFF7FEFF 		bl	bsp_trace_print
+ 206              	.LVL22:
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccai0XQR.s 			page 10
+
+
+ 127:smtc_modem_core/device_management/dm_downlink.c **** #endif
+ 207              		.loc 1 127 5 view .LVU45
+ 208 0080 3000     		movs	r0, r6
+ 209 0082 FFF7FEFF 		bl	bsp_trace_print
+ 210              	.LVL23:
+ 127:smtc_modem_core/device_management/dm_downlink.c **** #endif
+ 211              		.loc 1 127 5 view .LVU46
+ 127:smtc_modem_core/device_management/dm_downlink.c **** #endif
+ 212              		.loc 1 127 110 view .LVU47
+ 130:smtc_modem_core/device_management/dm_downlink.c ****     {
+ 213              		.loc 1 130 5 view .LVU48
+ 130:smtc_modem_core/device_management/dm_downlink.c ****     {
+ 214              		.loc 1 130 22 is_stmt 0 view .LVU49
+ 215 0086 AC78     		ldrb	r4, [r5, #2]
+ 216 0088 092C     		cmp	r4, #9
+ 217 008a CDD8     		bhi	.L26
+ 218 008c 2000     		movs	r0, r4
+ 219 008e FFF7FEFF 		bl	__gnu_thumb1_case_uqi
+ 220              	.L7:
+ 221 0092 05       		.byte	(.L14-.L7)/2
+ 222 0093 18       		.byte	(.L23-.L7)/2
+ 223 0094 3E       		.byte	(.L13-.L7)/2
+ 224 0095 81       		.byte	(.L12-.L7)/2
+ 225 0096 8D       		.byte	(.L11-.L7)/2
+ 226 0097 9A       		.byte	(.L10-.L7)/2
+ 227 0098 AC       		.byte	(.L9-.L7)/2
+ 228 0099 BB       		.byte	(.L8-.L7)/2
+ 229 009a 18       		.byte	(.L23-.L7)/2
+ 230 009b 18       		.byte	(.L23-.L7)/2
+ 231              		.p2align 1
+ 232              	.L14:
+ 134:smtc_modem_core/device_management/dm_downlink.c ****                       cmd_input->buffer[1] | ( cmd_input->buffer[2] << 8 ) ) != DM_OK )
+ 233              		.loc 1 134 9 is_stmt 1 view .LVU50
+ 134:smtc_modem_core/device_management/dm_downlink.c ****                       cmd_input->buffer[1] | ( cmd_input->buffer[2] << 8 ) ) != DM_OK )
+ 234              		.loc 1 134 54 is_stmt 0 view .LVU51
+ 235 009c 6B68     		ldr	r3, [r5, #4]
+ 135:smtc_modem_core/device_management/dm_downlink.c ****         {
+ 236              		.loc 1 135 65 view .LVU52
+ 237 009e 9D78     		ldrb	r5, [r3, #2]
+ 238              	.LVL24:
+ 134:smtc_modem_core/device_management/dm_downlink.c ****                       cmd_input->buffer[1] | ( cmd_input->buffer[2] << 8 ) ) != DM_OK )
+ 239              		.loc 1 134 13 view .LVU53
+ 240 00a0 1F78     		ldrb	r7, [r3]
+ 135:smtc_modem_core/device_management/dm_downlink.c ****         {
+ 241              		.loc 1 135 40 view .LVU54
+ 242 00a2 5B78     		ldrb	r3, [r3, #1]
+ 135:smtc_modem_core/device_management/dm_downlink.c ****         {
+ 243              		.loc 1 135 69 view .LVU55
+ 244 00a4 2D02     		lsls	r5, r5, #8
+ 134:smtc_modem_core/device_management/dm_downlink.c ****                       cmd_input->buffer[1] | ( cmd_input->buffer[2] << 8 ) ) != DM_OK )
+ 245              		.loc 1 134 13 view .LVU56
+ 246 00a6 1D43     		orrs	r5, r3
+ 247              	.LVL25:
+ 248              	.LBB16:
+ 249              	.LBI16:
+ 248:smtc_modem_core/device_management/dm_downlink.c ****         return DM_CMD_LENGTH_NOT_VALID;
+ 249:smtc_modem_core/device_management/dm_downlink.c ****     }
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccai0XQR.s 			page 11
+
+
+ 250:smtc_modem_core/device_management/dm_downlink.c ****     return DM_CMD_LENGTH_VALID;
+ 251:smtc_modem_core/device_management/dm_downlink.c **** }
+ 252:smtc_modem_core/device_management/dm_downlink.c **** 
+ 253:smtc_modem_core/device_management/dm_downlink.c **** static e_dm_error_t dm_reset( e_dm_reset_code_t reset_code, uint16_t reset_session )
+ 250              		.loc 1 253 21 is_stmt 1 view .LVU57
+ 251              	.LBB17:
+ 254:smtc_modem_core/device_management/dm_downlink.c **** {
+ 255:smtc_modem_core/device_management/dm_downlink.c ****     e_dm_error_t ret = DM_OK;
+ 252              		.loc 1 255 5 view .LVU58
+ 256:smtc_modem_core/device_management/dm_downlink.c **** 
+ 257:smtc_modem_core/device_management/dm_downlink.c ****     if( reset_session == lorawan_api_nb_reset_get( ) )
+ 253              		.loc 1 257 5 view .LVU59
+ 254              		.loc 1 257 26 is_stmt 0 view .LVU60
+ 255 00a8 FFF7FEFF 		bl	lorawan_api_nb_reset_get
+ 256              	.LVL26:
+ 257              		.loc 1 257 7 view .LVU61
+ 258 00ac 8542     		cmp	r5, r0
+ 259 00ae 24D1     		bne	.L15
+ 258:smtc_modem_core/device_management/dm_downlink.c ****     {
+ 259:smtc_modem_core/device_management/dm_downlink.c ****         switch( reset_code )
+ 260              		.loc 1 259 9 is_stmt 1 view .LVU62
+ 261 00b0 7B1E     		subs	r3, r7, #1
+ 262 00b2 022B     		cmp	r3, #2
+ 263 00b4 07D8     		bhi	.L16
+ 260:smtc_modem_core/device_management/dm_downlink.c ****         {
+ 261:smtc_modem_core/device_management/dm_downlink.c ****         case DM_RESET_MODEM:
+ 262:smtc_modem_core/device_management/dm_downlink.c ****         case DM_RESET_APP_MCU:
+ 263:smtc_modem_core/device_management/dm_downlink.c ****         case DM_RESET_BOTH:
+ 264:smtc_modem_core/device_management/dm_downlink.c ****             modem_store_context( );
+ 264              		.loc 1 264 13 view .LVU63
+ 265 00b6 FFF7FEFF 		bl	modem_store_context
+ 266              	.LVL27:
+ 265:smtc_modem_core/device_management/dm_downlink.c ****             lorawan_api_context_save( );
+ 267              		.loc 1 265 13 view .LVU64
+ 268 00ba FFF7FEFF 		bl	lorawan_api_context_save
+ 269              	.LVL28:
+ 266:smtc_modem_core/device_management/dm_downlink.c ****             bsp_mcu_reset( );
+ 270              		.loc 1 266 13 view .LVU65
+ 271 00be FFF7FEFF 		bl	bsp_mcu_reset
+ 272              	.LVL29:
+ 267:smtc_modem_core/device_management/dm_downlink.c ****             break;
+ 273              		.loc 1 267 13 view .LVU66
+ 268:smtc_modem_core/device_management/dm_downlink.c ****         default:
+ 269:smtc_modem_core/device_management/dm_downlink.c ****             ret = DM_ERROR;
+ 270:smtc_modem_core/device_management/dm_downlink.c ****             BSP_DBG_TRACE_ERROR( "invalid DM reset code (0x%02x)\n", reset_code );
+ 271:smtc_modem_core/device_management/dm_downlink.c ****             break;
+ 272:smtc_modem_core/device_management/dm_downlink.c ****         }
+ 273:smtc_modem_core/device_management/dm_downlink.c ****     }
+ 274:smtc_modem_core/device_management/dm_downlink.c ****     else
+ 275:smtc_modem_core/device_management/dm_downlink.c ****     {
+ 276:smtc_modem_core/device_management/dm_downlink.c ****         ret = DM_ERROR;
+ 277:smtc_modem_core/device_management/dm_downlink.c ****         BSP_DBG_TRACE_ERROR( "invalid DM reset session code\n" );
+ 274              		.loc 1 277 9 view .LVU67
+ 275              		.loc 1 277 65 view .LVU68
+ 278:smtc_modem_core/device_management/dm_downlink.c ****     }
+ 279:smtc_modem_core/device_management/dm_downlink.c **** 
+ 280:smtc_modem_core/device_management/dm_downlink.c ****     return ret;
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccai0XQR.s 			page 12
+
+
+ 276              		.loc 1 280 5 view .LVU69
+ 277              	.L23:
+ 278              		.loc 1 280 5 is_stmt 0 view .LVU70
+ 279              	.LBE17:
+ 280              	.LBE16:
+ 121:smtc_modem_core/device_management/dm_downlink.c ****     if( dm_check_cmd_size( cmd_input->request_code, cmd_input->buffer_len ) != DM_CMD_LENGTH_VALID 
+ 281              		.loc 1 121 18 view .LVU71
+ 282 00c2 0124     		movs	r4, #1
+ 283 00c4 B1E7     		b	.L3
+ 284              	.LVL30:
+ 285              	.L16:
+ 286              	.LBB20:
+ 287              	.LBB18:
+ 269:smtc_modem_core/device_management/dm_downlink.c ****             BSP_DBG_TRACE_ERROR( "invalid DM reset code (0x%02x)\n", reset_code );
+ 288              		.loc 1 269 13 is_stmt 1 view .LVU72
+ 270:smtc_modem_core/device_management/dm_downlink.c ****             break;
+ 289              		.loc 1 270 13 view .LVU73
+ 270:smtc_modem_core/device_management/dm_downlink.c ****             break;
+ 290              		.loc 1 270 13 view .LVU74
+ 291 00c6 5448     		ldr	r0, .L30+4
+ 292 00c8 FFF7FEFF 		bl	bsp_trace_print
+ 293              	.LVL31:
+ 270:smtc_modem_core/device_management/dm_downlink.c ****             break;
+ 294              		.loc 1 270 13 view .LVU75
+ 295 00cc 5348     		ldr	r0, .L30+8
+ 296 00ce FFF7FEFF 		bl	bsp_trace_print
+ 297              	.LVL32:
+ 270:smtc_modem_core/device_management/dm_downlink.c ****             break;
+ 298              		.loc 1 270 13 view .LVU76
+ 299 00d2 3900     		movs	r1, r7
+ 300 00d4 5A48     		ldr	r0, .L30+44
+ 301 00d6 FFF7FEFF 		bl	bsp_trace_print
+ 302              	.LVL33:
+ 270:smtc_modem_core/device_management/dm_downlink.c ****             break;
+ 303              		.loc 1 270 13 view .LVU77
+ 304              	.L24:
+ 277:smtc_modem_core/device_management/dm_downlink.c ****     }
+ 305              		.loc 1 277 9 view .LVU78
+ 306 00da 3000     		movs	r0, r6
+ 307 00dc FFF7FEFF 		bl	bsp_trace_print
+ 308              	.LVL34:
+ 277:smtc_modem_core/device_management/dm_downlink.c ****     }
+ 309              		.loc 1 277 9 view .LVU79
+ 277:smtc_modem_core/device_management/dm_downlink.c ****     }
+ 310              		.loc 1 277 65 view .LVU80
+ 311              		.loc 1 280 5 view .LVU81
+ 312              		.loc 1 280 5 is_stmt 0 view .LVU82
+ 313              	.LBE18:
+ 314              	.LBE20:
+ 137:smtc_modem_core/device_management/dm_downlink.c ****             ret = DM_ERROR;
+ 315              		.loc 1 137 13 is_stmt 1 view .LVU83
+ 137:smtc_modem_core/device_management/dm_downlink.c ****             ret = DM_ERROR;
+ 316              		.loc 1 137 13 view .LVU84
+ 317 00e0 4D48     		ldr	r0, .L30+4
+ 318 00e2 FFF7FEFF 		bl	bsp_trace_print
+ 319              	.LVL35:
+ 137:smtc_modem_core/device_management/dm_downlink.c ****             ret = DM_ERROR;
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccai0XQR.s 			page 13
+
+
+ 320              		.loc 1 137 13 view .LVU85
+ 321 00e6 4D48     		ldr	r0, .L30+8
+ 322 00e8 FFF7FEFF 		bl	bsp_trace_print
+ 323              	.LVL36:
+ 137:smtc_modem_core/device_management/dm_downlink.c ****             ret = DM_ERROR;
+ 324              		.loc 1 137 13 view .LVU86
+ 325 00ec 5548     		ldr	r0, .L30+48
+ 326 00ee FFF7FEFF 		bl	bsp_trace_print
+ 327              	.LVL37:
+ 137:smtc_modem_core/device_management/dm_downlink.c ****             ret = DM_ERROR;
+ 328              		.loc 1 137 13 view .LVU87
+ 329 00f2 3000     		movs	r0, r6
+ 330 00f4 FFF7FEFF 		bl	bsp_trace_print
+ 331              	.LVL38:
+ 137:smtc_modem_core/device_management/dm_downlink.c ****             ret = DM_ERROR;
+ 332              		.loc 1 137 13 view .LVU88
+ 137:smtc_modem_core/device_management/dm_downlink.c ****             ret = DM_ERROR;
+ 333              		.loc 1 137 53 view .LVU89
+ 138:smtc_modem_core/device_management/dm_downlink.c ****             break;
+ 334              		.loc 1 138 13 view .LVU90
+ 139:smtc_modem_core/device_management/dm_downlink.c ****         }
+ 335              		.loc 1 139 13 view .LVU91
+ 336 00f8 97E7     		b	.L3
+ 337              	.LVL39:
+ 338              	.L15:
+ 339              	.LBB21:
+ 340              	.LBB19:
+ 276:smtc_modem_core/device_management/dm_downlink.c ****         BSP_DBG_TRACE_ERROR( "invalid DM reset session code\n" );
+ 341              		.loc 1 276 9 view .LVU92
+ 277:smtc_modem_core/device_management/dm_downlink.c ****     }
+ 342              		.loc 1 277 9 view .LVU93
+ 277:smtc_modem_core/device_management/dm_downlink.c ****     }
+ 343              		.loc 1 277 9 view .LVU94
+ 344 00fa 4748     		ldr	r0, .L30+4
+ 345 00fc FFF7FEFF 		bl	bsp_trace_print
+ 346              	.LVL40:
+ 277:smtc_modem_core/device_management/dm_downlink.c ****     }
+ 347              		.loc 1 277 9 view .LVU95
+ 348 0100 4648     		ldr	r0, .L30+8
+ 349 0102 FFF7FEFF 		bl	bsp_trace_print
+ 350              	.LVL41:
+ 277:smtc_modem_core/device_management/dm_downlink.c ****     }
+ 351              		.loc 1 277 9 view .LVU96
+ 352 0106 5048     		ldr	r0, .L30+52
+ 353 0108 FFF7FEFF 		bl	bsp_trace_print
+ 354              	.LVL42:
+ 355 010c E5E7     		b	.L24
+ 356              	.LVL43:
+ 357              	.L13:
+ 277:smtc_modem_core/device_management/dm_downlink.c ****     }
+ 358              		.loc 1 277 9 is_stmt 0 view .LVU97
+ 359              	.LBE19:
+ 360              	.LBE21:
+ 146:smtc_modem_core/device_management/dm_downlink.c ****         if( modem_get_upload_state( ) != MODEM_UPLOAD_START )
+ 361              		.loc 1 146 9 is_stmt 1 view .LVU98
+ 146:smtc_modem_core/device_management/dm_downlink.c ****         if( modem_get_upload_state( ) != MODEM_UPLOAD_START )
+ 362              		.loc 1 146 9 view .LVU99
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccai0XQR.s 			page 14
+
+
+ 363 010e 3800     		movs	r0, r7
+ 364 0110 FFF7FEFF 		bl	bsp_trace_print
+ 365              	.LVL44:
+ 146:smtc_modem_core/device_management/dm_downlink.c ****         if( modem_get_upload_state( ) != MODEM_UPLOAD_START )
+ 366              		.loc 1 146 9 view .LVU100
+ 367 0114 4748     		ldr	r0, .L30+32
+ 368 0116 FFF7FEFF 		bl	bsp_trace_print
+ 369              	.LVL45:
+ 146:smtc_modem_core/device_management/dm_downlink.c ****         if( modem_get_upload_state( ) != MODEM_UPLOAD_START )
+ 370              		.loc 1 146 9 view .LVU101
+ 371 011a 4C48     		ldr	r0, .L30+56
+ 372 011c FFF7FEFF 		bl	bsp_trace_print
+ 373              	.LVL46:
+ 146:smtc_modem_core/device_management/dm_downlink.c ****         if( modem_get_upload_state( ) != MODEM_UPLOAD_START )
+ 374              		.loc 1 146 9 view .LVU102
+ 375 0120 3000     		movs	r0, r6
+ 376 0122 FFF7FEFF 		bl	bsp_trace_print
+ 377              	.LVL47:
+ 146:smtc_modem_core/device_management/dm_downlink.c ****         if( modem_get_upload_state( ) != MODEM_UPLOAD_START )
+ 378              		.loc 1 146 9 view .LVU103
+ 146:smtc_modem_core/device_management/dm_downlink.c ****         if( modem_get_upload_state( ) != MODEM_UPLOAD_START )
+ 379              		.loc 1 146 59 view .LVU104
+ 147:smtc_modem_core/device_management/dm_downlink.c ****         {
+ 380              		.loc 1 147 9 view .LVU105
+ 147:smtc_modem_core/device_management/dm_downlink.c ****         {
+ 381              		.loc 1 147 13 is_stmt 0 view .LVU106
+ 382 0126 FFF7FEFF 		bl	modem_get_upload_state
+ 383              	.LVL48:
+ 147:smtc_modem_core/device_management/dm_downlink.c ****         {
+ 384              		.loc 1 147 11 view .LVU107
+ 385 012a 0328     		cmp	r0, #3
+ 386 012c 0CD0     		beq	.L18
+ 149:smtc_modem_core/device_management/dm_downlink.c ****             break;
+ 387              		.loc 1 149 13 is_stmt 1 view .LVU108
+ 149:smtc_modem_core/device_management/dm_downlink.c ****             break;
+ 388              		.loc 1 149 13 view .LVU109
+ 389 012e 3A48     		ldr	r0, .L30+4
+ 390 0130 FFF7FEFF 		bl	bsp_trace_print
+ 391              	.LVL49:
+ 149:smtc_modem_core/device_management/dm_downlink.c ****             break;
+ 392              		.loc 1 149 13 view .LVU110
+ 393 0134 3948     		ldr	r0, .L30+8
+ 394 0136 FFF7FEFF 		bl	bsp_trace_print
+ 395              	.LVL50:
+ 149:smtc_modem_core/device_management/dm_downlink.c ****             break;
+ 396              		.loc 1 149 13 view .LVU111
+ 397 013a 4548     		ldr	r0, .L30+60
+ 398 013c FFF7FEFF 		bl	bsp_trace_print
+ 399              	.LVL51:
+ 149:smtc_modem_core/device_management/dm_downlink.c ****             break;
+ 400              		.loc 1 149 13 view .LVU112
+ 401              	.L29:
+ 162:smtc_modem_core/device_management/dm_downlink.c ****                                  modem_get_dm_upload_sctr( ) );
+ 402              		.loc 1 162 13 view .LVU113
+ 403 0140 3000     		movs	r0, r6
+ 404 0142 FFF7FEFF 		bl	bsp_trace_print
+ 405              	.LVL52:
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccai0XQR.s 			page 15
+
+
+ 406 0146 BCE7     		b	.L23
+ 407              	.L18:
+ 153:smtc_modem_core/device_management/dm_downlink.c ****         {
+ 408              		.loc 1 153 9 view .LVU114
+ 153:smtc_modem_core/device_management/dm_downlink.c ****         {
+ 409              		.loc 1 153 13 is_stmt 0 view .LVU115
+ 410 0148 FFF7FEFF 		bl	modem_get_dm_upload_sctr
+ 411              	.LVL53:
+ 153:smtc_modem_core/device_management/dm_downlink.c ****         {
+ 412              		.loc 1 153 11 view .LVU116
+ 413 014c 0F22     		movs	r2, #15
+ 414 014e 6B68     		ldr	r3, [r5, #4]
+ 415 0150 1B78     		ldrb	r3, [r3]
+ 416 0152 1340     		ands	r3, r2
+ 417 0154 9842     		cmp	r0, r3
+ 418 0156 0DD1     		bne	.L19
+ 155:smtc_modem_core/device_management/dm_downlink.c ****             increment_asynchronous_msgnumber( RSP_FILEDONE, 0x01 );
+ 419              		.loc 1 155 13 is_stmt 1 view .LVU117
+ 420 0158 0020     		movs	r0, #0
+ 421 015a FFF7FEFF 		bl	set_modem_status_file_upload
+ 422              	.LVL54:
+ 156:smtc_modem_core/device_management/dm_downlink.c ****             modem_set_upload_state( MODEM_UPLOAD_NOT_INIT );
+ 423              		.loc 1 156 13 view .LVU118
+ 424 015e 0121     		movs	r1, #1
+ 425 0160 0520     		movs	r0, #5
+ 426 0162 FFF7FEFF 		bl	increment_asynchronous_msgnumber
+ 427              	.LVL55:
+ 157:smtc_modem_core/device_management/dm_downlink.c ****             modem_supervisor_remove_task( FILE_UPLOAD_TASK );
+ 428              		.loc 1 157 13 view .LVU119
+ 429 0166 0020     		movs	r0, #0
+ 430 0168 FFF7FEFF 		bl	modem_set_upload_state
+ 431              	.LVL56:
+ 158:smtc_modem_core/device_management/dm_downlink.c ****         }
+ 432              		.loc 1 158 13 view .LVU120
+ 433 016c 0520     		movs	r0, #5
+ 434 016e FFF7FEFF 		bl	modem_supervisor_remove_task
+ 435              	.LVL57:
+ 436 0172 A6E7     		b	.L23
+ 437              	.L19:
+ 162:smtc_modem_core/device_management/dm_downlink.c ****                                  modem_get_dm_upload_sctr( ) );
+ 438              		.loc 1 162 13 view .LVU121
+ 162:smtc_modem_core/device_management/dm_downlink.c ****                                  modem_get_dm_upload_sctr( ) );
+ 439              		.loc 1 162 13 view .LVU122
+ 440 0174 2848     		ldr	r0, .L30+4
+ 441 0176 FFF7FEFF 		bl	bsp_trace_print
+ 442              	.LVL58:
+ 162:smtc_modem_core/device_management/dm_downlink.c ****                                  modem_get_dm_upload_sctr( ) );
+ 443              		.loc 1 162 13 view .LVU123
+ 444 017a 2848     		ldr	r0, .L30+8
+ 445 017c FFF7FEFF 		bl	bsp_trace_print
+ 446              	.LVL59:
+ 162:smtc_modem_core/device_management/dm_downlink.c ****                                  modem_get_dm_upload_sctr( ) );
+ 447              		.loc 1 162 13 view .LVU124
+ 448 0180 6B68     		ldr	r3, [r5, #4]
+ 449 0182 1C78     		ldrb	r4, [r3]
+ 450 0184 FFF7FEFF 		bl	modem_get_dm_upload_sctr
+ 451              	.LVL60:
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccai0XQR.s 			page 16
+
+
+ 452 0188 2100     		movs	r1, r4
+ 453 018a 0200     		movs	r2, r0
+ 454 018c 3148     		ldr	r0, .L30+64
+ 455 018e FFF7FEFF 		bl	bsp_trace_print
+ 456              	.LVL61:
+ 457 0192 D5E7     		b	.L29
+ 458              	.L12:
+ 168:smtc_modem_core/device_management/dm_downlink.c ****         {
+ 459              		.loc 1 168 9 view .LVU125
+ 168:smtc_modem_core/device_management/dm_downlink.c ****         {
+ 460              		.loc 1 168 13 is_stmt 0 view .LVU126
+ 461 0194 0122     		movs	r2, #1
+ 462 0196 297A     		ldrb	r1, [r5, #8]
+ 463 0198 6868     		ldr	r0, [r5, #4]
+ 464 019a FFF7FEFF 		bl	set_dm_info
+ 465              	.LVL62:
+ 466 019e 0400     		movs	r4, r0
+ 168:smtc_modem_core/device_management/dm_downlink.c ****         {
+ 467              		.loc 1 168 11 view .LVU127
+ 468 01a0 0128     		cmp	r0, #1
+ 469 01a2 00D0     		beq	.LCB414
+ 470 01a4 40E7     		b	.L26	@long jump
+ 471              	.LCB414:
+ 173:smtc_modem_core/device_management/dm_downlink.c ****         break;
+ 472              		.loc 1 173 9 is_stmt 1 view .LVU128
+ 473 01a6 FFF7FEFF 		bl	modem_supervisor_add_task_dm_status_now
+ 474              	.LVL63:
+ 174:smtc_modem_core/device_management/dm_downlink.c ****     case DM_SET_CONF:
+ 475              		.loc 1 174 9 view .LVU129
+ 476 01aa 3EE7     		b	.L3
+ 477              	.L11:
+ 176:smtc_modem_core/device_management/dm_downlink.c ****             DM_OK )
+ 478              		.loc 1 176 9 view .LVU130
+ 176:smtc_modem_core/device_management/dm_downlink.c ****             DM_OK )
+ 479              		.loc 1 176 13 is_stmt 0 view .LVU131
+ 480 01ac 2A7A     		ldrb	r2, [r5, #8]
+ 176:smtc_modem_core/device_management/dm_downlink.c ****             DM_OK )
+ 481              		.loc 1 176 51 view .LVU132
+ 482 01ae 6B68     		ldr	r3, [r5, #4]
+ 176:smtc_modem_core/device_management/dm_downlink.c ****             DM_OK )
+ 483              		.loc 1 176 13 view .LVU133
+ 484 01b0 013A     		subs	r2, r2, #1
+ 485 01b2 1878     		ldrb	r0, [r3]
+ 486 01b4 D2B2     		uxtb	r2, r2
+ 487 01b6 591C     		adds	r1, r3, #1
+ 488 01b8 FFF7FEFF 		bl	dm_set_conf
+ 489              	.LVL64:
+ 490              	.L28:
+ 205:smtc_modem_core/device_management/dm_downlink.c ****         {
+ 491              		.loc 1 205 11 view .LVU134
+ 492 01bc 0138     		subs	r0, r0, #1
+ 493 01be 4442     		rsbs	r4, r0, #0
+ 494 01c0 4441     		adcs	r4, r4, r0
+ 495              	.LBE15:
+ 496              	.LBE14:
+ 124:smtc_modem_core/device_management/dm_downlink.c ****     }
+ 497              		.loc 1 124 16 view .LVU135
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccai0XQR.s 			page 17
+
+
+ 498 01c2 E4B2     		uxtb	r4, r4
+ 499              	.LBB24:
+ 500              	.LBB23:
+ 501 01c4 31E7     		b	.L3
+ 502              	.L10:
+ 503              	.LBB22:
+ 185:smtc_modem_core/device_management/dm_downlink.c ****         if( lorawan_api_devnonce_get( ) != dev_nonce )
+ 504              		.loc 1 185 9 is_stmt 1 view .LVU136
+ 185:smtc_modem_core/device_management/dm_downlink.c ****         if( lorawan_api_devnonce_get( ) != dev_nonce )
+ 505              		.loc 1 185 41 is_stmt 0 view .LVU137
+ 506 01c6 6A68     		ldr	r2, [r5, #4]
+ 185:smtc_modem_core/device_management/dm_downlink.c ****         if( lorawan_api_devnonce_get( ) != dev_nonce )
+ 507              		.loc 1 185 49 view .LVU138
+ 508 01c8 5378     		ldrb	r3, [r2, #1]
+ 185:smtc_modem_core/device_management/dm_downlink.c ****         if( lorawan_api_devnonce_get( ) != dev_nonce )
+ 509              		.loc 1 185 79 view .LVU139
+ 510 01ca 1478     		ldrb	r4, [r2]
+ 185:smtc_modem_core/device_management/dm_downlink.c ****         if( lorawan_api_devnonce_get( ) != dev_nonce )
+ 511              		.loc 1 185 53 view .LVU140
+ 512 01cc 1B02     		lsls	r3, r3, #8
+ 185:smtc_modem_core/device_management/dm_downlink.c ****         if( lorawan_api_devnonce_get( ) != dev_nonce )
+ 513              		.loc 1 185 18 view .LVU141
+ 514 01ce 1C43     		orrs	r4, r3
+ 515              	.LVL65:
+ 186:smtc_modem_core/device_management/dm_downlink.c ****         {
+ 516              		.loc 1 186 9 is_stmt 1 view .LVU142
+ 186:smtc_modem_core/device_management/dm_downlink.c ****         {
+ 517              		.loc 1 186 13 is_stmt 0 view .LVU143
+ 518 01d0 FFF7FEFF 		bl	lorawan_api_devnonce_get
+ 519              	.LVL66:
+ 186:smtc_modem_core/device_management/dm_downlink.c ****         {
+ 520              		.loc 1 186 11 view .LVU144
+ 521 01d4 8442     		cmp	r4, r0
+ 522 01d6 00D0     		beq	.LCB462
+ 523 01d8 26E7     		b	.L26	@long jump
+ 524              	.LCB462:
+ 191:smtc_modem_core/device_management/dm_downlink.c ****         lorawan_api_join_status_clear( );
+ 525              		.loc 1 191 9 is_stmt 1 view .LVU145
+ 526 01da 0020     		movs	r0, #0
+ 527 01dc FFF7FEFF 		bl	set_modem_status_modem_joined
+ 528              	.LVL67:
+ 192:smtc_modem_core/device_management/dm_downlink.c ****         modem_supervisor_add_task_join( );
+ 529              		.loc 1 192 9 view .LVU146
+ 530 01e0 FFF7FEFF 		bl	lorawan_api_join_status_clear
+ 531              	.LVL68:
+ 193:smtc_modem_core/device_management/dm_downlink.c ****         break;
+ 532              		.loc 1 193 9 view .LVU147
+ 533 01e4 FFF7FEFF 		bl	modem_supervisor_add_task_join
+ 534              	.LVL69:
+ 194:smtc_modem_core/device_management/dm_downlink.c ****     }
+ 535              		.loc 1 194 9 view .LVU148
+ 536 01e8 6BE7     		b	.L23
+ 537              	.LVL70:
+ 538              	.L9:
+ 194:smtc_modem_core/device_management/dm_downlink.c ****     }
+ 539              		.loc 1 194 9 is_stmt 0 view .LVU149
+ 540              	.LBE22:
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccai0XQR.s 			page 18
+
+
+ 197:smtc_modem_core/device_management/dm_downlink.c ****         if( get_modem_muted( ) == MODEM_TEMPORARY_MUTE )
+ 541              		.loc 1 197 9 is_stmt 1 view .LVU150
+ 542 01ea 6B68     		ldr	r3, [r5, #4]
+ 543 01ec 1878     		ldrb	r0, [r3]
+ 544 01ee FFF7FEFF 		bl	dm_set_number_of_days_mute
+ 545              	.LVL71:
+ 198:smtc_modem_core/device_management/dm_downlink.c ****         {
+ 546              		.loc 1 198 9 view .LVU151
+ 198:smtc_modem_core/device_management/dm_downlink.c ****         {
+ 547              		.loc 1 198 13 is_stmt 0 view .LVU152
+ 548 01f2 FFF7FEFF 		bl	get_modem_muted
+ 549              	.LVL72:
+ 198:smtc_modem_core/device_management/dm_downlink.c ****         {
+ 550              		.loc 1 198 11 view .LVU153
+ 551 01f6 0128     		cmp	r0, #1
+ 552 01f8 01D1     		bne	.L22
+ 200:smtc_modem_core/device_management/dm_downlink.c ****         }
+ 553              		.loc 1 200 13 is_stmt 1 view .LVU154
+ 554 01fa FFF7FEFF 		bl	modem_supervisor_add_task_modem_mute
+ 555              	.LVL73:
+ 556              	.L22:
+ 202:smtc_modem_core/device_management/dm_downlink.c ****         break;
+ 557              		.loc 1 202 9 view .LVU155
+ 558 01fe 0021     		movs	r1, #0
+ 559 0200 0720     		movs	r0, #7
+ 560 0202 FFF7FEFF 		bl	increment_asynchronous_msgnumber
+ 561              	.LVL74:
+ 203:smtc_modem_core/device_management/dm_downlink.c ****     case DM_SET_DM_INFO:
+ 562              		.loc 1 203 9 view .LVU156
+ 563 0206 5CE7     		b	.L23
+ 564              	.L8:
+ 205:smtc_modem_core/device_management/dm_downlink.c ****         {
+ 565              		.loc 1 205 9 view .LVU157
+ 205:smtc_modem_core/device_management/dm_downlink.c ****         {
+ 566              		.loc 1 205 13 is_stmt 0 view .LVU158
+ 567 0208 0022     		movs	r2, #0
+ 568 020a 297A     		ldrb	r1, [r5, #8]
+ 569 020c 6868     		ldr	r0, [r5, #4]
+ 570 020e FFF7FEFF 		bl	set_dm_info
+ 571              	.LVL75:
+ 572 0212 D3E7     		b	.L28
+ 573              	.L31:
+ 574              		.align	2
+ 575              	.L30:
+ 576 0214 27000000 		.word	.LC6
+ 577 0218 00000000 		.word	.LC0
+ 578 021c 08000000 		.word	.LC2
+ 579 0220 10000000 		.word	.LC4
+ 580 0224 00000000 		.word	.LANCHOR0
+ 581 0228 2C000000 		.word	.LC9
+ 582 022c 51000000 		.word	.LC11
+ 583 0230 75000000 		.word	.LC13
+ 584 0234 7D000000 		.word	.LC15
+ 585 0238 00000000 		.word	.LANCHOR1
+ 586 023c 85000000 		.word	.LC18
+ 587 0240 95000000 		.word	.LC20
+ 588 0244 D4000000 		.word	.LC24
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccai0XQR.s 			page 19
+
+
+ 589 0248 B5000000 		.word	.LC22
+ 590 024c E3000000 		.word	.LC26
+ 591 0250 FA000000 		.word	.LC28
+ 592 0254 11010000 		.word	.LC30
+ 593              	.LBE23:
+ 594              	.LBE24:
+ 595              		.cfi_endproc
+ 596              	.LFE10:
+ 598              		.section	.rodata.dm_downlink.str1.1,"aMS",%progbits,1
+ 599              	.LC34:
+ 600 0000 444D2044 		.ascii	"DM Downlink must contain at least 4 bytes\012\000"
+ 600      6F776E6C 
+ 600      696E6B20 
+ 600      6D757374 
+ 600      20636F6E 
+ 601              		.section	.text.dm_downlink,"ax",%progbits
+ 602              		.align	1
+ 603              		.global	dm_downlink
+ 604              		.syntax unified
+ 605              		.code	16
+ 606              		.thumb_func
+ 607              		.fpu softvfp
+ 609              	dm_downlink:
+ 610              	.LVL76:
+ 611              	.LFB9:
+  95:smtc_modem_core/device_management/dm_downlink.c ****     s_dm_cmd_input_t dm_input;
+ 612              		.loc 1 95 1 is_stmt 1 view -0
+ 613              		.cfi_startproc
+ 614              		@ args = 0, pretend = 0, frame = 16
+ 615              		@ frame_needed = 0, uses_anonymous_args = 0
+  96:smtc_modem_core/device_management/dm_downlink.c ****     if( length <= DM_DOWNLINK_HEADER_LENGTH )
+ 616              		.loc 1 96 5 view .LVU160
+  97:smtc_modem_core/device_management/dm_downlink.c ****     {
+ 617              		.loc 1 97 5 view .LVU161
+  95:smtc_modem_core/device_management/dm_downlink.c ****     s_dm_cmd_input_t dm_input;
+ 618              		.loc 1 95 1 is_stmt 0 view .LVU162
+ 619 0000 30B5     		push	{r4, r5, lr}
+ 620              		.cfi_def_cfa_offset 12
+ 621              		.cfi_offset 4, -12
+ 622              		.cfi_offset 5, -8
+ 623              		.cfi_offset 14, -4
+ 624 0002 0300     		movs	r3, r0
+ 625 0004 0A00     		movs	r2, r1
+ 626 0006 85B0     		sub	sp, sp, #20
+ 627              		.cfi_def_cfa_offset 32
+  97:smtc_modem_core/device_management/dm_downlink.c ****     {
+ 628              		.loc 1 97 7 view .LVU163
+ 629 0008 0329     		cmp	r1, #3
+ 630 000a 0ED8     		bhi	.L33
+  99:smtc_modem_core/device_management/dm_downlink.c ****         return DM_ERROR;
+ 631              		.loc 1 99 9 is_stmt 1 view .LVU164
+  99:smtc_modem_core/device_management/dm_downlink.c ****         return DM_ERROR;
+ 632              		.loc 1 99 9 view .LVU165
+ 633 000c 1248     		ldr	r0, .L39
+ 634              	.LVL77:
+  99:smtc_modem_core/device_management/dm_downlink.c ****         return DM_ERROR;
+ 635              		.loc 1 99 9 is_stmt 0 view .LVU166
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccai0XQR.s 			page 20
+
+
+ 636 000e FFF7FEFF 		bl	bsp_trace_print
+ 637              	.LVL78:
+  99:smtc_modem_core/device_management/dm_downlink.c ****         return DM_ERROR;
+ 638              		.loc 1 99 9 is_stmt 1 view .LVU167
+ 639 0012 1248     		ldr	r0, .L39+4
+ 640 0014 FFF7FEFF 		bl	bsp_trace_print
+ 641              	.LVL79:
+  99:smtc_modem_core/device_management/dm_downlink.c ****         return DM_ERROR;
+ 642              		.loc 1 99 9 view .LVU168
+ 643 0018 1148     		ldr	r0, .L39+8
+ 644 001a FFF7FEFF 		bl	bsp_trace_print
+ 645              	.LVL80:
+  99:smtc_modem_core/device_management/dm_downlink.c ****         return DM_ERROR;
+ 646              		.loc 1 99 9 view .LVU169
+ 647 001e 1148     		ldr	r0, .L39+12
+ 648 0020 FFF7FEFF 		bl	bsp_trace_print
+ 649              	.LVL81:
+  99:smtc_modem_core/device_management/dm_downlink.c ****         return DM_ERROR;
+ 650              		.loc 1 99 9 view .LVU170
+  99:smtc_modem_core/device_management/dm_downlink.c ****         return DM_ERROR;
+ 651              		.loc 1 99 77 view .LVU171
+ 100:smtc_modem_core/device_management/dm_downlink.c ****     }
+ 652              		.loc 1 100 9 view .LVU172
+ 100:smtc_modem_core/device_management/dm_downlink.c ****     }
+ 653              		.loc 1 100 16 is_stmt 0 view .LVU173
+ 654 0024 0020     		movs	r0, #0
+ 655              	.L34:
+ 117:smtc_modem_core/device_management/dm_downlink.c **** 
+ 656              		.loc 1 117 1 view .LVU174
+ 657 0026 05B0     		add	sp, sp, #20
+ 658              		@ sp needed
+ 659 0028 30BD     		pop	{r4, r5, pc}
+ 660              	.LVL82:
+ 661              	.L33:
+ 103:smtc_modem_core/device_management/dm_downlink.c ****     dm_input.up_delay     = data[1];
+ 662              		.loc 1 103 5 is_stmt 1 view .LVU175
+ 104:smtc_modem_core/device_management/dm_downlink.c ****     dm_input.request_code = ( e_dm_cmd_t ) data[2];
+ 663              		.loc 1 104 27 is_stmt 0 view .LVU176
+ 664 002a 5978     		ldrb	r1, [r3, #1]
+ 665              	.LVL83:
+ 105:smtc_modem_core/device_management/dm_downlink.c ****     dm_input.buffer       = &data[3];
+ 666              		.loc 1 105 27 view .LVU177
+ 667 002c 9D78     		ldrb	r5, [r3, #2]
+ 103:smtc_modem_core/device_management/dm_downlink.c ****     dm_input.up_delay     = data[1];
+ 668              		.loc 1 103 33 view .LVU178
+ 669 002e 0078     		ldrb	r0, [r0]
+ 670              	.LVL84:
+ 103:smtc_modem_core/device_management/dm_downlink.c ****     dm_input.up_delay     = data[1];
+ 671              		.loc 1 103 27 view .LVU179
+ 672 0030 01AC     		add	r4, sp, #4
+ 106:smtc_modem_core/device_management/dm_downlink.c ****     dm_input.buffer_len   = length - DM_DOWNLINK_HEADER_LENGTH;
+ 673              		.loc 1 106 29 view .LVU180
+ 674 0032 0333     		adds	r3, r3, #3
+ 675              	.LVL85:
+ 107:smtc_modem_core/device_management/dm_downlink.c **** 
+ 676              		.loc 1 107 36 view .LVU181
+ 677 0034 033A     		subs	r2, r2, #3
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccai0XQR.s 			page 21
+
+
+ 106:smtc_modem_core/device_management/dm_downlink.c ****     dm_input.buffer_len   = length - DM_DOWNLINK_HEADER_LENGTH;
+ 678              		.loc 1 106 27 view .LVU182
+ 679 0036 6360     		str	r3, [r4, #4]
+ 103:smtc_modem_core/device_management/dm_downlink.c ****     dm_input.up_delay     = data[1];
+ 680              		.loc 1 103 27 view .LVU183
+ 681 0038 2070     		strb	r0, [r4]
+ 104:smtc_modem_core/device_management/dm_downlink.c ****     dm_input.request_code = ( e_dm_cmd_t ) data[2];
+ 682              		.loc 1 104 5 is_stmt 1 view .LVU184
+ 104:smtc_modem_core/device_management/dm_downlink.c ****     dm_input.request_code = ( e_dm_cmd_t ) data[2];
+ 683              		.loc 1 104 27 is_stmt 0 view .LVU185
+ 684 003a 6170     		strb	r1, [r4, #1]
+ 105:smtc_modem_core/device_management/dm_downlink.c ****     dm_input.buffer       = &data[3];
+ 685              		.loc 1 105 5 is_stmt 1 view .LVU186
+ 105:smtc_modem_core/device_management/dm_downlink.c ****     dm_input.buffer       = &data[3];
+ 686              		.loc 1 105 27 is_stmt 0 view .LVU187
+ 687 003c A570     		strb	r5, [r4, #2]
+ 106:smtc_modem_core/device_management/dm_downlink.c ****     dm_input.buffer_len   = length - DM_DOWNLINK_HEADER_LENGTH;
+ 688              		.loc 1 106 5 is_stmt 1 view .LVU188
+ 107:smtc_modem_core/device_management/dm_downlink.c **** 
+ 689              		.loc 1 107 5 view .LVU189
+ 107:smtc_modem_core/device_management/dm_downlink.c **** 
+ 690              		.loc 1 107 27 is_stmt 0 view .LVU190
+ 691 003e 2272     		strb	r2, [r4, #8]
+ 109:smtc_modem_core/device_management/dm_downlink.c **** 
+ 692              		.loc 1 109 5 is_stmt 1 view .LVU191
+ 693 0040 FFF7FEFF 		bl	set_dm_retrieve_pending_dl
+ 694              	.LVL86:
+ 111:smtc_modem_core/device_management/dm_downlink.c ****     {
+ 695              		.loc 1 111 5 view .LVU192
+ 111:smtc_modem_core/device_management/dm_downlink.c ****     {
+ 696              		.loc 1 111 7 is_stmt 0 view .LVU193
+ 697 0044 2378     		ldrb	r3, [r4]
+ 698 0046 002B     		cmp	r3, #0
+ 699 0048 02D0     		beq	.L35
+ 113:smtc_modem_core/device_management/dm_downlink.c ****     }
+ 700              		.loc 1 113 9 is_stmt 1 view .LVU194
+ 701 004a 6078     		ldrb	r0, [r4, #1]
+ 702 004c FFF7FEFF 		bl	modem_supervisor_add_task_retrieve_dl
+ 703              	.LVL87:
+ 704              	.L35:
+ 116:smtc_modem_core/device_management/dm_downlink.c **** }
+ 705              		.loc 1 116 5 view .LVU195
+ 116:smtc_modem_core/device_management/dm_downlink.c **** }
+ 706              		.loc 1 116 12 is_stmt 0 view .LVU196
+ 707 0050 2000     		movs	r0, r4
+ 708 0052 FFF7FEFF 		bl	dm_parse_cmd
+ 709              	.LVL88:
+ 710 0056 E6E7     		b	.L34
+ 711              	.L40:
+ 712              		.align	2
+ 713              	.L39:
+ 714 0058 00000000 		.word	.LC0
+ 715 005c 08000000 		.word	.LC2
+ 716 0060 00000000 		.word	.LC34
+ 717 0064 27000000 		.word	.LC6
+ 718              		.cfi_endproc
+ 719              	.LFE9:
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccai0XQR.s 			page 22
+
+
+ 721              		.section	.rodata.str1.1,"aMS",%progbits,1
+ 722              	.LC37:
+ 723 0000 52455345 		.ascii	"RESET\000"
+ 723      5400
+ 724              	.LC38:
+ 725 0006 46554F54 		.ascii	"FUOTA\000"
+ 725      4100
+ 726              	.LC39:
+ 727 000c 46494C45 		.ascii	"FILE_DONE\000"
+ 727      5F444F4E 
+ 727      4500
+ 728              	.LC40:
+ 729 0016 4745545F 		.ascii	"GET_INFO\000"
+ 729      494E464F 
+ 729      00
+ 730              	.LC41:
+ 731 001f 5345545F 		.ascii	"SET_CONF\000"
+ 731      434F4E46 
+ 731      00
+ 732              	.LC42:
+ 733 0028 52454A4F 		.ascii	"REJOIN\000"
+ 733      494E00
+ 734              	.LC43:
+ 735 002f 4D555445 		.ascii	"MUTE\000"
+ 735      00
+ 736              	.LC44:
+ 737 0034 5345545F 		.ascii	"SET_DM_INFO\000"
+ 737      444D5F49 
+ 737      4E464F00 
+ 738              	.LC45:
+ 739 0040 53545245 		.ascii	"STREAM\000"
+ 739      414D00
+ 740              	.LC46:
+ 741 0047 414C435F 		.ascii	"ALC_SYNC\000"
+ 741      53594E43 
+ 741      00
+ 742              		.section	.rodata.dm_cmd_len,"a"
+ 743              		.align	2
+ 744              		.set	.LANCHOR0,. + 0
+ 747              	dm_cmd_len:
+ 748 0000 0303     		.ascii	"\003\003"
+ 749 0002 01FF     		.ascii	"\001\377"
+ 750 0004 0101     		.ascii	"\001\001"
+ 751 0006 01FF     		.ascii	"\001\377"
+ 752 0008 02FF     		.ascii	"\002\377"
+ 753 000a 0202     		.ascii	"\002\002"
+ 754 000c 0101     		.ascii	"\001\001"
+ 755 000e 0118     		.ascii	"\001\030"
+ 756 0010 01FF     		.ascii	"\001\377"
+ 757 0012 01FF     		.ascii	"\001\377"
+ 758              		.section	.rodata.dm_cmd_str,"a"
+ 759              		.align	2
+ 760              		.set	.LANCHOR1,. + 0
+ 763              	dm_cmd_str:
+ 764 0000 00000000 		.word	.LC37
+ 765 0004 06000000 		.word	.LC38
+ 766 0008 0C000000 		.word	.LC39
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccai0XQR.s 			page 23
+
+
+ 767 000c 16000000 		.word	.LC40
+ 768 0010 1F000000 		.word	.LC41
+ 769 0014 28000000 		.word	.LC42
+ 770 0018 2F000000 		.word	.LC43
+ 771 001c 34000000 		.word	.LC44
+ 772 0020 40000000 		.word	.LC45
+ 773 0024 47000000 		.word	.LC46
+ 774              		.text
+ 775              	.Letext0:
+ 776              		.file 2 "/Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.external
+ 777              		.file 3 "/Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.external
+ 778              		.file 4 "/Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.external
+ 779              		.file 5 "/Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.external
+ 780              		.file 6 "/Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.external
+ 781              		.file 7 "/Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.external
+ 782              		.file 8 "smtc_modem_core/device_management/device_management_defs.h"
+ 783              		.file 9 "lr1mac/src/lr1mac_defs.h"
+ 784              		.file 10 "lr1mac/src/smtc_real/src/smtc_real_defs.h"
+ 785              		.file 11 "smtc_bsp/smtc_bsp_mcu.h"
+ 786              		.file 12 "smtc_modem_core/device_management/modem_context.h"
+ 787              		.file 13 "smtc_modem_core/lorawan_api/lorawan_api.h"
+ 788              		.file 14 "smtc_modem_core/modem_supervisor/modem_supervisor.h"
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccai0XQR.s 			page 24
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 dm_downlink.c
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccai0XQR.s:46     .text.dm_parse_cmd:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccai0XQR.s:54     .text.dm_parse_cmd:0000000000000000 dm_parse_cmd
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccai0XQR.s:221    .text.dm_parse_cmd:0000000000000092 $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccai0XQR.s:231    .text.dm_parse_cmd:000000000000009c $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccai0XQR.s:576    .text.dm_parse_cmd:0000000000000214 $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccai0XQR.s:602    .text.dm_downlink:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccai0XQR.s:609    .text.dm_downlink:0000000000000000 dm_downlink
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccai0XQR.s:714    .text.dm_downlink:0000000000000058 $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccai0XQR.s:743    .rodata.dm_cmd_len:0000000000000000 $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccai0XQR.s:747    .rodata.dm_cmd_len:0000000000000000 dm_cmd_len
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccai0XQR.s:759    .rodata.dm_cmd_str:0000000000000000 $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccai0XQR.s:763    .rodata.dm_cmd_str:0000000000000000 dm_cmd_str
+
+UNDEFINED SYMBOLS
+bsp_trace_print
+__gnu_thumb1_case_uqi
+lorawan_api_nb_reset_get
+modem_store_context
+lorawan_api_context_save
+bsp_mcu_reset
+modem_get_upload_state
+modem_get_dm_upload_sctr
+set_modem_status_file_upload
+increment_asynchronous_msgnumber
+modem_set_upload_state
+modem_supervisor_remove_task
+set_dm_info
+modem_supervisor_add_task_dm_status_now
+dm_set_conf
+lorawan_api_devnonce_get
+set_modem_status_modem_joined
+lorawan_api_join_status_clear
+modem_supervisor_add_task_join
+dm_set_number_of_days_mute
+get_modem_muted
+modem_supervisor_add_task_modem_mute
+set_dm_retrieve_pending_dl
+modem_supervisor_add_task_retrieve_dl

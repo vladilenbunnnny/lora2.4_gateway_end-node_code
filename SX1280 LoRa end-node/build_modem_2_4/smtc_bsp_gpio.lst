@@ -1,0 +1,2447 @@
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccf8NMfb.s 			page 1
+
+
+   1              		.cpu cortex-m0plus
+   2              		.eabi_attribute 23, 1
+   3              		.eabi_attribute 24, 1
+   4              		.eabi_attribute 25, 1
+   5              		.eabi_attribute 26, 1
+   6              		.eabi_attribute 30, 4
+   7              		.eabi_attribute 34, 0
+   8              		.eabi_attribute 18, 4
+   9              		.file	"smtc_bsp_gpio.c"
+  10              		.text
+  11              	.Ltext0:
+  12              		.cfi_sections	.debug_frame
+  13              		.section	.text.bsp_gpio_irq_attach,"ax",%progbits
+  14              		.align	1
+  15              		.global	bsp_gpio_irq_attach
+  16              		.arch armv6s-m
+  17              		.syntax unified
+  18              		.code	16
+  19              		.thumb_func
+  20              		.fpu softvfp
+  22              	bsp_gpio_irq_attach:
+  23              	.LVL0:
+  24              	.LFB49:
+  25              		.file 1 "smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c"
+   1:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** /*!
+   2:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****  * \file      smtc_bsp_gpio.c
+   3:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****  *
+   4:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****  * \brief     Implements the gpio BSP functions
+   5:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****  *
+   6:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****  * Revised BSD License
+   7:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****  * Copyright Semtech Corporation 2020. All rights reserved.
+   8:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****  *
+   9:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****  * Redistribution and use in source and binary forms, with or without
+  10:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****  * modification, are permitted provided that the following conditions are met:
+  11:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****  *     * Redistributions of source code must retain the above copyright
+  12:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****  *       notice, this list of conditions and the following disclaimer.
+  13:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****  *     * Redistributions in binary form must reproduce the above copyright
+  14:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****  *       notice, this list of conditions and the following disclaimer in the
+  15:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****  *       documentation and/or other materials provided with the distribution.
+  16:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****  *     * Neither the name of the Semtech corporation nor the
+  17:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****  *       names of its contributors may be used to endorse or promote products
+  18:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****  *       derived from this software without specific prior written permission.
+  19:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****  *
+  20:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+  21:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+  22:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+  23:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****  * ARE DISCLAIMED. IN NO EVENT SHALL SEMTECH CORPORATION BE LIABLE FOR ANY DIRECT,
+  24:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****  * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+  25:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+  26:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+  27:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  28:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+  29:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  30:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****  */
+  31:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** 
+  32:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** /*
+  33:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****  * -----------------------------------------------------------------------------
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccf8NMfb.s 			page 2
+
+
+  34:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****  * --- DEPENDENCIES ------------------------------------------------------------
+  35:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****  */
+  36:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** 
+  37:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** #include <stdint.h>   // C99 types
+  38:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** #include <stdbool.h>  // bool type
+  39:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** 
+  40:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** #include "stm32l0xx_hal.h"
+  41:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** #include "smtc_bsp_mcu.h"
+  42:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** #include "smtc_bsp_gpio.h"
+  43:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** 
+  44:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** /*
+  45:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****  * -----------------------------------------------------------------------------
+  46:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****  * --- PRIVATE MACROS-----------------------------------------------------------
+  47:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****  */
+  48:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** 
+  49:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** /*
+  50:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****  * -----------------------------------------------------------------------------
+  51:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****  * --- PRIVATE CONSTANTS -------------------------------------------------------
+  52:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****  */
+  53:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** 
+  54:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** /*
+  55:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****  * -----------------------------------------------------------------------------
+  56:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****  * --- PRIVATE TYPES -----------------------------------------------------------
+  57:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****  */
+  58:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** 
+  59:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** /*!
+  60:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****  * GPIO setup data structure
+  61:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****  */
+  62:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** typedef struct bsp_gpio_s
+  63:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** {
+  64:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     bsp_gpio_pin_names_t pin;
+  65:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     uint32_t             mode;
+  66:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     uint32_t             pull;
+  67:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     uint32_t             speed;
+  68:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     uint32_t             alternate;
+  69:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** } bsp_gpio_t;
+  70:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** 
+  71:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** /*
+  72:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****  * -----------------------------------------------------------------------------
+  73:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****  * --- PRIVATE VARIABLES -------------------------------------------------------
+  74:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****  */
+  75:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** 
+  76:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** /*!
+  77:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****  * Array holding attached IRQ gpio data context
+  78:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****  */
+  79:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** static bsp_gpio_irq_t const* gpio_irq[16];
+  80:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** 
+  81:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** /*
+  82:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****  * -----------------------------------------------------------------------------
+  83:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****  * --- PRIVATE FUNCTIONS DECLARATION -------------------------------------------
+  84:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****  */
+  85:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** 
+  86:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** /*
+  87:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****  * -----------------------------------------------------------------------------
+  88:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****  * --- PUBLIC FUNCTIONS DEFINITION ---------------------------------------------
+  89:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****  */
+  90:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** 
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccf8NMfb.s 			page 3
+
+
+  91:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** /*!
+  92:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****  * Generic gpio initialization
+  93:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****  *
+  94:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****  * \param [in/out] gpio  Holds MCU gpio parameters
+  95:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****  * \param [in]     value Initial MCU pit value
+  96:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****  * \param [in/out] irq   Pointer to IRQ data context.
+  97:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****  *                         NULL when setting gpio as output
+  98:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****  */
+  99:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** static void bsp_gpio_init( const bsp_gpio_t* gpio, const uint32_t value, const bsp_gpio_irq_t* irq 
+ 100:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** 
+ 101:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** //
+ 102:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** // MCU output pin Handling
+ 103:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** //
+ 104:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** 
+ 105:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** void bsp_gpio_init_out( const bsp_gpio_pin_names_t pin, const uint32_t value )
+ 106:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** {
+ 107:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     bsp_gpio_t gpio = {
+ 108:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****         .pin = pin, .mode = GPIO_MODE_OUTPUT_PP, .pull = GPIO_NOPULL, .speed = GPIO_SPEED_FREQ_LOW,
+ 109:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     };
+ 110:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     bsp_gpio_init( &gpio, ( value != 0 ) ? GPIO_PIN_SET : GPIO_PIN_RESET, NULL );
+ 111:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** }
+ 112:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** 
+ 113:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** //
+ 114:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** // MCU input pin Handling
+ 115:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** //
+ 116:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** 
+ 117:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** void bsp_gpio_init_in( const bsp_gpio_pin_names_t pin, const gpio_pull_mode_t pull_mode, const gpio
+ 118:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****                        bsp_gpio_irq_t* irq )
+ 119:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** {
+ 120:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     const uint32_t modes[] = { GPIO_MODE_INPUT, GPIO_MODE_IT_RISING, GPIO_MODE_IT_FALLING,
+ 121:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****                                GPIO_MODE_IT_RISING_FALLING };
+ 122:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     const uint32_t pulls[] = { GPIO_NOPULL, GPIO_PULLUP, GPIO_PULLDOWN };
+ 123:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** 
+ 124:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     bsp_gpio_t gpio = {
+ 125:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****         .pin = pin, .mode = modes[irq_mode], .pull = pulls[pull_mode], .speed = GPIO_SPEED_FREQ_LOW
+ 126:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     };
+ 127:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** 
+ 128:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     if( irq != NULL )
+ 129:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     {
+ 130:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****         irq->pin = pin;
+ 131:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     }
+ 132:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** 
+ 133:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     bsp_gpio_init( &gpio, GPIO_PIN_RESET, irq );
+ 134:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** }
+ 135:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** 
+ 136:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** void bsp_gpio_irq_attach( const bsp_gpio_irq_t* irq )
+ 137:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** {
+  26              		.loc 1 137 1 view -0
+  27              		.cfi_startproc
+  28              		@ args = 0, pretend = 0, frame = 0
+  29              		@ frame_needed = 0, uses_anonymous_args = 0
+  30              		@ link register save eliminated.
+ 138:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     if( ( irq != NULL ) && ( irq->callback != NULL ) )
+  31              		.loc 1 138 5 view .LVU1
+  32              		.loc 1 138 7 is_stmt 0 view .LVU2
+  33 0000 0028     		cmp	r0, #0
+  34 0002 08D0     		beq	.L1
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccf8NMfb.s 			page 4
+
+
+  35              		.loc 1 138 25 discriminator 1 view .LVU3
+  36 0004 8368     		ldr	r3, [r0, #8]
+  37 0006 002B     		cmp	r3, #0
+  38 0008 05D0     		beq	.L1
+ 139:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     {
+ 140:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****         gpio_irq[( irq->pin ) & 0x0F] = irq;
+  39              		.loc 1 140 9 is_stmt 1 view .LVU4
+  40              		.loc 1 140 31 is_stmt 0 view .LVU5
+  41 000a 0F22     		movs	r2, #15
+  42 000c 0378     		ldrb	r3, [r0]
+  43 000e 1340     		ands	r3, r2
+  44              		.loc 1 140 39 view .LVU6
+  45 0010 014A     		ldr	r2, .L9
+  46 0012 9B00     		lsls	r3, r3, #2
+  47 0014 9850     		str	r0, [r3, r2]
+  48              	.L1:
+ 141:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     }
+ 142:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** }
+  49              		.loc 1 142 1 view .LVU7
+  50              		@ sp needed
+  51 0016 7047     		bx	lr
+  52              	.L10:
+  53              		.align	2
+  54              	.L9:
+  55 0018 00000000 		.word	.LANCHOR0
+  56              		.cfi_endproc
+  57              	.LFE49:
+  59              		.section	.text.bsp_gpio_init,"ax",%progbits
+  60              		.align	1
+  61              		.syntax unified
+  62              		.code	16
+  63              		.thumb_func
+  64              		.fpu softvfp
+  66              	bsp_gpio_init:
+  67              	.LVL1:
+  68              	.LFB57:
+ 143:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** 
+ 144:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** void bsp_gpio_irq_deatach( const bsp_gpio_irq_t* irq )
+ 145:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** {
+ 146:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     if( irq != NULL )
+ 147:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     {
+ 148:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****         gpio_irq[( irq->pin ) & 0x0F] = NULL;
+ 149:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     }
+ 150:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** }
+ 151:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** 
+ 152:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** void bsp_gpio_irq_enable( void )
+ 153:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** {
+ 154:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     HAL_NVIC_EnableIRQ( EXTI0_1_IRQn );
+ 155:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     HAL_NVIC_EnableIRQ( EXTI2_3_IRQn );
+ 156:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     HAL_NVIC_EnableIRQ( EXTI4_15_IRQn );
+ 157:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** }
+ 158:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** 
+ 159:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** void bsp_gpio_irq_disable( void )
+ 160:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** {
+ 161:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     HAL_NVIC_DisableIRQ( EXTI0_1_IRQn );
+ 162:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     HAL_NVIC_DisableIRQ( EXTI2_3_IRQn );
+ 163:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     HAL_NVIC_DisableIRQ( EXTI4_15_IRQn );
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccf8NMfb.s 			page 5
+
+
+ 164:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** }
+ 165:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** 
+ 166:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** //
+ 167:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** // MCU pin state control
+ 168:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** //
+ 169:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** 
+ 170:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** void bsp_gpio_set_value( const bsp_gpio_pin_names_t pin, const uint32_t value )
+ 171:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** {
+ 172:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     GPIO_TypeDef* gpio_port = ( GPIO_TypeDef* ) ( IOPPERIPH_BASE + ( ( pin & 0xF0 ) << 6 ) );
+ 173:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** 
+ 174:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     HAL_GPIO_WritePin( gpio_port, ( 1 << ( pin & 0x0F ) ), ( value != 0 ) ? GPIO_PIN_SET : GPIO_PIN
+ 175:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** }
+ 176:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** 
+ 177:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** void bsp_gpio_toggle( const bsp_gpio_pin_names_t pin )
+ 178:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** {
+ 179:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     GPIO_TypeDef* gpio_port = ( GPIO_TypeDef* ) ( IOPPERIPH_BASE + ( ( pin & 0xF0 ) << 6 ) );
+ 180:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** 
+ 181:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     HAL_GPIO_TogglePin( gpio_port, ( 1 << ( pin & 0x0F ) ) );
+ 182:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** }
+ 183:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** 
+ 184:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** uint32_t bsp_gpio_get_value( const bsp_gpio_pin_names_t pin )
+ 185:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** {
+ 186:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     GPIO_TypeDef* gpio_port = ( GPIO_TypeDef* ) ( IOPPERIPH_BASE + ( ( pin & 0xF0 ) << 6 ) );
+ 187:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** 
+ 188:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     return ( HAL_GPIO_ReadPin( gpio_port, ( ( 1 << ( pin & 0x0F ) ) ) ) != GPIO_PIN_RESET ) ? 1 : 0
+ 189:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** }
+ 190:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** 
+ 191:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** bool bsp_gpio_is_pending_irq( void )
+ 192:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** {
+ 193:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     return ( ( NVIC_GetPendingIRQ( EXTI0_1_IRQn ) == 1 ) || ( NVIC_GetPendingIRQ( EXTI2_3_IRQn ) ==
+ 194:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****              ( NVIC_GetPendingIRQ( EXTI4_15_IRQn ) == 1 ) )
+ 195:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****                ? true
+ 196:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****                : false;
+ 197:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** }
+ 198:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** //
+ 199:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** // MCU pin control private functions
+ 200:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** //
+ 201:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** 
+ 202:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** static void bsp_gpio_init( const bsp_gpio_t* gpio, const uint32_t value, const bsp_gpio_irq_t* irq 
+ 203:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** {
+  69              		.loc 1 203 1 is_stmt 1 view -0
+  70              		.cfi_startproc
+  71              		@ args = 0, pretend = 0, frame = 24
+  72              		@ frame_needed = 0, uses_anonymous_args = 0
+ 204:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     GPIO_InitTypeDef gpio_local;
+ 205:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     GPIO_TypeDef*    gpio_port = ( GPIO_TypeDef* ) ( IOPPERIPH_BASE + ( ( gpio->pin & 0xF0 ) << 6 )
+  73              		.loc 1 205 79 is_stmt 0 view .LVU9
+  74 0000 0023     		movs	r3, #0
+ 203:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     GPIO_InitTypeDef gpio_local;
+  75              		.loc 1 203 1 view .LVU10
+  76 0002 70B5     		push	{r4, r5, r6, lr}
+  77              		.cfi_def_cfa_offset 16
+  78              		.cfi_offset 4, -16
+  79              		.cfi_offset 5, -12
+  80              		.cfi_offset 6, -8
+  81              		.cfi_offset 14, -4
+  82              		.loc 1 205 79 view .LVU11
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccf8NMfb.s 			page 6
+
+
+  83 0004 C356     		ldrsb	r3, [r0, r3]
+ 203:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     GPIO_InitTypeDef gpio_local;
+  84              		.loc 1 203 1 view .LVU12
+  85 0006 0400     		movs	r4, r0
+ 204:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     GPIO_InitTypeDef gpio_local;
+  86              		.loc 1 204 5 is_stmt 1 view .LVU13
+  87              		.loc 1 205 5 view .LVU14
+ 206:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** 
+ 207:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     gpio_local.Pin       = ( 1 << ( gpio->pin & 0x0F ) );
+  88              		.loc 1 207 47 is_stmt 0 view .LVU15
+  89 0008 0F20     		movs	r0, #15
+  90              	.LVL2:
+ 203:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     GPIO_InitTypeDef gpio_local;
+  91              		.loc 1 203 1 view .LVU16
+  92 000a 1600     		movs	r6, r2
+ 205:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** 
+  93              		.loc 1 205 94 view .LVU17
+  94 000c F022     		movs	r2, #240
+  95              	.LVL3:
+  96              		.loc 1 207 47 view .LVU18
+  97 000e 1840     		ands	r0, r3
+ 205:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** 
+  98              		.loc 1 205 94 view .LVU19
+  99 0010 9D01     		lsls	r5, r3, #6
+ 100              		.loc 1 207 32 view .LVU20
+ 101 0012 0123     		movs	r3, #1
+ 205:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** 
+ 102              		.loc 1 205 94 view .LVU21
+ 103 0014 9201     		lsls	r2, r2, #6
+ 104 0016 1540     		ands	r5, r2
+ 205:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** 
+ 105              		.loc 1 205 69 view .LVU22
+ 106 0018 A022     		movs	r2, #160
+ 107              		.loc 1 207 32 view .LVU23
+ 108 001a 8340     		lsls	r3, r3, r0
+ 205:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** 
+ 109              		.loc 1 205 69 view .LVU24
+ 110 001c D205     		lsls	r2, r2, #23
+ 111 001e AD18     		adds	r5, r5, r2
+ 112              	.LVL4:
+ 113              		.loc 1 207 5 is_stmt 1 view .LVU25
+ 208:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     gpio_local.Mode      = gpio->mode;
+ 114              		.loc 1 208 26 is_stmt 0 view .LVU26
+ 115 0020 6268     		ldr	r2, [r4, #4]
+ 203:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     GPIO_InitTypeDef gpio_local;
+ 116              		.loc 1 203 1 view .LVU27
+ 117 0022 86B0     		sub	sp, sp, #24
+ 118              		.cfi_def_cfa_offset 40
+ 119              		.loc 1 208 26 view .LVU28
+ 120 0024 0292     		str	r2, [sp, #8]
+ 209:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     gpio_local.Pull      = gpio->pull;
+ 121              		.loc 1 209 26 view .LVU29
+ 122 0026 A268     		ldr	r2, [r4, #8]
+ 210:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     gpio_local.Speed     = gpio->speed;
+ 211:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     gpio_local.Alternate = gpio->alternate;
+ 212:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** 
+ 213:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     HAL_GPIO_WritePin( gpio_port, gpio_local.Pin, ( GPIO_PinState ) value );
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccf8NMfb.s 			page 7
+
+
+ 123              		.loc 1 213 5 view .LVU30
+ 124 0028 2800     		movs	r0, r5
+ 209:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     gpio_local.Pull      = gpio->pull;
+ 125              		.loc 1 209 26 view .LVU31
+ 126 002a 0392     		str	r2, [sp, #12]
+ 210:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     gpio_local.Speed     = gpio->speed;
+ 127              		.loc 1 210 26 view .LVU32
+ 128 002c E268     		ldr	r2, [r4, #12]
+ 207:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     gpio_local.Mode      = gpio->mode;
+ 129              		.loc 1 207 26 view .LVU33
+ 130 002e 0193     		str	r3, [sp, #4]
+ 208:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     gpio_local.Pull      = gpio->pull;
+ 131              		.loc 1 208 5 is_stmt 1 view .LVU34
+ 209:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     gpio_local.Speed     = gpio->speed;
+ 132              		.loc 1 209 5 view .LVU35
+ 210:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     gpio_local.Alternate = gpio->alternate;
+ 133              		.loc 1 210 5 view .LVU36
+ 210:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     gpio_local.Alternate = gpio->alternate;
+ 134              		.loc 1 210 26 is_stmt 0 view .LVU37
+ 135 0030 0492     		str	r2, [sp, #16]
+ 211:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** 
+ 136              		.loc 1 211 5 is_stmt 1 view .LVU38
+ 211:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** 
+ 137              		.loc 1 211 26 is_stmt 0 view .LVU39
+ 138 0032 2269     		ldr	r2, [r4, #16]
+ 139 0034 0592     		str	r2, [sp, #20]
+ 140              		.loc 1 213 5 is_stmt 1 view .LVU40
+ 141 0036 CAB2     		uxtb	r2, r1
+ 142 0038 99B2     		uxth	r1, r3
+ 143              	.LVL5:
+ 144              		.loc 1 213 5 is_stmt 0 view .LVU41
+ 145 003a FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 146              	.LVL6:
+ 214:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     HAL_GPIO_Init( gpio_port, &gpio_local );
+ 147              		.loc 1 214 5 is_stmt 1 view .LVU42
+ 148 003e 01A9     		add	r1, sp, #4
+ 149 0040 2800     		movs	r0, r5
+ 150 0042 FFF7FEFF 		bl	HAL_GPIO_Init
+ 151              	.LVL7:
+ 215:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** 
+ 216:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     if( ( gpio->mode == GPIO_MODE_IT_RISING ) || ( gpio->mode == GPIO_MODE_IT_FALLING ) ||
+ 152              		.loc 1 216 5 view .LVU43
+ 153              		.loc 1 216 15 is_stmt 0 view .LVU44
+ 154 0046 6268     		ldr	r2, [r4, #4]
+ 155              		.loc 1 216 7 view .LVU45
+ 156 0048 164B     		ldr	r3, .L19
+ 157 004a 1749     		ldr	r1, .L19+4
+ 158 004c 1340     		ands	r3, r2
+ 159 004e 8B42     		cmp	r3, r1
+ 160 0050 02D0     		beq	.L12
+ 161              		.loc 1 216 47 discriminator 1 view .LVU46
+ 162 0052 164B     		ldr	r3, .L19+8
+ 163 0054 9A42     		cmp	r2, r3
+ 164 0056 1BD1     		bne	.L11
+ 165              	.L12:
+ 166              	.LVL8:
+ 167              	.LBB10:
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccf8NMfb.s 			page 8
+
+
+ 168              	.LBI10:
+ 202:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** {
+ 169              		.loc 1 202 13 is_stmt 1 view .LVU47
+ 170              	.LBB11:
+ 217:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****         ( gpio->mode == GPIO_MODE_IT_RISING_FALLING ) )
+ 218:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     {
+ 219:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****         bsp_gpio_irq_attach( irq );
+ 171              		.loc 1 219 9 view .LVU48
+ 172 0058 3000     		movs	r0, r6
+ 173 005a FFF7FEFF 		bl	bsp_gpio_irq_attach
+ 174              	.LVL9:
+ 220:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****         switch( gpio->pin & 0x0F )
+ 175              		.loc 1 220 9 view .LVU49
+ 176              		.loc 1 220 27 is_stmt 0 view .LVU50
+ 177 005e 2078     		ldrb	r0, [r4]
+ 178 0060 0F23     		movs	r3, #15
+ 179              		.loc 1 220 9 view .LVU51
+ 180 0062 0E22     		movs	r2, #14
+ 181 0064 0100     		movs	r1, r0
+ 182 0066 0340     		ands	r3, r0
+ 183 0068 1140     		ands	r1, r2
+ 184 006a 1042     		tst	r0, r2
+ 185 006c 09D0     		beq	.L14
+ 186 006e 023B     		subs	r3, r3, #2
+ 187 0070 012B     		cmp	r3, #1
+ 188 0072 0FD9     		bls	.L17
+ 221:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****         {
+ 222:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****         case 0:
+ 223:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****         case 1:
+ 224:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****             HAL_NVIC_SetPriority( EXTI0_1_IRQn, 0, 0 );
+ 225:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****             HAL_NVIC_EnableIRQ( EXTI0_1_IRQn );
+ 226:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****             break;
+ 227:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****         case 2:
+ 228:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****         case 3:
+ 229:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****             HAL_NVIC_SetPriority( EXTI2_3_IRQn, 0, 0 );
+ 230:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****             HAL_NVIC_EnableIRQ( EXTI2_3_IRQn );
+ 231:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****             break;
+ 232:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****         default:
+ 233:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****             HAL_NVIC_SetPriority( EXTI4_15_IRQn, 0, 0 );
+ 189              		.loc 1 233 13 is_stmt 1 view .LVU52
+ 190 0074 0022     		movs	r2, #0
+ 191 0076 0720     		movs	r0, #7
+ 192 0078 1100     		movs	r1, r2
+ 193 007a FFF7FEFF 		bl	HAL_NVIC_SetPriority
+ 194              	.LVL10:
+ 234:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****             HAL_NVIC_EnableIRQ( EXTI4_15_IRQn );
+ 195              		.loc 1 234 13 view .LVU53
+ 196 007e 0720     		movs	r0, #7
+ 197 0080 04E0     		b	.L18
+ 198              	.L14:
+ 224:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****             HAL_NVIC_EnableIRQ( EXTI0_1_IRQn );
+ 199              		.loc 1 224 13 view .LVU54
+ 200 0082 0520     		movs	r0, #5
+ 201 0084 0A00     		movs	r2, r1
+ 202 0086 FFF7FEFF 		bl	HAL_NVIC_SetPriority
+ 203              	.LVL11:
+ 225:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****             break;
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccf8NMfb.s 			page 9
+
+
+ 204              		.loc 1 225 13 view .LVU55
+ 205 008a 0520     		movs	r0, #5
+ 206              	.L18:
+ 207              		.loc 1 234 13 is_stmt 0 view .LVU56
+ 208 008c FFF7FEFF 		bl	HAL_NVIC_EnableIRQ
+ 209              	.LVL12:
+ 235:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****             break;
+ 210              		.loc 1 235 13 is_stmt 1 view .LVU57
+ 211              	.L11:
+ 212              		.loc 1 235 13 is_stmt 0 view .LVU58
+ 213              	.LBE11:
+ 214              	.LBE10:
+ 236:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****         }
+ 237:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     }
+ 238:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** }
+ 215              		.loc 1 238 1 view .LVU59
+ 216 0090 06B0     		add	sp, sp, #24
+ 217              		@ sp needed
+ 218              	.LVL13:
+ 219              	.LVL14:
+ 220              	.LVL15:
+ 221              		.loc 1 238 1 view .LVU60
+ 222 0092 70BD     		pop	{r4, r5, r6, pc}
+ 223              	.LVL16:
+ 224              	.L17:
+ 225              	.LBB13:
+ 226              	.LBB12:
+ 229:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****             HAL_NVIC_EnableIRQ( EXTI2_3_IRQn );
+ 227              		.loc 1 229 13 is_stmt 1 view .LVU61
+ 228 0094 0022     		movs	r2, #0
+ 229 0096 0620     		movs	r0, #6
+ 230 0098 1100     		movs	r1, r2
+ 231 009a FFF7FEFF 		bl	HAL_NVIC_SetPriority
+ 232              	.LVL17:
+ 230:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****             break;
+ 233              		.loc 1 230 13 view .LVU62
+ 234 009e 0620     		movs	r0, #6
+ 235 00a0 F4E7     		b	.L18
+ 236              	.L20:
+ 237 00a2 C046     		.align	2
+ 238              	.L19:
+ 239 00a4 FFFFDFFF 		.word	-2097153
+ 240 00a8 00001110 		.word	269549568
+ 241 00ac 00002110 		.word	270598144
+ 242              	.LBE12:
+ 243              	.LBE13:
+ 244              		.cfi_endproc
+ 245              	.LFE57:
+ 247              		.section	.text.bsp_gpio_init_out,"ax",%progbits
+ 248              		.align	1
+ 249              		.global	bsp_gpio_init_out
+ 250              		.syntax unified
+ 251              		.code	16
+ 252              		.thumb_func
+ 253              		.fpu softvfp
+ 255              	bsp_gpio_init_out:
+ 256              	.LVL18:
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccf8NMfb.s 			page 10
+
+
+ 257              	.LFB47:
+ 106:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     bsp_gpio_t gpio = {
+ 258              		.loc 1 106 1 view -0
+ 259              		.cfi_startproc
+ 260              		@ args = 0, pretend = 0, frame = 24
+ 261              		@ frame_needed = 0, uses_anonymous_args = 0
+ 107:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****         .pin = pin, .mode = GPIO_MODE_OUTPUT_PP, .pull = GPIO_NOPULL, .speed = GPIO_SPEED_FREQ_LOW,
+ 262              		.loc 1 107 5 view .LVU64
+ 106:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     bsp_gpio_t gpio = {
+ 263              		.loc 1 106 1 is_stmt 0 view .LVU65
+ 264 0000 7FB5     		push	{r0, r1, r2, r3, r4, r5, r6, lr}
+ 265              		.cfi_def_cfa_offset 32
+ 266              		.cfi_offset 0, -32
+ 267              		.cfi_offset 1, -28
+ 268              		.cfi_offset 2, -24
+ 269              		.cfi_offset 3, -20
+ 270              		.cfi_offset 4, -16
+ 271              		.cfi_offset 5, -12
+ 272              		.cfi_offset 6, -8
+ 273              		.cfi_offset 14, -4
+ 107:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****         .pin = pin, .mode = GPIO_MODE_OUTPUT_PP, .pull = GPIO_NOPULL, .speed = GPIO_SPEED_FREQ_LOW,
+ 274              		.loc 1 107 16 view .LVU66
+ 275 0002 0122     		movs	r2, #1
+ 276 0004 0292     		str	r2, [sp, #8]
+ 277 0006 0022     		movs	r2, #0
+ 278 0008 01AB     		add	r3, sp, #4
+ 279 000a 1870     		strb	r0, [r3]
+ 110:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** }
+ 280              		.loc 1 110 5 view .LVU67
+ 281 000c 481E     		subs	r0, r1, #1
+ 282 000e 8141     		sbcs	r1, r1, r0
+ 283              	.LVL19:
+ 110:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** }
+ 284              		.loc 1 110 5 view .LVU68
+ 285 0010 1800     		movs	r0, r3
+ 107:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****         .pin = pin, .mode = GPIO_MODE_OUTPUT_PP, .pull = GPIO_NOPULL, .speed = GPIO_SPEED_FREQ_LOW,
+ 286              		.loc 1 107 16 view .LVU69
+ 287 0012 0392     		str	r2, [sp, #12]
+ 288 0014 0492     		str	r2, [sp, #16]
+ 289 0016 0592     		str	r2, [sp, #20]
+ 110:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** }
+ 290              		.loc 1 110 5 is_stmt 1 view .LVU70
+ 291 0018 FFF7FEFF 		bl	bsp_gpio_init
+ 292              	.LVL20:
+ 111:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** 
+ 293              		.loc 1 111 1 is_stmt 0 view .LVU71
+ 294 001c 07B0     		add	sp, sp, #28
+ 295              		@ sp needed
+ 296 001e 00BD     		pop	{pc}
+ 297              		.cfi_endproc
+ 298              	.LFE47:
+ 300              		.section	.text.bsp_gpio_init_in,"ax",%progbits
+ 301              		.align	1
+ 302              		.global	bsp_gpio_init_in
+ 303              		.syntax unified
+ 304              		.code	16
+ 305              		.thumb_func
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccf8NMfb.s 			page 11
+
+
+ 306              		.fpu softvfp
+ 308              	bsp_gpio_init_in:
+ 309              	.LVL21:
+ 310              	.LFB48:
+ 119:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     const uint32_t modes[] = { GPIO_MODE_INPUT, GPIO_MODE_IT_RISING, GPIO_MODE_IT_FALLING,
+ 311              		.loc 1 119 1 is_stmt 1 view -0
+ 312              		.cfi_startproc
+ 313              		@ args = 0, pretend = 0, frame = 56
+ 314              		@ frame_needed = 0, uses_anonymous_args = 0
+ 120:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****                                GPIO_MODE_IT_RISING_FALLING };
+ 315              		.loc 1 120 5 view .LVU73
+ 122:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** 
+ 316              		.loc 1 122 5 view .LVU74
+ 119:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     const uint32_t modes[] = { GPIO_MODE_INPUT, GPIO_MODE_IT_RISING, GPIO_MODE_IT_FALLING,
+ 317              		.loc 1 119 1 is_stmt 0 view .LVU75
+ 318 0000 F0B5     		push	{r4, r5, r6, r7, lr}
+ 319              		.cfi_def_cfa_offset 20
+ 320              		.cfi_offset 4, -20
+ 321              		.cfi_offset 5, -16
+ 322              		.cfi_offset 6, -12
+ 323              		.cfi_offset 7, -8
+ 324              		.cfi_offset 14, -4
+ 325 0002 8FB0     		sub	sp, sp, #60
+ 326              		.cfi_def_cfa_offset 80
+ 119:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     const uint32_t modes[] = { GPIO_MODE_INPUT, GPIO_MODE_IT_RISING, GPIO_MODE_IT_FALLING,
+ 327              		.loc 1 119 1 view .LVU76
+ 328 0004 0192     		str	r2, [sp, #4]
+ 120:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****                                GPIO_MODE_IT_RISING_FALLING };
+ 329              		.loc 1 120 20 view .LVU77
+ 330 0006 134A     		ldr	r2, .L27
+ 331              	.LVL22:
+ 120:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****                                GPIO_MODE_IT_RISING_FALLING };
+ 332              		.loc 1 120 20 view .LVU78
+ 333 0008 05AF     		add	r7, sp, #20
+ 334 000a 9446     		mov	ip, r2
+ 335 000c 1500     		movs	r5, r2
+ 119:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     const uint32_t modes[] = { GPIO_MODE_INPUT, GPIO_MODE_IT_RISING, GPIO_MODE_IT_FALLING,
+ 336              		.loc 1 119 1 view .LVU79
+ 337 000e 0600     		movs	r6, r0
+ 120:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****                                GPIO_MODE_IT_RISING_FALLING };
+ 338              		.loc 1 120 20 view .LVU80
+ 339 0010 3800     		movs	r0, r7
+ 340              	.LVL23:
+ 119:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     const uint32_t modes[] = { GPIO_MODE_INPUT, GPIO_MODE_IT_RISING, GPIO_MODE_IT_FALLING,
+ 341              		.loc 1 119 1 view .LVU81
+ 342 0012 0091     		str	r1, [sp]
+ 120:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****                                GPIO_MODE_IT_RISING_FALLING };
+ 343              		.loc 1 120 20 view .LVU82
+ 344 0014 16CD     		ldmia	r5!, {r1, r2, r4}
+ 345 0016 16C0     		stmia	r0!, {r1, r2, r4}
+ 346              	.LVL24:
+ 122:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** 
+ 347              		.loc 1 122 20 view .LVU83
+ 348 0018 6446     		mov	r4, ip
+ 120:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****                                GPIO_MODE_IT_RISING_FALLING };
+ 349              		.loc 1 120 20 view .LVU84
+ 350 001a 2D68     		ldr	r5, [r5]
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccf8NMfb.s 			page 12
+
+
+ 122:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** 
+ 351              		.loc 1 122 20 view .LVU85
+ 352 001c 1034     		adds	r4, r4, #16
+ 120:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****                                GPIO_MODE_IT_RISING_FALLING };
+ 353              		.loc 1 120 20 view .LVU86
+ 354 001e 0560     		str	r5, [r0]
+ 122:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** 
+ 355              		.loc 1 122 20 view .LVU87
+ 356 0020 02A8     		add	r0, sp, #8
+ 357 0022 26CC     		ldmia	r4!, {r1, r2, r5}
+ 358 0024 26C0     		stmia	r0!, {r1, r2, r5}
+ 124:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****         .pin = pin, .mode = modes[irq_mode], .pull = pulls[pull_mode], .speed = GPIO_SPEED_FREQ_LOW
+ 359              		.loc 1 124 5 is_stmt 1 view .LVU88
+ 125:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     };
+ 360              		.loc 1 125 34 is_stmt 0 view .LVU89
+ 361 0026 019A     		ldr	r2, [sp, #4]
+ 124:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****         .pin = pin, .mode = modes[irq_mode], .pull = pulls[pull_mode], .speed = GPIO_SPEED_FREQ_LOW
+ 362              		.loc 1 124 16 view .LVU90
+ 363 0028 09A8     		add	r0, sp, #36
+ 125:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     };
+ 364              		.loc 1 125 34 view .LVU91
+ 365 002a 9200     		lsls	r2, r2, #2
+ 124:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****         .pin = pin, .mode = modes[irq_mode], .pull = pulls[pull_mode], .speed = GPIO_SPEED_FREQ_LOW
+ 366              		.loc 1 124 16 view .LVU92
+ 367 002c D259     		ldr	r2, [r2, r7]
+ 368 002e 0670     		strb	r6, [r0]
+ 369 0030 4260     		str	r2, [r0, #4]
+ 125:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     };
+ 370              		.loc 1 125 59 view .LVU93
+ 371 0032 009A     		ldr	r2, [sp]
+ 372 0034 9100     		lsls	r1, r2, #2
+ 124:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****         .pin = pin, .mode = modes[irq_mode], .pull = pulls[pull_mode], .speed = GPIO_SPEED_FREQ_LOW
+ 373              		.loc 1 124 16 view .LVU94
+ 374 0036 02AA     		add	r2, sp, #8
+ 375 0038 8A58     		ldr	r2, [r1, r2]
+ 376 003a 8260     		str	r2, [r0, #8]
+ 377 003c 0022     		movs	r2, #0
+ 378 003e C260     		str	r2, [r0, #12]
+ 379 0040 0261     		str	r2, [r0, #16]
+ 128:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     {
+ 380              		.loc 1 128 5 is_stmt 1 view .LVU95
+ 128:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     {
+ 381              		.loc 1 128 7 is_stmt 0 view .LVU96
+ 382 0042 9342     		cmp	r3, r2
+ 383 0044 00D0     		beq	.L23
+ 130:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     }
+ 384              		.loc 1 130 9 is_stmt 1 view .LVU97
+ 130:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     }
+ 385              		.loc 1 130 18 is_stmt 0 view .LVU98
+ 386 0046 1E70     		strb	r6, [r3]
+ 387              	.L23:
+ 133:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** }
+ 388              		.loc 1 133 5 is_stmt 1 view .LVU99
+ 389 0048 1A00     		movs	r2, r3
+ 390 004a 0021     		movs	r1, #0
+ 391 004c FFF7FEFF 		bl	bsp_gpio_init
+ 392              	.LVL25:
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccf8NMfb.s 			page 13
+
+
+ 134:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** 
+ 393              		.loc 1 134 1 is_stmt 0 view .LVU100
+ 394 0050 0FB0     		add	sp, sp, #60
+ 395              		@ sp needed
+ 396 0052 F0BD     		pop	{r4, r5, r6, r7, pc}
+ 397              	.L28:
+ 398              		.align	2
+ 399              	.L27:
+ 400 0054 00000000 		.word	.LANCHOR1
+ 401              		.cfi_endproc
+ 402              	.LFE48:
+ 404              		.section	.text.bsp_gpio_irq_deatach,"ax",%progbits
+ 405              		.align	1
+ 406              		.global	bsp_gpio_irq_deatach
+ 407              		.syntax unified
+ 408              		.code	16
+ 409              		.thumb_func
+ 410              		.fpu softvfp
+ 412              	bsp_gpio_irq_deatach:
+ 413              	.LVL26:
+ 414              	.LFB50:
+ 145:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     if( irq != NULL )
+ 415              		.loc 1 145 1 is_stmt 1 view -0
+ 416              		.cfi_startproc
+ 417              		@ args = 0, pretend = 0, frame = 0
+ 418              		@ frame_needed = 0, uses_anonymous_args = 0
+ 419              		@ link register save eliminated.
+ 146:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     {
+ 420              		.loc 1 146 5 view .LVU102
+ 146:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     {
+ 421              		.loc 1 146 7 is_stmt 0 view .LVU103
+ 422 0000 0028     		cmp	r0, #0
+ 423 0002 06D0     		beq	.L29
+ 148:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     }
+ 424              		.loc 1 148 9 is_stmt 1 view .LVU104
+ 148:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     }
+ 425              		.loc 1 148 31 is_stmt 0 view .LVU105
+ 426 0004 0F22     		movs	r2, #15
+ 148:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     }
+ 427              		.loc 1 148 39 view .LVU106
+ 428 0006 0021     		movs	r1, #0
+ 148:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     }
+ 429              		.loc 1 148 31 view .LVU107
+ 430 0008 0378     		ldrb	r3, [r0]
+ 431 000a 1340     		ands	r3, r2
+ 148:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     }
+ 432              		.loc 1 148 39 view .LVU108
+ 433 000c 014A     		ldr	r2, .L34
+ 434 000e 9B00     		lsls	r3, r3, #2
+ 435 0010 9950     		str	r1, [r3, r2]
+ 436              	.L29:
+ 150:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** 
+ 437              		.loc 1 150 1 view .LVU109
+ 438              		@ sp needed
+ 439 0012 7047     		bx	lr
+ 440              	.L35:
+ 441              		.align	2
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccf8NMfb.s 			page 14
+
+
+ 442              	.L34:
+ 443 0014 00000000 		.word	.LANCHOR0
+ 444              		.cfi_endproc
+ 445              	.LFE50:
+ 447              		.section	.text.bsp_gpio_irq_enable,"ax",%progbits
+ 448              		.align	1
+ 449              		.global	bsp_gpio_irq_enable
+ 450              		.syntax unified
+ 451              		.code	16
+ 452              		.thumb_func
+ 453              		.fpu softvfp
+ 455              	bsp_gpio_irq_enable:
+ 456              	.LFB51:
+ 153:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     HAL_NVIC_EnableIRQ( EXTI0_1_IRQn );
+ 457              		.loc 1 153 1 is_stmt 1 view -0
+ 458              		.cfi_startproc
+ 459              		@ args = 0, pretend = 0, frame = 0
+ 460              		@ frame_needed = 0, uses_anonymous_args = 0
+ 154:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     HAL_NVIC_EnableIRQ( EXTI2_3_IRQn );
+ 461              		.loc 1 154 5 view .LVU111
+ 153:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     HAL_NVIC_EnableIRQ( EXTI0_1_IRQn );
+ 462              		.loc 1 153 1 is_stmt 0 view .LVU112
+ 463 0000 10B5     		push	{r4, lr}
+ 464              		.cfi_def_cfa_offset 8
+ 465              		.cfi_offset 4, -8
+ 466              		.cfi_offset 14, -4
+ 154:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     HAL_NVIC_EnableIRQ( EXTI2_3_IRQn );
+ 467              		.loc 1 154 5 view .LVU113
+ 468 0002 0520     		movs	r0, #5
+ 469 0004 FFF7FEFF 		bl	HAL_NVIC_EnableIRQ
+ 470              	.LVL27:
+ 155:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     HAL_NVIC_EnableIRQ( EXTI4_15_IRQn );
+ 471              		.loc 1 155 5 is_stmt 1 view .LVU114
+ 472 0008 0620     		movs	r0, #6
+ 473 000a FFF7FEFF 		bl	HAL_NVIC_EnableIRQ
+ 474              	.LVL28:
+ 156:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** }
+ 475              		.loc 1 156 5 view .LVU115
+ 476 000e 0720     		movs	r0, #7
+ 477 0010 FFF7FEFF 		bl	HAL_NVIC_EnableIRQ
+ 478              	.LVL29:
+ 157:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** 
+ 479              		.loc 1 157 1 is_stmt 0 view .LVU116
+ 480              		@ sp needed
+ 481 0014 10BD     		pop	{r4, pc}
+ 482              		.cfi_endproc
+ 483              	.LFE51:
+ 485              		.section	.text.bsp_gpio_irq_disable,"ax",%progbits
+ 486              		.align	1
+ 487              		.global	bsp_gpio_irq_disable
+ 488              		.syntax unified
+ 489              		.code	16
+ 490              		.thumb_func
+ 491              		.fpu softvfp
+ 493              	bsp_gpio_irq_disable:
+ 494              	.LFB52:
+ 160:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     HAL_NVIC_DisableIRQ( EXTI0_1_IRQn );
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccf8NMfb.s 			page 15
+
+
+ 495              		.loc 1 160 1 is_stmt 1 view -0
+ 496              		.cfi_startproc
+ 497              		@ args = 0, pretend = 0, frame = 0
+ 498              		@ frame_needed = 0, uses_anonymous_args = 0
+ 161:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     HAL_NVIC_DisableIRQ( EXTI2_3_IRQn );
+ 499              		.loc 1 161 5 view .LVU118
+ 160:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     HAL_NVIC_DisableIRQ( EXTI0_1_IRQn );
+ 500              		.loc 1 160 1 is_stmt 0 view .LVU119
+ 501 0000 10B5     		push	{r4, lr}
+ 502              		.cfi_def_cfa_offset 8
+ 503              		.cfi_offset 4, -8
+ 504              		.cfi_offset 14, -4
+ 161:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     HAL_NVIC_DisableIRQ( EXTI2_3_IRQn );
+ 505              		.loc 1 161 5 view .LVU120
+ 506 0002 0520     		movs	r0, #5
+ 507 0004 FFF7FEFF 		bl	HAL_NVIC_DisableIRQ
+ 508              	.LVL30:
+ 162:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     HAL_NVIC_DisableIRQ( EXTI4_15_IRQn );
+ 509              		.loc 1 162 5 is_stmt 1 view .LVU121
+ 510 0008 0620     		movs	r0, #6
+ 511 000a FFF7FEFF 		bl	HAL_NVIC_DisableIRQ
+ 512              	.LVL31:
+ 163:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** }
+ 513              		.loc 1 163 5 view .LVU122
+ 514 000e 0720     		movs	r0, #7
+ 515 0010 FFF7FEFF 		bl	HAL_NVIC_DisableIRQ
+ 516              	.LVL32:
+ 164:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** 
+ 517              		.loc 1 164 1 is_stmt 0 view .LVU123
+ 518              		@ sp needed
+ 519 0014 10BD     		pop	{r4, pc}
+ 520              		.cfi_endproc
+ 521              	.LFE52:
+ 523              		.section	.text.bsp_gpio_set_value,"ax",%progbits
+ 524              		.align	1
+ 525              		.global	bsp_gpio_set_value
+ 526              		.syntax unified
+ 527              		.code	16
+ 528              		.thumb_func
+ 529              		.fpu softvfp
+ 531              	bsp_gpio_set_value:
+ 532              	.LVL33:
+ 533              	.LFB53:
+ 171:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     GPIO_TypeDef* gpio_port = ( GPIO_TypeDef* ) ( IOPPERIPH_BASE + ( ( pin & 0xF0 ) << 6 ) );
+ 534              		.loc 1 171 1 is_stmt 1 view -0
+ 535              		.cfi_startproc
+ 536              		@ args = 0, pretend = 0, frame = 0
+ 537              		@ frame_needed = 0, uses_anonymous_args = 0
+ 172:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** 
+ 538              		.loc 1 172 5 view .LVU125
+ 174:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** }
+ 539              		.loc 1 174 5 view .LVU126
+ 540 0000 4A1E     		subs	r2, r1, #1
+ 541 0002 9141     		sbcs	r1, r1, r2
+ 542              	.LVL34:
+ 174:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** }
+ 543              		.loc 1 174 48 is_stmt 0 view .LVU127
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccf8NMfb.s 			page 16
+
+
+ 544 0004 0F23     		movs	r3, #15
+ 174:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** }
+ 545              		.loc 1 174 5 view .LVU128
+ 546 0006 CAB2     		uxtb	r2, r1
+ 174:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** }
+ 547              		.loc 1 174 39 view .LVU129
+ 548 0008 0121     		movs	r1, #1
+ 174:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** }
+ 549              		.loc 1 174 48 view .LVU130
+ 550 000a 0340     		ands	r3, r0
+ 174:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** }
+ 551              		.loc 1 174 39 view .LVU131
+ 552 000c 9940     		lsls	r1, r1, r3
+ 172:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** 
+ 553              		.loc 1 172 85 view .LVU132
+ 554 000e F023     		movs	r3, #240
+ 555 0010 8001     		lsls	r0, r0, #6
+ 556              	.LVL35:
+ 172:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** 
+ 557              		.loc 1 172 85 view .LVU133
+ 558 0012 9B01     		lsls	r3, r3, #6
+ 559 0014 1840     		ands	r0, r3
+ 172:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** 
+ 560              		.loc 1 172 66 view .LVU134
+ 561 0016 A023     		movs	r3, #160
+ 171:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     GPIO_TypeDef* gpio_port = ( GPIO_TypeDef* ) ( IOPPERIPH_BASE + ( ( pin & 0xF0 ) << 6 ) );
+ 562              		.loc 1 171 1 view .LVU135
+ 563 0018 10B5     		push	{r4, lr}
+ 564              		.cfi_def_cfa_offset 8
+ 565              		.cfi_offset 4, -8
+ 566              		.cfi_offset 14, -4
+ 172:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** 
+ 567              		.loc 1 172 66 view .LVU136
+ 568 001a DB05     		lsls	r3, r3, #23
+ 174:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** }
+ 569              		.loc 1 174 5 view .LVU137
+ 570 001c 89B2     		uxth	r1, r1
+ 172:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** 
+ 571              		.loc 1 172 66 view .LVU138
+ 572 001e C018     		adds	r0, r0, r3
+ 174:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** }
+ 573              		.loc 1 174 5 view .LVU139
+ 574 0020 FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 575              	.LVL36:
+ 175:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** 
+ 576              		.loc 1 175 1 view .LVU140
+ 577              		@ sp needed
+ 578 0024 10BD     		pop	{r4, pc}
+ 579              		.cfi_endproc
+ 580              	.LFE53:
+ 582              		.section	.text.bsp_gpio_toggle,"ax",%progbits
+ 583              		.align	1
+ 584              		.global	bsp_gpio_toggle
+ 585              		.syntax unified
+ 586              		.code	16
+ 587              		.thumb_func
+ 588              		.fpu softvfp
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccf8NMfb.s 			page 17
+
+
+ 590              	bsp_gpio_toggle:
+ 591              	.LVL37:
+ 592              	.LFB54:
+ 178:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     GPIO_TypeDef* gpio_port = ( GPIO_TypeDef* ) ( IOPPERIPH_BASE + ( ( pin & 0xF0 ) << 6 ) );
+ 593              		.loc 1 178 1 is_stmt 1 view -0
+ 594              		.cfi_startproc
+ 595              		@ args = 0, pretend = 0, frame = 0
+ 596              		@ frame_needed = 0, uses_anonymous_args = 0
+ 179:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** 
+ 597              		.loc 1 179 5 view .LVU142
+ 181:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** }
+ 598              		.loc 1 181 5 view .LVU143
+ 181:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** }
+ 599              		.loc 1 181 49 is_stmt 0 view .LVU144
+ 600 0000 0F23     		movs	r3, #15
+ 181:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** }
+ 601              		.loc 1 181 40 view .LVU145
+ 602 0002 0121     		movs	r1, #1
+ 181:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** }
+ 603              		.loc 1 181 49 view .LVU146
+ 604 0004 0340     		ands	r3, r0
+ 181:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** }
+ 605              		.loc 1 181 40 view .LVU147
+ 606 0006 9940     		lsls	r1, r1, r3
+ 179:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** 
+ 607              		.loc 1 179 85 view .LVU148
+ 608 0008 F023     		movs	r3, #240
+ 609 000a 8001     		lsls	r0, r0, #6
+ 610              	.LVL38:
+ 179:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** 
+ 611              		.loc 1 179 85 view .LVU149
+ 612 000c 9B01     		lsls	r3, r3, #6
+ 613 000e 1840     		ands	r0, r3
+ 179:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** 
+ 614              		.loc 1 179 66 view .LVU150
+ 615 0010 A023     		movs	r3, #160
+ 178:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     GPIO_TypeDef* gpio_port = ( GPIO_TypeDef* ) ( IOPPERIPH_BASE + ( ( pin & 0xF0 ) << 6 ) );
+ 616              		.loc 1 178 1 view .LVU151
+ 617 0012 10B5     		push	{r4, lr}
+ 618              		.cfi_def_cfa_offset 8
+ 619              		.cfi_offset 4, -8
+ 620              		.cfi_offset 14, -4
+ 179:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** 
+ 621              		.loc 1 179 66 view .LVU152
+ 622 0014 DB05     		lsls	r3, r3, #23
+ 181:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** }
+ 623              		.loc 1 181 5 view .LVU153
+ 624 0016 89B2     		uxth	r1, r1
+ 179:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** 
+ 625              		.loc 1 179 66 view .LVU154
+ 626 0018 C018     		adds	r0, r0, r3
+ 181:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** }
+ 627              		.loc 1 181 5 view .LVU155
+ 628 001a FFF7FEFF 		bl	HAL_GPIO_TogglePin
+ 629              	.LVL39:
+ 182:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** 
+ 630              		.loc 1 182 1 view .LVU156
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccf8NMfb.s 			page 18
+
+
+ 631              		@ sp needed
+ 632 001e 10BD     		pop	{r4, pc}
+ 633              		.cfi_endproc
+ 634              	.LFE54:
+ 636              		.section	.text.bsp_gpio_get_value,"ax",%progbits
+ 637              		.align	1
+ 638              		.global	bsp_gpio_get_value
+ 639              		.syntax unified
+ 640              		.code	16
+ 641              		.thumb_func
+ 642              		.fpu softvfp
+ 644              	bsp_gpio_get_value:
+ 645              	.LVL40:
+ 646              	.LFB55:
+ 185:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     GPIO_TypeDef* gpio_port = ( GPIO_TypeDef* ) ( IOPPERIPH_BASE + ( ( pin & 0xF0 ) << 6 ) );
+ 647              		.loc 1 185 1 is_stmt 1 view -0
+ 648              		.cfi_startproc
+ 649              		@ args = 0, pretend = 0, frame = 0
+ 650              		@ frame_needed = 0, uses_anonymous_args = 0
+ 186:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** 
+ 651              		.loc 1 186 5 view .LVU158
+ 188:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** }
+ 652              		.loc 1 188 5 view .LVU159
+ 188:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** }
+ 653              		.loc 1 188 58 is_stmt 0 view .LVU160
+ 654 0000 0F23     		movs	r3, #15
+ 188:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** }
+ 655              		.loc 1 188 49 view .LVU161
+ 656 0002 0121     		movs	r1, #1
+ 188:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** }
+ 657              		.loc 1 188 58 view .LVU162
+ 658 0004 0340     		ands	r3, r0
+ 188:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** }
+ 659              		.loc 1 188 49 view .LVU163
+ 660 0006 9940     		lsls	r1, r1, r3
+ 186:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** 
+ 661              		.loc 1 186 85 view .LVU164
+ 662 0008 F023     		movs	r3, #240
+ 663 000a 8001     		lsls	r0, r0, #6
+ 664              	.LVL41:
+ 186:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** 
+ 665              		.loc 1 186 85 view .LVU165
+ 666 000c 9B01     		lsls	r3, r3, #6
+ 667 000e 1840     		ands	r0, r3
+ 186:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** 
+ 668              		.loc 1 186 66 view .LVU166
+ 669 0010 A023     		movs	r3, #160
+ 670 0012 DB05     		lsls	r3, r3, #23
+ 185:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     GPIO_TypeDef* gpio_port = ( GPIO_TypeDef* ) ( IOPPERIPH_BASE + ( ( pin & 0xF0 ) << 6 ) );
+ 671              		.loc 1 185 1 view .LVU167
+ 672 0014 10B5     		push	{r4, lr}
+ 673              		.cfi_def_cfa_offset 8
+ 674              		.cfi_offset 4, -8
+ 675              		.cfi_offset 14, -4
+ 186:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** 
+ 676              		.loc 1 186 66 view .LVU168
+ 677 0016 C018     		adds	r0, r0, r3
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccf8NMfb.s 			page 19
+
+
+ 188:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** }
+ 678              		.loc 1 188 14 view .LVU169
+ 679 0018 89B2     		uxth	r1, r1
+ 680 001a FFF7FEFF 		bl	HAL_GPIO_ReadPin
+ 681              	.LVL42:
+ 189:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** 
+ 682              		.loc 1 189 1 view .LVU170
+ 683              		@ sp needed
+ 188:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** }
+ 684              		.loc 1 188 97 view .LVU171
+ 685 001e 431E     		subs	r3, r0, #1
+ 686 0020 9841     		sbcs	r0, r0, r3
+ 189:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** 
+ 687              		.loc 1 189 1 view .LVU172
+ 688 0022 10BD     		pop	{r4, pc}
+ 689              		.cfi_endproc
+ 690              	.LFE55:
+ 692              		.section	.text.bsp_gpio_is_pending_irq,"ax",%progbits
+ 693              		.align	1
+ 694              		.global	bsp_gpio_is_pending_irq
+ 695              		.syntax unified
+ 696              		.code	16
+ 697              		.thumb_func
+ 698              		.fpu softvfp
+ 700              	bsp_gpio_is_pending_irq:
+ 701              	.LFB56:
+ 192:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     return ( ( NVIC_GetPendingIRQ( EXTI0_1_IRQn ) == 1 ) || ( NVIC_GetPendingIRQ( EXTI2_3_IRQn ) ==
+ 702              		.loc 1 192 1 is_stmt 1 view -0
+ 703              		.cfi_startproc
+ 704              		@ args = 0, pretend = 0, frame = 0
+ 705              		@ frame_needed = 0, uses_anonymous_args = 0
+ 706              		@ link register save eliminated.
+ 193:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****              ( NVIC_GetPendingIRQ( EXTI4_15_IRQn ) == 1 ) )
+ 707              		.loc 1 193 5 view .LVU174
+ 708              	.LVL43:
+ 709              	.LBB26:
+ 710              	.LBI26:
+ 711              		.file 2 "smtc_bsp/arm/cmsis/core_cm0plus.h"
+   1:smtc_bsp/arm/cmsis/core_cm0plus.h **** /**************************************************************************//**
+   2:smtc_bsp/arm/cmsis/core_cm0plus.h ****  * @file     core_cm0plus.h
+   3:smtc_bsp/arm/cmsis/core_cm0plus.h ****  * @brief    CMSIS Cortex-M0+ Core Peripheral Access Layer Header File
+   4:smtc_bsp/arm/cmsis/core_cm0plus.h ****  * @version  V5.0.6
+   5:smtc_bsp/arm/cmsis/core_cm0plus.h ****  * @date     28. May 2018
+   6:smtc_bsp/arm/cmsis/core_cm0plus.h ****  ******************************************************************************/
+   7:smtc_bsp/arm/cmsis/core_cm0plus.h **** /*
+   8:smtc_bsp/arm/cmsis/core_cm0plus.h ****  * Copyright (c) 2009-2018 Arm Limited. All rights reserved.
+   9:smtc_bsp/arm/cmsis/core_cm0plus.h ****  *
+  10:smtc_bsp/arm/cmsis/core_cm0plus.h ****  * SPDX-License-Identifier: Apache-2.0
+  11:smtc_bsp/arm/cmsis/core_cm0plus.h ****  *
+  12:smtc_bsp/arm/cmsis/core_cm0plus.h ****  * Licensed under the Apache License, Version 2.0 (the License); you may
+  13:smtc_bsp/arm/cmsis/core_cm0plus.h ****  * not use this file except in compliance with the License.
+  14:smtc_bsp/arm/cmsis/core_cm0plus.h ****  * You may obtain a copy of the License at
+  15:smtc_bsp/arm/cmsis/core_cm0plus.h ****  *
+  16:smtc_bsp/arm/cmsis/core_cm0plus.h ****  * www.apache.org/licenses/LICENSE-2.0
+  17:smtc_bsp/arm/cmsis/core_cm0plus.h ****  *
+  18:smtc_bsp/arm/cmsis/core_cm0plus.h ****  * Unless required by applicable law or agreed to in writing, software
+  19:smtc_bsp/arm/cmsis/core_cm0plus.h ****  * distributed under the License is distributed on an AS IS BASIS, WITHOUT
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccf8NMfb.s 			page 20
+
+
+  20:smtc_bsp/arm/cmsis/core_cm0plus.h ****  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  21:smtc_bsp/arm/cmsis/core_cm0plus.h ****  * See the License for the specific language governing permissions and
+  22:smtc_bsp/arm/cmsis/core_cm0plus.h ****  * limitations under the License.
+  23:smtc_bsp/arm/cmsis/core_cm0plus.h ****  */
+  24:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+  25:smtc_bsp/arm/cmsis/core_cm0plus.h **** #if   defined ( __ICCARM__ )
+  26:smtc_bsp/arm/cmsis/core_cm0plus.h ****   #pragma system_include         /* treat file as system include file for MISRA check */
+  27:smtc_bsp/arm/cmsis/core_cm0plus.h **** #elif defined (__clang__)
+  28:smtc_bsp/arm/cmsis/core_cm0plus.h ****   #pragma clang system_header   /* treat file as system include file */
+  29:smtc_bsp/arm/cmsis/core_cm0plus.h **** #endif
+  30:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+  31:smtc_bsp/arm/cmsis/core_cm0plus.h **** #ifndef __CORE_CM0PLUS_H_GENERIC
+  32:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define __CORE_CM0PLUS_H_GENERIC
+  33:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+  34:smtc_bsp/arm/cmsis/core_cm0plus.h **** #include <stdint.h>
+  35:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+  36:smtc_bsp/arm/cmsis/core_cm0plus.h **** #ifdef __cplusplus
+  37:smtc_bsp/arm/cmsis/core_cm0plus.h ****  extern "C" {
+  38:smtc_bsp/arm/cmsis/core_cm0plus.h **** #endif
+  39:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+  40:smtc_bsp/arm/cmsis/core_cm0plus.h **** /**
+  41:smtc_bsp/arm/cmsis/core_cm0plus.h ****   \page CMSIS_MISRA_Exceptions  MISRA-C:2004 Compliance Exceptions
+  42:smtc_bsp/arm/cmsis/core_cm0plus.h ****   CMSIS violates the following MISRA-C:2004 rules:
+  43:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+  44:smtc_bsp/arm/cmsis/core_cm0plus.h ****    \li Required Rule 8.5, object/function definition in header file.<br>
+  45:smtc_bsp/arm/cmsis/core_cm0plus.h ****      Function definitions in header files are used to allow 'inlining'.
+  46:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+  47:smtc_bsp/arm/cmsis/core_cm0plus.h ****    \li Required Rule 18.4, declaration of union type or object of union type: '{...}'.<br>
+  48:smtc_bsp/arm/cmsis/core_cm0plus.h ****      Unions are used for effective representation of core registers.
+  49:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+  50:smtc_bsp/arm/cmsis/core_cm0plus.h ****    \li Advisory Rule 19.7, Function-like macro defined.<br>
+  51:smtc_bsp/arm/cmsis/core_cm0plus.h ****      Function-like macros are used to allow more efficient code.
+  52:smtc_bsp/arm/cmsis/core_cm0plus.h ****  */
+  53:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+  54:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+  55:smtc_bsp/arm/cmsis/core_cm0plus.h **** /*******************************************************************************
+  56:smtc_bsp/arm/cmsis/core_cm0plus.h ****  *                 CMSIS definitions
+  57:smtc_bsp/arm/cmsis/core_cm0plus.h ****  ******************************************************************************/
+  58:smtc_bsp/arm/cmsis/core_cm0plus.h **** /**
+  59:smtc_bsp/arm/cmsis/core_cm0plus.h ****   \ingroup Cortex-M0+
+  60:smtc_bsp/arm/cmsis/core_cm0plus.h ****   @{
+  61:smtc_bsp/arm/cmsis/core_cm0plus.h ****  */
+  62:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+  63:smtc_bsp/arm/cmsis/core_cm0plus.h **** #include "cmsis_version.h"
+  64:smtc_bsp/arm/cmsis/core_cm0plus.h ****  
+  65:smtc_bsp/arm/cmsis/core_cm0plus.h **** /*  CMSIS CM0+ definitions */
+  66:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define __CM0PLUS_CMSIS_VERSION_MAIN (__CM_CMSIS_VERSION_MAIN)                  /*!< \deprecated [3
+  67:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define __CM0PLUS_CMSIS_VERSION_SUB  (__CM_CMSIS_VERSION_SUB)                   /*!< \deprecated [1
+  68:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define __CM0PLUS_CMSIS_VERSION      ((__CM0PLUS_CMSIS_VERSION_MAIN << 16U) | \
+  69:smtc_bsp/arm/cmsis/core_cm0plus.h ****                                        __CM0PLUS_CMSIS_VERSION_SUB           )  /*!< \deprecated CM
+  70:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+  71:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define __CORTEX_M                   (0U)                                       /*!< Cortex-M Core 
+  72:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+  73:smtc_bsp/arm/cmsis/core_cm0plus.h **** /** __FPU_USED indicates whether an FPU is used or not.
+  74:smtc_bsp/arm/cmsis/core_cm0plus.h ****     This core does not support an FPU at all
+  75:smtc_bsp/arm/cmsis/core_cm0plus.h **** */
+  76:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define __FPU_USED       0U
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccf8NMfb.s 			page 21
+
+
+  77:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+  78:smtc_bsp/arm/cmsis/core_cm0plus.h **** #if defined ( __CC_ARM )
+  79:smtc_bsp/arm/cmsis/core_cm0plus.h ****   #if defined __TARGET_FPU_VFP
+  80:smtc_bsp/arm/cmsis/core_cm0plus.h ****     #error "Compiler generates FPU instructions for a device without an FPU (check __FPU_PRESENT)"
+  81:smtc_bsp/arm/cmsis/core_cm0plus.h ****   #endif
+  82:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+  83:smtc_bsp/arm/cmsis/core_cm0plus.h **** #elif defined (__ARMCC_VERSION) && (__ARMCC_VERSION >= 6010050)
+  84:smtc_bsp/arm/cmsis/core_cm0plus.h ****   #if defined __ARM_PCS_VFP
+  85:smtc_bsp/arm/cmsis/core_cm0plus.h ****     #error "Compiler generates FPU instructions for a device without an FPU (check __FPU_PRESENT)"
+  86:smtc_bsp/arm/cmsis/core_cm0plus.h ****   #endif
+  87:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+  88:smtc_bsp/arm/cmsis/core_cm0plus.h **** #elif defined ( __GNUC__ )
+  89:smtc_bsp/arm/cmsis/core_cm0plus.h ****   #if defined (__VFP_FP__) && !defined(__SOFTFP__)
+  90:smtc_bsp/arm/cmsis/core_cm0plus.h ****     #error "Compiler generates FPU instructions for a device without an FPU (check __FPU_PRESENT)"
+  91:smtc_bsp/arm/cmsis/core_cm0plus.h ****   #endif
+  92:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+  93:smtc_bsp/arm/cmsis/core_cm0plus.h **** #elif defined ( __ICCARM__ )
+  94:smtc_bsp/arm/cmsis/core_cm0plus.h ****   #if defined __ARMVFP__
+  95:smtc_bsp/arm/cmsis/core_cm0plus.h ****     #error "Compiler generates FPU instructions for a device without an FPU (check __FPU_PRESENT)"
+  96:smtc_bsp/arm/cmsis/core_cm0plus.h ****   #endif
+  97:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+  98:smtc_bsp/arm/cmsis/core_cm0plus.h **** #elif defined ( __TI_ARM__ )
+  99:smtc_bsp/arm/cmsis/core_cm0plus.h ****   #if defined __TI_VFP_SUPPORT__
+ 100:smtc_bsp/arm/cmsis/core_cm0plus.h ****     #error "Compiler generates FPU instructions for a device without an FPU (check __FPU_PRESENT)"
+ 101:smtc_bsp/arm/cmsis/core_cm0plus.h ****   #endif
+ 102:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 103:smtc_bsp/arm/cmsis/core_cm0plus.h **** #elif defined ( __TASKING__ )
+ 104:smtc_bsp/arm/cmsis/core_cm0plus.h ****   #if defined __FPU_VFP__
+ 105:smtc_bsp/arm/cmsis/core_cm0plus.h ****     #error "Compiler generates FPU instructions for a device without an FPU (check __FPU_PRESENT)"
+ 106:smtc_bsp/arm/cmsis/core_cm0plus.h ****   #endif
+ 107:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 108:smtc_bsp/arm/cmsis/core_cm0plus.h **** #elif defined ( __CSMC__ )
+ 109:smtc_bsp/arm/cmsis/core_cm0plus.h ****   #if ( __CSMC__ & 0x400U)
+ 110:smtc_bsp/arm/cmsis/core_cm0plus.h ****     #error "Compiler generates FPU instructions for a device without an FPU (check __FPU_PRESENT)"
+ 111:smtc_bsp/arm/cmsis/core_cm0plus.h ****   #endif
+ 112:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 113:smtc_bsp/arm/cmsis/core_cm0plus.h **** #endif
+ 114:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 115:smtc_bsp/arm/cmsis/core_cm0plus.h **** #include "cmsis_compiler.h"               /* CMSIS compiler specific defines */
+ 116:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 117:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 118:smtc_bsp/arm/cmsis/core_cm0plus.h **** #ifdef __cplusplus
+ 119:smtc_bsp/arm/cmsis/core_cm0plus.h **** }
+ 120:smtc_bsp/arm/cmsis/core_cm0plus.h **** #endif
+ 121:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 122:smtc_bsp/arm/cmsis/core_cm0plus.h **** #endif /* __CORE_CM0PLUS_H_GENERIC */
+ 123:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 124:smtc_bsp/arm/cmsis/core_cm0plus.h **** #ifndef __CMSIS_GENERIC
+ 125:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 126:smtc_bsp/arm/cmsis/core_cm0plus.h **** #ifndef __CORE_CM0PLUS_H_DEPENDANT
+ 127:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define __CORE_CM0PLUS_H_DEPENDANT
+ 128:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 129:smtc_bsp/arm/cmsis/core_cm0plus.h **** #ifdef __cplusplus
+ 130:smtc_bsp/arm/cmsis/core_cm0plus.h ****  extern "C" {
+ 131:smtc_bsp/arm/cmsis/core_cm0plus.h **** #endif
+ 132:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 133:smtc_bsp/arm/cmsis/core_cm0plus.h **** /* check device defines and use defaults */
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccf8NMfb.s 			page 22
+
+
+ 134:smtc_bsp/arm/cmsis/core_cm0plus.h **** #if defined __CHECK_DEVICE_DEFINES
+ 135:smtc_bsp/arm/cmsis/core_cm0plus.h ****   #ifndef __CM0PLUS_REV
+ 136:smtc_bsp/arm/cmsis/core_cm0plus.h ****     #define __CM0PLUS_REV             0x0000U
+ 137:smtc_bsp/arm/cmsis/core_cm0plus.h ****     #warning "__CM0PLUS_REV not defined in device header file; using default!"
+ 138:smtc_bsp/arm/cmsis/core_cm0plus.h ****   #endif
+ 139:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 140:smtc_bsp/arm/cmsis/core_cm0plus.h ****   #ifndef __MPU_PRESENT
+ 141:smtc_bsp/arm/cmsis/core_cm0plus.h ****     #define __MPU_PRESENT             0U
+ 142:smtc_bsp/arm/cmsis/core_cm0plus.h ****     #warning "__MPU_PRESENT not defined in device header file; using default!"
+ 143:smtc_bsp/arm/cmsis/core_cm0plus.h ****   #endif
+ 144:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 145:smtc_bsp/arm/cmsis/core_cm0plus.h ****   #ifndef __VTOR_PRESENT
+ 146:smtc_bsp/arm/cmsis/core_cm0plus.h ****     #define __VTOR_PRESENT            0U
+ 147:smtc_bsp/arm/cmsis/core_cm0plus.h ****     #warning "__VTOR_PRESENT not defined in device header file; using default!"
+ 148:smtc_bsp/arm/cmsis/core_cm0plus.h ****   #endif
+ 149:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 150:smtc_bsp/arm/cmsis/core_cm0plus.h ****   #ifndef __NVIC_PRIO_BITS
+ 151:smtc_bsp/arm/cmsis/core_cm0plus.h ****     #define __NVIC_PRIO_BITS          2U
+ 152:smtc_bsp/arm/cmsis/core_cm0plus.h ****     #warning "__NVIC_PRIO_BITS not defined in device header file; using default!"
+ 153:smtc_bsp/arm/cmsis/core_cm0plus.h ****   #endif
+ 154:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 155:smtc_bsp/arm/cmsis/core_cm0plus.h ****   #ifndef __Vendor_SysTickConfig
+ 156:smtc_bsp/arm/cmsis/core_cm0plus.h ****     #define __Vendor_SysTickConfig    0U
+ 157:smtc_bsp/arm/cmsis/core_cm0plus.h ****     #warning "__Vendor_SysTickConfig not defined in device header file; using default!"
+ 158:smtc_bsp/arm/cmsis/core_cm0plus.h ****   #endif
+ 159:smtc_bsp/arm/cmsis/core_cm0plus.h **** #endif
+ 160:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 161:smtc_bsp/arm/cmsis/core_cm0plus.h **** /* IO definitions (access restrictions to peripheral registers) */
+ 162:smtc_bsp/arm/cmsis/core_cm0plus.h **** /**
+ 163:smtc_bsp/arm/cmsis/core_cm0plus.h ****     \defgroup CMSIS_glob_defs CMSIS Global Defines
+ 164:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 165:smtc_bsp/arm/cmsis/core_cm0plus.h ****     <strong>IO Type Qualifiers</strong> are used
+ 166:smtc_bsp/arm/cmsis/core_cm0plus.h ****     \li to specify the access to peripheral variables.
+ 167:smtc_bsp/arm/cmsis/core_cm0plus.h ****     \li for automatic generation of peripheral register debug information.
+ 168:smtc_bsp/arm/cmsis/core_cm0plus.h **** */
+ 169:smtc_bsp/arm/cmsis/core_cm0plus.h **** #ifdef __cplusplus
+ 170:smtc_bsp/arm/cmsis/core_cm0plus.h ****   #define   __I     volatile             /*!< Defines 'read only' permissions */
+ 171:smtc_bsp/arm/cmsis/core_cm0plus.h **** #else
+ 172:smtc_bsp/arm/cmsis/core_cm0plus.h ****   #define   __I     volatile const       /*!< Defines 'read only' permissions */
+ 173:smtc_bsp/arm/cmsis/core_cm0plus.h **** #endif
+ 174:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define     __O     volatile             /*!< Defines 'write only' permissions */
+ 175:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define     __IO    volatile             /*!< Defines 'read / write' permissions */
+ 176:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 177:smtc_bsp/arm/cmsis/core_cm0plus.h **** /* following defines should be used for structure members */
+ 178:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define     __IM     volatile const      /*! Defines 'read only' structure member permissions */
+ 179:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define     __OM     volatile            /*! Defines 'write only' structure member permissions */
+ 180:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define     __IOM    volatile            /*! Defines 'read / write' structure member permissions */
+ 181:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 182:smtc_bsp/arm/cmsis/core_cm0plus.h **** /*@} end of group Cortex-M0+ */
+ 183:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 184:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 185:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 186:smtc_bsp/arm/cmsis/core_cm0plus.h **** /*******************************************************************************
+ 187:smtc_bsp/arm/cmsis/core_cm0plus.h ****  *                 Register Abstraction
+ 188:smtc_bsp/arm/cmsis/core_cm0plus.h ****   Core Register contain:
+ 189:smtc_bsp/arm/cmsis/core_cm0plus.h ****   - Core Register
+ 190:smtc_bsp/arm/cmsis/core_cm0plus.h ****   - Core NVIC Register
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccf8NMfb.s 			page 23
+
+
+ 191:smtc_bsp/arm/cmsis/core_cm0plus.h ****   - Core SCB Register
+ 192:smtc_bsp/arm/cmsis/core_cm0plus.h ****   - Core SysTick Register
+ 193:smtc_bsp/arm/cmsis/core_cm0plus.h ****   - Core MPU Register
+ 194:smtc_bsp/arm/cmsis/core_cm0plus.h ****  ******************************************************************************/
+ 195:smtc_bsp/arm/cmsis/core_cm0plus.h **** /**
+ 196:smtc_bsp/arm/cmsis/core_cm0plus.h ****   \defgroup CMSIS_core_register Defines and Type Definitions
+ 197:smtc_bsp/arm/cmsis/core_cm0plus.h ****   \brief Type definitions and defines for Cortex-M processor based devices.
+ 198:smtc_bsp/arm/cmsis/core_cm0plus.h **** */
+ 199:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 200:smtc_bsp/arm/cmsis/core_cm0plus.h **** /**
+ 201:smtc_bsp/arm/cmsis/core_cm0plus.h ****   \ingroup    CMSIS_core_register
+ 202:smtc_bsp/arm/cmsis/core_cm0plus.h ****   \defgroup   CMSIS_CORE  Status and Control Registers
+ 203:smtc_bsp/arm/cmsis/core_cm0plus.h ****   \brief      Core Register type definitions.
+ 204:smtc_bsp/arm/cmsis/core_cm0plus.h ****   @{
+ 205:smtc_bsp/arm/cmsis/core_cm0plus.h ****  */
+ 206:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 207:smtc_bsp/arm/cmsis/core_cm0plus.h **** /**
+ 208:smtc_bsp/arm/cmsis/core_cm0plus.h ****   \brief  Union type to access the Application Program Status Register (APSR).
+ 209:smtc_bsp/arm/cmsis/core_cm0plus.h ****  */
+ 210:smtc_bsp/arm/cmsis/core_cm0plus.h **** typedef union
+ 211:smtc_bsp/arm/cmsis/core_cm0plus.h **** {
+ 212:smtc_bsp/arm/cmsis/core_cm0plus.h ****   struct
+ 213:smtc_bsp/arm/cmsis/core_cm0plus.h ****   {
+ 214:smtc_bsp/arm/cmsis/core_cm0plus.h ****     uint32_t _reserved0:28;              /*!< bit:  0..27  Reserved */
+ 215:smtc_bsp/arm/cmsis/core_cm0plus.h ****     uint32_t V:1;                        /*!< bit:     28  Overflow condition code flag */
+ 216:smtc_bsp/arm/cmsis/core_cm0plus.h ****     uint32_t C:1;                        /*!< bit:     29  Carry condition code flag */
+ 217:smtc_bsp/arm/cmsis/core_cm0plus.h ****     uint32_t Z:1;                        /*!< bit:     30  Zero condition code flag */
+ 218:smtc_bsp/arm/cmsis/core_cm0plus.h ****     uint32_t N:1;                        /*!< bit:     31  Negative condition code flag */
+ 219:smtc_bsp/arm/cmsis/core_cm0plus.h ****   } b;                                   /*!< Structure used for bit  access */
+ 220:smtc_bsp/arm/cmsis/core_cm0plus.h ****   uint32_t w;                            /*!< Type      used for word access */
+ 221:smtc_bsp/arm/cmsis/core_cm0plus.h **** } APSR_Type;
+ 222:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 223:smtc_bsp/arm/cmsis/core_cm0plus.h **** /* APSR Register Definitions */
+ 224:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define APSR_N_Pos                         31U                                            /*!< APSR
+ 225:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define APSR_N_Msk                         (1UL << APSR_N_Pos)                            /*!< APSR
+ 226:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 227:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define APSR_Z_Pos                         30U                                            /*!< APSR
+ 228:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define APSR_Z_Msk                         (1UL << APSR_Z_Pos)                            /*!< APSR
+ 229:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 230:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define APSR_C_Pos                         29U                                            /*!< APSR
+ 231:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define APSR_C_Msk                         (1UL << APSR_C_Pos)                            /*!< APSR
+ 232:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 233:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define APSR_V_Pos                         28U                                            /*!< APSR
+ 234:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define APSR_V_Msk                         (1UL << APSR_V_Pos)                            /*!< APSR
+ 235:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 236:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 237:smtc_bsp/arm/cmsis/core_cm0plus.h **** /**
+ 238:smtc_bsp/arm/cmsis/core_cm0plus.h ****   \brief  Union type to access the Interrupt Program Status Register (IPSR).
+ 239:smtc_bsp/arm/cmsis/core_cm0plus.h ****  */
+ 240:smtc_bsp/arm/cmsis/core_cm0plus.h **** typedef union
+ 241:smtc_bsp/arm/cmsis/core_cm0plus.h **** {
+ 242:smtc_bsp/arm/cmsis/core_cm0plus.h ****   struct
+ 243:smtc_bsp/arm/cmsis/core_cm0plus.h ****   {
+ 244:smtc_bsp/arm/cmsis/core_cm0plus.h ****     uint32_t ISR:9;                      /*!< bit:  0.. 8  Exception number */
+ 245:smtc_bsp/arm/cmsis/core_cm0plus.h ****     uint32_t _reserved0:23;              /*!< bit:  9..31  Reserved */
+ 246:smtc_bsp/arm/cmsis/core_cm0plus.h ****   } b;                                   /*!< Structure used for bit  access */
+ 247:smtc_bsp/arm/cmsis/core_cm0plus.h ****   uint32_t w;                            /*!< Type      used for word access */
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccf8NMfb.s 			page 24
+
+
+ 248:smtc_bsp/arm/cmsis/core_cm0plus.h **** } IPSR_Type;
+ 249:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 250:smtc_bsp/arm/cmsis/core_cm0plus.h **** /* IPSR Register Definitions */
+ 251:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define IPSR_ISR_Pos                        0U                                            /*!< IPSR
+ 252:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define IPSR_ISR_Msk                       (0x1FFUL /*<< IPSR_ISR_Pos*/)                  /*!< IPSR
+ 253:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 254:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 255:smtc_bsp/arm/cmsis/core_cm0plus.h **** /**
+ 256:smtc_bsp/arm/cmsis/core_cm0plus.h ****   \brief  Union type to access the Special-Purpose Program Status Registers (xPSR).
+ 257:smtc_bsp/arm/cmsis/core_cm0plus.h ****  */
+ 258:smtc_bsp/arm/cmsis/core_cm0plus.h **** typedef union
+ 259:smtc_bsp/arm/cmsis/core_cm0plus.h **** {
+ 260:smtc_bsp/arm/cmsis/core_cm0plus.h ****   struct
+ 261:smtc_bsp/arm/cmsis/core_cm0plus.h ****   {
+ 262:smtc_bsp/arm/cmsis/core_cm0plus.h ****     uint32_t ISR:9;                      /*!< bit:  0.. 8  Exception number */
+ 263:smtc_bsp/arm/cmsis/core_cm0plus.h ****     uint32_t _reserved0:15;              /*!< bit:  9..23  Reserved */
+ 264:smtc_bsp/arm/cmsis/core_cm0plus.h ****     uint32_t T:1;                        /*!< bit:     24  Thumb bit        (read 0) */
+ 265:smtc_bsp/arm/cmsis/core_cm0plus.h ****     uint32_t _reserved1:3;               /*!< bit: 25..27  Reserved */
+ 266:smtc_bsp/arm/cmsis/core_cm0plus.h ****     uint32_t V:1;                        /*!< bit:     28  Overflow condition code flag */
+ 267:smtc_bsp/arm/cmsis/core_cm0plus.h ****     uint32_t C:1;                        /*!< bit:     29  Carry condition code flag */
+ 268:smtc_bsp/arm/cmsis/core_cm0plus.h ****     uint32_t Z:1;                        /*!< bit:     30  Zero condition code flag */
+ 269:smtc_bsp/arm/cmsis/core_cm0plus.h ****     uint32_t N:1;                        /*!< bit:     31  Negative condition code flag */
+ 270:smtc_bsp/arm/cmsis/core_cm0plus.h ****   } b;                                   /*!< Structure used for bit  access */
+ 271:smtc_bsp/arm/cmsis/core_cm0plus.h ****   uint32_t w;                            /*!< Type      used for word access */
+ 272:smtc_bsp/arm/cmsis/core_cm0plus.h **** } xPSR_Type;
+ 273:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 274:smtc_bsp/arm/cmsis/core_cm0plus.h **** /* xPSR Register Definitions */
+ 275:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define xPSR_N_Pos                         31U                                            /*!< xPSR
+ 276:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define xPSR_N_Msk                         (1UL << xPSR_N_Pos)                            /*!< xPSR
+ 277:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 278:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define xPSR_Z_Pos                         30U                                            /*!< xPSR
+ 279:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define xPSR_Z_Msk                         (1UL << xPSR_Z_Pos)                            /*!< xPSR
+ 280:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 281:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define xPSR_C_Pos                         29U                                            /*!< xPSR
+ 282:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define xPSR_C_Msk                         (1UL << xPSR_C_Pos)                            /*!< xPSR
+ 283:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 284:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define xPSR_V_Pos                         28U                                            /*!< xPSR
+ 285:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define xPSR_V_Msk                         (1UL << xPSR_V_Pos)                            /*!< xPSR
+ 286:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 287:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define xPSR_T_Pos                         24U                                            /*!< xPSR
+ 288:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define xPSR_T_Msk                         (1UL << xPSR_T_Pos)                            /*!< xPSR
+ 289:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 290:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define xPSR_ISR_Pos                        0U                                            /*!< xPSR
+ 291:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define xPSR_ISR_Msk                       (0x1FFUL /*<< xPSR_ISR_Pos*/)                  /*!< xPSR
+ 292:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 293:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 294:smtc_bsp/arm/cmsis/core_cm0plus.h **** /**
+ 295:smtc_bsp/arm/cmsis/core_cm0plus.h ****   \brief  Union type to access the Control Registers (CONTROL).
+ 296:smtc_bsp/arm/cmsis/core_cm0plus.h ****  */
+ 297:smtc_bsp/arm/cmsis/core_cm0plus.h **** typedef union
+ 298:smtc_bsp/arm/cmsis/core_cm0plus.h **** {
+ 299:smtc_bsp/arm/cmsis/core_cm0plus.h ****   struct
+ 300:smtc_bsp/arm/cmsis/core_cm0plus.h ****   {
+ 301:smtc_bsp/arm/cmsis/core_cm0plus.h ****     uint32_t nPRIV:1;                    /*!< bit:      0  Execution privilege in Thread mode */
+ 302:smtc_bsp/arm/cmsis/core_cm0plus.h ****     uint32_t SPSEL:1;                    /*!< bit:      1  Stack to be used */
+ 303:smtc_bsp/arm/cmsis/core_cm0plus.h ****     uint32_t _reserved1:30;              /*!< bit:  2..31  Reserved */
+ 304:smtc_bsp/arm/cmsis/core_cm0plus.h ****   } b;                                   /*!< Structure used for bit  access */
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccf8NMfb.s 			page 25
+
+
+ 305:smtc_bsp/arm/cmsis/core_cm0plus.h ****   uint32_t w;                            /*!< Type      used for word access */
+ 306:smtc_bsp/arm/cmsis/core_cm0plus.h **** } CONTROL_Type;
+ 307:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 308:smtc_bsp/arm/cmsis/core_cm0plus.h **** /* CONTROL Register Definitions */
+ 309:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define CONTROL_SPSEL_Pos                   1U                                            /*!< CONT
+ 310:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define CONTROL_SPSEL_Msk                  (1UL << CONTROL_SPSEL_Pos)                     /*!< CONT
+ 311:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 312:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define CONTROL_nPRIV_Pos                   0U                                            /*!< CONT
+ 313:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define CONTROL_nPRIV_Msk                  (1UL /*<< CONTROL_nPRIV_Pos*/)                 /*!< CONT
+ 314:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 315:smtc_bsp/arm/cmsis/core_cm0plus.h **** /*@} end of group CMSIS_CORE */
+ 316:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 317:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 318:smtc_bsp/arm/cmsis/core_cm0plus.h **** /**
+ 319:smtc_bsp/arm/cmsis/core_cm0plus.h ****   \ingroup    CMSIS_core_register
+ 320:smtc_bsp/arm/cmsis/core_cm0plus.h ****   \defgroup   CMSIS_NVIC  Nested Vectored Interrupt Controller (NVIC)
+ 321:smtc_bsp/arm/cmsis/core_cm0plus.h ****   \brief      Type definitions for the NVIC Registers
+ 322:smtc_bsp/arm/cmsis/core_cm0plus.h ****   @{
+ 323:smtc_bsp/arm/cmsis/core_cm0plus.h ****  */
+ 324:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 325:smtc_bsp/arm/cmsis/core_cm0plus.h **** /**
+ 326:smtc_bsp/arm/cmsis/core_cm0plus.h ****   \brief  Structure type to access the Nested Vectored Interrupt Controller (NVIC).
+ 327:smtc_bsp/arm/cmsis/core_cm0plus.h ****  */
+ 328:smtc_bsp/arm/cmsis/core_cm0plus.h **** typedef struct
+ 329:smtc_bsp/arm/cmsis/core_cm0plus.h **** {
+ 330:smtc_bsp/arm/cmsis/core_cm0plus.h ****   __IOM uint32_t ISER[1U];               /*!< Offset: 0x000 (R/W)  Interrupt Set Enable Register */
+ 331:smtc_bsp/arm/cmsis/core_cm0plus.h ****         uint32_t RESERVED0[31U];
+ 332:smtc_bsp/arm/cmsis/core_cm0plus.h ****   __IOM uint32_t ICER[1U];               /*!< Offset: 0x080 (R/W)  Interrupt Clear Enable Register 
+ 333:smtc_bsp/arm/cmsis/core_cm0plus.h ****         uint32_t RSERVED1[31U];
+ 334:smtc_bsp/arm/cmsis/core_cm0plus.h ****   __IOM uint32_t ISPR[1U];               /*!< Offset: 0x100 (R/W)  Interrupt Set Pending Register *
+ 335:smtc_bsp/arm/cmsis/core_cm0plus.h ****         uint32_t RESERVED2[31U];
+ 336:smtc_bsp/arm/cmsis/core_cm0plus.h ****   __IOM uint32_t ICPR[1U];               /*!< Offset: 0x180 (R/W)  Interrupt Clear Pending Register
+ 337:smtc_bsp/arm/cmsis/core_cm0plus.h ****         uint32_t RESERVED3[31U];
+ 338:smtc_bsp/arm/cmsis/core_cm0plus.h ****         uint32_t RESERVED4[64U];
+ 339:smtc_bsp/arm/cmsis/core_cm0plus.h ****   __IOM uint32_t IP[8U];                 /*!< Offset: 0x300 (R/W)  Interrupt Priority Register */
+ 340:smtc_bsp/arm/cmsis/core_cm0plus.h **** }  NVIC_Type;
+ 341:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 342:smtc_bsp/arm/cmsis/core_cm0plus.h **** /*@} end of group CMSIS_NVIC */
+ 343:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 344:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 345:smtc_bsp/arm/cmsis/core_cm0plus.h **** /**
+ 346:smtc_bsp/arm/cmsis/core_cm0plus.h ****   \ingroup  CMSIS_core_register
+ 347:smtc_bsp/arm/cmsis/core_cm0plus.h ****   \defgroup CMSIS_SCB     System Control Block (SCB)
+ 348:smtc_bsp/arm/cmsis/core_cm0plus.h ****   \brief    Type definitions for the System Control Block Registers
+ 349:smtc_bsp/arm/cmsis/core_cm0plus.h ****   @{
+ 350:smtc_bsp/arm/cmsis/core_cm0plus.h ****  */
+ 351:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 352:smtc_bsp/arm/cmsis/core_cm0plus.h **** /**
+ 353:smtc_bsp/arm/cmsis/core_cm0plus.h ****   \brief  Structure type to access the System Control Block (SCB).
+ 354:smtc_bsp/arm/cmsis/core_cm0plus.h ****  */
+ 355:smtc_bsp/arm/cmsis/core_cm0plus.h **** typedef struct
+ 356:smtc_bsp/arm/cmsis/core_cm0plus.h **** {
+ 357:smtc_bsp/arm/cmsis/core_cm0plus.h ****   __IM  uint32_t CPUID;                  /*!< Offset: 0x000 (R/ )  CPUID Base Register */
+ 358:smtc_bsp/arm/cmsis/core_cm0plus.h ****   __IOM uint32_t ICSR;                   /*!< Offset: 0x004 (R/W)  Interrupt Control and State Regi
+ 359:smtc_bsp/arm/cmsis/core_cm0plus.h **** #if defined (__VTOR_PRESENT) && (__VTOR_PRESENT == 1U)
+ 360:smtc_bsp/arm/cmsis/core_cm0plus.h ****   __IOM uint32_t VTOR;                   /*!< Offset: 0x008 (R/W)  Vector Table Offset Register */
+ 361:smtc_bsp/arm/cmsis/core_cm0plus.h **** #else
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccf8NMfb.s 			page 26
+
+
+ 362:smtc_bsp/arm/cmsis/core_cm0plus.h ****         uint32_t RESERVED0;
+ 363:smtc_bsp/arm/cmsis/core_cm0plus.h **** #endif
+ 364:smtc_bsp/arm/cmsis/core_cm0plus.h ****   __IOM uint32_t AIRCR;                  /*!< Offset: 0x00C (R/W)  Application Interrupt and Reset 
+ 365:smtc_bsp/arm/cmsis/core_cm0plus.h ****   __IOM uint32_t SCR;                    /*!< Offset: 0x010 (R/W)  System Control Register */
+ 366:smtc_bsp/arm/cmsis/core_cm0plus.h ****   __IOM uint32_t CCR;                    /*!< Offset: 0x014 (R/W)  Configuration Control Register *
+ 367:smtc_bsp/arm/cmsis/core_cm0plus.h ****         uint32_t RESERVED1;
+ 368:smtc_bsp/arm/cmsis/core_cm0plus.h ****   __IOM uint32_t SHP[2U];                /*!< Offset: 0x01C (R/W)  System Handlers Priority Registe
+ 369:smtc_bsp/arm/cmsis/core_cm0plus.h ****   __IOM uint32_t SHCSR;                  /*!< Offset: 0x024 (R/W)  System Handler Control and State
+ 370:smtc_bsp/arm/cmsis/core_cm0plus.h **** } SCB_Type;
+ 371:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 372:smtc_bsp/arm/cmsis/core_cm0plus.h **** /* SCB CPUID Register Definitions */
+ 373:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define SCB_CPUID_IMPLEMENTER_Pos          24U                                            /*!< SCB 
+ 374:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define SCB_CPUID_IMPLEMENTER_Msk          (0xFFUL << SCB_CPUID_IMPLEMENTER_Pos)          /*!< SCB 
+ 375:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 376:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define SCB_CPUID_VARIANT_Pos              20U                                            /*!< SCB 
+ 377:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define SCB_CPUID_VARIANT_Msk              (0xFUL << SCB_CPUID_VARIANT_Pos)               /*!< SCB 
+ 378:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 379:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define SCB_CPUID_ARCHITECTURE_Pos         16U                                            /*!< SCB 
+ 380:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define SCB_CPUID_ARCHITECTURE_Msk         (0xFUL << SCB_CPUID_ARCHITECTURE_Pos)          /*!< SCB 
+ 381:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 382:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define SCB_CPUID_PARTNO_Pos                4U                                            /*!< SCB 
+ 383:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define SCB_CPUID_PARTNO_Msk               (0xFFFUL << SCB_CPUID_PARTNO_Pos)              /*!< SCB 
+ 384:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 385:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define SCB_CPUID_REVISION_Pos              0U                                            /*!< SCB 
+ 386:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define SCB_CPUID_REVISION_Msk             (0xFUL /*<< SCB_CPUID_REVISION_Pos*/)          /*!< SCB 
+ 387:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 388:smtc_bsp/arm/cmsis/core_cm0plus.h **** /* SCB Interrupt Control State Register Definitions */
+ 389:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define SCB_ICSR_NMIPENDSET_Pos            31U                                            /*!< SCB 
+ 390:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define SCB_ICSR_NMIPENDSET_Msk            (1UL << SCB_ICSR_NMIPENDSET_Pos)               /*!< SCB 
+ 391:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 392:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define SCB_ICSR_PENDSVSET_Pos             28U                                            /*!< SCB 
+ 393:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define SCB_ICSR_PENDSVSET_Msk             (1UL << SCB_ICSR_PENDSVSET_Pos)                /*!< SCB 
+ 394:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 395:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define SCB_ICSR_PENDSVCLR_Pos             27U                                            /*!< SCB 
+ 396:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define SCB_ICSR_PENDSVCLR_Msk             (1UL << SCB_ICSR_PENDSVCLR_Pos)                /*!< SCB 
+ 397:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 398:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define SCB_ICSR_PENDSTSET_Pos             26U                                            /*!< SCB 
+ 399:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define SCB_ICSR_PENDSTSET_Msk             (1UL << SCB_ICSR_PENDSTSET_Pos)                /*!< SCB 
+ 400:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 401:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define SCB_ICSR_PENDSTCLR_Pos             25U                                            /*!< SCB 
+ 402:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define SCB_ICSR_PENDSTCLR_Msk             (1UL << SCB_ICSR_PENDSTCLR_Pos)                /*!< SCB 
+ 403:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 404:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define SCB_ICSR_ISRPREEMPT_Pos            23U                                            /*!< SCB 
+ 405:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define SCB_ICSR_ISRPREEMPT_Msk            (1UL << SCB_ICSR_ISRPREEMPT_Pos)               /*!< SCB 
+ 406:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 407:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define SCB_ICSR_ISRPENDING_Pos            22U                                            /*!< SCB 
+ 408:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define SCB_ICSR_ISRPENDING_Msk            (1UL << SCB_ICSR_ISRPENDING_Pos)               /*!< SCB 
+ 409:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 410:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define SCB_ICSR_VECTPENDING_Pos           12U                                            /*!< SCB 
+ 411:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define SCB_ICSR_VECTPENDING_Msk           (0x1FFUL << SCB_ICSR_VECTPENDING_Pos)          /*!< SCB 
+ 412:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 413:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define SCB_ICSR_VECTACTIVE_Pos             0U                                            /*!< SCB 
+ 414:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define SCB_ICSR_VECTACTIVE_Msk            (0x1FFUL /*<< SCB_ICSR_VECTACTIVE_Pos*/)       /*!< SCB 
+ 415:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 416:smtc_bsp/arm/cmsis/core_cm0plus.h **** #if defined (__VTOR_PRESENT) && (__VTOR_PRESENT == 1U)
+ 417:smtc_bsp/arm/cmsis/core_cm0plus.h **** /* SCB Interrupt Control State Register Definitions */
+ 418:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define SCB_VTOR_TBLOFF_Pos                 8U                                            /*!< SCB 
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccf8NMfb.s 			page 27
+
+
+ 419:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define SCB_VTOR_TBLOFF_Msk                (0xFFFFFFUL << SCB_VTOR_TBLOFF_Pos)            /*!< SCB 
+ 420:smtc_bsp/arm/cmsis/core_cm0plus.h **** #endif
+ 421:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 422:smtc_bsp/arm/cmsis/core_cm0plus.h **** /* SCB Application Interrupt and Reset Control Register Definitions */
+ 423:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define SCB_AIRCR_VECTKEY_Pos              16U                                            /*!< SCB 
+ 424:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define SCB_AIRCR_VECTKEY_Msk              (0xFFFFUL << SCB_AIRCR_VECTKEY_Pos)            /*!< SCB 
+ 425:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 426:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define SCB_AIRCR_VECTKEYSTAT_Pos          16U                                            /*!< SCB 
+ 427:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define SCB_AIRCR_VECTKEYSTAT_Msk          (0xFFFFUL << SCB_AIRCR_VECTKEYSTAT_Pos)        /*!< SCB 
+ 428:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 429:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define SCB_AIRCR_ENDIANESS_Pos            15U                                            /*!< SCB 
+ 430:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define SCB_AIRCR_ENDIANESS_Msk            (1UL << SCB_AIRCR_ENDIANESS_Pos)               /*!< SCB 
+ 431:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 432:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define SCB_AIRCR_SYSRESETREQ_Pos           2U                                            /*!< SCB 
+ 433:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define SCB_AIRCR_SYSRESETREQ_Msk          (1UL << SCB_AIRCR_SYSRESETREQ_Pos)             /*!< SCB 
+ 434:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 435:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define SCB_AIRCR_VECTCLRACTIVE_Pos         1U                                            /*!< SCB 
+ 436:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define SCB_AIRCR_VECTCLRACTIVE_Msk        (1UL << SCB_AIRCR_VECTCLRACTIVE_Pos)           /*!< SCB 
+ 437:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 438:smtc_bsp/arm/cmsis/core_cm0plus.h **** /* SCB System Control Register Definitions */
+ 439:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define SCB_SCR_SEVONPEND_Pos               4U                                            /*!< SCB 
+ 440:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define SCB_SCR_SEVONPEND_Msk              (1UL << SCB_SCR_SEVONPEND_Pos)                 /*!< SCB 
+ 441:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 442:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define SCB_SCR_SLEEPDEEP_Pos               2U                                            /*!< SCB 
+ 443:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define SCB_SCR_SLEEPDEEP_Msk              (1UL << SCB_SCR_SLEEPDEEP_Pos)                 /*!< SCB 
+ 444:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 445:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define SCB_SCR_SLEEPONEXIT_Pos             1U                                            /*!< SCB 
+ 446:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define SCB_SCR_SLEEPONEXIT_Msk            (1UL << SCB_SCR_SLEEPONEXIT_Pos)               /*!< SCB 
+ 447:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 448:smtc_bsp/arm/cmsis/core_cm0plus.h **** /* SCB Configuration Control Register Definitions */
+ 449:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define SCB_CCR_STKALIGN_Pos                9U                                            /*!< SCB 
+ 450:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define SCB_CCR_STKALIGN_Msk               (1UL << SCB_CCR_STKALIGN_Pos)                  /*!< SCB 
+ 451:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 452:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define SCB_CCR_UNALIGN_TRP_Pos             3U                                            /*!< SCB 
+ 453:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define SCB_CCR_UNALIGN_TRP_Msk            (1UL << SCB_CCR_UNALIGN_TRP_Pos)               /*!< SCB 
+ 454:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 455:smtc_bsp/arm/cmsis/core_cm0plus.h **** /* SCB System Handler Control and State Register Definitions */
+ 456:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define SCB_SHCSR_SVCALLPENDED_Pos         15U                                            /*!< SCB 
+ 457:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define SCB_SHCSR_SVCALLPENDED_Msk         (1UL << SCB_SHCSR_SVCALLPENDED_Pos)            /*!< SCB 
+ 458:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 459:smtc_bsp/arm/cmsis/core_cm0plus.h **** /*@} end of group CMSIS_SCB */
+ 460:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 461:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 462:smtc_bsp/arm/cmsis/core_cm0plus.h **** /**
+ 463:smtc_bsp/arm/cmsis/core_cm0plus.h ****   \ingroup  CMSIS_core_register
+ 464:smtc_bsp/arm/cmsis/core_cm0plus.h ****   \defgroup CMSIS_SysTick     System Tick Timer (SysTick)
+ 465:smtc_bsp/arm/cmsis/core_cm0plus.h ****   \brief    Type definitions for the System Timer Registers.
+ 466:smtc_bsp/arm/cmsis/core_cm0plus.h ****   @{
+ 467:smtc_bsp/arm/cmsis/core_cm0plus.h ****  */
+ 468:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 469:smtc_bsp/arm/cmsis/core_cm0plus.h **** /**
+ 470:smtc_bsp/arm/cmsis/core_cm0plus.h ****   \brief  Structure type to access the System Timer (SysTick).
+ 471:smtc_bsp/arm/cmsis/core_cm0plus.h ****  */
+ 472:smtc_bsp/arm/cmsis/core_cm0plus.h **** typedef struct
+ 473:smtc_bsp/arm/cmsis/core_cm0plus.h **** {
+ 474:smtc_bsp/arm/cmsis/core_cm0plus.h ****   __IOM uint32_t CTRL;                   /*!< Offset: 0x000 (R/W)  SysTick Control and Status Regis
+ 475:smtc_bsp/arm/cmsis/core_cm0plus.h ****   __IOM uint32_t LOAD;                   /*!< Offset: 0x004 (R/W)  SysTick Reload Value Register */
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccf8NMfb.s 			page 28
+
+
+ 476:smtc_bsp/arm/cmsis/core_cm0plus.h ****   __IOM uint32_t VAL;                    /*!< Offset: 0x008 (R/W)  SysTick Current Value Register *
+ 477:smtc_bsp/arm/cmsis/core_cm0plus.h ****   __IM  uint32_t CALIB;                  /*!< Offset: 0x00C (R/ )  SysTick Calibration Register */
+ 478:smtc_bsp/arm/cmsis/core_cm0plus.h **** } SysTick_Type;
+ 479:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 480:smtc_bsp/arm/cmsis/core_cm0plus.h **** /* SysTick Control / Status Register Definitions */
+ 481:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define SysTick_CTRL_COUNTFLAG_Pos         16U                                            /*!< SysT
+ 482:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define SysTick_CTRL_COUNTFLAG_Msk         (1UL << SysTick_CTRL_COUNTFLAG_Pos)            /*!< SysT
+ 483:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 484:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define SysTick_CTRL_CLKSOURCE_Pos          2U                                            /*!< SysT
+ 485:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define SysTick_CTRL_CLKSOURCE_Msk         (1UL << SysTick_CTRL_CLKSOURCE_Pos)            /*!< SysT
+ 486:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 487:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define SysTick_CTRL_TICKINT_Pos            1U                                            /*!< SysT
+ 488:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define SysTick_CTRL_TICKINT_Msk           (1UL << SysTick_CTRL_TICKINT_Pos)              /*!< SysT
+ 489:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 490:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define SysTick_CTRL_ENABLE_Pos             0U                                            /*!< SysT
+ 491:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define SysTick_CTRL_ENABLE_Msk            (1UL /*<< SysTick_CTRL_ENABLE_Pos*/)           /*!< SysT
+ 492:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 493:smtc_bsp/arm/cmsis/core_cm0plus.h **** /* SysTick Reload Register Definitions */
+ 494:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define SysTick_LOAD_RELOAD_Pos             0U                                            /*!< SysT
+ 495:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define SysTick_LOAD_RELOAD_Msk            (0xFFFFFFUL /*<< SysTick_LOAD_RELOAD_Pos*/)    /*!< SysT
+ 496:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 497:smtc_bsp/arm/cmsis/core_cm0plus.h **** /* SysTick Current Register Definitions */
+ 498:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define SysTick_VAL_CURRENT_Pos             0U                                            /*!< SysT
+ 499:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define SysTick_VAL_CURRENT_Msk            (0xFFFFFFUL /*<< SysTick_VAL_CURRENT_Pos*/)    /*!< SysT
+ 500:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 501:smtc_bsp/arm/cmsis/core_cm0plus.h **** /* SysTick Calibration Register Definitions */
+ 502:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define SysTick_CALIB_NOREF_Pos            31U                                            /*!< SysT
+ 503:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define SysTick_CALIB_NOREF_Msk            (1UL << SysTick_CALIB_NOREF_Pos)               /*!< SysT
+ 504:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 505:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define SysTick_CALIB_SKEW_Pos             30U                                            /*!< SysT
+ 506:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define SysTick_CALIB_SKEW_Msk             (1UL << SysTick_CALIB_SKEW_Pos)                /*!< SysT
+ 507:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 508:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define SysTick_CALIB_TENMS_Pos             0U                                            /*!< SysT
+ 509:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define SysTick_CALIB_TENMS_Msk            (0xFFFFFFUL /*<< SysTick_CALIB_TENMS_Pos*/)    /*!< SysT
+ 510:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 511:smtc_bsp/arm/cmsis/core_cm0plus.h **** /*@} end of group CMSIS_SysTick */
+ 512:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 513:smtc_bsp/arm/cmsis/core_cm0plus.h **** #if defined (__MPU_PRESENT) && (__MPU_PRESENT == 1U)
+ 514:smtc_bsp/arm/cmsis/core_cm0plus.h **** /**
+ 515:smtc_bsp/arm/cmsis/core_cm0plus.h ****   \ingroup  CMSIS_core_register
+ 516:smtc_bsp/arm/cmsis/core_cm0plus.h ****   \defgroup CMSIS_MPU     Memory Protection Unit (MPU)
+ 517:smtc_bsp/arm/cmsis/core_cm0plus.h ****   \brief    Type definitions for the Memory Protection Unit (MPU)
+ 518:smtc_bsp/arm/cmsis/core_cm0plus.h ****   @{
+ 519:smtc_bsp/arm/cmsis/core_cm0plus.h ****  */
+ 520:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 521:smtc_bsp/arm/cmsis/core_cm0plus.h **** /**
+ 522:smtc_bsp/arm/cmsis/core_cm0plus.h ****   \brief  Structure type to access the Memory Protection Unit (MPU).
+ 523:smtc_bsp/arm/cmsis/core_cm0plus.h ****  */
+ 524:smtc_bsp/arm/cmsis/core_cm0plus.h **** typedef struct
+ 525:smtc_bsp/arm/cmsis/core_cm0plus.h **** {
+ 526:smtc_bsp/arm/cmsis/core_cm0plus.h ****   __IM  uint32_t TYPE;                   /*!< Offset: 0x000 (R/ )  MPU Type Register */
+ 527:smtc_bsp/arm/cmsis/core_cm0plus.h ****   __IOM uint32_t CTRL;                   /*!< Offset: 0x004 (R/W)  MPU Control Register */
+ 528:smtc_bsp/arm/cmsis/core_cm0plus.h ****   __IOM uint32_t RNR;                    /*!< Offset: 0x008 (R/W)  MPU Region RNRber Register */
+ 529:smtc_bsp/arm/cmsis/core_cm0plus.h ****   __IOM uint32_t RBAR;                   /*!< Offset: 0x00C (R/W)  MPU Region Base Address Register
+ 530:smtc_bsp/arm/cmsis/core_cm0plus.h ****   __IOM uint32_t RASR;                   /*!< Offset: 0x010 (R/W)  MPU Region Attribute and Size Re
+ 531:smtc_bsp/arm/cmsis/core_cm0plus.h **** } MPU_Type;
+ 532:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccf8NMfb.s 			page 29
+
+
+ 533:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define MPU_TYPE_RALIASES                  1U
+ 534:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 535:smtc_bsp/arm/cmsis/core_cm0plus.h **** /* MPU Type Register Definitions */
+ 536:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define MPU_TYPE_IREGION_Pos               16U                                            /*!< MPU 
+ 537:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define MPU_TYPE_IREGION_Msk               (0xFFUL << MPU_TYPE_IREGION_Pos)               /*!< MPU 
+ 538:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 539:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define MPU_TYPE_DREGION_Pos                8U                                            /*!< MPU 
+ 540:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define MPU_TYPE_DREGION_Msk               (0xFFUL << MPU_TYPE_DREGION_Pos)               /*!< MPU 
+ 541:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 542:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define MPU_TYPE_SEPARATE_Pos               0U                                            /*!< MPU 
+ 543:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define MPU_TYPE_SEPARATE_Msk              (1UL /*<< MPU_TYPE_SEPARATE_Pos*/)             /*!< MPU 
+ 544:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 545:smtc_bsp/arm/cmsis/core_cm0plus.h **** /* MPU Control Register Definitions */
+ 546:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define MPU_CTRL_PRIVDEFENA_Pos             2U                                            /*!< MPU 
+ 547:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define MPU_CTRL_PRIVDEFENA_Msk            (1UL << MPU_CTRL_PRIVDEFENA_Pos)               /*!< MPU 
+ 548:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 549:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define MPU_CTRL_HFNMIENA_Pos               1U                                            /*!< MPU 
+ 550:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define MPU_CTRL_HFNMIENA_Msk              (1UL << MPU_CTRL_HFNMIENA_Pos)                 /*!< MPU 
+ 551:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 552:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define MPU_CTRL_ENABLE_Pos                 0U                                            /*!< MPU 
+ 553:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define MPU_CTRL_ENABLE_Msk                (1UL /*<< MPU_CTRL_ENABLE_Pos*/)               /*!< MPU 
+ 554:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 555:smtc_bsp/arm/cmsis/core_cm0plus.h **** /* MPU Region Number Register Definitions */
+ 556:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define MPU_RNR_REGION_Pos                  0U                                            /*!< MPU 
+ 557:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define MPU_RNR_REGION_Msk                 (0xFFUL /*<< MPU_RNR_REGION_Pos*/)             /*!< MPU 
+ 558:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 559:smtc_bsp/arm/cmsis/core_cm0plus.h **** /* MPU Region Base Address Register Definitions */
+ 560:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define MPU_RBAR_ADDR_Pos                   8U                                            /*!< MPU 
+ 561:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define MPU_RBAR_ADDR_Msk                  (0xFFFFFFUL << MPU_RBAR_ADDR_Pos)              /*!< MPU 
+ 562:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 563:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define MPU_RBAR_VALID_Pos                  4U                                            /*!< MPU 
+ 564:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define MPU_RBAR_VALID_Msk                 (1UL << MPU_RBAR_VALID_Pos)                    /*!< MPU 
+ 565:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 566:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define MPU_RBAR_REGION_Pos                 0U                                            /*!< MPU 
+ 567:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define MPU_RBAR_REGION_Msk                (0xFUL /*<< MPU_RBAR_REGION_Pos*/)             /*!< MPU 
+ 568:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 569:smtc_bsp/arm/cmsis/core_cm0plus.h **** /* MPU Region Attribute and Size Register Definitions */
+ 570:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define MPU_RASR_ATTRS_Pos                 16U                                            /*!< MPU 
+ 571:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define MPU_RASR_ATTRS_Msk                 (0xFFFFUL << MPU_RASR_ATTRS_Pos)               /*!< MPU 
+ 572:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 573:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define MPU_RASR_XN_Pos                    28U                                            /*!< MPU 
+ 574:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define MPU_RASR_XN_Msk                    (1UL << MPU_RASR_XN_Pos)                       /*!< MPU 
+ 575:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 576:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define MPU_RASR_AP_Pos                    24U                                            /*!< MPU 
+ 577:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define MPU_RASR_AP_Msk                    (0x7UL << MPU_RASR_AP_Pos)                     /*!< MPU 
+ 578:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 579:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define MPU_RASR_TEX_Pos                   19U                                            /*!< MPU 
+ 580:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define MPU_RASR_TEX_Msk                   (0x7UL << MPU_RASR_TEX_Pos)                    /*!< MPU 
+ 581:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 582:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define MPU_RASR_S_Pos                     18U                                            /*!< MPU 
+ 583:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define MPU_RASR_S_Msk                     (1UL << MPU_RASR_S_Pos)                        /*!< MPU 
+ 584:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 585:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define MPU_RASR_C_Pos                     17U                                            /*!< MPU 
+ 586:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define MPU_RASR_C_Msk                     (1UL << MPU_RASR_C_Pos)                        /*!< MPU 
+ 587:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 588:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define MPU_RASR_B_Pos                     16U                                            /*!< MPU 
+ 589:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define MPU_RASR_B_Msk                     (1UL << MPU_RASR_B_Pos)                        /*!< MPU 
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccf8NMfb.s 			page 30
+
+
+ 590:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 591:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define MPU_RASR_SRD_Pos                    8U                                            /*!< MPU 
+ 592:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define MPU_RASR_SRD_Msk                   (0xFFUL << MPU_RASR_SRD_Pos)                   /*!< MPU 
+ 593:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 594:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define MPU_RASR_SIZE_Pos                   1U                                            /*!< MPU 
+ 595:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define MPU_RASR_SIZE_Msk                  (0x1FUL << MPU_RASR_SIZE_Pos)                  /*!< MPU 
+ 596:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 597:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define MPU_RASR_ENABLE_Pos                 0U                                            /*!< MPU 
+ 598:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define MPU_RASR_ENABLE_Msk                (1UL /*<< MPU_RASR_ENABLE_Pos*/)               /*!< MPU 
+ 599:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 600:smtc_bsp/arm/cmsis/core_cm0plus.h **** /*@} end of group CMSIS_MPU */
+ 601:smtc_bsp/arm/cmsis/core_cm0plus.h **** #endif
+ 602:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 603:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 604:smtc_bsp/arm/cmsis/core_cm0plus.h **** /**
+ 605:smtc_bsp/arm/cmsis/core_cm0plus.h ****   \ingroup  CMSIS_core_register
+ 606:smtc_bsp/arm/cmsis/core_cm0plus.h ****   \defgroup CMSIS_CoreDebug       Core Debug Registers (CoreDebug)
+ 607:smtc_bsp/arm/cmsis/core_cm0plus.h ****   \brief    Cortex-M0+ Core Debug Registers (DCB registers, SHCSR, and DFSR) are only accessible ov
+ 608:smtc_bsp/arm/cmsis/core_cm0plus.h ****             Therefore they are not covered by the Cortex-M0+ header file.
+ 609:smtc_bsp/arm/cmsis/core_cm0plus.h ****   @{
+ 610:smtc_bsp/arm/cmsis/core_cm0plus.h ****  */
+ 611:smtc_bsp/arm/cmsis/core_cm0plus.h **** /*@} end of group CMSIS_CoreDebug */
+ 612:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 613:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 614:smtc_bsp/arm/cmsis/core_cm0plus.h **** /**
+ 615:smtc_bsp/arm/cmsis/core_cm0plus.h ****   \ingroup    CMSIS_core_register
+ 616:smtc_bsp/arm/cmsis/core_cm0plus.h ****   \defgroup   CMSIS_core_bitfield     Core register bit field macros
+ 617:smtc_bsp/arm/cmsis/core_cm0plus.h ****   \brief      Macros for use with bit field definitions (xxx_Pos, xxx_Msk).
+ 618:smtc_bsp/arm/cmsis/core_cm0plus.h ****   @{
+ 619:smtc_bsp/arm/cmsis/core_cm0plus.h ****  */
+ 620:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 621:smtc_bsp/arm/cmsis/core_cm0plus.h **** /**
+ 622:smtc_bsp/arm/cmsis/core_cm0plus.h ****   \brief   Mask and shift a bit field value for use in a register bit range.
+ 623:smtc_bsp/arm/cmsis/core_cm0plus.h ****   \param[in] field  Name of the register bit field.
+ 624:smtc_bsp/arm/cmsis/core_cm0plus.h ****   \param[in] value  Value of the bit field. This parameter is interpreted as an uint32_t type.
+ 625:smtc_bsp/arm/cmsis/core_cm0plus.h ****   \return           Masked and shifted value.
+ 626:smtc_bsp/arm/cmsis/core_cm0plus.h **** */
+ 627:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define _VAL2FLD(field, value)    (((uint32_t)(value) << field ## _Pos) & field ## _Msk)
+ 628:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 629:smtc_bsp/arm/cmsis/core_cm0plus.h **** /**
+ 630:smtc_bsp/arm/cmsis/core_cm0plus.h ****   \brief     Mask and shift a register value to extract a bit filed value.
+ 631:smtc_bsp/arm/cmsis/core_cm0plus.h ****   \param[in] field  Name of the register bit field.
+ 632:smtc_bsp/arm/cmsis/core_cm0plus.h ****   \param[in] value  Value of register. This parameter is interpreted as an uint32_t type.
+ 633:smtc_bsp/arm/cmsis/core_cm0plus.h ****   \return           Masked and shifted bit field value.
+ 634:smtc_bsp/arm/cmsis/core_cm0plus.h **** */
+ 635:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define _FLD2VAL(field, value)    (((uint32_t)(value) & field ## _Msk) >> field ## _Pos)
+ 636:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 637:smtc_bsp/arm/cmsis/core_cm0plus.h **** /*@} end of group CMSIS_core_bitfield */
+ 638:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 639:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 640:smtc_bsp/arm/cmsis/core_cm0plus.h **** /**
+ 641:smtc_bsp/arm/cmsis/core_cm0plus.h ****   \ingroup    CMSIS_core_register
+ 642:smtc_bsp/arm/cmsis/core_cm0plus.h ****   \defgroup   CMSIS_core_base     Core Definitions
+ 643:smtc_bsp/arm/cmsis/core_cm0plus.h ****   \brief      Definitions for base addresses, unions, and structures.
+ 644:smtc_bsp/arm/cmsis/core_cm0plus.h ****   @{
+ 645:smtc_bsp/arm/cmsis/core_cm0plus.h ****  */
+ 646:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccf8NMfb.s 			page 31
+
+
+ 647:smtc_bsp/arm/cmsis/core_cm0plus.h **** /* Memory mapping of Core Hardware */
+ 648:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define SCS_BASE            (0xE000E000UL)                            /*!< System Control Space Bas
+ 649:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define SysTick_BASE        (SCS_BASE +  0x0010UL)                    /*!< SysTick Base Address */
+ 650:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define NVIC_BASE           (SCS_BASE +  0x0100UL)                    /*!< NVIC Base Address */
+ 651:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define SCB_BASE            (SCS_BASE +  0x0D00UL)                    /*!< System Control Block Bas
+ 652:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 653:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define SCB                 ((SCB_Type       *)     SCB_BASE      )   /*!< SCB configuration struct
+ 654:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define SysTick             ((SysTick_Type   *)     SysTick_BASE  )   /*!< SysTick configuration st
+ 655:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define NVIC                ((NVIC_Type      *)     NVIC_BASE     )   /*!< NVIC configuration struc
+ 656:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 657:smtc_bsp/arm/cmsis/core_cm0plus.h **** #if defined (__MPU_PRESENT) && (__MPU_PRESENT == 1U)
+ 658:smtc_bsp/arm/cmsis/core_cm0plus.h ****   #define MPU_BASE          (SCS_BASE +  0x0D90UL)                    /*!< Memory Protection Unit *
+ 659:smtc_bsp/arm/cmsis/core_cm0plus.h ****   #define MPU               ((MPU_Type       *)     MPU_BASE      )   /*!< Memory Protection Unit *
+ 660:smtc_bsp/arm/cmsis/core_cm0plus.h **** #endif
+ 661:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 662:smtc_bsp/arm/cmsis/core_cm0plus.h **** /*@} */
+ 663:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 664:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 665:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 666:smtc_bsp/arm/cmsis/core_cm0plus.h **** /*******************************************************************************
+ 667:smtc_bsp/arm/cmsis/core_cm0plus.h ****  *                Hardware Abstraction Layer
+ 668:smtc_bsp/arm/cmsis/core_cm0plus.h ****   Core Function Interface contains:
+ 669:smtc_bsp/arm/cmsis/core_cm0plus.h ****   - Core NVIC Functions
+ 670:smtc_bsp/arm/cmsis/core_cm0plus.h ****   - Core SysTick Functions
+ 671:smtc_bsp/arm/cmsis/core_cm0plus.h ****   - Core Register Access Functions
+ 672:smtc_bsp/arm/cmsis/core_cm0plus.h ****  ******************************************************************************/
+ 673:smtc_bsp/arm/cmsis/core_cm0plus.h **** /**
+ 674:smtc_bsp/arm/cmsis/core_cm0plus.h ****   \defgroup CMSIS_Core_FunctionInterface Functions and Instructions Reference
+ 675:smtc_bsp/arm/cmsis/core_cm0plus.h **** */
+ 676:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 677:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 678:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 679:smtc_bsp/arm/cmsis/core_cm0plus.h **** /* ##########################   NVIC functions  #################################### */
+ 680:smtc_bsp/arm/cmsis/core_cm0plus.h **** /**
+ 681:smtc_bsp/arm/cmsis/core_cm0plus.h ****   \ingroup  CMSIS_Core_FunctionInterface
+ 682:smtc_bsp/arm/cmsis/core_cm0plus.h ****   \defgroup CMSIS_Core_NVICFunctions NVIC Functions
+ 683:smtc_bsp/arm/cmsis/core_cm0plus.h ****   \brief    Functions that manage interrupts and exceptions via the NVIC.
+ 684:smtc_bsp/arm/cmsis/core_cm0plus.h ****   @{
+ 685:smtc_bsp/arm/cmsis/core_cm0plus.h ****  */
+ 686:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 687:smtc_bsp/arm/cmsis/core_cm0plus.h **** #ifdef CMSIS_NVIC_VIRTUAL
+ 688:smtc_bsp/arm/cmsis/core_cm0plus.h ****   #ifndef CMSIS_NVIC_VIRTUAL_HEADER_FILE
+ 689:smtc_bsp/arm/cmsis/core_cm0plus.h ****     #define CMSIS_NVIC_VIRTUAL_HEADER_FILE "cmsis_nvic_virtual.h"
+ 690:smtc_bsp/arm/cmsis/core_cm0plus.h ****   #endif
+ 691:smtc_bsp/arm/cmsis/core_cm0plus.h ****   #include CMSIS_NVIC_VIRTUAL_HEADER_FILE
+ 692:smtc_bsp/arm/cmsis/core_cm0plus.h **** #else
+ 693:smtc_bsp/arm/cmsis/core_cm0plus.h ****   #define NVIC_SetPriorityGrouping    __NVIC_SetPriorityGrouping
+ 694:smtc_bsp/arm/cmsis/core_cm0plus.h ****   #define NVIC_GetPriorityGrouping    __NVIC_GetPriorityGrouping
+ 695:smtc_bsp/arm/cmsis/core_cm0plus.h ****   #define NVIC_EnableIRQ              __NVIC_EnableIRQ
+ 696:smtc_bsp/arm/cmsis/core_cm0plus.h ****   #define NVIC_GetEnableIRQ           __NVIC_GetEnableIRQ
+ 697:smtc_bsp/arm/cmsis/core_cm0plus.h ****   #define NVIC_DisableIRQ             __NVIC_DisableIRQ
+ 698:smtc_bsp/arm/cmsis/core_cm0plus.h ****   #define NVIC_GetPendingIRQ          __NVIC_GetPendingIRQ
+ 699:smtc_bsp/arm/cmsis/core_cm0plus.h ****   #define NVIC_SetPendingIRQ          __NVIC_SetPendingIRQ
+ 700:smtc_bsp/arm/cmsis/core_cm0plus.h ****   #define NVIC_ClearPendingIRQ        __NVIC_ClearPendingIRQ
+ 701:smtc_bsp/arm/cmsis/core_cm0plus.h **** /*#define NVIC_GetActive              __NVIC_GetActive             not available for Cortex-M0+ */
+ 702:smtc_bsp/arm/cmsis/core_cm0plus.h ****   #define NVIC_SetPriority            __NVIC_SetPriority
+ 703:smtc_bsp/arm/cmsis/core_cm0plus.h ****   #define NVIC_GetPriority            __NVIC_GetPriority
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccf8NMfb.s 			page 32
+
+
+ 704:smtc_bsp/arm/cmsis/core_cm0plus.h ****   #define NVIC_SystemReset            __NVIC_SystemReset
+ 705:smtc_bsp/arm/cmsis/core_cm0plus.h **** #endif /* CMSIS_NVIC_VIRTUAL */
+ 706:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 707:smtc_bsp/arm/cmsis/core_cm0plus.h **** #ifdef CMSIS_VECTAB_VIRTUAL
+ 708:smtc_bsp/arm/cmsis/core_cm0plus.h ****   #ifndef CMSIS_VECTAB_VIRTUAL_HEADER_FILE
+ 709:smtc_bsp/arm/cmsis/core_cm0plus.h ****     #define CMSIS_VECTAB_VIRTUAL_HEADER_FILE "cmsis_vectab_virtual.h"
+ 710:smtc_bsp/arm/cmsis/core_cm0plus.h ****   #endif
+ 711:smtc_bsp/arm/cmsis/core_cm0plus.h ****   #include CMSIS_VECTAB_VIRTUAL_HEADER_FILE
+ 712:smtc_bsp/arm/cmsis/core_cm0plus.h **** #else
+ 713:smtc_bsp/arm/cmsis/core_cm0plus.h ****   #define NVIC_SetVector              __NVIC_SetVector
+ 714:smtc_bsp/arm/cmsis/core_cm0plus.h ****   #define NVIC_GetVector              __NVIC_GetVector
+ 715:smtc_bsp/arm/cmsis/core_cm0plus.h **** #endif  /* (CMSIS_VECTAB_VIRTUAL) */
+ 716:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 717:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define NVIC_USER_IRQ_OFFSET          16
+ 718:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 719:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 720:smtc_bsp/arm/cmsis/core_cm0plus.h **** /* The following EXC_RETURN values are saved the LR on exception entry */
+ 721:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define EXC_RETURN_HANDLER         (0xFFFFFFF1UL)     /* return to Handler mode, uses MSP after ret
+ 722:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define EXC_RETURN_THREAD_MSP      (0xFFFFFFF9UL)     /* return to Thread mode, uses MSP after retu
+ 723:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define EXC_RETURN_THREAD_PSP      (0xFFFFFFFDUL)     /* return to Thread mode, uses PSP after retu
+ 724:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 725:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 726:smtc_bsp/arm/cmsis/core_cm0plus.h **** /* Interrupt Priorities are WORD accessible only under Armv6-M                  */
+ 727:smtc_bsp/arm/cmsis/core_cm0plus.h **** /* The following MACROS handle generation of the register offset and byte masks */
+ 728:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define _BIT_SHIFT(IRQn)         (  ((((uint32_t)(int32_t)(IRQn))         )      &  0x03UL) * 8UL)
+ 729:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define _SHP_IDX(IRQn)           ( (((((uint32_t)(int32_t)(IRQn)) & 0x0FUL)-8UL) >>    2UL)      )
+ 730:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define _IP_IDX(IRQn)            (   (((uint32_t)(int32_t)(IRQn))                >>    2UL)      )
+ 731:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 732:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define __NVIC_SetPriorityGrouping(X) (void)(X)
+ 733:smtc_bsp/arm/cmsis/core_cm0plus.h **** #define __NVIC_GetPriorityGrouping()  (0U)
+ 734:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 735:smtc_bsp/arm/cmsis/core_cm0plus.h **** /**
+ 736:smtc_bsp/arm/cmsis/core_cm0plus.h ****   \brief   Enable Interrupt
+ 737:smtc_bsp/arm/cmsis/core_cm0plus.h ****   \details Enables a device specific interrupt in the NVIC interrupt controller.
+ 738:smtc_bsp/arm/cmsis/core_cm0plus.h ****   \param [in]      IRQn  Device specific interrupt number.
+ 739:smtc_bsp/arm/cmsis/core_cm0plus.h ****   \note    IRQn must not be negative.
+ 740:smtc_bsp/arm/cmsis/core_cm0plus.h ****  */
+ 741:smtc_bsp/arm/cmsis/core_cm0plus.h **** __STATIC_INLINE void __NVIC_EnableIRQ(IRQn_Type IRQn)
+ 742:smtc_bsp/arm/cmsis/core_cm0plus.h **** {
+ 743:smtc_bsp/arm/cmsis/core_cm0plus.h ****   if ((int32_t)(IRQn) >= 0)
+ 744:smtc_bsp/arm/cmsis/core_cm0plus.h ****   {
+ 745:smtc_bsp/arm/cmsis/core_cm0plus.h ****     NVIC->ISER[0U] = (uint32_t)(1UL << (((uint32_t)IRQn) & 0x1FUL));
+ 746:smtc_bsp/arm/cmsis/core_cm0plus.h ****   }
+ 747:smtc_bsp/arm/cmsis/core_cm0plus.h **** }
+ 748:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 749:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 750:smtc_bsp/arm/cmsis/core_cm0plus.h **** /**
+ 751:smtc_bsp/arm/cmsis/core_cm0plus.h ****   \brief   Get Interrupt Enable status
+ 752:smtc_bsp/arm/cmsis/core_cm0plus.h ****   \details Returns a device specific interrupt enable status from the NVIC interrupt controller.
+ 753:smtc_bsp/arm/cmsis/core_cm0plus.h ****   \param [in]      IRQn  Device specific interrupt number.
+ 754:smtc_bsp/arm/cmsis/core_cm0plus.h ****   \return             0  Interrupt is not enabled.
+ 755:smtc_bsp/arm/cmsis/core_cm0plus.h ****   \return             1  Interrupt is enabled.
+ 756:smtc_bsp/arm/cmsis/core_cm0plus.h ****   \note    IRQn must not be negative.
+ 757:smtc_bsp/arm/cmsis/core_cm0plus.h ****  */
+ 758:smtc_bsp/arm/cmsis/core_cm0plus.h **** __STATIC_INLINE uint32_t __NVIC_GetEnableIRQ(IRQn_Type IRQn)
+ 759:smtc_bsp/arm/cmsis/core_cm0plus.h **** {
+ 760:smtc_bsp/arm/cmsis/core_cm0plus.h ****   if ((int32_t)(IRQn) >= 0)
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccf8NMfb.s 			page 33
+
+
+ 761:smtc_bsp/arm/cmsis/core_cm0plus.h ****   {
+ 762:smtc_bsp/arm/cmsis/core_cm0plus.h ****     return((uint32_t)(((NVIC->ISER[0U] & (1UL << (((uint32_t)IRQn) & 0x1FUL))) != 0UL) ? 1UL : 0UL)
+ 763:smtc_bsp/arm/cmsis/core_cm0plus.h ****   }
+ 764:smtc_bsp/arm/cmsis/core_cm0plus.h ****   else
+ 765:smtc_bsp/arm/cmsis/core_cm0plus.h ****   {
+ 766:smtc_bsp/arm/cmsis/core_cm0plus.h ****     return(0U);
+ 767:smtc_bsp/arm/cmsis/core_cm0plus.h ****   }
+ 768:smtc_bsp/arm/cmsis/core_cm0plus.h **** }
+ 769:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 770:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 771:smtc_bsp/arm/cmsis/core_cm0plus.h **** /**
+ 772:smtc_bsp/arm/cmsis/core_cm0plus.h ****   \brief   Disable Interrupt
+ 773:smtc_bsp/arm/cmsis/core_cm0plus.h ****   \details Disables a device specific interrupt in the NVIC interrupt controller.
+ 774:smtc_bsp/arm/cmsis/core_cm0plus.h ****   \param [in]      IRQn  Device specific interrupt number.
+ 775:smtc_bsp/arm/cmsis/core_cm0plus.h ****   \note    IRQn must not be negative.
+ 776:smtc_bsp/arm/cmsis/core_cm0plus.h ****  */
+ 777:smtc_bsp/arm/cmsis/core_cm0plus.h **** __STATIC_INLINE void __NVIC_DisableIRQ(IRQn_Type IRQn)
+ 778:smtc_bsp/arm/cmsis/core_cm0plus.h **** {
+ 779:smtc_bsp/arm/cmsis/core_cm0plus.h ****   if ((int32_t)(IRQn) >= 0)
+ 780:smtc_bsp/arm/cmsis/core_cm0plus.h ****   {
+ 781:smtc_bsp/arm/cmsis/core_cm0plus.h ****     NVIC->ICER[0U] = (uint32_t)(1UL << (((uint32_t)IRQn) & 0x1FUL));
+ 782:smtc_bsp/arm/cmsis/core_cm0plus.h ****     __DSB();
+ 783:smtc_bsp/arm/cmsis/core_cm0plus.h ****     __ISB();
+ 784:smtc_bsp/arm/cmsis/core_cm0plus.h ****   }
+ 785:smtc_bsp/arm/cmsis/core_cm0plus.h **** }
+ 786:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 787:smtc_bsp/arm/cmsis/core_cm0plus.h **** 
+ 788:smtc_bsp/arm/cmsis/core_cm0plus.h **** /**
+ 789:smtc_bsp/arm/cmsis/core_cm0plus.h ****   \brief   Get Pending Interrupt
+ 790:smtc_bsp/arm/cmsis/core_cm0plus.h ****   \details Reads the NVIC pending register and returns the pending bit for the specified device spe
+ 791:smtc_bsp/arm/cmsis/core_cm0plus.h ****   \param [in]      IRQn  Device specific interrupt number.
+ 792:smtc_bsp/arm/cmsis/core_cm0plus.h ****   \return             0  Interrupt status is not pending.
+ 793:smtc_bsp/arm/cmsis/core_cm0plus.h ****   \return             1  Interrupt status is pending.
+ 794:smtc_bsp/arm/cmsis/core_cm0plus.h ****   \note    IRQn must not be negative.
+ 795:smtc_bsp/arm/cmsis/core_cm0plus.h ****  */
+ 796:smtc_bsp/arm/cmsis/core_cm0plus.h **** __STATIC_INLINE uint32_t __NVIC_GetPendingIRQ(IRQn_Type IRQn)
+ 712              		.loc 2 796 26 view .LVU175
+ 713              	.LBE26:
+ 797:smtc_bsp/arm/cmsis/core_cm0plus.h **** {
+ 798:smtc_bsp/arm/cmsis/core_cm0plus.h ****   if ((int32_t)(IRQn) >= 0)
+ 714              		.loc 2 798 3 view .LVU176
+ 715              	.LBB31:
+ 716              	.LBB27:
+ 717              	.LBI27:
+ 796:smtc_bsp/arm/cmsis/core_cm0plus.h **** {
+ 718              		.loc 2 796 26 view .LVU177
+ 719              	.LBB28:
+ 799:smtc_bsp/arm/cmsis/core_cm0plus.h ****   {
+ 800:smtc_bsp/arm/cmsis/core_cm0plus.h ****     return((uint32_t)(((NVIC->ISPR[0U] & (1UL << (((uint32_t)IRQn) & 0x1FUL))) != 0UL) ? 1UL : 0UL)
+ 720              		.loc 2 800 5 view .LVU178
+ 721              	.LBE28:
+ 722              	.LBE27:
+ 723              	.LBE31:
+ 196:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** }
+ 724              		.loc 1 196 16 is_stmt 0 view .LVU179
+ 725 0000 0120     		movs	r0, #1
+ 726              	.LBB32:
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccf8NMfb.s 			page 34
+
+
+ 727              	.LBB30:
+ 728              	.LBB29:
+ 729              		.loc 2 800 35 view .LVU180
+ 730 0002 064B     		ldr	r3, .L45
+ 731 0004 5A68     		ldr	r2, [r3, #4]
+ 732              	.LVL44:
+ 733              		.loc 2 800 80 view .LVU181
+ 734 0006 5209     		lsrs	r2, r2, #5
+ 735              	.LBE29:
+ 736              	.LBE30:
+ 737              	.LBE32:
+ 196:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** }
+ 738              		.loc 1 196 16 view .LVU182
+ 739 0008 0242     		tst	r2, r0
+ 740 000a 06D1     		bne	.L42
+ 741              	.LVL45:
+ 742              	.LBB33:
+ 743              	.LBI33:
+ 796:smtc_bsp/arm/cmsis/core_cm0plus.h **** {
+ 744              		.loc 2 796 26 is_stmt 1 view .LVU183
+ 745              	.LBE33:
+ 798:smtc_bsp/arm/cmsis/core_cm0plus.h ****   {
+ 746              		.loc 2 798 3 view .LVU184
+ 747              	.LBB36:
+ 748              	.LBB34:
+ 749              	.LBI34:
+ 796:smtc_bsp/arm/cmsis/core_cm0plus.h **** {
+ 750              		.loc 2 796 26 view .LVU185
+ 751              	.LBB35:
+ 752              		.loc 2 800 5 view .LVU186
+ 753              		.loc 2 800 35 is_stmt 0 view .LVU187
+ 754 000c 5A68     		ldr	r2, [r3, #4]
+ 755              	.LVL46:
+ 756              		.loc 2 800 80 view .LVU188
+ 757 000e 9209     		lsrs	r2, r2, #6
+ 758              	.LBE35:
+ 759              	.LBE34:
+ 760              	.LBE36:
+ 193:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****              ( NVIC_GetPendingIRQ( EXTI4_15_IRQn ) == 1 ) )
+ 761              		.loc 1 193 58 view .LVU189
+ 762 0010 0242     		tst	r2, r0
+ 763 0012 02D1     		bne	.L42
+ 764              	.LVL47:
+ 765              	.LBB37:
+ 766              	.LBI37:
+ 796:smtc_bsp/arm/cmsis/core_cm0plus.h **** {
+ 767              		.loc 2 796 26 is_stmt 1 view .LVU190
+ 768              	.LBE37:
+ 798:smtc_bsp/arm/cmsis/core_cm0plus.h ****   {
+ 769              		.loc 2 798 3 view .LVU191
+ 770              	.LBB40:
+ 771              	.LBB38:
+ 772              	.LBI38:
+ 796:smtc_bsp/arm/cmsis/core_cm0plus.h **** {
+ 773              		.loc 2 796 26 view .LVU192
+ 774              	.LBB39:
+ 775              		.loc 2 800 5 view .LVU193
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccf8NMfb.s 			page 35
+
+
+ 776              		.loc 2 800 35 is_stmt 0 view .LVU194
+ 777 0014 5B68     		ldr	r3, [r3, #4]
+ 778              	.LVL48:
+ 779              		.loc 2 800 80 view .LVU195
+ 780 0016 DB09     		lsrs	r3, r3, #7
+ 781              		.loc 2 800 12 view .LVU196
+ 782 0018 1840     		ands	r0, r3
+ 783              	.L42:
+ 784              	.LBE39:
+ 785              	.LBE38:
+ 786              	.LBE40:
+ 197:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** //
+ 787              		.loc 1 197 1 discriminator 5 view .LVU197
+ 788              		@ sp needed
+ 789 001a 7047     		bx	lr
+ 790              	.L46:
+ 791              		.align	2
+ 792              	.L45:
+ 793 001c FCE100E0 		.word	-536813060
+ 794              		.cfi_endproc
+ 795              	.LFE56:
+ 797              		.section	.text.EXTI0_1_IRQHandler,"ax",%progbits
+ 798              		.align	1
+ 799              		.global	EXTI0_1_IRQHandler
+ 800              		.syntax unified
+ 801              		.code	16
+ 802              		.thumb_func
+ 803              		.fpu softvfp
+ 805              	EXTI0_1_IRQHandler:
+ 806              	.LFB58:
+ 239:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** 
+ 240:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** //
+ 241:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** // MCU interrupt handlers
+ 242:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** //
+ 243:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** 
+ 244:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** void EXTI0_1_IRQHandler( void )
+ 245:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** {
+ 807              		.loc 1 245 1 is_stmt 1 view -0
+ 808              		.cfi_startproc
+ 809              		@ args = 0, pretend = 0, frame = 0
+ 810              		@ frame_needed = 0, uses_anonymous_args = 0
+ 246:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     HAL_GPIO_EXTI_IRQHandler( GPIO_PIN_0 );
+ 811              		.loc 1 246 5 view .LVU199
+ 245:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     HAL_GPIO_EXTI_IRQHandler( GPIO_PIN_0 );
+ 812              		.loc 1 245 1 is_stmt 0 view .LVU200
+ 813 0000 10B5     		push	{r4, lr}
+ 814              		.cfi_def_cfa_offset 8
+ 815              		.cfi_offset 4, -8
+ 816              		.cfi_offset 14, -4
+ 817              		.loc 1 246 5 view .LVU201
+ 818 0002 0120     		movs	r0, #1
+ 819 0004 FFF7FEFF 		bl	HAL_GPIO_EXTI_IRQHandler
+ 820              	.LVL49:
+ 247:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     HAL_GPIO_EXTI_IRQHandler( GPIO_PIN_1 );
+ 821              		.loc 1 247 5 is_stmt 1 view .LVU202
+ 822 0008 0220     		movs	r0, #2
+ 823 000a FFF7FEFF 		bl	HAL_GPIO_EXTI_IRQHandler
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccf8NMfb.s 			page 36
+
+
+ 824              	.LVL50:
+ 248:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** }
+ 825              		.loc 1 248 1 is_stmt 0 view .LVU203
+ 826              		@ sp needed
+ 827 000e 10BD     		pop	{r4, pc}
+ 828              		.cfi_endproc
+ 829              	.LFE58:
+ 831              		.section	.text.EXTI2_3_IRQHandler,"ax",%progbits
+ 832              		.align	1
+ 833              		.global	EXTI2_3_IRQHandler
+ 834              		.syntax unified
+ 835              		.code	16
+ 836              		.thumb_func
+ 837              		.fpu softvfp
+ 839              	EXTI2_3_IRQHandler:
+ 840              	.LFB59:
+ 249:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** 
+ 250:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** void EXTI2_3_IRQHandler( void )
+ 251:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** {
+ 841              		.loc 1 251 1 is_stmt 1 view -0
+ 842              		.cfi_startproc
+ 843              		@ args = 0, pretend = 0, frame = 0
+ 844              		@ frame_needed = 0, uses_anonymous_args = 0
+ 252:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     HAL_GPIO_EXTI_IRQHandler( GPIO_PIN_2 );
+ 845              		.loc 1 252 5 view .LVU205
+ 251:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     HAL_GPIO_EXTI_IRQHandler( GPIO_PIN_2 );
+ 846              		.loc 1 251 1 is_stmt 0 view .LVU206
+ 847 0000 10B5     		push	{r4, lr}
+ 848              		.cfi_def_cfa_offset 8
+ 849              		.cfi_offset 4, -8
+ 850              		.cfi_offset 14, -4
+ 851              		.loc 1 252 5 view .LVU207
+ 852 0002 0420     		movs	r0, #4
+ 853 0004 FFF7FEFF 		bl	HAL_GPIO_EXTI_IRQHandler
+ 854              	.LVL51:
+ 253:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     HAL_GPIO_EXTI_IRQHandler( GPIO_PIN_3 );
+ 855              		.loc 1 253 5 is_stmt 1 view .LVU208
+ 856 0008 0820     		movs	r0, #8
+ 857 000a FFF7FEFF 		bl	HAL_GPIO_EXTI_IRQHandler
+ 858              	.LVL52:
+ 254:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** }
+ 859              		.loc 1 254 1 is_stmt 0 view .LVU209
+ 860              		@ sp needed
+ 861 000e 10BD     		pop	{r4, pc}
+ 862              		.cfi_endproc
+ 863              	.LFE59:
+ 865              		.section	.text.EXTI4_15_IRQHandler,"ax",%progbits
+ 866              		.align	1
+ 867              		.global	EXTI4_15_IRQHandler
+ 868              		.syntax unified
+ 869              		.code	16
+ 870              		.thumb_func
+ 871              		.fpu softvfp
+ 873              	EXTI4_15_IRQHandler:
+ 874              	.LFB60:
+ 255:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** 
+ 256:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** void EXTI4_15_IRQHandler( void )
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccf8NMfb.s 			page 37
+
+
+ 257:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** {
+ 875              		.loc 1 257 1 is_stmt 1 view -0
+ 876              		.cfi_startproc
+ 877              		@ args = 0, pretend = 0, frame = 0
+ 878              		@ frame_needed = 0, uses_anonymous_args = 0
+ 258:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     HAL_GPIO_EXTI_IRQHandler( GPIO_PIN_4 );
+ 879              		.loc 1 258 5 view .LVU211
+ 257:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     HAL_GPIO_EXTI_IRQHandler( GPIO_PIN_4 );
+ 880              		.loc 1 257 1 is_stmt 0 view .LVU212
+ 881 0000 10B5     		push	{r4, lr}
+ 882              		.cfi_def_cfa_offset 8
+ 883              		.cfi_offset 4, -8
+ 884              		.cfi_offset 14, -4
+ 885              		.loc 1 258 5 view .LVU213
+ 886 0002 1020     		movs	r0, #16
+ 887 0004 FFF7FEFF 		bl	HAL_GPIO_EXTI_IRQHandler
+ 888              	.LVL53:
+ 259:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     HAL_GPIO_EXTI_IRQHandler( GPIO_PIN_5 );
+ 889              		.loc 1 259 5 is_stmt 1 view .LVU214
+ 890 0008 2020     		movs	r0, #32
+ 891 000a FFF7FEFF 		bl	HAL_GPIO_EXTI_IRQHandler
+ 892              	.LVL54:
+ 260:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     HAL_GPIO_EXTI_IRQHandler( GPIO_PIN_6 );
+ 893              		.loc 1 260 5 view .LVU215
+ 894 000e 4020     		movs	r0, #64
+ 895 0010 FFF7FEFF 		bl	HAL_GPIO_EXTI_IRQHandler
+ 896              	.LVL55:
+ 261:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     HAL_GPIO_EXTI_IRQHandler( GPIO_PIN_7 );
+ 897              		.loc 1 261 5 view .LVU216
+ 898 0014 8020     		movs	r0, #128
+ 899 0016 FFF7FEFF 		bl	HAL_GPIO_EXTI_IRQHandler
+ 900              	.LVL56:
+ 262:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     HAL_GPIO_EXTI_IRQHandler( GPIO_PIN_8 );
+ 901              		.loc 1 262 5 view .LVU217
+ 902 001a 8020     		movs	r0, #128
+ 903 001c 4000     		lsls	r0, r0, #1
+ 904 001e FFF7FEFF 		bl	HAL_GPIO_EXTI_IRQHandler
+ 905              	.LVL57:
+ 263:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     HAL_GPIO_EXTI_IRQHandler( GPIO_PIN_9 );
+ 906              		.loc 1 263 5 view .LVU218
+ 907 0022 8020     		movs	r0, #128
+ 908 0024 8000     		lsls	r0, r0, #2
+ 909 0026 FFF7FEFF 		bl	HAL_GPIO_EXTI_IRQHandler
+ 910              	.LVL58:
+ 264:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     HAL_GPIO_EXTI_IRQHandler( GPIO_PIN_10 );
+ 911              		.loc 1 264 5 view .LVU219
+ 912 002a 8020     		movs	r0, #128
+ 913 002c C000     		lsls	r0, r0, #3
+ 914 002e FFF7FEFF 		bl	HAL_GPIO_EXTI_IRQHandler
+ 915              	.LVL59:
+ 265:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     HAL_GPIO_EXTI_IRQHandler( GPIO_PIN_11 );
+ 916              		.loc 1 265 5 view .LVU220
+ 917 0032 8020     		movs	r0, #128
+ 918 0034 0001     		lsls	r0, r0, #4
+ 919 0036 FFF7FEFF 		bl	HAL_GPIO_EXTI_IRQHandler
+ 920              	.LVL60:
+ 266:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     HAL_GPIO_EXTI_IRQHandler( GPIO_PIN_12 );
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccf8NMfb.s 			page 38
+
+
+ 921              		.loc 1 266 5 view .LVU221
+ 922 003a 8020     		movs	r0, #128
+ 923 003c 4001     		lsls	r0, r0, #5
+ 924 003e FFF7FEFF 		bl	HAL_GPIO_EXTI_IRQHandler
+ 925              	.LVL61:
+ 267:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     HAL_GPIO_EXTI_IRQHandler( GPIO_PIN_13 );
+ 926              		.loc 1 267 5 view .LVU222
+ 927 0042 8020     		movs	r0, #128
+ 928 0044 8001     		lsls	r0, r0, #6
+ 929 0046 FFF7FEFF 		bl	HAL_GPIO_EXTI_IRQHandler
+ 930              	.LVL62:
+ 268:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     HAL_GPIO_EXTI_IRQHandler( GPIO_PIN_14 );
+ 931              		.loc 1 268 5 view .LVU223
+ 932 004a 8020     		movs	r0, #128
+ 933 004c C001     		lsls	r0, r0, #7
+ 934 004e FFF7FEFF 		bl	HAL_GPIO_EXTI_IRQHandler
+ 935              	.LVL63:
+ 269:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     HAL_GPIO_EXTI_IRQHandler( GPIO_PIN_15 );
+ 936              		.loc 1 269 5 view .LVU224
+ 937 0052 8020     		movs	r0, #128
+ 938 0054 0002     		lsls	r0, r0, #8
+ 939 0056 FFF7FEFF 		bl	HAL_GPIO_EXTI_IRQHandler
+ 940              	.LVL64:
+ 270:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** }
+ 941              		.loc 1 270 1 is_stmt 0 view .LVU225
+ 942              		@ sp needed
+ 943 005a 10BD     		pop	{r4, pc}
+ 944              		.cfi_endproc
+ 945              	.LFE60:
+ 947              		.section	.text.HAL_GPIO_EXTI_Callback,"ax",%progbits
+ 948              		.align	1
+ 949              		.global	HAL_GPIO_EXTI_Callback
+ 950              		.syntax unified
+ 951              		.code	16
+ 952              		.thumb_func
+ 953              		.fpu softvfp
+ 955              	HAL_GPIO_EXTI_Callback:
+ 956              	.LVL65:
+ 957              	.LFB61:
+ 271:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** 
+ 272:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** void HAL_GPIO_EXTI_Callback( uint16_t gpio_pin )
+ 273:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** {
+ 958              		.loc 1 273 1 is_stmt 1 view -0
+ 959              		.cfi_startproc
+ 960              		@ args = 0, pretend = 0, frame = 0
+ 961              		@ frame_needed = 0, uses_anonymous_args = 0
+ 274:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     uint8_t callback_index = 0;
+ 962              		.loc 1 274 5 view .LVU227
+ 275:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** 
+ 276:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     if( gpio_pin > 0 )
+ 963              		.loc 1 276 5 view .LVU228
+ 274:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     uint8_t callback_index = 0;
+ 964              		.loc 1 274 13 is_stmt 0 view .LVU229
+ 965 0000 0300     		movs	r3, r0
+ 273:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     uint8_t callback_index = 0;
+ 966              		.loc 1 273 1 view .LVU230
+ 967 0002 10B5     		push	{r4, lr}
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccf8NMfb.s 			page 39
+
+
+ 968              		.cfi_def_cfa_offset 8
+ 969              		.cfi_offset 4, -8
+ 970              		.cfi_offset 14, -4
+ 971              		.loc 1 276 7 view .LVU231
+ 972 0004 0028     		cmp	r0, #0
+ 973 0006 06D0     		beq	.L52
+ 274:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     uint8_t callback_index = 0;
+ 974              		.loc 1 274 13 view .LVU232
+ 975 0008 0023     		movs	r3, #0
+ 976 000a 02E0     		b	.L51
+ 977              	.LVL66:
+ 978              	.L53:
+ 277:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     {
+ 278:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****         while( gpio_pin != 0x01 )
+ 279:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****         {
+ 280:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****             gpio_pin = gpio_pin >> 1;
+ 979              		.loc 1 280 13 is_stmt 1 view .LVU233
+ 281:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****             callback_index++;
+ 980              		.loc 1 281 27 is_stmt 0 view .LVU234
+ 981 000c 0133     		adds	r3, r3, #1
+ 982              	.LVL67:
+ 280:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****             callback_index++;
+ 983              		.loc 1 280 22 view .LVU235
+ 984 000e 4008     		lsrs	r0, r0, #1
+ 985              	.LVL68:
+ 986              		.loc 1 281 13 is_stmt 1 view .LVU236
+ 987              		.loc 1 281 27 is_stmt 0 view .LVU237
+ 988 0010 DBB2     		uxtb	r3, r3
+ 989              	.LVL69:
+ 990              	.L51:
+ 278:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****         {
+ 991              		.loc 1 278 14 is_stmt 1 view .LVU238
+ 992 0012 0128     		cmp	r0, #1
+ 993 0014 FAD1     		bne	.L53
+ 994              	.LVL70:
+ 995              	.L52:
+ 282:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****         }
+ 283:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     }
+ 284:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** 
+ 285:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     if( ( gpio_irq[callback_index] != NULL ) && ( gpio_irq[callback_index]->callback != NULL ) )
+ 996              		.loc 1 285 5 view .LVU239
+ 997              		.loc 1 285 19 is_stmt 0 view .LVU240
+ 998 0016 054A     		ldr	r2, .L62
+ 999 0018 9B00     		lsls	r3, r3, #2
+ 1000              	.LVL71:
+ 1001              		.loc 1 285 19 view .LVU241
+ 1002 001a 9B58     		ldr	r3, [r3, r2]
+ 1003              		.loc 1 285 7 view .LVU242
+ 1004 001c 002B     		cmp	r3, #0
+ 1005 001e 04D0     		beq	.L50
+ 1006              		.loc 1 285 75 discriminator 1 view .LVU243
+ 1007 0020 9A68     		ldr	r2, [r3, #8]
+ 1008              		.loc 1 285 46 discriminator 1 view .LVU244
+ 1009 0022 002A     		cmp	r2, #0
+ 1010 0024 01D0     		beq	.L50
+ 286:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     {
+ 287:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****         gpio_irq[callback_index]->callback( gpio_irq[callback_index]->context );
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccf8NMfb.s 			page 40
+
+
+ 1011              		.loc 1 287 9 is_stmt 1 view .LVU245
+ 1012 0026 5868     		ldr	r0, [r3, #4]
+ 1013              	.LVL72:
+ 1014              		.loc 1 287 9 is_stmt 0 view .LVU246
+ 1015 0028 9047     		blx	r2
+ 1016              	.LVL73:
+ 1017              	.L50:
+ 288:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c ****     }
+ 289:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio.c **** }
+ 1018              		.loc 1 289 1 view .LVU247
+ 1019              		@ sp needed
+ 1020 002a 10BD     		pop	{r4, pc}
+ 1021              	.L63:
+ 1022              		.align	2
+ 1023              	.L62:
+ 1024 002c 00000000 		.word	.LANCHOR0
+ 1025              		.cfi_endproc
+ 1026              	.LFE61:
+ 1028              		.section	.rodata
+ 1029              		.align	2
+ 1030              		.set	.LANCHOR1,. + 0
+ 1031              	.LC0:
+ 1032 0000 00000000 		.word	0
+ 1033 0004 00001110 		.word	269549568
+ 1034 0008 00002110 		.word	270598144
+ 1035 000c 00003110 		.word	271646720
+ 1036              	.LC1:
+ 1037 0010 00000000 		.word	0
+ 1038 0014 01000000 		.word	1
+ 1039 0018 02000000 		.word	2
+ 1040              		.section	.bss.gpio_irq,"aw",%nobits
+ 1041              		.align	2
+ 1042              		.set	.LANCHOR0,. + 0
+ 1045              	gpio_irq:
+ 1046 0000 00000000 		.space	64
+ 1046      00000000 
+ 1046      00000000 
+ 1046      00000000 
+ 1046      00000000 
+ 1047              		.text
+ 1048              	.Letext0:
+ 1049              		.file 3 "/Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.external
+ 1050              		.file 4 "/Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.external
+ 1051              		.file 5 "user_app/mcu_core/stm32l073xx.h"
+ 1052              		.file 6 "user_app/mcu_core/system_stm32l0xx.h"
+ 1053              		.file 7 "smtc_bsp/arm/stm32/stm32_hal/STM32L0xx_HAL_Driver/Inc/stm32l0xx_hal_gpio.h"
+ 1054              		.file 8 "smtc_bsp/arm/stm32/stm32_hal/STM32L0xx_HAL_Driver/Inc/stm32l0xx_hal.h"
+ 1055              		.file 9 "smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_gpio_pin_names.h"
+ 1056              		.file 10 "smtc_bsp/smtc_bsp_gpio.h"
+ 1057              		.file 11 "smtc_bsp/arm/stm32/stm32_hal/STM32L0xx_HAL_Driver/Inc/stm32l0xx_hal_cortex.h"
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccf8NMfb.s 			page 41
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 smtc_bsp_gpio.c
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccf8NMfb.s:14     .text.bsp_gpio_irq_attach:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccf8NMfb.s:22     .text.bsp_gpio_irq_attach:0000000000000000 bsp_gpio_irq_attach
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccf8NMfb.s:55     .text.bsp_gpio_irq_attach:0000000000000018 $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccf8NMfb.s:60     .text.bsp_gpio_init:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccf8NMfb.s:66     .text.bsp_gpio_init:0000000000000000 bsp_gpio_init
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccf8NMfb.s:239    .text.bsp_gpio_init:00000000000000a4 $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccf8NMfb.s:248    .text.bsp_gpio_init_out:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccf8NMfb.s:255    .text.bsp_gpio_init_out:0000000000000000 bsp_gpio_init_out
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccf8NMfb.s:301    .text.bsp_gpio_init_in:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccf8NMfb.s:308    .text.bsp_gpio_init_in:0000000000000000 bsp_gpio_init_in
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccf8NMfb.s:400    .text.bsp_gpio_init_in:0000000000000054 $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccf8NMfb.s:405    .text.bsp_gpio_irq_deatach:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccf8NMfb.s:412    .text.bsp_gpio_irq_deatach:0000000000000000 bsp_gpio_irq_deatach
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccf8NMfb.s:443    .text.bsp_gpio_irq_deatach:0000000000000014 $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccf8NMfb.s:448    .text.bsp_gpio_irq_enable:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccf8NMfb.s:455    .text.bsp_gpio_irq_enable:0000000000000000 bsp_gpio_irq_enable
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccf8NMfb.s:486    .text.bsp_gpio_irq_disable:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccf8NMfb.s:493    .text.bsp_gpio_irq_disable:0000000000000000 bsp_gpio_irq_disable
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccf8NMfb.s:524    .text.bsp_gpio_set_value:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccf8NMfb.s:531    .text.bsp_gpio_set_value:0000000000000000 bsp_gpio_set_value
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccf8NMfb.s:583    .text.bsp_gpio_toggle:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccf8NMfb.s:590    .text.bsp_gpio_toggle:0000000000000000 bsp_gpio_toggle
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccf8NMfb.s:637    .text.bsp_gpio_get_value:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccf8NMfb.s:644    .text.bsp_gpio_get_value:0000000000000000 bsp_gpio_get_value
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccf8NMfb.s:693    .text.bsp_gpio_is_pending_irq:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccf8NMfb.s:700    .text.bsp_gpio_is_pending_irq:0000000000000000 bsp_gpio_is_pending_irq
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccf8NMfb.s:793    .text.bsp_gpio_is_pending_irq:000000000000001c $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccf8NMfb.s:798    .text.EXTI0_1_IRQHandler:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccf8NMfb.s:805    .text.EXTI0_1_IRQHandler:0000000000000000 EXTI0_1_IRQHandler
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccf8NMfb.s:832    .text.EXTI2_3_IRQHandler:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccf8NMfb.s:839    .text.EXTI2_3_IRQHandler:0000000000000000 EXTI2_3_IRQHandler
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccf8NMfb.s:866    .text.EXTI4_15_IRQHandler:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccf8NMfb.s:873    .text.EXTI4_15_IRQHandler:0000000000000000 EXTI4_15_IRQHandler
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccf8NMfb.s:948    .text.HAL_GPIO_EXTI_Callback:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccf8NMfb.s:955    .text.HAL_GPIO_EXTI_Callback:0000000000000000 HAL_GPIO_EXTI_Callback
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccf8NMfb.s:1024   .text.HAL_GPIO_EXTI_Callback:000000000000002c $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccf8NMfb.s:1029   .rodata:0000000000000000 $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccf8NMfb.s:1041   .bss.gpio_irq:0000000000000000 $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccf8NMfb.s:1045   .bss.gpio_irq:0000000000000000 gpio_irq
+
+UNDEFINED SYMBOLS
+HAL_GPIO_WritePin
+HAL_GPIO_Init
+HAL_NVIC_SetPriority
+HAL_NVIC_EnableIRQ
+HAL_NVIC_DisableIRQ
+HAL_GPIO_TogglePin
+HAL_GPIO_ReadPin
+HAL_GPIO_EXTI_IRQHandler

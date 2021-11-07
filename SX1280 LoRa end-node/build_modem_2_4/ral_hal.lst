@@ -1,0 +1,169 @@
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccOZKt0U.s 			page 1
+
+
+   1              		.cpu cortex-m0plus
+   2              		.eabi_attribute 23, 1
+   3              		.eabi_attribute 24, 1
+   4              		.eabi_attribute 25, 1
+   5              		.eabi_attribute 26, 1
+   6              		.eabi_attribute 30, 4
+   7              		.eabi_attribute 34, 0
+   8              		.eabi_attribute 18, 4
+   9              		.file	"ral_hal.c"
+  10              		.text
+  11              	.Ltext0:
+  12              		.cfi_sections	.debug_frame
+  13              		.section	.text.ral_hal_set_tcxo_on,"ax",%progbits
+  14              		.align	1
+  15              		.global	ral_hal_set_tcxo_on
+  16              		.arch armv6s-m
+  17              		.syntax unified
+  18              		.code	16
+  19              		.thumb_func
+  20              		.fpu softvfp
+  22              	ral_hal_set_tcxo_on:
+  23              	.LVL0:
+  24              	.LFB0:
+  25              		.file 1 "user_app/bsp_specific/ral_hal.c"
+   1:user_app/bsp_specific/ral_hal.c **** /*!
+   2:user_app/bsp_specific/ral_hal.c ****  * \file      ral_hal.c
+   3:user_app/bsp_specific/ral_hal.c ****  *
+   4:user_app/bsp_specific/ral_hal.c ****  * \brief     Implements the RAL (RadioAbstractionLayer) HAL functions
+   5:user_app/bsp_specific/ral_hal.c ****  *
+   6:user_app/bsp_specific/ral_hal.c ****  * Revised BSD License
+   7:user_app/bsp_specific/ral_hal.c ****  * Copyright Semtech Corporation 2020. All rights reserved.
+   8:user_app/bsp_specific/ral_hal.c ****  *
+   9:user_app/bsp_specific/ral_hal.c ****  * Redistribution and use in source and binary forms, with or without
+  10:user_app/bsp_specific/ral_hal.c ****  * modification, are permitted provided that the following conditions are met:
+  11:user_app/bsp_specific/ral_hal.c ****  *     * Redistributions of source code must retain the above copyright
+  12:user_app/bsp_specific/ral_hal.c ****  *       notice, this list of conditions and the following disclaimer.
+  13:user_app/bsp_specific/ral_hal.c ****  *     * Redistributions in binary form must reproduce the above copyright
+  14:user_app/bsp_specific/ral_hal.c ****  *       notice, this list of conditions and the following disclaimer in the
+  15:user_app/bsp_specific/ral_hal.c ****  *       documentation and/or other materials provided with the distribution.
+  16:user_app/bsp_specific/ral_hal.c ****  *     * Neither the name of the Semtech corporation nor the
+  17:user_app/bsp_specific/ral_hal.c ****  *       names of its contributors may be used to endorse or promote products
+  18:user_app/bsp_specific/ral_hal.c ****  *       derived from this software without specific prior written permission.
+  19:user_app/bsp_specific/ral_hal.c ****  *
+  20:user_app/bsp_specific/ral_hal.c ****  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+  21:user_app/bsp_specific/ral_hal.c ****  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+  22:user_app/bsp_specific/ral_hal.c ****  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+  23:user_app/bsp_specific/ral_hal.c ****  * ARE DISCLAIMED. IN NO EVENT SHALL SEMTECH CORPORATION BE LIABLE FOR ANY DIRECT,
+  24:user_app/bsp_specific/ral_hal.c ****  * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+  25:user_app/bsp_specific/ral_hal.c ****  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+  26:user_app/bsp_specific/ral_hal.c ****  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+  27:user_app/bsp_specific/ral_hal.c ****  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  28:user_app/bsp_specific/ral_hal.c ****  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+  29:user_app/bsp_specific/ral_hal.c ****  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  30:user_app/bsp_specific/ral_hal.c ****  */
+  31:user_app/bsp_specific/ral_hal.c **** 
+  32:user_app/bsp_specific/ral_hal.c **** /*
+  33:user_app/bsp_specific/ral_hal.c ****  * -----------------------------------------------------------------------------
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccOZKt0U.s 			page 2
+
+
+  34:user_app/bsp_specific/ral_hal.c ****  * --- DEPENDENCIES ------------------------------------------------------------
+  35:user_app/bsp_specific/ral_hal.c ****  */
+  36:user_app/bsp_specific/ral_hal.c **** 
+  37:user_app/bsp_specific/ral_hal.c **** #include <stdint.h>   // C99 types
+  38:user_app/bsp_specific/ral_hal.c **** #include <stdbool.h>  // bool type
+  39:user_app/bsp_specific/ral_hal.c **** 
+  40:user_app/bsp_specific/ral_hal.c **** #include "ral_hal.h"
+  41:user_app/bsp_specific/ral_hal.c **** 
+  42:user_app/bsp_specific/ral_hal.c **** /*
+  43:user_app/bsp_specific/ral_hal.c ****  * -----------------------------------------------------------------------------
+  44:user_app/bsp_specific/ral_hal.c ****  * --- PRIVATE MACROS-----------------------------------------------------------
+  45:user_app/bsp_specific/ral_hal.c ****  */
+  46:user_app/bsp_specific/ral_hal.c **** 
+  47:user_app/bsp_specific/ral_hal.c **** /*
+  48:user_app/bsp_specific/ral_hal.c ****  * -----------------------------------------------------------------------------
+  49:user_app/bsp_specific/ral_hal.c ****  * --- PRIVATE CONSTANTS -------------------------------------------------------
+  50:user_app/bsp_specific/ral_hal.c ****  */
+  51:user_app/bsp_specific/ral_hal.c **** 
+  52:user_app/bsp_specific/ral_hal.c **** /*
+  53:user_app/bsp_specific/ral_hal.c ****  * -----------------------------------------------------------------------------
+  54:user_app/bsp_specific/ral_hal.c ****  * --- PRIVATE TYPES -----------------------------------------------------------
+  55:user_app/bsp_specific/ral_hal.c ****  */
+  56:user_app/bsp_specific/ral_hal.c **** 
+  57:user_app/bsp_specific/ral_hal.c **** /*
+  58:user_app/bsp_specific/ral_hal.c ****  * -----------------------------------------------------------------------------
+  59:user_app/bsp_specific/ral_hal.c ****  * --- PRIVATE VARIABLES -------------------------------------------------------
+  60:user_app/bsp_specific/ral_hal.c ****  */
+  61:user_app/bsp_specific/ral_hal.c **** 
+  62:user_app/bsp_specific/ral_hal.c **** /*
+  63:user_app/bsp_specific/ral_hal.c ****  * -----------------------------------------------------------------------------
+  64:user_app/bsp_specific/ral_hal.c ****  * --- PRIVATE FUNCTIONS DECLARATION -------------------------------------------
+  65:user_app/bsp_specific/ral_hal.c ****  */
+  66:user_app/bsp_specific/ral_hal.c **** 
+  67:user_app/bsp_specific/ral_hal.c **** /*
+  68:user_app/bsp_specific/ral_hal.c ****  * -----------------------------------------------------------------------------
+  69:user_app/bsp_specific/ral_hal.c ****  * --- PUBLIC FUNCTIONS DEFINITION ---------------------------------------------
+  70:user_app/bsp_specific/ral_hal.c ****  */
+  71:user_app/bsp_specific/ral_hal.c **** 
+  72:user_app/bsp_specific/ral_hal.c **** ral_hal_status_t ral_hal_set_tcxo_on( const void* context, uint16_t tcxo_startup_time_ms )
+  73:user_app/bsp_specific/ral_hal.c **** {
+  26              		.loc 1 73 1 view -0
+  27              		.cfi_startproc
+  28              		@ args = 0, pretend = 0, frame = 0
+  29              		@ frame_needed = 0, uses_anonymous_args = 0
+  30              		@ link register save eliminated.
+  74:user_app/bsp_specific/ral_hal.c ****     // Please populate if user driven tcxo is used in project (tcxo_cfg.tcxo_ctrl_mode == RAL_TCXO_
+  75:user_app/bsp_specific/ral_hal.c ****     return RAL_HAL_STATUS_OK;
+  31              		.loc 1 75 5 view .LVU1
+  76:user_app/bsp_specific/ral_hal.c **** }
+  32              		.loc 1 76 1 is_stmt 0 view .LVU2
+  33 0000 0020     		movs	r0, #0
+  34              	.LVL1:
+  35              		.loc 1 76 1 view .LVU3
+  36              		@ sp needed
+  37 0002 7047     		bx	lr
+  38              		.cfi_endproc
+  39              	.LFE0:
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccOZKt0U.s 			page 3
+
+
+  41              		.section	.text.ral_hal_set_tcxo_off,"ax",%progbits
+  42              		.align	1
+  43              		.global	ral_hal_set_tcxo_off
+  44              		.syntax unified
+  45              		.code	16
+  46              		.thumb_func
+  47              		.fpu softvfp
+  49              	ral_hal_set_tcxo_off:
+  50              	.LVL2:
+  51              	.LFB1:
+  77:user_app/bsp_specific/ral_hal.c **** 
+  78:user_app/bsp_specific/ral_hal.c **** ral_hal_status_t ral_hal_set_tcxo_off( const void* context )
+  79:user_app/bsp_specific/ral_hal.c **** {
+  52              		.loc 1 79 1 is_stmt 1 view -0
+  53              		.cfi_startproc
+  54              		@ args = 0, pretend = 0, frame = 0
+  55              		@ frame_needed = 0, uses_anonymous_args = 0
+  56              		@ link register save eliminated.
+  80:user_app/bsp_specific/ral_hal.c ****     // Please populate if user driven tcxo is used in project (tcxo_cfg.tcxo_ctrl_mode == RAL_TCXO_
+  81:user_app/bsp_specific/ral_hal.c ****     return RAL_HAL_STATUS_OK;
+  57              		.loc 1 81 5 view .LVU5
+  82:user_app/bsp_specific/ral_hal.c **** }
+  58              		.loc 1 82 1 is_stmt 0 view .LVU6
+  59 0000 0020     		movs	r0, #0
+  60              	.LVL3:
+  61              		.loc 1 82 1 view .LVU7
+  62              		@ sp needed
+  63 0002 7047     		bx	lr
+  64              		.cfi_endproc
+  65              	.LFE1:
+  67              		.text
+  68              	.Letext0:
+  69              		.file 2 "/Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.external
+  70              		.file 3 "/Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.external
+  71              		.file 4 "smtc_ral/src/ral_hal.h"
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccOZKt0U.s 			page 4
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 ral_hal.c
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccOZKt0U.s:14     .text.ral_hal_set_tcxo_on:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccOZKt0U.s:22     .text.ral_hal_set_tcxo_on:0000000000000000 ral_hal_set_tcxo_on
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccOZKt0U.s:42     .text.ral_hal_set_tcxo_off:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccOZKt0U.s:49     .text.ral_hal_set_tcxo_off:0000000000000000 ral_hal_set_tcxo_off
+
+NO UNDEFINED SYMBOLS

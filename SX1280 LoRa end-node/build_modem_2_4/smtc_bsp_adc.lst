@@ -1,0 +1,695 @@
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc4KGLSE.s 			page 1
+
+
+   1              		.cpu cortex-m0plus
+   2              		.eabi_attribute 23, 1
+   3              		.eabi_attribute 24, 1
+   4              		.eabi_attribute 25, 1
+   5              		.eabi_attribute 26, 1
+   6              		.eabi_attribute 30, 4
+   7              		.eabi_attribute 34, 0
+   8              		.eabi_attribute 18, 4
+   9              		.file	"smtc_bsp_adc.c"
+  10              		.text
+  11              	.Ltext0:
+  12              		.cfi_sections	.debug_frame
+  13              		.section	.text.bsp_adc_init,"ax",%progbits
+  14              		.align	1
+  15              		.global	bsp_adc_init
+  16              		.arch armv6s-m
+  17              		.syntax unified
+  18              		.code	16
+  19              		.thumb_func
+  20              		.fpu softvfp
+  22              	bsp_adc_init:
+  23              	.LVL0:
+  24              	.LFB47:
+  25              		.file 1 "smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c"
+   1:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c **** /*!
+   2:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****  * \file      smtc_bsp_adc.c
+   3:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****  *
+   4:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****  * \brief     Implements the ADC BSP functions.
+   5:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****  *
+   6:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****  * Revised BSD License
+   7:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****  * Copyright Semtech Corporation 2020. All rights reserved.
+   8:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****  *
+   9:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****  * Redistribution and use in source and binary forms, with or without
+  10:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****  * modification, are permitted provided that the following conditions are met:
+  11:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****  *     * Redistributions of source code must retain the above copyright
+  12:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****  *       notice, this list of conditions and the following disclaimer.
+  13:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****  *     * Redistributions in binary form must reproduce the above copyright
+  14:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****  *       notice, this list of conditions and the following disclaimer in the
+  15:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****  *       documentation and/or other materials provided with the distribution.
+  16:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****  *     * Neither the name of the Semtech corporation nor the
+  17:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****  *       names of its contributors may be used to endorse or promote products
+  18:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****  *       derived from this software without specific prior written permission.
+  19:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****  *
+  20:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+  21:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+  22:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+  23:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****  * ARE DISCLAIMED. IN NO EVENT SHALL SEMTECH CORPORATION BE LIABLE FOR ANY DIRECT,
+  24:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****  * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+  25:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+  26:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+  27:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  28:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+  29:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  30:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****  */
+  31:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c **** 
+  32:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c **** /*
+  33:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****  * -----------------------------------------------------------------------------
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc4KGLSE.s 			page 2
+
+
+  34:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****  * --- DEPENDENCIES ------------------------------------------------------------
+  35:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****  */
+  36:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c **** 
+  37:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c **** #include <stdint.h>   // C99 types
+  38:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c **** #include <stdbool.h>  // bool type
+  39:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c **** 
+  40:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c **** #include "stm32l0xx_hal.h"
+  41:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c **** #include "smtc_bsp_mcu.h"
+  42:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c **** /*
+  43:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****  * -----------------------------------------------------------------------------
+  44:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****  * --- PRIVATE MACROS-----------------------------------------------------------
+  45:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****  */
+  46:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c **** 
+  47:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c **** /*
+  48:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****  * -----------------------------------------------------------------------------
+  49:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****  * --- PRIVATE CONSTANTS -------------------------------------------------------
+  50:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****  */
+  51:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c **** 
+  52:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c **** /*
+  53:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****  * -----------------------------------------------------------------------------
+  54:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****  * --- PRIVATE TYPES -----------------------------------------------------------
+  55:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****  */
+  56:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c **** 
+  57:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c **** typedef struct bsp_adc_s
+  58:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c **** {
+  59:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****     ADC_TypeDef*           interface;
+  60:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****     ADC_HandleTypeDef      handle;
+  61:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****     ADC_ChannelConfTypeDef channel;
+  62:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c **** } bsp_adc_t;
+  63:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c **** 
+  64:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c **** /*
+  65:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****  * -----------------------------------------------------------------------------
+  66:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****  * --- PRIVATE VARIABLES -------------------------------------------------------
+  67:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****  */
+  68:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c **** 
+  69:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c **** #if defined( __GNUC__ )
+  70:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c **** #pragma GCC diagnostic ignored "-Wmissing-braces"
+  71:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c **** #endif
+  72:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c **** static bsp_adc_t bsp_adc[] = { 
+  73:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****     [0] =
+  74:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****         {
+  75:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****             .interface = ADC1,
+  76:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****         },
+  77:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c **** }
+  78:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c **** ;
+  79:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c **** 
+  80:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c **** /*
+  81:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****  * -----------------------------------------------------------------------------
+  82:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****  * --- PRIVATE FUNCTIONS DECLARATION -------------------------------------------
+  83:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****  */
+  84:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c **** 
+  85:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c **** /*
+  86:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****  * -----------------------------------------------------------------------------
+  87:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****  * --- PUBLIC FUNCTIONS DEFINITION ---------------------------------------------
+  88:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****  */
+  89:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c **** 
+  90:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c **** void bsp_adc_init( const uint32_t id )
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc4KGLSE.s 			page 3
+
+
+  91:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c **** {
+  26              		.loc 1 91 1 view -0
+  27              		.cfi_startproc
+  28              		@ args = 0, pretend = 0, frame = 0
+  29              		@ frame_needed = 0, uses_anonymous_args = 0
+  92:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****     assert_param( ( id > 0 ) && ( ( id - 1 ) < sizeof( bsp_adc_t ) ) );
+  30              		.loc 1 92 5 view .LVU1
+  93:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****     uint32_t local_id = id - 1;
+  31              		.loc 1 93 5 view .LVU2
+  91:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****     assert_param( ( id > 0 ) && ( ( id - 1 ) < sizeof( bsp_adc_t ) ) );
+  32              		.loc 1 91 1 is_stmt 0 view .LVU3
+  33 0000 F8B5     		push	{r3, r4, r5, r6, r7, lr}
+  34              		.cfi_def_cfa_offset 24
+  35              		.cfi_offset 3, -24
+  36              		.cfi_offset 4, -20
+  37              		.cfi_offset 5, -16
+  38              		.cfi_offset 6, -12
+  39              		.cfi_offset 7, -8
+  40              		.cfi_offset 14, -4
+  94:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c **** 
+  95:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****     bsp_adc[local_id].handle.Instance = bsp_adc[local_id].interface;
+  41              		.loc 1 95 39 view .LVU4
+  42 0002 6823     		movs	r3, #104
+  96:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c **** 
+  97:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****     bsp_adc[local_id].handle.Init.ClockPrescaler        = ADC_CLOCKPRESCALER_PCLK_DIV4;
+  98:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****     bsp_adc[local_id].handle.Init.Resolution            = ADC_RESOLUTION12b;
+  99:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****     bsp_adc[local_id].handle.Init.DataAlign             = ADC_DATAALIGN_RIGHT;
+ 100:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****     bsp_adc[local_id].handle.Init.ExternalTrigConvEdge  = ADC_EXTERNALTRIGCONVEDGE_NONE;
+ 101:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****     bsp_adc[local_id].handle.Init.ExternalTrigConv      = ADC_SOFTWARE_START;
+  43              		.loc 1 101 57 view .LVU5
+  44 0004 C226     		movs	r6, #194
+  45 0006 0027     		movs	r7, #0
+  93:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c **** 
+  46              		.loc 1 93 14 view .LVU6
+  47 0008 0138     		subs	r0, r0, #1
+  48              	.LVL1:
+  95:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c **** 
+  49              		.loc 1 95 5 is_stmt 1 view .LVU7
+  95:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c **** 
+  50              		.loc 1 95 39 is_stmt 0 view .LVU8
+  51 000a 5843     		muls	r0, r3
+  52              	.LVL2:
+  95:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c **** 
+  53              		.loc 1 95 39 view .LVU9
+  54 000c 1E4C     		ldr	r4, .L14
+  55              		.loc 1 101 57 view .LVU10
+  56 000e FF36     		adds	r6, r6, #255
+  95:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c **** 
+  57              		.loc 1 95 39 view .LVU11
+  58 0010 2318     		adds	r3, r4, r0
+  59 0012 0259     		ldr	r2, [r0, r4]
+  60              		.loc 1 101 57 view .LVU12
+  61 0014 9E62     		str	r6, [r3, #40]
+  62 0016 DF62     		str	r7, [r3, #44]
+  97:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****     bsp_adc[local_id].handle.Init.Resolution            = ADC_RESOLUTION12b;
+  63              		.loc 1 97 57 view .LVU13
+  64 0018 8026     		movs	r6, #128
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc4KGLSE.s 			page 4
+
+
+  65 001a 0027     		movs	r7, #0
+  66 001c 3606     		lsls	r6, r6, #24
+  67 001e 9E60     		str	r6, [r3, #8]
+  68 0020 DF60     		str	r7, [r3, #12]
+  69 0022 0026     		movs	r6, #0
+  70 0024 0027     		movs	r7, #0
+  95:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c **** 
+  71              		.loc 1 95 39 view .LVU14
+  72 0026 5A60     		str	r2, [r3, #4]
+  97:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****     bsp_adc[local_id].handle.Init.Resolution            = ADC_RESOLUTION12b;
+  73              		.loc 1 97 5 is_stmt 1 view .LVU15
+  98:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****     bsp_adc[local_id].handle.Init.DataAlign             = ADC_DATAALIGN_RIGHT;
+  74              		.loc 1 98 5 view .LVU16
+  99:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****     bsp_adc[local_id].handle.Init.ExternalTrigConvEdge  = ADC_EXTERNALTRIGCONVEDGE_NONE;
+  75              		.loc 1 99 5 view .LVU17
+ 100:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****     bsp_adc[local_id].handle.Init.ExternalTrigConv      = ADC_SOFTWARE_START;
+  76              		.loc 1 100 5 view .LVU18
+  77              		.loc 1 101 5 view .LVU19
+ 102:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****     bsp_adc[local_id].handle.Init.EOCSelection          = EOC_SINGLE_CONV;
+  78              		.loc 1 102 5 view .LVU20
+ 103:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****     bsp_adc[local_id].handle.Init.SamplingTime          = ADC_SAMPLETIME_160CYCLES_5;
+  79              		.loc 1 103 5 view .LVU21
+  80              		.loc 1 103 57 is_stmt 0 view .LVU22
+  81 0028 0722     		movs	r2, #7
+  97:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****     bsp_adc[local_id].handle.Init.Resolution            = ADC_RESOLUTION12b;
+  82              		.loc 1 97 57 view .LVU23
+  83 002a 1E61     		str	r6, [r3, #16]
+  84 002c 5F61     		str	r7, [r3, #20]
+  85 002e 0426     		movs	r6, #4
+  86 0030 0127     		movs	r7, #1
+  87              		.loc 1 103 57 view .LVU24
+  88 0032 DA63     		str	r2, [r3, #60]
+ 104:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****     bsp_adc[local_id].handle.Init.Overrun               = ADC_OVR_DATA_PRESERVED;
+  89              		.loc 1 104 5 is_stmt 1 view .LVU25
+  90              		.loc 1 104 57 is_stmt 0 view .LVU26
+  91 0034 0022     		movs	r2, #0
+  97:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****     bsp_adc[local_id].handle.Init.Resolution            = ADC_RESOLUTION12b;
+  92              		.loc 1 97 57 view .LVU27
+  93 0036 9E61     		str	r6, [r3, #24]
+  94 0038 DF61     		str	r7, [r3, #28]
+ 105:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****     bsp_adc[local_id].handle.Init.LowPowerAutoWait      = ENABLE;
+ 106:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****     bsp_adc[local_id].handle.Init.ScanConvMode          = DISABLE;
+ 107:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****     bsp_adc[local_id].handle.Init.ContinuousConvMode    = DISABLE;
+ 108:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****     bsp_adc[local_id].handle.Init.DiscontinuousConvMode = DISABLE;
+ 109:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****     bsp_adc[local_id].handle.Init.LowPowerAutoPowerOff  = DISABLE;
+ 110:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****     bsp_adc[local_id].handle.Init.LowPowerFrequencyMode = DISABLE;
+ 111:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****     bsp_adc[local_id].handle.Init.OversamplingMode      = DISABLE;
+ 112:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****     bsp_adc[local_id].handle.Init.DMAContinuousRequests = DISABLE;
+ 113:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c **** 
+ 114:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****     bsp_adc[local_id].channel.Channel = ADC_CHANNEL_TEMPSENSOR;
+  95              		.loc 1 114 39 view .LVU28
+  96 003a 0600     		movs	r6, r0
+ 104:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****     bsp_adc[local_id].handle.Init.Overrun               = ADC_OVR_DATA_PRESERVED;
+  97              		.loc 1 104 57 view .LVU29
+  98 003c 5A63     		str	r2, [r3, #52]
+ 105:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****     bsp_adc[local_id].handle.Init.LowPowerAutoWait      = ENABLE;
+  99              		.loc 1 105 5 is_stmt 1 view .LVU30
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc4KGLSE.s 			page 5
+
+
+ 106:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****     bsp_adc[local_id].handle.Init.ContinuousConvMode    = DISABLE;
+ 100              		.loc 1 106 5 view .LVU31
+ 107:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****     bsp_adc[local_id].handle.Init.DiscontinuousConvMode = DISABLE;
+ 101              		.loc 1 107 5 view .LVU32
+ 108:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****     bsp_adc[local_id].handle.Init.LowPowerAutoPowerOff  = DISABLE;
+ 102              		.loc 1 108 5 view .LVU33
+ 109:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****     bsp_adc[local_id].handle.Init.LowPowerFrequencyMode = DISABLE;
+ 103              		.loc 1 109 5 view .LVU34
+ 110:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****     bsp_adc[local_id].handle.Init.OversamplingMode      = DISABLE;
+ 104              		.loc 1 110 57 is_stmt 0 view .LVU35
+ 105 003e 9A63     		str	r2, [r3, #56]
+ 111:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****     bsp_adc[local_id].handle.Init.DMAContinuousRequests = DISABLE;
+ 106              		.loc 1 111 57 view .LVU36
+ 107 0040 1A64     		str	r2, [r3, #64]
+ 109:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****     bsp_adc[local_id].handle.Init.LowPowerFrequencyMode = DISABLE;
+ 108              		.loc 1 109 57 view .LVU37
+ 109 0042 1A62     		str	r2, [r3, #32]
+ 107:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****     bsp_adc[local_id].handle.Init.DiscontinuousConvMode = DISABLE;
+ 110              		.loc 1 107 57 view .LVU38
+ 111 0044 9A84     		strh	r2, [r3, #36]
+ 110:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****     bsp_adc[local_id].handle.Init.OversamplingMode      = DISABLE;
+ 112              		.loc 1 110 5 is_stmt 1 view .LVU39
+ 111:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****     bsp_adc[local_id].handle.Init.DMAContinuousRequests = DISABLE;
+ 113              		.loc 1 111 5 view .LVU40
+ 112:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c **** 
+ 114              		.loc 1 112 5 view .LVU41
+ 112:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c **** 
+ 115              		.loc 1 112 57 is_stmt 0 view .LVU42
+ 116 0046 3033     		adds	r3, r3, #48
+ 117 0048 1A70     		strb	r2, [r3]
+ 118              		.loc 1 114 5 is_stmt 1 view .LVU43
+ 115:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****     bsp_adc[local_id].channel.Rank    = 1;
+ 119              		.loc 1 115 5 view .LVU44
+ 114:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****     bsp_adc[local_id].channel.Rank    = 1;
+ 120              		.loc 1 114 39 is_stmt 0 view .LVU45
+ 121 004a 0123     		movs	r3, #1
+ 116:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c **** 
+ 117:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****     if( HAL_ADC_Init( &bsp_adc[local_id].handle ) != HAL_OK )
+ 122              		.loc 1 117 9 view .LVU46
+ 123 004c 051D     		adds	r5, r0, #4
+ 114:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****     bsp_adc[local_id].channel.Rank    = 1;
+ 124              		.loc 1 114 39 view .LVU47
+ 125 004e 0F4A     		ldr	r2, .L14+4
+ 126 0050 6036     		adds	r6, r6, #96
+ 127 0052 A119     		adds	r1, r4, r6
+ 128              		.loc 1 117 9 view .LVU48
+ 129 0054 6519     		adds	r5, r4, r5
+ 130 0056 2800     		movs	r0, r5
+ 114:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****     bsp_adc[local_id].channel.Rank    = 1;
+ 131              		.loc 1 114 39 view .LVU49
+ 132 0058 0A60     		str	r2, [r1]
+ 133 005a 4B60     		str	r3, [r1, #4]
+ 134              		.loc 1 117 5 is_stmt 1 view .LVU50
+ 135              		.loc 1 117 9 is_stmt 0 view .LVU51
+ 136 005c FFF7FEFF 		bl	HAL_ADC_Init
+ 137              	.LVL3:
+ 138              		.loc 1 117 7 view .LVU52
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc4KGLSE.s 			page 6
+
+
+ 139 0060 0028     		cmp	r0, #0
+ 140 0062 01D0     		beq	.L2
+ 118:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****     {
+ 119:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****         bsp_mcu_panic( );
+ 141              		.loc 1 119 9 is_stmt 1 view .LVU53
+ 142 0064 FFF7FEFF 		bl	bsp_mcu_panic
+ 143              	.LVL4:
+ 144              	.L2:
+ 120:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****     }
+ 121:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c **** 
+ 122:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****     if( HAL_ADC_ConfigChannel( &bsp_adc[local_id].handle, &bsp_adc[local_id].channel ) != HAL_OK )
+ 145              		.loc 1 122 5 view .LVU54
+ 146              		.loc 1 122 9 is_stmt 0 view .LVU55
+ 147 0068 2800     		movs	r0, r5
+ 148 006a A119     		adds	r1, r4, r6
+ 149 006c FFF7FEFF 		bl	HAL_ADC_ConfigChannel
+ 150              	.LVL5:
+ 151              		.loc 1 122 7 view .LVU56
+ 152 0070 0028     		cmp	r0, #0
+ 153 0072 01D0     		beq	.L3
+ 123:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****     {
+ 124:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****         bsp_mcu_panic( );
+ 154              		.loc 1 124 9 is_stmt 1 view .LVU57
+ 155 0074 FFF7FEFF 		bl	bsp_mcu_panic
+ 156              	.LVL6:
+ 157              	.L3:
+ 125:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****     }
+ 126:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c **** 
+ 127:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****     if( HAL_ADC_Start( &bsp_adc[local_id].handle ) != HAL_OK )
+ 158              		.loc 1 127 5 view .LVU58
+ 159              		.loc 1 127 9 is_stmt 0 view .LVU59
+ 160 0078 2800     		movs	r0, r5
+ 161 007a FFF7FEFF 		bl	HAL_ADC_Start
+ 162              	.LVL7:
+ 163              		.loc 1 127 7 view .LVU60
+ 164 007e 0028     		cmp	r0, #0
+ 165 0080 01D0     		beq	.L1
+ 128:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****     {
+ 129:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****         bsp_mcu_panic( );
+ 166              		.loc 1 129 9 is_stmt 1 view .LVU61
+ 167 0082 FFF7FEFF 		bl	bsp_mcu_panic
+ 168              	.LVL8:
+ 169              	.L1:
+ 130:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****     }
+ 131:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c **** }
+ 170              		.loc 1 131 1 is_stmt 0 view .LVU62
+ 171              		@ sp needed
+ 172 0086 F8BD     		pop	{r3, r4, r5, r6, r7, pc}
+ 173              	.L15:
+ 174              		.align	2
+ 175              	.L14:
+ 176 0088 00000000 		.word	.LANCHOR0
+ 177 008c 00000448 		.word	1208221696
+ 178              		.cfi_endproc
+ 179              	.LFE47:
+ 181              		.section	.text.bsp_adc_get_value,"ax",%progbits
+ 182              		.align	1
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc4KGLSE.s 			page 7
+
+
+ 183              		.global	bsp_adc_get_value
+ 184              		.syntax unified
+ 185              		.code	16
+ 186              		.thumb_func
+ 187              		.fpu softvfp
+ 189              	bsp_adc_get_value:
+ 190              	.LVL9:
+ 191              	.LFB48:
+ 132:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c **** 
+ 133:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c **** uint32_t bsp_adc_get_value( const uint32_t id, const uint32_t timeout_ms )
+ 134:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c **** {
+ 192              		.loc 1 134 1 is_stmt 1 view -0
+ 193              		.cfi_startproc
+ 194              		@ args = 0, pretend = 0, frame = 0
+ 195              		@ frame_needed = 0, uses_anonymous_args = 0
+ 135:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****     assert_param( ( id > 0 ) && ( ( id - 1 ) < sizeof( bsp_adc ) ) );
+ 196              		.loc 1 135 5 view .LVU64
+ 136:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****     uint32_t local_id = id - 1;
+ 197              		.loc 1 136 5 view .LVU65
+ 137:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c **** 
+ 138:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****     // Wait for end of conversion
+ 139:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****     if( HAL_ADC_PollForConversion( &bsp_adc[local_id].handle, timeout_ms ) != HAL_OK )
+ 198              		.loc 1 139 5 view .LVU66
+ 136:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****     uint32_t local_id = id - 1;
+ 199              		.loc 1 136 14 is_stmt 0 view .LVU67
+ 200 0000 431E     		subs	r3, r0, #1
+ 201              	.LVL10:
+ 202              		.loc 1 139 9 view .LVU68
+ 203 0002 6820     		movs	r0, #104
+ 204              	.LVL11:
+ 205              		.loc 1 139 9 view .LVU69
+ 206 0004 5843     		muls	r0, r3
+ 134:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****     assert_param( ( id > 0 ) && ( ( id - 1 ) < sizeof( bsp_adc ) ) );
+ 207              		.loc 1 134 1 view .LVU70
+ 208 0006 10B5     		push	{r4, lr}
+ 209              		.cfi_def_cfa_offset 8
+ 210              		.cfi_offset 4, -8
+ 211              		.cfi_offset 14, -4
+ 212              		.loc 1 139 9 view .LVU71
+ 213 0008 064C     		ldr	r4, .L21
+ 214 000a 0430     		adds	r0, r0, #4
+ 215 000c 2418     		adds	r4, r4, r0
+ 216 000e 2000     		movs	r0, r4
+ 217 0010 FFF7FEFF 		bl	HAL_ADC_PollForConversion
+ 218              	.LVL12:
+ 219              		.loc 1 139 7 view .LVU72
+ 220 0014 0028     		cmp	r0, #0
+ 221 0016 01D0     		beq	.L17
+ 140:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****     {
+ 141:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****         bsp_mcu_panic( );
+ 222              		.loc 1 141 9 is_stmt 1 view .LVU73
+ 223 0018 FFF7FEFF 		bl	bsp_mcu_panic
+ 224              	.LVL13:
+ 225              	.L17:
+ 142:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****     }
+ 143:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c **** 
+ 144:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****     // Read ADC Value
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc4KGLSE.s 			page 8
+
+
+ 145:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****     return HAL_ADC_GetValue( &bsp_adc[local_id].handle );
+ 226              		.loc 1 145 5 view .LVU74
+ 227              		.loc 1 145 12 is_stmt 0 view .LVU75
+ 228 001c 2000     		movs	r0, r4
+ 229 001e FFF7FEFF 		bl	HAL_ADC_GetValue
+ 230              	.LVL14:
+ 146:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c **** }
+ 231              		.loc 1 146 1 view .LVU76
+ 232              		@ sp needed
+ 233 0022 10BD     		pop	{r4, pc}
+ 234              	.L22:
+ 235              		.align	2
+ 236              	.L21:
+ 237 0024 00000000 		.word	.LANCHOR0
+ 238              		.cfi_endproc
+ 239              	.LFE48:
+ 241              		.section	.text.bsp_adc_deinit,"ax",%progbits
+ 242              		.align	1
+ 243              		.global	bsp_adc_deinit
+ 244              		.syntax unified
+ 245              		.code	16
+ 246              		.thumb_func
+ 247              		.fpu softvfp
+ 249              	bsp_adc_deinit:
+ 250              	.LVL15:
+ 251              	.LFB49:
+ 147:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c **** 
+ 148:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c **** void bsp_adc_deinit( const uint32_t id )
+ 149:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c **** {
+ 252              		.loc 1 149 1 is_stmt 1 view -0
+ 253              		.cfi_startproc
+ 254              		@ args = 0, pretend = 0, frame = 0
+ 255              		@ frame_needed = 0, uses_anonymous_args = 0
+ 150:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****     assert_param( ( id > 0 ) && ( ( id - 1 ) < sizeof( bsp_adc ) ) );
+ 256              		.loc 1 150 5 view .LVU78
+ 151:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****     uint32_t local_id = id - 1;
+ 257              		.loc 1 151 5 view .LVU79
+ 152:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c **** 
+ 153:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****     HAL_ADC_DeInit( &bsp_adc[local_id].handle );
+ 258              		.loc 1 153 5 view .LVU80
+ 151:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****     uint32_t local_id = id - 1;
+ 259              		.loc 1 151 14 is_stmt 0 view .LVU81
+ 260 0000 431E     		subs	r3, r0, #1
+ 261              	.LVL16:
+ 262              		.loc 1 153 5 view .LVU82
+ 263 0002 6820     		movs	r0, #104
+ 264              	.LVL17:
+ 265              		.loc 1 153 5 view .LVU83
+ 266 0004 5843     		muls	r0, r3
+ 149:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****     assert_param( ( id > 0 ) && ( ( id - 1 ) < sizeof( bsp_adc ) ) );
+ 267              		.loc 1 149 1 view .LVU84
+ 268 0006 10B5     		push	{r4, lr}
+ 269              		.cfi_def_cfa_offset 8
+ 270              		.cfi_offset 4, -8
+ 271              		.cfi_offset 14, -4
+ 272              		.loc 1 153 5 view .LVU85
+ 273 0008 024B     		ldr	r3, .L24
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc4KGLSE.s 			page 9
+
+
+ 274              	.LVL18:
+ 275              		.loc 1 153 5 view .LVU86
+ 276 000a 0430     		adds	r0, r0, #4
+ 277 000c 1818     		adds	r0, r3, r0
+ 278 000e FFF7FEFF 		bl	HAL_ADC_DeInit
+ 279              	.LVL19:
+ 154:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c **** }
+ 280              		.loc 1 154 1 view .LVU87
+ 281              		@ sp needed
+ 282 0012 10BD     		pop	{r4, pc}
+ 283              	.L25:
+ 284              		.align	2
+ 285              	.L24:
+ 286 0014 00000000 		.word	.LANCHOR0
+ 287              		.cfi_endproc
+ 288              	.LFE49:
+ 290              		.section	.text.HAL_ADC_MspInit,"ax",%progbits
+ 291              		.align	1
+ 292              		.global	HAL_ADC_MspInit
+ 293              		.syntax unified
+ 294              		.code	16
+ 295              		.thumb_func
+ 296              		.fpu softvfp
+ 298              	HAL_ADC_MspInit:
+ 299              	.LVL20:
+ 300              	.LFB50:
+ 155:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c **** 
+ 156:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c **** void HAL_ADC_MspInit( ADC_HandleTypeDef* adc_handle )
+ 157:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c **** {
+ 301              		.loc 1 157 1 is_stmt 1 view -0
+ 302              		.cfi_startproc
+ 303              		@ args = 0, pretend = 0, frame = 0
+ 304              		@ frame_needed = 0, uses_anonymous_args = 0
+ 158:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****     if( adc_handle->Instance == bsp_adc[0].interface )
+ 305              		.loc 1 158 5 view .LVU89
+ 306              		.loc 1 158 7 is_stmt 0 view .LVU90
+ 307 0000 074B     		ldr	r3, .L29
+ 308 0002 0268     		ldr	r2, [r0]
+ 309 0004 1B68     		ldr	r3, [r3]
+ 157:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****     if( adc_handle->Instance == bsp_adc[0].interface )
+ 310              		.loc 1 157 1 view .LVU91
+ 311 0006 10B5     		push	{r4, lr}
+ 312              		.cfi_def_cfa_offset 8
+ 313              		.cfi_offset 4, -8
+ 314              		.cfi_offset 14, -4
+ 315              		.loc 1 158 7 view .LVU92
+ 316 0008 9A42     		cmp	r2, r3
+ 317 000a 06D1     		bne	.L27
+ 159:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****     {
+ 160:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****         __HAL_RCC_ADC1_CLK_ENABLE( );
+ 318              		.loc 1 160 9 is_stmt 1 view .LVU93
+ 319 000c 8023     		movs	r3, #128
+ 320 000e 054A     		ldr	r2, .L29+4
+ 321 0010 9B00     		lsls	r3, r3, #2
+ 322 0012 516B     		ldr	r1, [r2, #52]
+ 323 0014 0B43     		orrs	r3, r1
+ 324 0016 5363     		str	r3, [r2, #52]
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc4KGLSE.s 			page 10
+
+
+ 325              	.LVL21:
+ 326              	.L26:
+ 161:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****     }
+ 162:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****     else
+ 163:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****     {
+ 164:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****         bsp_mcu_panic( );
+ 165:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****     }
+ 166:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c **** }
+ 327              		.loc 1 166 1 is_stmt 0 view .LVU94
+ 328              		@ sp needed
+ 329 0018 10BD     		pop	{r4, pc}
+ 330              	.LVL22:
+ 331              	.L27:
+ 164:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****     }
+ 332              		.loc 1 164 9 is_stmt 1 view .LVU95
+ 333 001a FFF7FEFF 		bl	bsp_mcu_panic
+ 334              	.LVL23:
+ 335              		.loc 1 166 1 is_stmt 0 view .LVU96
+ 336 001e FBE7     		b	.L26
+ 337              	.L30:
+ 338              		.align	2
+ 339              	.L29:
+ 340 0020 00000000 		.word	.LANCHOR0
+ 341 0024 00100240 		.word	1073876992
+ 342              		.cfi_endproc
+ 343              	.LFE50:
+ 345              		.section	.text.HAL_ADC_MspDeInit,"ax",%progbits
+ 346              		.align	1
+ 347              		.global	HAL_ADC_MspDeInit
+ 348              		.syntax unified
+ 349              		.code	16
+ 350              		.thumb_func
+ 351              		.fpu softvfp
+ 353              	HAL_ADC_MspDeInit:
+ 354              	.LVL24:
+ 355              	.LFB51:
+ 167:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c **** 
+ 168:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c **** void HAL_ADC_MspDeInit( ADC_HandleTypeDef* adc_handle )
+ 169:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c **** {
+ 356              		.loc 1 169 1 is_stmt 1 view -0
+ 357              		.cfi_startproc
+ 358              		@ args = 0, pretend = 0, frame = 0
+ 359              		@ frame_needed = 0, uses_anonymous_args = 0
+ 170:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****     if( adc_handle->Instance == bsp_adc[0].interface )
+ 360              		.loc 1 170 5 view .LVU98
+ 361              		.loc 1 170 7 is_stmt 0 view .LVU99
+ 362 0000 074B     		ldr	r3, .L34
+ 363 0002 0268     		ldr	r2, [r0]
+ 364 0004 1B68     		ldr	r3, [r3]
+ 169:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****     if( adc_handle->Instance == bsp_adc[0].interface )
+ 365              		.loc 1 169 1 view .LVU100
+ 366 0006 10B5     		push	{r4, lr}
+ 367              		.cfi_def_cfa_offset 8
+ 368              		.cfi_offset 4, -8
+ 369              		.cfi_offset 14, -4
+ 370              		.loc 1 170 7 view .LVU101
+ 371 0008 9A42     		cmp	r2, r3
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc4KGLSE.s 			page 11
+
+
+ 372 000a 05D1     		bne	.L32
+ 171:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****     {
+ 172:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****         __HAL_RCC_ADC1_CLK_DISABLE( );
+ 373              		.loc 1 172 9 is_stmt 1 view .LVU102
+ 374 000c 054A     		ldr	r2, .L34+4
+ 375 000e 0649     		ldr	r1, .L34+8
+ 376 0010 536B     		ldr	r3, [r2, #52]
+ 377 0012 0B40     		ands	r3, r1
+ 378 0014 5363     		str	r3, [r2, #52]
+ 379              	.LVL25:
+ 380              	.L31:
+ 173:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****     }
+ 174:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****     else
+ 175:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****     {
+ 176:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****         bsp_mcu_panic( );
+ 177:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****     }
+ 178:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c **** }
+ 381              		.loc 1 178 1 is_stmt 0 view .LVU103
+ 382              		@ sp needed
+ 383 0016 10BD     		pop	{r4, pc}
+ 384              	.LVL26:
+ 385              	.L32:
+ 176:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_adc.c ****     }
+ 386              		.loc 1 176 9 is_stmt 1 view .LVU104
+ 387 0018 FFF7FEFF 		bl	bsp_mcu_panic
+ 388              	.LVL27:
+ 389              		.loc 1 178 1 is_stmt 0 view .LVU105
+ 390 001c FBE7     		b	.L31
+ 391              	.L35:
+ 392 001e C046     		.align	2
+ 393              	.L34:
+ 394 0020 00000000 		.word	.LANCHOR0
+ 395 0024 00100240 		.word	1073876992
+ 396 0028 FFFDFFFF 		.word	-513
+ 397              		.cfi_endproc
+ 398              	.LFE51:
+ 400              		.section	.data.bsp_adc,"aw"
+ 401              		.align	3
+ 402              		.set	.LANCHOR0,. + 0
+ 405              	bsp_adc:
+ 406 0000 00240140 		.word	1073816576
+ 407 0004 00000000 		.space	100
+ 407      00000000 
+ 407      00000000 
+ 407      00000000 
+ 407      00000000 
+ 408              		.text
+ 409              	.Letext0:
+ 410              		.file 2 "/Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.external
+ 411              		.file 3 "/Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.external
+ 412              		.file 4 "user_app/mcu_core/system_stm32l0xx.h"
+ 413              		.file 5 "user_app/mcu_core/stm32l073xx.h"
+ 414              		.file 6 "user_app/mcu_core/stm32l0xx.h"
+ 415              		.file 7 "smtc_bsp/arm/stm32/stm32_hal/STM32L0xx_HAL_Driver/Inc/stm32l0xx_hal_def.h"
+ 416              		.file 8 "smtc_bsp/arm/stm32/stm32_hal/STM32L0xx_HAL_Driver/Inc/stm32l0xx_hal_dma.h"
+ 417              		.file 9 "smtc_bsp/arm/stm32/stm32_hal/STM32L0xx_HAL_Driver/Inc/stm32l0xx_hal_adc.h"
+ 418              		.file 10 "smtc_bsp/arm/stm32/stm32_hal/STM32L0xx_HAL_Driver/Inc/stm32l0xx_hal.h"
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc4KGLSE.s 			page 12
+
+
+ 419              		.file 11 "smtc_bsp/smtc_bsp_mcu.h"
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc4KGLSE.s 			page 13
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 smtc_bsp_adc.c
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc4KGLSE.s:14     .text.bsp_adc_init:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc4KGLSE.s:22     .text.bsp_adc_init:0000000000000000 bsp_adc_init
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc4KGLSE.s:176    .text.bsp_adc_init:0000000000000088 $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc4KGLSE.s:182    .text.bsp_adc_get_value:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc4KGLSE.s:189    .text.bsp_adc_get_value:0000000000000000 bsp_adc_get_value
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc4KGLSE.s:237    .text.bsp_adc_get_value:0000000000000024 $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc4KGLSE.s:242    .text.bsp_adc_deinit:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc4KGLSE.s:249    .text.bsp_adc_deinit:0000000000000000 bsp_adc_deinit
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc4KGLSE.s:286    .text.bsp_adc_deinit:0000000000000014 $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc4KGLSE.s:291    .text.HAL_ADC_MspInit:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc4KGLSE.s:298    .text.HAL_ADC_MspInit:0000000000000000 HAL_ADC_MspInit
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc4KGLSE.s:340    .text.HAL_ADC_MspInit:0000000000000020 $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc4KGLSE.s:346    .text.HAL_ADC_MspDeInit:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc4KGLSE.s:353    .text.HAL_ADC_MspDeInit:0000000000000000 HAL_ADC_MspDeInit
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc4KGLSE.s:394    .text.HAL_ADC_MspDeInit:0000000000000020 $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc4KGLSE.s:401    .data.bsp_adc:0000000000000000 $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc4KGLSE.s:405    .data.bsp_adc:0000000000000000 bsp_adc
+
+UNDEFINED SYMBOLS
+HAL_ADC_Init
+bsp_mcu_panic
+HAL_ADC_ConfigChannel
+HAL_ADC_Start
+HAL_ADC_PollForConversion
+HAL_ADC_GetValue
+HAL_ADC_DeInit

@@ -1,0 +1,2889 @@
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s 			page 1
+
+
+   1              		.cpu cortex-m0plus
+   2              		.eabi_attribute 23, 1
+   3              		.eabi_attribute 24, 1
+   4              		.eabi_attribute 25, 1
+   5              		.eabi_attribute 26, 1
+   6              		.eabi_attribute 30, 4
+   7              		.eabi_attribute 34, 0
+   8              		.eabi_attribute 18, 4
+   9              		.file	"lorawan_api.c"
+  10              		.text
+  11              	.Ltext0:
+  12              		.cfi_sections	.debug_frame
+  13              		.section	.text.lorawan_api_init,"ax",%progbits
+  14              		.align	1
+  15              		.global	lorawan_api_init
+  16              		.arch armv6s-m
+  17              		.syntax unified
+  18              		.code	16
+  19              		.thumb_func
+  20              		.fpu softvfp
+  22              	lorawan_api_init:
+  23              	.LVL0:
+  24              	.LFB9:
+  25              		.file 1 "smtc_modem_core/lorawan_api/lorawan_api.c"
+   1:smtc_modem_core/lorawan_api/lorawan_api.c **** /*!
+   2:smtc_modem_core/lorawan_api/lorawan_api.c ****  * \file      lorawan_api.c
+   3:smtc_modem_core/lorawan_api/lorawan_api.c ****  *
+   4:smtc_modem_core/lorawan_api/lorawan_api.c ****  * \brief     Lorawan abstraction layer functions.
+   5:smtc_modem_core/lorawan_api/lorawan_api.c ****  *
+   6:smtc_modem_core/lorawan_api/lorawan_api.c ****  * Revised BSD License
+   7:smtc_modem_core/lorawan_api/lorawan_api.c ****  * Copyright Semtech Corporation 2020. All rights reserved.
+   8:smtc_modem_core/lorawan_api/lorawan_api.c ****  *
+   9:smtc_modem_core/lorawan_api/lorawan_api.c ****  * Redistribution and use in source and binary forms, with or without
+  10:smtc_modem_core/lorawan_api/lorawan_api.c ****  * modification, are permitted provided that the following conditions are met:
+  11:smtc_modem_core/lorawan_api/lorawan_api.c ****  *     * Redistributions of source code must retain the above copyright
+  12:smtc_modem_core/lorawan_api/lorawan_api.c ****  *       notice, this list of conditions and the following disclaimer.
+  13:smtc_modem_core/lorawan_api/lorawan_api.c ****  *     * Redistributions in binary form must reproduce the above copyright
+  14:smtc_modem_core/lorawan_api/lorawan_api.c ****  *       notice, this list of conditions and the following disclaimer in the
+  15:smtc_modem_core/lorawan_api/lorawan_api.c ****  *       documentation and/or other materials provided with the distribution.
+  16:smtc_modem_core/lorawan_api/lorawan_api.c ****  *     * Neither the name of the Semtech corporation nor the
+  17:smtc_modem_core/lorawan_api/lorawan_api.c ****  *       names of its contributors may be used to endorse or promote products
+  18:smtc_modem_core/lorawan_api/lorawan_api.c ****  *       derived from this software without specific prior written permission.
+  19:smtc_modem_core/lorawan_api/lorawan_api.c ****  *
+  20:smtc_modem_core/lorawan_api/lorawan_api.c ****  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+  21:smtc_modem_core/lorawan_api/lorawan_api.c ****  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+  22:smtc_modem_core/lorawan_api/lorawan_api.c ****  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+  23:smtc_modem_core/lorawan_api/lorawan_api.c ****  * ARE DISCLAIMED. IN NO EVENT SHALL SEMTECH CORPORATION BE LIABLE FOR ANY DIRECT,
+  24:smtc_modem_core/lorawan_api/lorawan_api.c ****  * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+  25:smtc_modem_core/lorawan_api/lorawan_api.c ****  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+  26:smtc_modem_core/lorawan_api/lorawan_api.c ****  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+  27:smtc_modem_core/lorawan_api/lorawan_api.c ****  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  28:smtc_modem_core/lorawan_api/lorawan_api.c ****  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+  29:smtc_modem_core/lorawan_api/lorawan_api.c ****  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  30:smtc_modem_core/lorawan_api/lorawan_api.c ****  */
+  31:smtc_modem_core/lorawan_api/lorawan_api.c **** 
+  32:smtc_modem_core/lorawan_api/lorawan_api.c **** /*
+  33:smtc_modem_core/lorawan_api/lorawan_api.c ****  * -----------------------------------------------------------------------------
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s 			page 2
+
+
+  34:smtc_modem_core/lorawan_api/lorawan_api.c ****  * --- DEPENDENCIES ------------------------------------------------------------
+  35:smtc_modem_core/lorawan_api/lorawan_api.c ****  */
+  36:smtc_modem_core/lorawan_api/lorawan_api.c **** 
+  37:smtc_modem_core/lorawan_api/lorawan_api.c **** #include <stdint.h>   // C99 types
+  38:smtc_modem_core/lorawan_api/lorawan_api.c **** #include <stdbool.h>  // bool type
+  39:smtc_modem_core/lorawan_api/lorawan_api.c **** 
+  40:smtc_modem_core/lorawan_api/lorawan_api.c **** #include "lorawan_api.h"
+  41:smtc_modem_core/lorawan_api/lorawan_api.c **** #include "lr1mac_core.h"
+  42:smtc_modem_core/lorawan_api/lorawan_api.c **** #include "smtc_bsp.h"
+  43:smtc_modem_core/lorawan_api/lorawan_api.c **** 
+  44:smtc_modem_core/lorawan_api/lorawan_api.c **** /*
+  45:smtc_modem_core/lorawan_api/lorawan_api.c ****  * -----------------------------------------------------------------------------
+  46:smtc_modem_core/lorawan_api/lorawan_api.c ****  * --- PRIVATE MACROS-----------------------------------------------------------
+  47:smtc_modem_core/lorawan_api/lorawan_api.c ****  */
+  48:smtc_modem_core/lorawan_api/lorawan_api.c **** 
+  49:smtc_modem_core/lorawan_api/lorawan_api.c **** /*
+  50:smtc_modem_core/lorawan_api/lorawan_api.c ****  * -----------------------------------------------------------------------------
+  51:smtc_modem_core/lorawan_api/lorawan_api.c ****  * --- PRIVATE CONSTANTS -------------------------------------------------------
+  52:smtc_modem_core/lorawan_api/lorawan_api.c ****  */
+  53:smtc_modem_core/lorawan_api/lorawan_api.c **** 
+  54:smtc_modem_core/lorawan_api/lorawan_api.c **** /*
+  55:smtc_modem_core/lorawan_api/lorawan_api.c ****  * -----------------------------------------------------------------------------
+  56:smtc_modem_core/lorawan_api/lorawan_api.c ****  * --- PRIVATE TYPES -----------------------------------------------------------
+  57:smtc_modem_core/lorawan_api/lorawan_api.c ****  */
+  58:smtc_modem_core/lorawan_api/lorawan_api.c **** 
+  59:smtc_modem_core/lorawan_api/lorawan_api.c **** /*
+  60:smtc_modem_core/lorawan_api/lorawan_api.c ****  * -----------------------------------------------------------------------------
+  61:smtc_modem_core/lorawan_api/lorawan_api.c ****  * --- PRIVATE VARIABLES -------------------------------------------------------
+  62:smtc_modem_core/lorawan_api/lorawan_api.c ****  */
+  63:smtc_modem_core/lorawan_api/lorawan_api.c **** 
+  64:smtc_modem_core/lorawan_api/lorawan_api.c **** static smtc_real_t smtc_region = {
+  65:smtc_modem_core/lorawan_api/lorawan_api.c ****     .context = NULL,
+  66:smtc_modem_core/lorawan_api/lorawan_api.c **** #if defined REGION_WW2G4
+  67:smtc_modem_core/lorawan_api/lorawan_api.c ****     .region_type = SMTC_REAL_REGION_WW2G4,
+  68:smtc_modem_core/lorawan_api/lorawan_api.c **** #elif defined REGION_EU_868
+  69:smtc_modem_core/lorawan_api/lorawan_api.c ****     .region_type = SMTC_REAL_REGION_EU_868,
+  70:smtc_modem_core/lorawan_api/lorawan_api.c **** #elif defined REGION_US_915
+  71:smtc_modem_core/lorawan_api/lorawan_api.c ****     .region_type = SMTC_REAL_REGION_US_915,
+  72:smtc_modem_core/lorawan_api/lorawan_api.c **** #else
+  73:smtc_modem_core/lorawan_api/lorawan_api.c **** #error "Please select supported region"
+  74:smtc_modem_core/lorawan_api/lorawan_api.c **** #endif
+  75:smtc_modem_core/lorawan_api/lorawan_api.c **** };
+  76:smtc_modem_core/lorawan_api/lorawan_api.c **** 
+  77:smtc_modem_core/lorawan_api/lorawan_api.c **** uint8_t LoRaMacNwkSKeyInit[] = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+  78:smtc_modem_core/lorawan_api/lorawan_api.c ****                                  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+  79:smtc_modem_core/lorawan_api/lorawan_api.c **** uint8_t LoRaMacAppSKeyInit[] = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+  80:smtc_modem_core/lorawan_api/lorawan_api.c ****                                  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+  81:smtc_modem_core/lorawan_api/lorawan_api.c **** uint8_t LoRaMacAppKeyInit[]  = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+  82:smtc_modem_core/lorawan_api/lorawan_api.c ****                                 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+  83:smtc_modem_core/lorawan_api/lorawan_api.c **** uint8_t AppEuiInit[]         = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+  84:smtc_modem_core/lorawan_api/lorawan_api.c **** uint8_t DevEuiInit[]         = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+  85:smtc_modem_core/lorawan_api/lorawan_api.c **** 
+  86:smtc_modem_core/lorawan_api/lorawan_api.c **** uint32_t              LoRaDevAddrInit = 0x00000000;
+  87:smtc_modem_core/lorawan_api/lorawan_api.c **** static lorawan_keys_t LoraWanKeys     = { LoRaMacNwkSKeyInit, LoRaMacAppSKeyInit, LoRaMacAppKeyInit
+  88:smtc_modem_core/lorawan_api/lorawan_api.c ****                                       DevEuiInit,         0x00000000,         OTAA_DEVICE };
+  89:smtc_modem_core/lorawan_api/lorawan_api.c **** 
+  90:smtc_modem_core/lorawan_api/lorawan_api.c **** static bool is_lorawan_certification_enabled = false;
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s 			page 3
+
+
+  91:smtc_modem_core/lorawan_api/lorawan_api.c **** 
+  92:smtc_modem_core/lorawan_api/lorawan_api.c **** /*
+  93:smtc_modem_core/lorawan_api/lorawan_api.c ****  * -----------------------------------------------------------------------------
+  94:smtc_modem_core/lorawan_api/lorawan_api.c ****  * --- PRIVATE FUNCTIONS DECLARATION -------------------------------------------
+  95:smtc_modem_core/lorawan_api/lorawan_api.c ****  */
+  96:smtc_modem_core/lorawan_api/lorawan_api.c **** 
+  97:smtc_modem_core/lorawan_api/lorawan_api.c **** /*
+  98:smtc_modem_core/lorawan_api/lorawan_api.c ****  * -----------------------------------------------------------------------------
+  99:smtc_modem_core/lorawan_api/lorawan_api.c ****  * --- PUBLIC FUNCTIONS DEFINITION ---------------------------------------------
+ 100:smtc_modem_core/lorawan_api/lorawan_api.c ****  */
+ 101:smtc_modem_core/lorawan_api/lorawan_api.c **** 
+ 102:smtc_modem_core/lorawan_api/lorawan_api.c **** /*!
+ 103:smtc_modem_core/lorawan_api/lorawan_api.c ****  * \brief   Intermediate state to be able in the future to manage more than one stack
+ 104:smtc_modem_core/lorawan_api/lorawan_api.c ****  * \remark
+ 105:smtc_modem_core/lorawan_api/lorawan_api.c ****  * \param [in]  LoRAStack : a pointer to the current stack
+ 106:smtc_modem_core/lorawan_api/lorawan_api.c ****  * \param [out] set the local stack to LoRaStack
+ 107:smtc_modem_core/lorawan_api/lorawan_api.c ****  * */
+ 108:smtc_modem_core/lorawan_api/lorawan_api.c **** 
+ 109:smtc_modem_core/lorawan_api/lorawan_api.c **** void lorawan_api_init( radio_planner_t* rp )
+ 110:smtc_modem_core/lorawan_api/lorawan_api.c **** {
+  26              		.loc 1 110 1 view -0
+  27              		.cfi_startproc
+  28              		@ args = 0, pretend = 0, frame = 0
+  29              		@ frame_needed = 0, uses_anonymous_args = 0
+ 111:smtc_modem_core/lorawan_api/lorawan_api.c ****     // init lr1mac core
+ 112:smtc_modem_core/lorawan_api/lorawan_api.c ****     lr1mac_core_init( rp, &LoraWanKeys, &smtc_region );
+  30              		.loc 1 112 5 view .LVU1
+ 110:smtc_modem_core/lorawan_api/lorawan_api.c ****     // init lr1mac core
+  31              		.loc 1 110 1 is_stmt 0 view .LVU2
+  32 0000 10B5     		push	{r4, lr}
+  33              		.cfi_def_cfa_offset 8
+  34              		.cfi_offset 4, -8
+  35              		.cfi_offset 14, -4
+  36              		.loc 1 112 5 view .LVU3
+  37 0002 024A     		ldr	r2, .L2
+  38 0004 0249     		ldr	r1, .L2+4
+  39 0006 FFF7FEFF 		bl	lr1mac_core_init
+  40              	.LVL1:
+ 113:smtc_modem_core/lorawan_api/lorawan_api.c **** }
+  41              		.loc 1 113 1 view .LVU4
+  42              		@ sp needed
+  43 000a 10BD     		pop	{r4, pc}
+  44              	.L3:
+  45              		.align	2
+  46              	.L2:
+  47 000c 00000000 		.word	.LANCHOR0
+  48 0010 00000000 		.word	.LANCHOR1
+  49              		.cfi_endproc
+  50              	.LFE9:
+  52              		.section	.text.lorawan_api_get_region,"ax",%progbits
+  53              		.align	1
+  54              		.global	lorawan_api_get_region
+  55              		.syntax unified
+  56              		.code	16
+  57              		.thumb_func
+  58              		.fpu softvfp
+  60              	lorawan_api_get_region:
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s 			page 4
+
+
+  61              	.LFB10:
+ 114:smtc_modem_core/lorawan_api/lorawan_api.c **** 
+ 115:smtc_modem_core/lorawan_api/lorawan_api.c **** smtc_real_region_types_t lorawan_api_get_region( void )
+ 116:smtc_modem_core/lorawan_api/lorawan_api.c **** {
+  62              		.loc 1 116 1 is_stmt 1 view -0
+  63              		.cfi_startproc
+  64              		@ args = 0, pretend = 0, frame = 0
+  65              		@ frame_needed = 0, uses_anonymous_args = 0
+ 117:smtc_modem_core/lorawan_api/lorawan_api.c ****     return lr1mac_core_get_region( );
+  66              		.loc 1 117 5 view .LVU6
+ 116:smtc_modem_core/lorawan_api/lorawan_api.c ****     return lr1mac_core_get_region( );
+  67              		.loc 1 116 1 is_stmt 0 view .LVU7
+  68 0000 10B5     		push	{r4, lr}
+  69              		.cfi_def_cfa_offset 8
+  70              		.cfi_offset 4, -8
+  71              		.cfi_offset 14, -4
+  72              		.loc 1 117 12 view .LVU8
+  73 0002 FFF7FEFF 		bl	lr1mac_core_get_region
+  74              	.LVL2:
+ 118:smtc_modem_core/lorawan_api/lorawan_api.c **** }
+  75              		.loc 1 118 1 view .LVU9
+  76              		@ sp needed
+  77 0006 10BD     		pop	{r4, pc}
+  78              		.cfi_endproc
+  79              	.LFE10:
+  81              		.section	.text.lorawan_api_set_region,"ax",%progbits
+  82              		.align	1
+  83              		.global	lorawan_api_set_region
+  84              		.syntax unified
+  85              		.code	16
+  86              		.thumb_func
+  87              		.fpu softvfp
+  89              	lorawan_api_set_region:
+  90              	.LVL3:
+  91              	.LFB11:
+ 119:smtc_modem_core/lorawan_api/lorawan_api.c **** 
+ 120:smtc_modem_core/lorawan_api/lorawan_api.c **** status_lorawan_t lorawan_api_set_region( smtc_real_region_types_t region_type )
+ 121:smtc_modem_core/lorawan_api/lorawan_api.c **** {
+  92              		.loc 1 121 1 is_stmt 1 view -0
+  93              		.cfi_startproc
+  94              		@ args = 0, pretend = 0, frame = 0
+  95              		@ frame_needed = 0, uses_anonymous_args = 0
+ 122:smtc_modem_core/lorawan_api/lorawan_api.c ****     return lr1mac_core_set_region( region_type );
+  96              		.loc 1 122 5 view .LVU11
+ 121:smtc_modem_core/lorawan_api/lorawan_api.c ****     return lr1mac_core_set_region( region_type );
+  97              		.loc 1 121 1 is_stmt 0 view .LVU12
+  98 0000 10B5     		push	{r4, lr}
+  99              		.cfi_def_cfa_offset 8
+ 100              		.cfi_offset 4, -8
+ 101              		.cfi_offset 14, -4
+ 102              		.loc 1 122 12 view .LVU13
+ 103 0002 FFF7FEFF 		bl	lr1mac_core_set_region
+ 104              	.LVL4:
+ 123:smtc_modem_core/lorawan_api/lorawan_api.c **** }
+ 105              		.loc 1 123 1 view .LVU14
+ 106              		@ sp needed
+ 107 0006 10BD     		pop	{r4, pc}
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s 			page 5
+
+
+ 108              		.cfi_endproc
+ 109              	.LFE11:
+ 111              		.section	.text.lorawan_api_payload_send,"ax",%progbits
+ 112              		.align	1
+ 113              		.global	lorawan_api_payload_send
+ 114              		.syntax unified
+ 115              		.code	16
+ 116              		.thumb_func
+ 117              		.fpu softvfp
+ 119              	lorawan_api_payload_send:
+ 120              	.LVL5:
+ 121              	.LFB12:
+ 124:smtc_modem_core/lorawan_api/lorawan_api.c **** 
+ 125:smtc_modem_core/lorawan_api/lorawan_api.c **** lr1mac_states_t lorawan_api_payload_send( uint8_t fPort, const uint8_t* dataIn, const uint8_t sizeI
+ 126:smtc_modem_core/lorawan_api/lorawan_api.c ****                                           uint8_t PacketType, uint32_t TargetTimeMS )
+ 127:smtc_modem_core/lorawan_api/lorawan_api.c **** {
+ 122              		.loc 1 127 1 is_stmt 1 view -0
+ 123              		.cfi_startproc
+ 124              		@ args = 4, pretend = 0, frame = 0
+ 125              		@ frame_needed = 0, uses_anonymous_args = 0
+ 128:smtc_modem_core/lorawan_api/lorawan_api.c ****     return lr1mac_core_payload_send( fPort, dataIn, sizeIn, PacketType, TargetTimeMS );
+ 126              		.loc 1 128 5 view .LVU16
+ 127:smtc_modem_core/lorawan_api/lorawan_api.c ****     return lr1mac_core_payload_send( fPort, dataIn, sizeIn, PacketType, TargetTimeMS );
+ 127              		.loc 1 127 1 is_stmt 0 view .LVU17
+ 128 0000 13B5     		push	{r0, r1, r4, lr}
+ 129              		.cfi_def_cfa_offset 16
+ 130              		.cfi_offset 0, -16
+ 131              		.cfi_offset 1, -12
+ 132              		.cfi_offset 4, -8
+ 133              		.cfi_offset 14, -4
+ 134              		.loc 1 128 12 view .LVU18
+ 135 0002 049C     		ldr	r4, [sp, #16]
+ 129:smtc_modem_core/lorawan_api/lorawan_api.c **** }
+ 136              		.loc 1 129 1 view .LVU19
+ 137              		@ sp needed
+ 128:smtc_modem_core/lorawan_api/lorawan_api.c ****     return lr1mac_core_payload_send( fPort, dataIn, sizeIn, PacketType, TargetTimeMS );
+ 138              		.loc 1 128 12 view .LVU20
+ 139 0004 0094     		str	r4, [sp]
+ 140 0006 FFF7FEFF 		bl	lr1mac_core_payload_send
+ 141              	.LVL6:
+ 142              		.loc 1 129 1 view .LVU21
+ 143 000a 16BD     		pop	{r1, r2, r4, pc}
+ 144              		.cfi_endproc
+ 145              	.LFE12:
+ 147              		.section	.text.lorawan_api_payload_send_at_time,"ax",%progbits
+ 148              		.align	1
+ 149              		.global	lorawan_api_payload_send_at_time
+ 150              		.syntax unified
+ 151              		.code	16
+ 152              		.thumb_func
+ 153              		.fpu softvfp
+ 155              	lorawan_api_payload_send_at_time:
+ 156              	.LVL7:
+ 157              	.LFB13:
+ 130:smtc_modem_core/lorawan_api/lorawan_api.c **** 
+ 131:smtc_modem_core/lorawan_api/lorawan_api.c **** lr1mac_states_t lorawan_api_payload_send_at_time( uint8_t fPort, const uint8_t* dataIn, const uint8
+ 132:smtc_modem_core/lorawan_api/lorawan_api.c ****                                                   uint8_t PacketType, uint32_t TargetTimeMS )
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s 			page 6
+
+
+ 133:smtc_modem_core/lorawan_api/lorawan_api.c **** {
+ 158              		.loc 1 133 1 is_stmt 1 view -0
+ 159              		.cfi_startproc
+ 160              		@ args = 4, pretend = 0, frame = 0
+ 161              		@ frame_needed = 0, uses_anonymous_args = 0
+ 134:smtc_modem_core/lorawan_api/lorawan_api.c ****     return lr1mac_core_payload_send_at_time( fPort, dataIn, sizeIn, PacketType, TargetTimeMS );
+ 162              		.loc 1 134 5 view .LVU23
+ 133:smtc_modem_core/lorawan_api/lorawan_api.c ****     return lr1mac_core_payload_send_at_time( fPort, dataIn, sizeIn, PacketType, TargetTimeMS );
+ 163              		.loc 1 133 1 is_stmt 0 view .LVU24
+ 164 0000 13B5     		push	{r0, r1, r4, lr}
+ 165              		.cfi_def_cfa_offset 16
+ 166              		.cfi_offset 0, -16
+ 167              		.cfi_offset 1, -12
+ 168              		.cfi_offset 4, -8
+ 169              		.cfi_offset 14, -4
+ 170              		.loc 1 134 12 view .LVU25
+ 171 0002 049C     		ldr	r4, [sp, #16]
+ 135:smtc_modem_core/lorawan_api/lorawan_api.c **** }
+ 172              		.loc 1 135 1 view .LVU26
+ 173              		@ sp needed
+ 134:smtc_modem_core/lorawan_api/lorawan_api.c ****     return lr1mac_core_payload_send_at_time( fPort, dataIn, sizeIn, PacketType, TargetTimeMS );
+ 174              		.loc 1 134 12 view .LVU27
+ 175 0004 0094     		str	r4, [sp]
+ 176 0006 FFF7FEFF 		bl	lr1mac_core_payload_send_at_time
+ 177              	.LVL8:
+ 178              		.loc 1 135 1 view .LVU28
+ 179 000a 16BD     		pop	{r1, r2, r4, pc}
+ 180              		.cfi_endproc
+ 181              	.LFE13:
+ 183              		.section	.text.lorawan_api_payload_receive,"ax",%progbits
+ 184              		.align	1
+ 185              		.global	lorawan_api_payload_receive
+ 186              		.syntax unified
+ 187              		.code	16
+ 188              		.thumb_func
+ 189              		.fpu softvfp
+ 191              	lorawan_api_payload_receive:
+ 192              	.LVL9:
+ 193              	.LFB14:
+ 136:smtc_modem_core/lorawan_api/lorawan_api.c **** 
+ 137:smtc_modem_core/lorawan_api/lorawan_api.c **** status_lorawan_t lorawan_api_payload_receive( uint8_t* UserRxFport, uint8_t* UserRxPayload, uint8_t
+ 138:smtc_modem_core/lorawan_api/lorawan_api.c **** {
+ 194              		.loc 1 138 1 is_stmt 1 view -0
+ 195              		.cfi_startproc
+ 196              		@ args = 0, pretend = 0, frame = 0
+ 197              		@ frame_needed = 0, uses_anonymous_args = 0
+ 139:smtc_modem_core/lorawan_api/lorawan_api.c ****     return lr1mac_core_payload_receive( UserRxFport, UserRxPayload, UserRxPayloadSize );
+ 198              		.loc 1 139 5 view .LVU30
+ 138:smtc_modem_core/lorawan_api/lorawan_api.c ****     return lr1mac_core_payload_receive( UserRxFport, UserRxPayload, UserRxPayloadSize );
+ 199              		.loc 1 138 1 is_stmt 0 view .LVU31
+ 200 0000 10B5     		push	{r4, lr}
+ 201              		.cfi_def_cfa_offset 8
+ 202              		.cfi_offset 4, -8
+ 203              		.cfi_offset 14, -4
+ 204              		.loc 1 139 12 view .LVU32
+ 205 0002 FFF7FEFF 		bl	lr1mac_core_payload_receive
+ 206              	.LVL10:
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s 			page 7
+
+
+ 140:smtc_modem_core/lorawan_api/lorawan_api.c **** }
+ 207              		.loc 1 140 1 view .LVU33
+ 208              		@ sp needed
+ 209 0006 10BD     		pop	{r4, pc}
+ 210              		.cfi_endproc
+ 211              	.LFE14:
+ 213              		.section	.text.lorawan_api_join,"ax",%progbits
+ 214              		.align	1
+ 215              		.global	lorawan_api_join
+ 216              		.syntax unified
+ 217              		.code	16
+ 218              		.thumb_func
+ 219              		.fpu softvfp
+ 221              	lorawan_api_join:
+ 222              	.LVL11:
+ 223              	.LFB15:
+ 141:smtc_modem_core/lorawan_api/lorawan_api.c **** 
+ 142:smtc_modem_core/lorawan_api/lorawan_api.c **** lr1mac_states_t lorawan_api_join( uint32_t target_time_ms )
+ 143:smtc_modem_core/lorawan_api/lorawan_api.c **** {
+ 224              		.loc 1 143 1 is_stmt 1 view -0
+ 225              		.cfi_startproc
+ 226              		@ args = 0, pretend = 0, frame = 0
+ 227              		@ frame_needed = 0, uses_anonymous_args = 0
+ 144:smtc_modem_core/lorawan_api/lorawan_api.c ****     return lr1mac_core_join( target_time_ms );
+ 228              		.loc 1 144 5 view .LVU35
+ 143:smtc_modem_core/lorawan_api/lorawan_api.c ****     return lr1mac_core_join( target_time_ms );
+ 229              		.loc 1 143 1 is_stmt 0 view .LVU36
+ 230 0000 10B5     		push	{r4, lr}
+ 231              		.cfi_def_cfa_offset 8
+ 232              		.cfi_offset 4, -8
+ 233              		.cfi_offset 14, -4
+ 234              		.loc 1 144 12 view .LVU37
+ 235 0002 FFF7FEFF 		bl	lr1mac_core_join
+ 236              	.LVL12:
+ 145:smtc_modem_core/lorawan_api/lorawan_api.c **** }
+ 237              		.loc 1 145 1 view .LVU38
+ 238              		@ sp needed
+ 239 0006 10BD     		pop	{r4, pc}
+ 240              		.cfi_endproc
+ 241              	.LFE15:
+ 243              		.section	.text.lorawan_api_isjoined,"ax",%progbits
+ 244              		.align	1
+ 245              		.global	lorawan_api_isjoined
+ 246              		.syntax unified
+ 247              		.code	16
+ 248              		.thumb_func
+ 249              		.fpu softvfp
+ 251              	lorawan_api_isjoined:
+ 252              	.LFB16:
+ 146:smtc_modem_core/lorawan_api/lorawan_api.c **** 
+ 147:smtc_modem_core/lorawan_api/lorawan_api.c **** join_status_t lorawan_api_isjoined( void )
+ 148:smtc_modem_core/lorawan_api/lorawan_api.c **** {
+ 253              		.loc 1 148 1 is_stmt 1 view -0
+ 254              		.cfi_startproc
+ 255              		@ args = 0, pretend = 0, frame = 0
+ 256              		@ frame_needed = 0, uses_anonymous_args = 0
+ 149:smtc_modem_core/lorawan_api/lorawan_api.c ****     return lr1_mac_joined_status_get( );
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s 			page 8
+
+
+ 257              		.loc 1 149 5 view .LVU40
+ 148:smtc_modem_core/lorawan_api/lorawan_api.c ****     return lr1_mac_joined_status_get( );
+ 258              		.loc 1 148 1 is_stmt 0 view .LVU41
+ 259 0000 10B5     		push	{r4, lr}
+ 260              		.cfi_def_cfa_offset 8
+ 261              		.cfi_offset 4, -8
+ 262              		.cfi_offset 14, -4
+ 263              		.loc 1 149 12 view .LVU42
+ 264 0002 FFF7FEFF 		bl	lr1_mac_joined_status_get
+ 265              	.LVL13:
+ 150:smtc_modem_core/lorawan_api/lorawan_api.c **** }
+ 266              		.loc 1 150 1 view .LVU43
+ 267              		@ sp needed
+ 268 0006 10BD     		pop	{r4, pc}
+ 269              		.cfi_endproc
+ 270              	.LFE16:
+ 272              		.section	.text.lorawan_api_join_status_clear,"ax",%progbits
+ 273              		.align	1
+ 274              		.global	lorawan_api_join_status_clear
+ 275              		.syntax unified
+ 276              		.code	16
+ 277              		.thumb_func
+ 278              		.fpu softvfp
+ 280              	lorawan_api_join_status_clear:
+ 281              	.LFB17:
+ 151:smtc_modem_core/lorawan_api/lorawan_api.c **** 
+ 152:smtc_modem_core/lorawan_api/lorawan_api.c **** void lorawan_api_join_status_clear( void )
+ 153:smtc_modem_core/lorawan_api/lorawan_api.c **** {
+ 282              		.loc 1 153 1 is_stmt 1 view -0
+ 283              		.cfi_startproc
+ 284              		@ args = 0, pretend = 0, frame = 0
+ 285              		@ frame_needed = 0, uses_anonymous_args = 0
+ 154:smtc_modem_core/lorawan_api/lorawan_api.c ****     lr1mac_core_join_status_clear( );
+ 286              		.loc 1 154 5 view .LVU45
+ 153:smtc_modem_core/lorawan_api/lorawan_api.c ****     lr1mac_core_join_status_clear( );
+ 287              		.loc 1 153 1 is_stmt 0 view .LVU46
+ 288 0000 10B5     		push	{r4, lr}
+ 289              		.cfi_def_cfa_offset 8
+ 290              		.cfi_offset 4, -8
+ 291              		.cfi_offset 14, -4
+ 292              		.loc 1 154 5 view .LVU47
+ 293 0002 FFF7FEFF 		bl	lr1mac_core_join_status_clear
+ 294              	.LVL14:
+ 155:smtc_modem_core/lorawan_api/lorawan_api.c **** }
+ 295              		.loc 1 155 1 view .LVU48
+ 296              		@ sp needed
+ 297 0006 10BD     		pop	{r4, pc}
+ 298              		.cfi_endproc
+ 299              	.LFE17:
+ 301              		.section	.text.lorawan_api_dr_strategy_set,"ax",%progbits
+ 302              		.align	1
+ 303              		.global	lorawan_api_dr_strategy_set
+ 304              		.syntax unified
+ 305              		.code	16
+ 306              		.thumb_func
+ 307              		.fpu softvfp
+ 309              	lorawan_api_dr_strategy_set:
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s 			page 9
+
+
+ 310              	.LVL15:
+ 311              	.LFB18:
+ 156:smtc_modem_core/lorawan_api/lorawan_api.c **** 
+ 157:smtc_modem_core/lorawan_api/lorawan_api.c **** void lorawan_api_dr_strategy_set( dr_strategy_t adrModeSelect )
+ 158:smtc_modem_core/lorawan_api/lorawan_api.c **** {
+ 312              		.loc 1 158 1 is_stmt 1 view -0
+ 313              		.cfi_startproc
+ 314              		@ args = 0, pretend = 0, frame = 0
+ 315              		@ frame_needed = 0, uses_anonymous_args = 0
+ 159:smtc_modem_core/lorawan_api/lorawan_api.c ****     lr1mac_core_dr_strategy_set( adrModeSelect );
+ 316              		.loc 1 159 5 view .LVU50
+ 158:smtc_modem_core/lorawan_api/lorawan_api.c ****     lr1mac_core_dr_strategy_set( adrModeSelect );
+ 317              		.loc 1 158 1 is_stmt 0 view .LVU51
+ 318 0000 10B5     		push	{r4, lr}
+ 319              		.cfi_def_cfa_offset 8
+ 320              		.cfi_offset 4, -8
+ 321              		.cfi_offset 14, -4
+ 322              		.loc 1 159 5 view .LVU52
+ 323 0002 FFF7FEFF 		bl	lr1mac_core_dr_strategy_set
+ 324              	.LVL16:
+ 160:smtc_modem_core/lorawan_api/lorawan_api.c **** }
+ 325              		.loc 1 160 1 view .LVU53
+ 326              		@ sp needed
+ 327 0006 10BD     		pop	{r4, pc}
+ 328              		.cfi_endproc
+ 329              	.LFE18:
+ 331              		.section	.text.lorawan_api_dr_strategy_get,"ax",%progbits
+ 332              		.align	1
+ 333              		.global	lorawan_api_dr_strategy_get
+ 334              		.syntax unified
+ 335              		.code	16
+ 336              		.thumb_func
+ 337              		.fpu softvfp
+ 339              	lorawan_api_dr_strategy_get:
+ 340              	.LFB19:
+ 161:smtc_modem_core/lorawan_api/lorawan_api.c **** 
+ 162:smtc_modem_core/lorawan_api/lorawan_api.c **** dr_strategy_t lorawan_api_dr_strategy_get( void )
+ 163:smtc_modem_core/lorawan_api/lorawan_api.c **** {
+ 341              		.loc 1 163 1 is_stmt 1 view -0
+ 342              		.cfi_startproc
+ 343              		@ args = 0, pretend = 0, frame = 0
+ 344              		@ frame_needed = 0, uses_anonymous_args = 0
+ 164:smtc_modem_core/lorawan_api/lorawan_api.c ****     return lr1mac_core_dr_strategy_get( );
+ 345              		.loc 1 164 5 view .LVU55
+ 163:smtc_modem_core/lorawan_api/lorawan_api.c ****     return lr1mac_core_dr_strategy_get( );
+ 346              		.loc 1 163 1 is_stmt 0 view .LVU56
+ 347 0000 10B5     		push	{r4, lr}
+ 348              		.cfi_def_cfa_offset 8
+ 349              		.cfi_offset 4, -8
+ 350              		.cfi_offset 14, -4
+ 351              		.loc 1 164 12 view .LVU57
+ 352 0002 FFF7FEFF 		bl	lr1mac_core_dr_strategy_get
+ 353              	.LVL17:
+ 165:smtc_modem_core/lorawan_api/lorawan_api.c **** }
+ 354              		.loc 1 165 1 view .LVU58
+ 355              		@ sp needed
+ 356 0006 10BD     		pop	{r4, pc}
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s 			page 10
+
+
+ 357              		.cfi_endproc
+ 358              	.LFE19:
+ 360              		.section	.text.lorawan_api_dr_custom_set,"ax",%progbits
+ 361              		.align	1
+ 362              		.global	lorawan_api_dr_custom_set
+ 363              		.syntax unified
+ 364              		.code	16
+ 365              		.thumb_func
+ 366              		.fpu softvfp
+ 368              	lorawan_api_dr_custom_set:
+ 369              	.LVL18:
+ 370              	.LFB20:
+ 166:smtc_modem_core/lorawan_api/lorawan_api.c **** 
+ 167:smtc_modem_core/lorawan_api/lorawan_api.c **** void lorawan_api_dr_custom_set( uint32_t DataRateCustom )
+ 168:smtc_modem_core/lorawan_api/lorawan_api.c **** {
+ 371              		.loc 1 168 1 is_stmt 1 view -0
+ 372              		.cfi_startproc
+ 373              		@ args = 0, pretend = 0, frame = 0
+ 374              		@ frame_needed = 0, uses_anonymous_args = 0
+ 169:smtc_modem_core/lorawan_api/lorawan_api.c ****     lr1mac_core_dr_custom_set( DataRateCustom );
+ 375              		.loc 1 169 5 view .LVU60
+ 168:smtc_modem_core/lorawan_api/lorawan_api.c ****     lr1mac_core_dr_custom_set( DataRateCustom );
+ 376              		.loc 1 168 1 is_stmt 0 view .LVU61
+ 377 0000 10B5     		push	{r4, lr}
+ 378              		.cfi_def_cfa_offset 8
+ 379              		.cfi_offset 4, -8
+ 380              		.cfi_offset 14, -4
+ 381              		.loc 1 169 5 view .LVU62
+ 382 0002 FFF7FEFF 		bl	lr1mac_core_dr_custom_set
+ 383              	.LVL19:
+ 170:smtc_modem_core/lorawan_api/lorawan_api.c **** }
+ 384              		.loc 1 170 1 view .LVU63
+ 385              		@ sp needed
+ 386 0006 10BD     		pop	{r4, pc}
+ 387              		.cfi_endproc
+ 388              	.LFE20:
+ 390              		.section	.text.lorawan_api_process,"ax",%progbits
+ 391              		.align	1
+ 392              		.global	lorawan_api_process
+ 393              		.syntax unified
+ 394              		.code	16
+ 395              		.thumb_func
+ 396              		.fpu softvfp
+ 398              	lorawan_api_process:
+ 399              	.LVL20:
+ 400              	.LFB21:
+ 171:smtc_modem_core/lorawan_api/lorawan_api.c **** 
+ 172:smtc_modem_core/lorawan_api/lorawan_api.c **** lr1mac_states_t lorawan_api_process( user_rx_packet_type_t* AvailableRxPacket )
+ 173:smtc_modem_core/lorawan_api/lorawan_api.c **** {
+ 401              		.loc 1 173 1 is_stmt 1 view -0
+ 402              		.cfi_startproc
+ 403              		@ args = 0, pretend = 0, frame = 0
+ 404              		@ frame_needed = 0, uses_anonymous_args = 0
+ 174:smtc_modem_core/lorawan_api/lorawan_api.c ****     return lr1mac_core_process( AvailableRxPacket );
+ 405              		.loc 1 174 5 view .LVU65
+ 173:smtc_modem_core/lorawan_api/lorawan_api.c ****     return lr1mac_core_process( AvailableRxPacket );
+ 406              		.loc 1 173 1 is_stmt 0 view .LVU66
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s 			page 11
+
+
+ 407 0000 10B5     		push	{r4, lr}
+ 408              		.cfi_def_cfa_offset 8
+ 409              		.cfi_offset 4, -8
+ 410              		.cfi_offset 14, -4
+ 411              		.loc 1 174 12 view .LVU67
+ 412 0002 FFF7FEFF 		bl	lr1mac_core_process
+ 413              	.LVL21:
+ 175:smtc_modem_core/lorawan_api/lorawan_api.c **** }
+ 414              		.loc 1 175 1 view .LVU68
+ 415              		@ sp needed
+ 416 0006 10BD     		pop	{r4, pc}
+ 417              		.cfi_endproc
+ 418              	.LFE21:
+ 420              		.section	.text.lorawan_api_context_load,"ax",%progbits
+ 421              		.align	1
+ 422              		.global	lorawan_api_context_load
+ 423              		.syntax unified
+ 424              		.code	16
+ 425              		.thumb_func
+ 426              		.fpu softvfp
+ 428              	lorawan_api_context_load:
+ 429              	.LFB22:
+ 176:smtc_modem_core/lorawan_api/lorawan_api.c **** 
+ 177:smtc_modem_core/lorawan_api/lorawan_api.c **** void lorawan_api_context_load( void )
+ 178:smtc_modem_core/lorawan_api/lorawan_api.c **** {
+ 430              		.loc 1 178 1 is_stmt 1 view -0
+ 431              		.cfi_startproc
+ 432              		@ args = 0, pretend = 0, frame = 0
+ 433              		@ frame_needed = 0, uses_anonymous_args = 0
+ 179:smtc_modem_core/lorawan_api/lorawan_api.c ****     lr1mac_core_context_load( );
+ 434              		.loc 1 179 5 view .LVU70
+ 178:smtc_modem_core/lorawan_api/lorawan_api.c ****     lr1mac_core_context_load( );
+ 435              		.loc 1 178 1 is_stmt 0 view .LVU71
+ 436 0000 10B5     		push	{r4, lr}
+ 437              		.cfi_def_cfa_offset 8
+ 438              		.cfi_offset 4, -8
+ 439              		.cfi_offset 14, -4
+ 440              		.loc 1 179 5 view .LVU72
+ 441 0002 FFF7FEFF 		bl	lr1mac_core_context_load
+ 442              	.LVL22:
+ 180:smtc_modem_core/lorawan_api/lorawan_api.c **** }
+ 443              		.loc 1 180 1 view .LVU73
+ 444              		@ sp needed
+ 445 0006 10BD     		pop	{r4, pc}
+ 446              		.cfi_endproc
+ 447              	.LFE22:
+ 449              		.section	.text.lorawan_api_context_save,"ax",%progbits
+ 450              		.align	1
+ 451              		.global	lorawan_api_context_save
+ 452              		.syntax unified
+ 453              		.code	16
+ 454              		.thumb_func
+ 455              		.fpu softvfp
+ 457              	lorawan_api_context_save:
+ 458              	.LFB23:
+ 181:smtc_modem_core/lorawan_api/lorawan_api.c **** 
+ 182:smtc_modem_core/lorawan_api/lorawan_api.c **** void lorawan_api_context_save( void )
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s 			page 12
+
+
+ 183:smtc_modem_core/lorawan_api/lorawan_api.c **** {
+ 459              		.loc 1 183 1 is_stmt 1 view -0
+ 460              		.cfi_startproc
+ 461              		@ args = 0, pretend = 0, frame = 0
+ 462              		@ frame_needed = 0, uses_anonymous_args = 0
+ 184:smtc_modem_core/lorawan_api/lorawan_api.c ****     lr1mac_core_context_save( );
+ 463              		.loc 1 184 5 view .LVU75
+ 183:smtc_modem_core/lorawan_api/lorawan_api.c ****     lr1mac_core_context_save( );
+ 464              		.loc 1 183 1 is_stmt 0 view .LVU76
+ 465 0000 10B5     		push	{r4, lr}
+ 466              		.cfi_def_cfa_offset 8
+ 467              		.cfi_offset 4, -8
+ 468              		.cfi_offset 14, -4
+ 469              		.loc 1 184 5 view .LVU77
+ 470 0002 FFF7FEFF 		bl	lr1mac_core_context_save
+ 471              	.LVL23:
+ 185:smtc_modem_core/lorawan_api/lorawan_api.c **** }
+ 472              		.loc 1 185 1 view .LVU78
+ 473              		@ sp needed
+ 474 0006 10BD     		pop	{r4, pc}
+ 475              		.cfi_endproc
+ 476              	.LFE23:
+ 478              		.section	.text.lorawan_api_last_snr_get,"ax",%progbits
+ 479              		.align	1
+ 480              		.global	lorawan_api_last_snr_get
+ 481              		.syntax unified
+ 482              		.code	16
+ 483              		.thumb_func
+ 484              		.fpu softvfp
+ 486              	lorawan_api_last_snr_get:
+ 487              	.LFB24:
+ 186:smtc_modem_core/lorawan_api/lorawan_api.c **** 
+ 187:smtc_modem_core/lorawan_api/lorawan_api.c **** int16_t lorawan_api_last_snr_get( void )
+ 188:smtc_modem_core/lorawan_api/lorawan_api.c **** {
+ 488              		.loc 1 188 1 is_stmt 1 view -0
+ 489              		.cfi_startproc
+ 490              		@ args = 0, pretend = 0, frame = 0
+ 491              		@ frame_needed = 0, uses_anonymous_args = 0
+ 189:smtc_modem_core/lorawan_api/lorawan_api.c ****     return lr1mac_core_last_snr_get( );
+ 492              		.loc 1 189 5 view .LVU80
+ 188:smtc_modem_core/lorawan_api/lorawan_api.c ****     return lr1mac_core_last_snr_get( );
+ 493              		.loc 1 188 1 is_stmt 0 view .LVU81
+ 494 0000 10B5     		push	{r4, lr}
+ 495              		.cfi_def_cfa_offset 8
+ 496              		.cfi_offset 4, -8
+ 497              		.cfi_offset 14, -4
+ 498              		.loc 1 189 12 view .LVU82
+ 499 0002 FFF7FEFF 		bl	lr1mac_core_last_snr_get
+ 500              	.LVL24:
+ 190:smtc_modem_core/lorawan_api/lorawan_api.c **** }
+ 501              		.loc 1 190 1 view .LVU83
+ 502              		@ sp needed
+ 503 0006 10BD     		pop	{r4, pc}
+ 504              		.cfi_endproc
+ 505              	.LFE24:
+ 507              		.section	.text.lorawan_api_last_rssi_get,"ax",%progbits
+ 508              		.align	1
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s 			page 13
+
+
+ 509              		.global	lorawan_api_last_rssi_get
+ 510              		.syntax unified
+ 511              		.code	16
+ 512              		.thumb_func
+ 513              		.fpu softvfp
+ 515              	lorawan_api_last_rssi_get:
+ 516              	.LFB25:
+ 191:smtc_modem_core/lorawan_api/lorawan_api.c **** 
+ 192:smtc_modem_core/lorawan_api/lorawan_api.c **** int16_t lorawan_api_last_rssi_get( void )
+ 193:smtc_modem_core/lorawan_api/lorawan_api.c **** {
+ 517              		.loc 1 193 1 is_stmt 1 view -0
+ 518              		.cfi_startproc
+ 519              		@ args = 0, pretend = 0, frame = 0
+ 520              		@ frame_needed = 0, uses_anonymous_args = 0
+ 194:smtc_modem_core/lorawan_api/lorawan_api.c ****     return lr1mac_core_last_rssi_get( );
+ 521              		.loc 1 194 5 view .LVU85
+ 193:smtc_modem_core/lorawan_api/lorawan_api.c ****     return lr1mac_core_last_rssi_get( );
+ 522              		.loc 1 193 1 is_stmt 0 view .LVU86
+ 523 0000 10B5     		push	{r4, lr}
+ 524              		.cfi_def_cfa_offset 8
+ 525              		.cfi_offset 4, -8
+ 526              		.cfi_offset 14, -4
+ 527              		.loc 1 194 12 view .LVU87
+ 528 0002 FFF7FEFF 		bl	lr1mac_core_last_rssi_get
+ 529              	.LVL25:
+ 195:smtc_modem_core/lorawan_api/lorawan_api.c **** }
+ 530              		.loc 1 195 1 view .LVU88
+ 531              		@ sp needed
+ 532 0006 10BD     		pop	{r4, pc}
+ 533              		.cfi_endproc
+ 534              	.LFE25:
+ 536              		.section	.text.lorawan_api_keys_set,"ax",%progbits
+ 537              		.align	1
+ 538              		.global	lorawan_api_keys_set
+ 539              		.syntax unified
+ 540              		.code	16
+ 541              		.thumb_func
+ 542              		.fpu softvfp
+ 544              	lorawan_api_keys_set:
+ 545              	.LFB26:
+ 196:smtc_modem_core/lorawan_api/lorawan_api.c **** 
+ 197:smtc_modem_core/lorawan_api/lorawan_api.c **** void lorawan_api_keys_set( lorawan_keys_t LoRaWanKeys )
+ 198:smtc_modem_core/lorawan_api/lorawan_api.c **** {
+ 546              		.loc 1 198 1 is_stmt 1 view -0
+ 547              		.cfi_startproc
+ 548              		@ args = 28, pretend = 16, frame = 0
+ 549              		@ frame_needed = 0, uses_anonymous_args = 0
+ 199:smtc_modem_core/lorawan_api/lorawan_api.c ****     lr1mac_core_keys_set( LoRaWanKeys );
+ 550              		.loc 1 199 5 view .LVU90
+ 198:smtc_modem_core/lorawan_api/lorawan_api.c ****     lr1mac_core_keys_set( LoRaWanKeys );
+ 551              		.loc 1 198 1 is_stmt 0 view .LVU91
+ 552 0000 84B0     		sub	sp, sp, #16
+ 553              		.cfi_def_cfa_offset 16
+ 554 0002 F0B5     		push	{r4, r5, r6, r7, lr}
+ 555              		.cfi_def_cfa_offset 36
+ 556              		.cfi_offset 4, -36
+ 557              		.cfi_offset 5, -32
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s 			page 14
+
+
+ 558              		.cfi_offset 6, -28
+ 559              		.cfi_offset 7, -24
+ 560              		.cfi_offset 14, -20
+ 561 0004 85B0     		sub	sp, sp, #20
+ 562              		.cfi_def_cfa_offset 56
+ 198:smtc_modem_core/lorawan_api/lorawan_api.c ****     lr1mac_core_keys_set( LoRaWanKeys );
+ 563              		.loc 1 198 1 view .LVU92
+ 564 0006 8446     		mov	ip, r0
+ 565 0008 0D93     		str	r3, [sp, #52]
+ 566 000a 0F00     		movs	r7, r1
+ 567 000c 1600     		movs	r6, r2
+ 568 000e 1D00     		movs	r5, r3
+ 569              		.loc 1 199 5 view .LVU93
+ 570 0010 6B46     		mov	r3, sp
+ 198:smtc_modem_core/lorawan_api/lorawan_api.c ****     lr1mac_core_keys_set( LoRaWanKeys );
+ 571              		.loc 1 198 1 view .LVU94
+ 572 0012 0A90     		str	r0, [sp, #40]
+ 573 0014 0B91     		str	r1, [sp, #44]
+ 574 0016 0C92     		str	r2, [sp, #48]
+ 575              		.loc 1 199 5 view .LVU95
+ 576 0018 0EAC     		add	r4, sp, #56
+ 577 001a 07CC     		ldmia	r4!, {r0, r1, r2}
+ 578 001c 07C3     		stmia	r3!, {r0, r1, r2}
+ 579 001e 6046     		mov	r0, ip
+ 580 0020 3900     		movs	r1, r7
+ 581 0022 3200     		movs	r2, r6
+ 582 0024 2B00     		movs	r3, r5
+ 583 0026 FFF7FEFF 		bl	lr1mac_core_keys_set
+ 584              	.LVL26:
+ 200:smtc_modem_core/lorawan_api/lorawan_api.c **** }
+ 585              		.loc 1 200 1 view .LVU96
+ 586 002a 05B0     		add	sp, sp, #20
+ 587              		@ sp needed
+ 588 002c F0BC     		pop	{r4, r5, r6, r7}
+ 589 002e 08BC     		pop	{r3}
+ 590 0030 04B0     		add	sp, sp, #16
+ 591 0032 1847     		bx	r3
+ 592              		.cfi_endproc
+ 593              	.LFE26:
+ 595              		.section	.text.lorawan_api_factory_reset,"ax",%progbits
+ 596              		.align	1
+ 597              		.global	lorawan_api_factory_reset
+ 598              		.syntax unified
+ 599              		.code	16
+ 600              		.thumb_func
+ 601              		.fpu softvfp
+ 603              	lorawan_api_factory_reset:
+ 604              	.LFB27:
+ 201:smtc_modem_core/lorawan_api/lorawan_api.c **** 
+ 202:smtc_modem_core/lorawan_api/lorawan_api.c **** void lorawan_api_factory_reset( void )
+ 203:smtc_modem_core/lorawan_api/lorawan_api.c **** {
+ 605              		.loc 1 203 1 is_stmt 1 view -0
+ 606              		.cfi_startproc
+ 607              		@ args = 0, pretend = 0, frame = 0
+ 608              		@ frame_needed = 0, uses_anonymous_args = 0
+ 204:smtc_modem_core/lorawan_api/lorawan_api.c ****     lr1mac_core_factory_reset( );
+ 609              		.loc 1 204 5 view .LVU98
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s 			page 15
+
+
+ 203:smtc_modem_core/lorawan_api/lorawan_api.c ****     lr1mac_core_factory_reset( );
+ 610              		.loc 1 203 1 is_stmt 0 view .LVU99
+ 611 0000 10B5     		push	{r4, lr}
+ 612              		.cfi_def_cfa_offset 8
+ 613              		.cfi_offset 4, -8
+ 614              		.cfi_offset 14, -4
+ 615              		.loc 1 204 5 view .LVU100
+ 616 0002 FFF7FEFF 		bl	lr1mac_core_factory_reset
+ 617              	.LVL27:
+ 205:smtc_modem_core/lorawan_api/lorawan_api.c **** }
+ 618              		.loc 1 205 1 view .LVU101
+ 619              		@ sp needed
+ 620 0006 10BD     		pop	{r4, pc}
+ 621              		.cfi_endproc
+ 622              	.LFE27:
+ 624              		.section	.text.lorawan_api_is_ota_device,"ax",%progbits
+ 625              		.align	1
+ 626              		.global	lorawan_api_is_ota_device
+ 627              		.syntax unified
+ 628              		.code	16
+ 629              		.thumb_func
+ 630              		.fpu softvfp
+ 632              	lorawan_api_is_ota_device:
+ 633              	.LFB28:
+ 206:smtc_modem_core/lorawan_api/lorawan_api.c **** 
+ 207:smtc_modem_core/lorawan_api/lorawan_api.c **** type_otaa_abp_t lorawan_api_is_ota_device( void )
+ 208:smtc_modem_core/lorawan_api/lorawan_api.c **** {
+ 634              		.loc 1 208 1 is_stmt 1 view -0
+ 635              		.cfi_startproc
+ 636              		@ args = 0, pretend = 0, frame = 0
+ 637              		@ frame_needed = 0, uses_anonymous_args = 0
+ 209:smtc_modem_core/lorawan_api/lorawan_api.c ****     return lr1mac_core_is_otaa_device( );
+ 638              		.loc 1 209 5 view .LVU103
+ 208:smtc_modem_core/lorawan_api/lorawan_api.c ****     return lr1mac_core_is_otaa_device( );
+ 639              		.loc 1 208 1 is_stmt 0 view .LVU104
+ 640 0000 10B5     		push	{r4, lr}
+ 641              		.cfi_def_cfa_offset 8
+ 642              		.cfi_offset 4, -8
+ 643              		.cfi_offset 14, -4
+ 644              		.loc 1 209 12 view .LVU105
+ 645 0002 FFF7FEFF 		bl	lr1mac_core_is_otaa_device
+ 646              	.LVL28:
+ 210:smtc_modem_core/lorawan_api/lorawan_api.c **** }
+ 647              		.loc 1 210 1 view .LVU106
+ 648              		@ sp needed
+ 649 0006 10BD     		pop	{r4, pc}
+ 650              		.cfi_endproc
+ 651              	.LFE28:
+ 653              		.section	.text.lorawan_api_ota_set,"ax",%progbits
+ 654              		.align	1
+ 655              		.global	lorawan_api_ota_set
+ 656              		.syntax unified
+ 657              		.code	16
+ 658              		.thumb_func
+ 659              		.fpu softvfp
+ 661              	lorawan_api_ota_set:
+ 662              	.LVL29:
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s 			page 16
+
+
+ 663              	.LFB29:
+ 211:smtc_modem_core/lorawan_api/lorawan_api.c **** 
+ 212:smtc_modem_core/lorawan_api/lorawan_api.c **** void lorawan_api_ota_set( type_otaa_abp_t deviceType )
+ 213:smtc_modem_core/lorawan_api/lorawan_api.c **** {
+ 664              		.loc 1 213 1 is_stmt 1 view -0
+ 665              		.cfi_startproc
+ 666              		@ args = 0, pretend = 0, frame = 0
+ 667              		@ frame_needed = 0, uses_anonymous_args = 0
+ 214:smtc_modem_core/lorawan_api/lorawan_api.c ****     lr1mac_core_otaa_set( deviceType );
+ 668              		.loc 1 214 5 view .LVU108
+ 213:smtc_modem_core/lorawan_api/lorawan_api.c ****     lr1mac_core_otaa_set( deviceType );
+ 669              		.loc 1 213 1 is_stmt 0 view .LVU109
+ 670 0000 10B5     		push	{r4, lr}
+ 671              		.cfi_def_cfa_offset 8
+ 672              		.cfi_offset 4, -8
+ 673              		.cfi_offset 14, -4
+ 674              		.loc 1 214 5 view .LVU110
+ 675 0002 FFF7FEFF 		bl	lr1mac_core_otaa_set
+ 676              	.LVL30:
+ 215:smtc_modem_core/lorawan_api/lorawan_api.c **** }
+ 677              		.loc 1 215 1 view .LVU111
+ 678              		@ sp needed
+ 679 0006 10BD     		pop	{r4, pc}
+ 680              		.cfi_endproc
+ 681              	.LFE29:
+ 683              		.section	.text.lorawan_api_next_max_payload_length_get,"ax",%progbits
+ 684              		.align	1
+ 685              		.global	lorawan_api_next_max_payload_length_get
+ 686              		.syntax unified
+ 687              		.code	16
+ 688              		.thumb_func
+ 689              		.fpu softvfp
+ 691              	lorawan_api_next_max_payload_length_get:
+ 692              	.LFB30:
+ 216:smtc_modem_core/lorawan_api/lorawan_api.c **** 
+ 217:smtc_modem_core/lorawan_api/lorawan_api.c **** uint32_t lorawan_api_next_max_payload_length_get( void )
+ 218:smtc_modem_core/lorawan_api/lorawan_api.c **** {
+ 693              		.loc 1 218 1 is_stmt 1 view -0
+ 694              		.cfi_startproc
+ 695              		@ args = 0, pretend = 0, frame = 0
+ 696              		@ frame_needed = 0, uses_anonymous_args = 0
+ 219:smtc_modem_core/lorawan_api/lorawan_api.c ****     return lr1mac_core_next_max_payload_length_get( );
+ 697              		.loc 1 219 5 view .LVU113
+ 218:smtc_modem_core/lorawan_api/lorawan_api.c ****     return lr1mac_core_next_max_payload_length_get( );
+ 698              		.loc 1 218 1 is_stmt 0 view .LVU114
+ 699 0000 10B5     		push	{r4, lr}
+ 700              		.cfi_def_cfa_offset 8
+ 701              		.cfi_offset 4, -8
+ 702              		.cfi_offset 14, -4
+ 703              		.loc 1 219 12 view .LVU115
+ 704 0002 FFF7FEFF 		bl	lr1mac_core_next_max_payload_length_get
+ 705              	.LVL31:
+ 220:smtc_modem_core/lorawan_api/lorawan_api.c **** }
+ 706              		.loc 1 220 1 view .LVU116
+ 707              		@ sp needed
+ 708 0006 10BD     		pop	{r4, pc}
+ 709              		.cfi_endproc
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s 			page 17
+
+
+ 710              	.LFE30:
+ 712              		.section	.text.lorawan_api_new_join,"ax",%progbits
+ 713              		.align	1
+ 714              		.global	lorawan_api_new_join
+ 715              		.syntax unified
+ 716              		.code	16
+ 717              		.thumb_func
+ 718              		.fpu softvfp
+ 720              	lorawan_api_new_join:
+ 721              	.LFB31:
+ 221:smtc_modem_core/lorawan_api/lorawan_api.c **** 
+ 222:smtc_modem_core/lorawan_api/lorawan_api.c **** void lorawan_api_new_join( void )
+ 223:smtc_modem_core/lorawan_api/lorawan_api.c **** {
+ 722              		.loc 1 223 1 is_stmt 1 view -0
+ 723              		.cfi_startproc
+ 724              		@ args = 0, pretend = 0, frame = 0
+ 725              		@ frame_needed = 0, uses_anonymous_args = 0
+ 224:smtc_modem_core/lorawan_api/lorawan_api.c ****     lr1mac_core_new_join( );
+ 726              		.loc 1 224 5 view .LVU118
+ 223:smtc_modem_core/lorawan_api/lorawan_api.c ****     lr1mac_core_new_join( );
+ 727              		.loc 1 223 1 is_stmt 0 view .LVU119
+ 728 0000 10B5     		push	{r4, lr}
+ 729              		.cfi_def_cfa_offset 8
+ 730              		.cfi_offset 4, -8
+ 731              		.cfi_offset 14, -4
+ 732              		.loc 1 224 5 view .LVU120
+ 733 0002 FFF7FEFF 		bl	lr1mac_core_new_join
+ 734              	.LVL32:
+ 225:smtc_modem_core/lorawan_api/lorawan_api.c **** }
+ 735              		.loc 1 225 1 view .LVU121
+ 736              		@ sp needed
+ 737 0006 10BD     		pop	{r4, pc}
+ 738              		.cfi_endproc
+ 739              	.LFE31:
+ 741              		.section	.text.lorawan_api_devaddr_get,"ax",%progbits
+ 742              		.align	1
+ 743              		.global	lorawan_api_devaddr_get
+ 744              		.syntax unified
+ 745              		.code	16
+ 746              		.thumb_func
+ 747              		.fpu softvfp
+ 749              	lorawan_api_devaddr_get:
+ 750              	.LFB32:
+ 226:smtc_modem_core/lorawan_api/lorawan_api.c **** 
+ 227:smtc_modem_core/lorawan_api/lorawan_api.c **** uint32_t lorawan_api_devaddr_get( void )
+ 228:smtc_modem_core/lorawan_api/lorawan_api.c **** {
+ 751              		.loc 1 228 1 is_stmt 1 view -0
+ 752              		.cfi_startproc
+ 753              		@ args = 0, pretend = 0, frame = 0
+ 754              		@ frame_needed = 0, uses_anonymous_args = 0
+ 229:smtc_modem_core/lorawan_api/lorawan_api.c ****     return lr1mac_core_devaddr_get( );
+ 755              		.loc 1 229 5 view .LVU123
+ 228:smtc_modem_core/lorawan_api/lorawan_api.c ****     return lr1mac_core_devaddr_get( );
+ 756              		.loc 1 228 1 is_stmt 0 view .LVU124
+ 757 0000 10B5     		push	{r4, lr}
+ 758              		.cfi_def_cfa_offset 8
+ 759              		.cfi_offset 4, -8
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s 			page 18
+
+
+ 760              		.cfi_offset 14, -4
+ 761              		.loc 1 229 12 view .LVU125
+ 762 0002 FFF7FEFF 		bl	lr1mac_core_devaddr_get
+ 763              	.LVL33:
+ 230:smtc_modem_core/lorawan_api/lorawan_api.c **** }
+ 764              		.loc 1 230 1 view .LVU126
+ 765              		@ sp needed
+ 766 0006 10BD     		pop	{r4, pc}
+ 767              		.cfi_endproc
+ 768              	.LFE32:
+ 770              		.section	.text.lorawan_api_deveui_get,"ax",%progbits
+ 771              		.align	1
+ 772              		.global	lorawan_api_deveui_get
+ 773              		.syntax unified
+ 774              		.code	16
+ 775              		.thumb_func
+ 776              		.fpu softvfp
+ 778              	lorawan_api_deveui_get:
+ 779              	.LVL34:
+ 780              	.LFB33:
+ 231:smtc_modem_core/lorawan_api/lorawan_api.c **** 
+ 232:smtc_modem_core/lorawan_api/lorawan_api.c **** void lorawan_api_deveui_get( uint8_t* DevEui )
+ 233:smtc_modem_core/lorawan_api/lorawan_api.c **** {
+ 781              		.loc 1 233 1 is_stmt 1 view -0
+ 782              		.cfi_startproc
+ 783              		@ args = 0, pretend = 0, frame = 0
+ 784              		@ frame_needed = 0, uses_anonymous_args = 0
+ 234:smtc_modem_core/lorawan_api/lorawan_api.c ****     lr1mac_core_deveui_get( DevEui );
+ 785              		.loc 1 234 5 view .LVU128
+ 233:smtc_modem_core/lorawan_api/lorawan_api.c ****     lr1mac_core_deveui_get( DevEui );
+ 786              		.loc 1 233 1 is_stmt 0 view .LVU129
+ 787 0000 10B5     		push	{r4, lr}
+ 788              		.cfi_def_cfa_offset 8
+ 789              		.cfi_offset 4, -8
+ 790              		.cfi_offset 14, -4
+ 791              		.loc 1 234 5 view .LVU130
+ 792 0002 FFF7FEFF 		bl	lr1mac_core_deveui_get
+ 793              	.LVL35:
+ 235:smtc_modem_core/lorawan_api/lorawan_api.c **** }
+ 794              		.loc 1 235 1 view .LVU131
+ 795              		@ sp needed
+ 796 0006 10BD     		pop	{r4, pc}
+ 797              		.cfi_endproc
+ 798              	.LFE33:
+ 800              		.section	.text.lorawan_api_deveui_set,"ax",%progbits
+ 801              		.align	1
+ 802              		.global	lorawan_api_deveui_set
+ 803              		.syntax unified
+ 804              		.code	16
+ 805              		.thumb_func
+ 806              		.fpu softvfp
+ 808              	lorawan_api_deveui_set:
+ 809              	.LVL36:
+ 810              	.LFB34:
+ 236:smtc_modem_core/lorawan_api/lorawan_api.c **** 
+ 237:smtc_modem_core/lorawan_api/lorawan_api.c **** void lorawan_api_deveui_set( uint8_t* DevEui )
+ 238:smtc_modem_core/lorawan_api/lorawan_api.c **** {
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s 			page 19
+
+
+ 811              		.loc 1 238 1 is_stmt 1 view -0
+ 812              		.cfi_startproc
+ 813              		@ args = 0, pretend = 0, frame = 0
+ 814              		@ frame_needed = 0, uses_anonymous_args = 0
+ 239:smtc_modem_core/lorawan_api/lorawan_api.c ****     lr1mac_core_deveui_set( DevEui );
+ 815              		.loc 1 239 5 view .LVU133
+ 238:smtc_modem_core/lorawan_api/lorawan_api.c ****     lr1mac_core_deveui_set( DevEui );
+ 816              		.loc 1 238 1 is_stmt 0 view .LVU134
+ 817 0000 10B5     		push	{r4, lr}
+ 818              		.cfi_def_cfa_offset 8
+ 819              		.cfi_offset 4, -8
+ 820              		.cfi_offset 14, -4
+ 821              		.loc 1 239 5 view .LVU135
+ 822 0002 FFF7FEFF 		bl	lr1mac_core_deveui_set
+ 823              	.LVL37:
+ 240:smtc_modem_core/lorawan_api/lorawan_api.c **** }
+ 824              		.loc 1 240 1 view .LVU136
+ 825              		@ sp needed
+ 826 0006 10BD     		pop	{r4, pc}
+ 827              		.cfi_endproc
+ 828              	.LFE34:
+ 830              		.section	.text.lorawan_api_app_key_set,"ax",%progbits
+ 831              		.align	1
+ 832              		.global	lorawan_api_app_key_set
+ 833              		.syntax unified
+ 834              		.code	16
+ 835              		.thumb_func
+ 836              		.fpu softvfp
+ 838              	lorawan_api_app_key_set:
+ 839              	.LVL38:
+ 840              	.LFB35:
+ 241:smtc_modem_core/lorawan_api/lorawan_api.c **** 
+ 242:smtc_modem_core/lorawan_api/lorawan_api.c **** void lorawan_api_app_key_set( uint8_t* AppKey )
+ 243:smtc_modem_core/lorawan_api/lorawan_api.c **** {
+ 841              		.loc 1 243 1 is_stmt 1 view -0
+ 842              		.cfi_startproc
+ 843              		@ args = 0, pretend = 0, frame = 0
+ 844              		@ frame_needed = 0, uses_anonymous_args = 0
+ 244:smtc_modem_core/lorawan_api/lorawan_api.c ****     lr1mac_core_app_key_set( AppKey );
+ 845              		.loc 1 244 5 view .LVU138
+ 243:smtc_modem_core/lorawan_api/lorawan_api.c ****     lr1mac_core_app_key_set( AppKey );
+ 846              		.loc 1 243 1 is_stmt 0 view .LVU139
+ 847 0000 10B5     		push	{r4, lr}
+ 848              		.cfi_def_cfa_offset 8
+ 849              		.cfi_offset 4, -8
+ 850              		.cfi_offset 14, -4
+ 851              		.loc 1 244 5 view .LVU140
+ 852 0002 FFF7FEFF 		bl	lr1mac_core_app_key_set
+ 853              	.LVL39:
+ 245:smtc_modem_core/lorawan_api/lorawan_api.c **** }
+ 854              		.loc 1 245 1 view .LVU141
+ 855              		@ sp needed
+ 856 0006 10BD     		pop	{r4, pc}
+ 857              		.cfi_endproc
+ 858              	.LFE35:
+ 860              		.section	.text.lorawan_api_appeui_key_get,"ax",%progbits
+ 861              		.align	1
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s 			page 20
+
+
+ 862              		.global	lorawan_api_appeui_key_get
+ 863              		.syntax unified
+ 864              		.code	16
+ 865              		.thumb_func
+ 866              		.fpu softvfp
+ 868              	lorawan_api_appeui_key_get:
+ 869              	.LVL40:
+ 870              	.LFB36:
+ 246:smtc_modem_core/lorawan_api/lorawan_api.c **** 
+ 247:smtc_modem_core/lorawan_api/lorawan_api.c **** void lorawan_api_appeui_key_get( uint8_t* AppEui )
+ 248:smtc_modem_core/lorawan_api/lorawan_api.c **** {
+ 871              		.loc 1 248 1 is_stmt 1 view -0
+ 872              		.cfi_startproc
+ 873              		@ args = 0, pretend = 0, frame = 0
+ 874              		@ frame_needed = 0, uses_anonymous_args = 0
+ 249:smtc_modem_core/lorawan_api/lorawan_api.c ****     lr1mac_core_appeui_key_get( AppEui );
+ 875              		.loc 1 249 5 view .LVU143
+ 248:smtc_modem_core/lorawan_api/lorawan_api.c ****     lr1mac_core_appeui_key_get( AppEui );
+ 876              		.loc 1 248 1 is_stmt 0 view .LVU144
+ 877 0000 10B5     		push	{r4, lr}
+ 878              		.cfi_def_cfa_offset 8
+ 879              		.cfi_offset 4, -8
+ 880              		.cfi_offset 14, -4
+ 881              		.loc 1 249 5 view .LVU145
+ 882 0002 FFF7FEFF 		bl	lr1mac_core_appeui_key_get
+ 883              	.LVL41:
+ 250:smtc_modem_core/lorawan_api/lorawan_api.c **** }
+ 884              		.loc 1 250 1 view .LVU146
+ 885              		@ sp needed
+ 886 0006 10BD     		pop	{r4, pc}
+ 887              		.cfi_endproc
+ 888              	.LFE36:
+ 890              		.section	.text.lorawan_api_appeui_key_set,"ax",%progbits
+ 891              		.align	1
+ 892              		.global	lorawan_api_appeui_key_set
+ 893              		.syntax unified
+ 894              		.code	16
+ 895              		.thumb_func
+ 896              		.fpu softvfp
+ 898              	lorawan_api_appeui_key_set:
+ 899              	.LVL42:
+ 900              	.LFB37:
+ 251:smtc_modem_core/lorawan_api/lorawan_api.c **** 
+ 252:smtc_modem_core/lorawan_api/lorawan_api.c **** void lorawan_api_appeui_key_set( uint8_t* AppEui )
+ 253:smtc_modem_core/lorawan_api/lorawan_api.c **** {
+ 901              		.loc 1 253 1 is_stmt 1 view -0
+ 902              		.cfi_startproc
+ 903              		@ args = 0, pretend = 0, frame = 0
+ 904              		@ frame_needed = 0, uses_anonymous_args = 0
+ 254:smtc_modem_core/lorawan_api/lorawan_api.c ****     lr1mac_core_appeui_key_set( AppEui );
+ 905              		.loc 1 254 5 view .LVU148
+ 253:smtc_modem_core/lorawan_api/lorawan_api.c ****     lr1mac_core_appeui_key_set( AppEui );
+ 906              		.loc 1 253 1 is_stmt 0 view .LVU149
+ 907 0000 10B5     		push	{r4, lr}
+ 908              		.cfi_def_cfa_offset 8
+ 909              		.cfi_offset 4, -8
+ 910              		.cfi_offset 14, -4
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s 			page 21
+
+
+ 911              		.loc 1 254 5 view .LVU150
+ 912 0002 FFF7FEFF 		bl	lr1mac_core_appeui_key_set
+ 913              	.LVL43:
+ 255:smtc_modem_core/lorawan_api/lorawan_api.c **** }
+ 914              		.loc 1 255 1 view .LVU151
+ 915              		@ sp needed
+ 916 0006 10BD     		pop	{r4, pc}
+ 917              		.cfi_endproc
+ 918              	.LFE37:
+ 920              		.section	.text.lorawan_api_next_power_get,"ax",%progbits
+ 921              		.align	1
+ 922              		.global	lorawan_api_next_power_get
+ 923              		.syntax unified
+ 924              		.code	16
+ 925              		.thumb_func
+ 926              		.fpu softvfp
+ 928              	lorawan_api_next_power_get:
+ 929              	.LFB38:
+ 256:smtc_modem_core/lorawan_api/lorawan_api.c **** 
+ 257:smtc_modem_core/lorawan_api/lorawan_api.c **** uint8_t lorawan_api_next_power_get( void )
+ 258:smtc_modem_core/lorawan_api/lorawan_api.c **** {
+ 930              		.loc 1 258 1 is_stmt 1 view -0
+ 931              		.cfi_startproc
+ 932              		@ args = 0, pretend = 0, frame = 0
+ 933              		@ frame_needed = 0, uses_anonymous_args = 0
+ 259:smtc_modem_core/lorawan_api/lorawan_api.c ****     return lr1mac_core_next_power_get( );
+ 934              		.loc 1 259 5 view .LVU153
+ 258:smtc_modem_core/lorawan_api/lorawan_api.c ****     return lr1mac_core_next_power_get( );
+ 935              		.loc 1 258 1 is_stmt 0 view .LVU154
+ 936 0000 10B5     		push	{r4, lr}
+ 937              		.cfi_def_cfa_offset 8
+ 938              		.cfi_offset 4, -8
+ 939              		.cfi_offset 14, -4
+ 940              		.loc 1 259 12 view .LVU155
+ 941 0002 FFF7FEFF 		bl	lr1mac_core_next_power_get
+ 942              	.LVL44:
+ 260:smtc_modem_core/lorawan_api/lorawan_api.c **** }
+ 943              		.loc 1 260 1 view .LVU156
+ 944              		@ sp needed
+ 945 0006 10BD     		pop	{r4, pc}
+ 946              		.cfi_endproc
+ 947              	.LFE38:
+ 949              		.section	.text.lorawan_api_next_dr_get,"ax",%progbits
+ 950              		.align	1
+ 951              		.global	lorawan_api_next_dr_get
+ 952              		.syntax unified
+ 953              		.code	16
+ 954              		.thumb_func
+ 955              		.fpu softvfp
+ 957              	lorawan_api_next_dr_get:
+ 958              	.LFB39:
+ 261:smtc_modem_core/lorawan_api/lorawan_api.c **** 
+ 262:smtc_modem_core/lorawan_api/lorawan_api.c **** uint8_t lorawan_api_next_dr_get( void )
+ 263:smtc_modem_core/lorawan_api/lorawan_api.c **** {
+ 959              		.loc 1 263 1 is_stmt 1 view -0
+ 960              		.cfi_startproc
+ 961              		@ args = 0, pretend = 0, frame = 0
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s 			page 22
+
+
+ 962              		@ frame_needed = 0, uses_anonymous_args = 0
+ 264:smtc_modem_core/lorawan_api/lorawan_api.c ****     return lr1mac_core_next_dr_get( );
+ 963              		.loc 1 264 5 view .LVU158
+ 263:smtc_modem_core/lorawan_api/lorawan_api.c ****     return lr1mac_core_next_dr_get( );
+ 964              		.loc 1 263 1 is_stmt 0 view .LVU159
+ 965 0000 10B5     		push	{r4, lr}
+ 966              		.cfi_def_cfa_offset 8
+ 967              		.cfi_offset 4, -8
+ 968              		.cfi_offset 14, -4
+ 969              		.loc 1 264 12 view .LVU160
+ 970 0002 FFF7FEFF 		bl	lr1mac_core_next_dr_get
+ 971              	.LVL45:
+ 265:smtc_modem_core/lorawan_api/lorawan_api.c **** }
+ 972              		.loc 1 265 1 view .LVU161
+ 973              		@ sp needed
+ 974 0006 10BD     		pop	{r4, pc}
+ 975              		.cfi_endproc
+ 976              	.LFE39:
+ 978              		.section	.text.lorawan_api_next_frequency_get,"ax",%progbits
+ 979              		.align	1
+ 980              		.global	lorawan_api_next_frequency_get
+ 981              		.syntax unified
+ 982              		.code	16
+ 983              		.thumb_func
+ 984              		.fpu softvfp
+ 986              	lorawan_api_next_frequency_get:
+ 987              	.LFB40:
+ 266:smtc_modem_core/lorawan_api/lorawan_api.c **** 
+ 267:smtc_modem_core/lorawan_api/lorawan_api.c **** uint32_t lorawan_api_next_frequency_get( void )
+ 268:smtc_modem_core/lorawan_api/lorawan_api.c **** {
+ 988              		.loc 1 268 1 is_stmt 1 view -0
+ 989              		.cfi_startproc
+ 990              		@ args = 0, pretend = 0, frame = 0
+ 991              		@ frame_needed = 0, uses_anonymous_args = 0
+ 269:smtc_modem_core/lorawan_api/lorawan_api.c ****     return lr1mac_core_next_frequency_get( );
+ 992              		.loc 1 269 5 view .LVU163
+ 268:smtc_modem_core/lorawan_api/lorawan_api.c ****     return lr1mac_core_next_frequency_get( );
+ 993              		.loc 1 268 1 is_stmt 0 view .LVU164
+ 994 0000 10B5     		push	{r4, lr}
+ 995              		.cfi_def_cfa_offset 8
+ 996              		.cfi_offset 4, -8
+ 997              		.cfi_offset 14, -4
+ 998              		.loc 1 269 12 view .LVU165
+ 999 0002 FFF7FEFF 		bl	lr1mac_core_next_frequency_get
+ 1000              	.LVL46:
+ 270:smtc_modem_core/lorawan_api/lorawan_api.c **** }
+ 1001              		.loc 1 270 1 view .LVU166
+ 1002              		@ sp needed
+ 1003 0006 10BD     		pop	{r4, pc}
+ 1004              		.cfi_endproc
+ 1005              	.LFE40:
+ 1007              		.section	.text.lorawan_api_max_dr_get,"ax",%progbits
+ 1008              		.align	1
+ 1009              		.global	lorawan_api_max_dr_get
+ 1010              		.syntax unified
+ 1011              		.code	16
+ 1012              		.thumb_func
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s 			page 23
+
+
+ 1013              		.fpu softvfp
+ 1015              	lorawan_api_max_dr_get:
+ 1016              	.LFB41:
+ 271:smtc_modem_core/lorawan_api/lorawan_api.c **** 
+ 272:smtc_modem_core/lorawan_api/lorawan_api.c **** uint8_t lorawan_api_max_dr_get( void )
+ 273:smtc_modem_core/lorawan_api/lorawan_api.c **** {
+ 1017              		.loc 1 273 1 is_stmt 1 view -0
+ 1018              		.cfi_startproc
+ 1019              		@ args = 0, pretend = 0, frame = 0
+ 1020              		@ frame_needed = 0, uses_anonymous_args = 0
+ 274:smtc_modem_core/lorawan_api/lorawan_api.c ****     return lr1mac_core_max_dr_get( );
+ 1021              		.loc 1 274 5 view .LVU168
+ 273:smtc_modem_core/lorawan_api/lorawan_api.c ****     return lr1mac_core_max_dr_get( );
+ 1022              		.loc 1 273 1 is_stmt 0 view .LVU169
+ 1023 0000 10B5     		push	{r4, lr}
+ 1024              		.cfi_def_cfa_offset 8
+ 1025              		.cfi_offset 4, -8
+ 1026              		.cfi_offset 14, -4
+ 1027              		.loc 1 274 12 view .LVU170
+ 1028 0002 FFF7FEFF 		bl	lr1mac_core_max_dr_get
+ 1029              	.LVL47:
+ 275:smtc_modem_core/lorawan_api/lorawan_api.c **** }
+ 1030              		.loc 1 275 1 view .LVU171
+ 1031              		@ sp needed
+ 1032 0006 10BD     		pop	{r4, pc}
+ 1033              		.cfi_endproc
+ 1034              	.LFE41:
+ 1036              		.section	.text.lorawan_api_min_dr_get,"ax",%progbits
+ 1037              		.align	1
+ 1038              		.global	lorawan_api_min_dr_get
+ 1039              		.syntax unified
+ 1040              		.code	16
+ 1041              		.thumb_func
+ 1042              		.fpu softvfp
+ 1044              	lorawan_api_min_dr_get:
+ 1045              	.LFB42:
+ 276:smtc_modem_core/lorawan_api/lorawan_api.c **** 
+ 277:smtc_modem_core/lorawan_api/lorawan_api.c **** uint8_t lorawan_api_min_dr_get( void )
+ 278:smtc_modem_core/lorawan_api/lorawan_api.c **** {
+ 1046              		.loc 1 278 1 is_stmt 1 view -0
+ 1047              		.cfi_startproc
+ 1048              		@ args = 0, pretend = 0, frame = 0
+ 1049              		@ frame_needed = 0, uses_anonymous_args = 0
+ 279:smtc_modem_core/lorawan_api/lorawan_api.c ****     return lr1mac_core_min_dr_get( );
+ 1050              		.loc 1 279 5 view .LVU173
+ 278:smtc_modem_core/lorawan_api/lorawan_api.c ****     return lr1mac_core_min_dr_get( );
+ 1051              		.loc 1 278 1 is_stmt 0 view .LVU174
+ 1052 0000 10B5     		push	{r4, lr}
+ 1053              		.cfi_def_cfa_offset 8
+ 1054              		.cfi_offset 4, -8
+ 1055              		.cfi_offset 14, -4
+ 1056              		.loc 1 279 12 view .LVU175
+ 1057 0002 FFF7FEFF 		bl	lr1mac_core_min_dr_get
+ 1058              	.LVL48:
+ 280:smtc_modem_core/lorawan_api/lorawan_api.c **** }
+ 1059              		.loc 1 280 1 view .LVU176
+ 1060              		@ sp needed
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s 			page 24
+
+
+ 1061 0006 10BD     		pop	{r4, pc}
+ 1062              		.cfi_endproc
+ 1063              	.LFE42:
+ 1065              		.section	.text.lorawan_api_state_get,"ax",%progbits
+ 1066              		.align	1
+ 1067              		.global	lorawan_api_state_get
+ 1068              		.syntax unified
+ 1069              		.code	16
+ 1070              		.thumb_func
+ 1071              		.fpu softvfp
+ 1073              	lorawan_api_state_get:
+ 1074              	.LFB43:
+ 281:smtc_modem_core/lorawan_api/lorawan_api.c **** 
+ 282:smtc_modem_core/lorawan_api/lorawan_api.c **** lr1mac_states_t lorawan_api_state_get( void )
+ 283:smtc_modem_core/lorawan_api/lorawan_api.c **** {
+ 1075              		.loc 1 283 1 is_stmt 1 view -0
+ 1076              		.cfi_startproc
+ 1077              		@ args = 0, pretend = 0, frame = 0
+ 1078              		@ frame_needed = 0, uses_anonymous_args = 0
+ 284:smtc_modem_core/lorawan_api/lorawan_api.c ****     return lr1mac_core_state_get( );
+ 1079              		.loc 1 284 5 view .LVU178
+ 283:smtc_modem_core/lorawan_api/lorawan_api.c ****     return lr1mac_core_state_get( );
+ 1080              		.loc 1 283 1 is_stmt 0 view .LVU179
+ 1081 0000 10B5     		push	{r4, lr}
+ 1082              		.cfi_def_cfa_offset 8
+ 1083              		.cfi_offset 4, -8
+ 1084              		.cfi_offset 14, -4
+ 1085              		.loc 1 284 12 view .LVU180
+ 1086 0002 FFF7FEFF 		bl	lr1mac_core_state_get
+ 1087              	.LVL49:
+ 285:smtc_modem_core/lorawan_api/lorawan_api.c **** }
+ 1088              		.loc 1 285 1 view .LVU181
+ 1089              		@ sp needed
+ 1090 0006 10BD     		pop	{r4, pc}
+ 1091              		.cfi_endproc
+ 1092              	.LFE43:
+ 1094              		.section	.text.lorawan_api_nb_reset_get,"ax",%progbits
+ 1095              		.align	1
+ 1096              		.global	lorawan_api_nb_reset_get
+ 1097              		.syntax unified
+ 1098              		.code	16
+ 1099              		.thumb_func
+ 1100              		.fpu softvfp
+ 1102              	lorawan_api_nb_reset_get:
+ 1103              	.LFB44:
+ 286:smtc_modem_core/lorawan_api/lorawan_api.c **** 
+ 287:smtc_modem_core/lorawan_api/lorawan_api.c **** uint16_t lorawan_api_nb_reset_get( void )
+ 288:smtc_modem_core/lorawan_api/lorawan_api.c **** {
+ 1104              		.loc 1 288 1 is_stmt 1 view -0
+ 1105              		.cfi_startproc
+ 1106              		@ args = 0, pretend = 0, frame = 0
+ 1107              		@ frame_needed = 0, uses_anonymous_args = 0
+ 289:smtc_modem_core/lorawan_api/lorawan_api.c ****     return lr1mac_core_nb_reset_get( );
+ 1108              		.loc 1 289 5 view .LVU183
+ 288:smtc_modem_core/lorawan_api/lorawan_api.c ****     return lr1mac_core_nb_reset_get( );
+ 1109              		.loc 1 288 1 is_stmt 0 view .LVU184
+ 1110 0000 10B5     		push	{r4, lr}
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s 			page 25
+
+
+ 1111              		.cfi_def_cfa_offset 8
+ 1112              		.cfi_offset 4, -8
+ 1113              		.cfi_offset 14, -4
+ 1114              		.loc 1 289 12 view .LVU185
+ 1115 0002 FFF7FEFF 		bl	lr1mac_core_nb_reset_get
+ 1116              	.LVL50:
+ 290:smtc_modem_core/lorawan_api/lorawan_api.c **** }
+ 1117              		.loc 1 290 1 view .LVU186
+ 1118              		@ sp needed
+ 1119 0006 10BD     		pop	{r4, pc}
+ 1120              		.cfi_endproc
+ 1121              	.LFE44:
+ 1123              		.section	.text.lorawan_api_devnonce_get,"ax",%progbits
+ 1124              		.align	1
+ 1125              		.global	lorawan_api_devnonce_get
+ 1126              		.syntax unified
+ 1127              		.code	16
+ 1128              		.thumb_func
+ 1129              		.fpu softvfp
+ 1131              	lorawan_api_devnonce_get:
+ 1132              	.LFB45:
+ 291:smtc_modem_core/lorawan_api/lorawan_api.c **** 
+ 292:smtc_modem_core/lorawan_api/lorawan_api.c **** uint16_t lorawan_api_devnonce_get( void )
+ 293:smtc_modem_core/lorawan_api/lorawan_api.c **** {
+ 1133              		.loc 1 293 1 is_stmt 1 view -0
+ 1134              		.cfi_startproc
+ 1135              		@ args = 0, pretend = 0, frame = 0
+ 1136              		@ frame_needed = 0, uses_anonymous_args = 0
+ 294:smtc_modem_core/lorawan_api/lorawan_api.c ****     return lr1mac_core_devnonce_get( );
+ 1137              		.loc 1 294 5 view .LVU188
+ 293:smtc_modem_core/lorawan_api/lorawan_api.c ****     return lr1mac_core_devnonce_get( );
+ 1138              		.loc 1 293 1 is_stmt 0 view .LVU189
+ 1139 0000 10B5     		push	{r4, lr}
+ 1140              		.cfi_def_cfa_offset 8
+ 1141              		.cfi_offset 4, -8
+ 1142              		.cfi_offset 14, -4
+ 1143              		.loc 1 294 12 view .LVU190
+ 1144 0002 FFF7FEFF 		bl	lr1mac_core_devnonce_get
+ 1145              	.LVL51:
+ 295:smtc_modem_core/lorawan_api/lorawan_api.c **** }
+ 1146              		.loc 1 295 1 view .LVU191
+ 1147              		@ sp needed
+ 1148 0006 10BD     		pop	{r4, pc}
+ 1149              		.cfi_endproc
+ 1150              	.LFE45:
+ 1152              		.section	.text.lorawan_api_apps_key_get,"ax",%progbits
+ 1153              		.align	1
+ 1154              		.global	lorawan_api_apps_key_get
+ 1155              		.syntax unified
+ 1156              		.code	16
+ 1157              		.thumb_func
+ 1158              		.fpu softvfp
+ 1160              	lorawan_api_apps_key_get:
+ 1161              	.LFB46:
+ 296:smtc_modem_core/lorawan_api/lorawan_api.c **** 
+ 297:smtc_modem_core/lorawan_api/lorawan_api.c **** uint8_t* lorawan_api_apps_key_get( void )
+ 298:smtc_modem_core/lorawan_api/lorawan_api.c **** {
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s 			page 26
+
+
+ 1162              		.loc 1 298 1 is_stmt 1 view -0
+ 1163              		.cfi_startproc
+ 1164              		@ args = 0, pretend = 0, frame = 0
+ 1165              		@ frame_needed = 0, uses_anonymous_args = 0
+ 299:smtc_modem_core/lorawan_api/lorawan_api.c ****     uint8_t* key = NULL;
+ 1166              		.loc 1 299 5 view .LVU193
+ 1167              	.LVL52:
+ 300:smtc_modem_core/lorawan_api/lorawan_api.c ****     lr1mac_core_apps_key_get( key );
+ 1168              		.loc 1 300 5 view .LVU194
+ 298:smtc_modem_core/lorawan_api/lorawan_api.c ****     uint8_t* key = NULL;
+ 1169              		.loc 1 298 1 is_stmt 0 view .LVU195
+ 1170 0000 10B5     		push	{r4, lr}
+ 1171              		.cfi_def_cfa_offset 8
+ 1172              		.cfi_offset 4, -8
+ 1173              		.cfi_offset 14, -4
+ 1174              		.loc 1 300 5 view .LVU196
+ 1175 0002 0020     		movs	r0, #0
+ 1176 0004 FFF7FEFF 		bl	lr1mac_core_apps_key_get
+ 1177              	.LVL53:
+ 301:smtc_modem_core/lorawan_api/lorawan_api.c ****     return ( key );
+ 1178              		.loc 1 301 5 is_stmt 1 view .LVU197
+ 302:smtc_modem_core/lorawan_api/lorawan_api.c **** }
+ 1179              		.loc 1 302 1 is_stmt 0 view .LVU198
+ 1180              		@ sp needed
+ 1181 0008 0020     		movs	r0, #0
+ 1182 000a 10BD     		pop	{r4, pc}
+ 1183              		.cfi_endproc
+ 1184              	.LFE46:
+ 1186              		.section	.text.lorawan_api_rx_window_get,"ax",%progbits
+ 1187              		.align	1
+ 1188              		.global	lorawan_api_rx_window_get
+ 1189              		.syntax unified
+ 1190              		.code	16
+ 1191              		.thumb_func
+ 1192              		.fpu softvfp
+ 1194              	lorawan_api_rx_window_get:
+ 1195              	.LFB47:
+ 303:smtc_modem_core/lorawan_api/lorawan_api.c **** 
+ 304:smtc_modem_core/lorawan_api/lorawan_api.c **** receive_win_t lorawan_api_rx_window_get( void )
+ 305:smtc_modem_core/lorawan_api/lorawan_api.c **** {
+ 1196              		.loc 1 305 1 is_stmt 1 view -0
+ 1197              		.cfi_startproc
+ 1198              		@ args = 0, pretend = 0, frame = 0
+ 1199              		@ frame_needed = 0, uses_anonymous_args = 0
+ 306:smtc_modem_core/lorawan_api/lorawan_api.c ****     return lr1mac_core_rx_window_get( );
+ 1200              		.loc 1 306 5 view .LVU200
+ 305:smtc_modem_core/lorawan_api/lorawan_api.c ****     return lr1mac_core_rx_window_get( );
+ 1201              		.loc 1 305 1 is_stmt 0 view .LVU201
+ 1202 0000 10B5     		push	{r4, lr}
+ 1203              		.cfi_def_cfa_offset 8
+ 1204              		.cfi_offset 4, -8
+ 1205              		.cfi_offset 14, -4
+ 1206              		.loc 1 306 12 view .LVU202
+ 1207 0002 FFF7FEFF 		bl	lr1mac_core_rx_window_get
+ 1208              	.LVL54:
+ 307:smtc_modem_core/lorawan_api/lorawan_api.c **** }
+ 1209              		.loc 1 307 1 view .LVU203
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s 			page 27
+
+
+ 1210              		@ sp needed
+ 1211 0006 10BD     		pop	{r4, pc}
+ 1212              		.cfi_endproc
+ 1213              	.LFE47:
+ 1215              		.section	.text.lorawan_api_next_join_time_second_get,"ax",%progbits
+ 1216              		.align	1
+ 1217              		.global	lorawan_api_next_join_time_second_get
+ 1218              		.syntax unified
+ 1219              		.code	16
+ 1220              		.thumb_func
+ 1221              		.fpu softvfp
+ 1223              	lorawan_api_next_join_time_second_get:
+ 1224              	.LFB48:
+ 308:smtc_modem_core/lorawan_api/lorawan_api.c **** 
+ 309:smtc_modem_core/lorawan_api/lorawan_api.c **** uint32_t lorawan_api_next_join_time_second_get( void )
+ 310:smtc_modem_core/lorawan_api/lorawan_api.c **** {
+ 1225              		.loc 1 310 1 is_stmt 1 view -0
+ 1226              		.cfi_startproc
+ 1227              		@ args = 0, pretend = 0, frame = 0
+ 1228              		@ frame_needed = 0, uses_anonymous_args = 0
+ 311:smtc_modem_core/lorawan_api/lorawan_api.c ****     return lr1mac_core_next_join_time_second_get( );
+ 1229              		.loc 1 311 5 view .LVU205
+ 310:smtc_modem_core/lorawan_api/lorawan_api.c ****     return lr1mac_core_next_join_time_second_get( );
+ 1230              		.loc 1 310 1 is_stmt 0 view .LVU206
+ 1231 0000 10B5     		push	{r4, lr}
+ 1232              		.cfi_def_cfa_offset 8
+ 1233              		.cfi_offset 4, -8
+ 1234              		.cfi_offset 14, -4
+ 1235              		.loc 1 311 12 view .LVU207
+ 1236 0002 FFF7FEFF 		bl	lr1mac_core_next_join_time_second_get
+ 1237              	.LVL55:
+ 312:smtc_modem_core/lorawan_api/lorawan_api.c **** }
+ 1238              		.loc 1 312 1 view .LVU208
+ 1239              		@ sp needed
+ 1240 0006 10BD     		pop	{r4, pc}
+ 1241              		.cfi_endproc
+ 1242              	.LFE48:
+ 1244              		.section	.text.lorawan_api_next_free_duty_cycle_ms_get,"ax",%progbits
+ 1245              		.align	1
+ 1246              		.global	lorawan_api_next_free_duty_cycle_ms_get
+ 1247              		.syntax unified
+ 1248              		.code	16
+ 1249              		.thumb_func
+ 1250              		.fpu softvfp
+ 1252              	lorawan_api_next_free_duty_cycle_ms_get:
+ 1253              	.LFB49:
+ 313:smtc_modem_core/lorawan_api/lorawan_api.c **** 
+ 314:smtc_modem_core/lorawan_api/lorawan_api.c **** int32_t lorawan_api_next_free_duty_cycle_ms_get( void )
+ 315:smtc_modem_core/lorawan_api/lorawan_api.c **** {
+ 1254              		.loc 1 315 1 is_stmt 1 view -0
+ 1255              		.cfi_startproc
+ 1256              		@ args = 0, pretend = 0, frame = 0
+ 1257              		@ frame_needed = 0, uses_anonymous_args = 0
+ 316:smtc_modem_core/lorawan_api/lorawan_api.c ****     return lr1mac_core_next_free_duty_cycle_ms_get( );
+ 1258              		.loc 1 316 5 view .LVU210
+ 315:smtc_modem_core/lorawan_api/lorawan_api.c ****     return lr1mac_core_next_free_duty_cycle_ms_get( );
+ 1259              		.loc 1 315 1 is_stmt 0 view .LVU211
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s 			page 28
+
+
+ 1260 0000 10B5     		push	{r4, lr}
+ 1261              		.cfi_def_cfa_offset 8
+ 1262              		.cfi_offset 4, -8
+ 1263              		.cfi_offset 14, -4
+ 1264              		.loc 1 316 12 view .LVU212
+ 1265 0002 FFF7FEFF 		bl	lr1mac_core_next_free_duty_cycle_ms_get
+ 1266              	.LVL56:
+ 317:smtc_modem_core/lorawan_api/lorawan_api.c **** }
+ 1267              		.loc 1 317 1 view .LVU213
+ 1268              		@ sp needed
+ 1269 0006 10BD     		pop	{r4, pc}
+ 1270              		.cfi_endproc
+ 1271              	.LFE49:
+ 1273              		.section	.text.lorawan_api_duty_cycle_enable_set,"ax",%progbits
+ 1274              		.align	1
+ 1275              		.global	lorawan_api_duty_cycle_enable_set
+ 1276              		.syntax unified
+ 1277              		.code	16
+ 1278              		.thumb_func
+ 1279              		.fpu softvfp
+ 1281              	lorawan_api_duty_cycle_enable_set:
+ 1282              	.LVL57:
+ 1283              	.LFB50:
+ 318:smtc_modem_core/lorawan_api/lorawan_api.c **** 
+ 319:smtc_modem_core/lorawan_api/lorawan_api.c **** void lorawan_api_duty_cycle_enable_set( uint8_t enable )
+ 320:smtc_modem_core/lorawan_api/lorawan_api.c **** {
+ 1284              		.loc 1 320 1 is_stmt 1 view -0
+ 1285              		.cfi_startproc
+ 1286              		@ args = 0, pretend = 0, frame = 0
+ 1287              		@ frame_needed = 0, uses_anonymous_args = 0
+ 321:smtc_modem_core/lorawan_api/lorawan_api.c ****     lr1mac_core_duty_cycle_enable_set( enable );
+ 1288              		.loc 1 321 5 view .LVU215
+ 320:smtc_modem_core/lorawan_api/lorawan_api.c ****     lr1mac_core_duty_cycle_enable_set( enable );
+ 1289              		.loc 1 320 1 is_stmt 0 view .LVU216
+ 1290 0000 10B5     		push	{r4, lr}
+ 1291              		.cfi_def_cfa_offset 8
+ 1292              		.cfi_offset 4, -8
+ 1293              		.cfi_offset 14, -4
+ 1294              		.loc 1 321 5 view .LVU217
+ 1295 0002 FFF7FEFF 		bl	lr1mac_core_duty_cycle_enable_set
+ 1296              	.LVL58:
+ 322:smtc_modem_core/lorawan_api/lorawan_api.c **** }
+ 1297              		.loc 1 322 1 view .LVU218
+ 1298              		@ sp needed
+ 1299 0006 10BD     		pop	{r4, pc}
+ 1300              		.cfi_endproc
+ 1301              	.LFE50:
+ 1303              		.section	.text.lorawan_api_fcnt_up_get,"ax",%progbits
+ 1304              		.align	1
+ 1305              		.global	lorawan_api_fcnt_up_get
+ 1306              		.syntax unified
+ 1307              		.code	16
+ 1308              		.thumb_func
+ 1309              		.fpu softvfp
+ 1311              	lorawan_api_fcnt_up_get:
+ 1312              	.LFB51:
+ 323:smtc_modem_core/lorawan_api/lorawan_api.c **** 
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s 			page 29
+
+
+ 324:smtc_modem_core/lorawan_api/lorawan_api.c **** uint32_t lorawan_api_fcnt_up_get( void )
+ 325:smtc_modem_core/lorawan_api/lorawan_api.c **** {
+ 1313              		.loc 1 325 1 is_stmt 1 view -0
+ 1314              		.cfi_startproc
+ 1315              		@ args = 0, pretend = 0, frame = 0
+ 1316              		@ frame_needed = 0, uses_anonymous_args = 0
+ 326:smtc_modem_core/lorawan_api/lorawan_api.c ****     return lr1mac_core_fcnt_up_get( );
+ 1317              		.loc 1 326 5 view .LVU220
+ 325:smtc_modem_core/lorawan_api/lorawan_api.c ****     return lr1mac_core_fcnt_up_get( );
+ 1318              		.loc 1 325 1 is_stmt 0 view .LVU221
+ 1319 0000 10B5     		push	{r4, lr}
+ 1320              		.cfi_def_cfa_offset 8
+ 1321              		.cfi_offset 4, -8
+ 1322              		.cfi_offset 14, -4
+ 1323              		.loc 1 326 12 view .LVU222
+ 1324 0002 FFF7FEFF 		bl	lr1mac_core_fcnt_up_get
+ 1325              	.LVL59:
+ 327:smtc_modem_core/lorawan_api/lorawan_api.c **** }
+ 1326              		.loc 1 327 1 view .LVU223
+ 1327              		@ sp needed
+ 1328 0006 10BD     		pop	{r4, pc}
+ 1329              		.cfi_endproc
+ 1330              	.LFE51:
+ 1332              		.section	.text.lorawan_api_rp_hook_id_get,"ax",%progbits
+ 1333              		.align	1
+ 1334              		.global	lorawan_api_rp_hook_id_get
+ 1335              		.syntax unified
+ 1336              		.code	16
+ 1337              		.thumb_func
+ 1338              		.fpu softvfp
+ 1340              	lorawan_api_rp_hook_id_get:
+ 1341              	.LFB52:
+ 328:smtc_modem_core/lorawan_api/lorawan_api.c **** 
+ 329:smtc_modem_core/lorawan_api/lorawan_api.c **** uint8_t lorawan_api_rp_hook_id_get( void )
+ 330:smtc_modem_core/lorawan_api/lorawan_api.c **** {
+ 1342              		.loc 1 330 1 is_stmt 1 view -0
+ 1343              		.cfi_startproc
+ 1344              		@ args = 0, pretend = 0, frame = 8
+ 1345              		@ frame_needed = 0, uses_anonymous_args = 0
+ 331:smtc_modem_core/lorawan_api/lorawan_api.c ****     uint8_t hook_id;
+ 1346              		.loc 1 331 5 view .LVU225
+ 332:smtc_modem_core/lorawan_api/lorawan_api.c ****     rp_hook_get_id( lr1mac_core_rp_get( ), lr1mac_core_stack_mac_get( ), &hook_id );
+ 1347              		.loc 1 332 5 view .LVU226
+ 330:smtc_modem_core/lorawan_api/lorawan_api.c ****     uint8_t hook_id;
+ 1348              		.loc 1 330 1 is_stmt 0 view .LVU227
+ 1349 0000 37B5     		push	{r0, r1, r2, r4, r5, lr}
+ 1350              		.cfi_def_cfa_offset 24
+ 1351              		.cfi_offset 0, -24
+ 1352              		.cfi_offset 1, -20
+ 1353              		.cfi_offset 2, -16
+ 1354              		.cfi_offset 4, -12
+ 1355              		.cfi_offset 5, -8
+ 1356              		.cfi_offset 14, -4
+ 1357              		.loc 1 332 21 view .LVU228
+ 1358 0002 FFF7FEFF 		bl	lr1mac_core_rp_get
+ 1359              	.LVL60:
+ 1360 0006 0400     		movs	r4, r0
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s 			page 30
+
+
+ 1361              		.loc 1 332 44 view .LVU229
+ 1362 0008 FFF7FEFF 		bl	lr1mac_core_stack_mac_get
+ 1363              	.LVL61:
+ 1364              		.loc 1 332 5 view .LVU230
+ 1365 000c 6B46     		mov	r3, sp
+ 1366 000e DD1D     		adds	r5, r3, #7
+ 1367              		.loc 1 332 44 view .LVU231
+ 1368 0010 0100     		movs	r1, r0
+ 1369              		.loc 1 332 5 view .LVU232
+ 1370 0012 2A00     		movs	r2, r5
+ 1371 0014 2000     		movs	r0, r4
+ 1372 0016 FFF7FEFF 		bl	rp_hook_get_id
+ 1373              	.LVL62:
+ 333:smtc_modem_core/lorawan_api/lorawan_api.c ****     return hook_id;
+ 1374              		.loc 1 333 5 is_stmt 1 view .LVU233
+ 334:smtc_modem_core/lorawan_api/lorawan_api.c **** }
+ 1375              		.loc 1 334 1 is_stmt 0 view .LVU234
+ 1376              		@ sp needed
+ 333:smtc_modem_core/lorawan_api/lorawan_api.c ****     return hook_id;
+ 1377              		.loc 1 333 12 view .LVU235
+ 1378 001a 2878     		ldrb	r0, [r5]
+ 1379              		.loc 1 334 1 view .LVU236
+ 1380 001c 3EBD     		pop	{r1, r2, r3, r4, r5, pc}
+ 1381              		.cfi_endproc
+ 1382              	.LFE52:
+ 1384              		.section	.text.lorawan_api_tx_power_offset_get,"ax",%progbits
+ 1385              		.align	1
+ 1386              		.global	lorawan_api_tx_power_offset_get
+ 1387              		.syntax unified
+ 1388              		.code	16
+ 1389              		.thumb_func
+ 1390              		.fpu softvfp
+ 1392              	lorawan_api_tx_power_offset_get:
+ 1393              	.LFB53:
+ 335:smtc_modem_core/lorawan_api/lorawan_api.c **** 
+ 336:smtc_modem_core/lorawan_api/lorawan_api.c **** int8_t lorawan_api_tx_power_offset_get( )
+ 337:smtc_modem_core/lorawan_api/lorawan_api.c **** {
+ 1394              		.loc 1 337 1 is_stmt 1 view -0
+ 1395              		.cfi_startproc
+ 1396              		@ args = 0, pretend = 0, frame = 0
+ 1397              		@ frame_needed = 0, uses_anonymous_args = 0
+ 338:smtc_modem_core/lorawan_api/lorawan_api.c ****     return lr1mac_core_tx_power_offset_get( );
+ 1398              		.loc 1 338 5 view .LVU238
+ 337:smtc_modem_core/lorawan_api/lorawan_api.c ****     return lr1mac_core_tx_power_offset_get( );
+ 1399              		.loc 1 337 1 is_stmt 0 view .LVU239
+ 1400 0000 10B5     		push	{r4, lr}
+ 1401              		.cfi_def_cfa_offset 8
+ 1402              		.cfi_offset 4, -8
+ 1403              		.cfi_offset 14, -4
+ 1404              		.loc 1 338 12 view .LVU240
+ 1405 0002 FFF7FEFF 		bl	lr1mac_core_tx_power_offset_get
+ 1406              	.LVL63:
+ 339:smtc_modem_core/lorawan_api/lorawan_api.c **** }
+ 1407              		.loc 1 339 1 view .LVU241
+ 1408              		@ sp needed
+ 1409 0006 10BD     		pop	{r4, pc}
+ 1410              		.cfi_endproc
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s 			page 31
+
+
+ 1411              	.LFE53:
+ 1413              		.section	.text.lorawan_api_tx_power_offset_set,"ax",%progbits
+ 1414              		.align	1
+ 1415              		.global	lorawan_api_tx_power_offset_set
+ 1416              		.syntax unified
+ 1417              		.code	16
+ 1418              		.thumb_func
+ 1419              		.fpu softvfp
+ 1421              	lorawan_api_tx_power_offset_set:
+ 1422              	.LVL64:
+ 1423              	.LFB54:
+ 340:smtc_modem_core/lorawan_api/lorawan_api.c **** 
+ 341:smtc_modem_core/lorawan_api/lorawan_api.c **** void lorawan_api_tx_power_offset_set( int8_t power_off )
+ 342:smtc_modem_core/lorawan_api/lorawan_api.c **** {
+ 1424              		.loc 1 342 1 is_stmt 1 view -0
+ 1425              		.cfi_startproc
+ 1426              		@ args = 0, pretend = 0, frame = 0
+ 1427              		@ frame_needed = 0, uses_anonymous_args = 0
+ 343:smtc_modem_core/lorawan_api/lorawan_api.c ****     lr1mac_core_tx_power_offset_set( power_off );
+ 1428              		.loc 1 343 5 view .LVU243
+ 342:smtc_modem_core/lorawan_api/lorawan_api.c ****     lr1mac_core_tx_power_offset_set( power_off );
+ 1429              		.loc 1 342 1 is_stmt 0 view .LVU244
+ 1430 0000 10B5     		push	{r4, lr}
+ 1431              		.cfi_def_cfa_offset 8
+ 1432              		.cfi_offset 4, -8
+ 1433              		.cfi_offset 14, -4
+ 1434              		.loc 1 343 5 view .LVU245
+ 1435 0002 FFF7FEFF 		bl	lr1mac_core_tx_power_offset_set
+ 1436              	.LVL65:
+ 344:smtc_modem_core/lorawan_api/lorawan_api.c **** }
+ 1437              		.loc 1 344 1 view .LVU246
+ 1438              		@ sp needed
+ 1439 0006 10BD     		pop	{r4, pc}
+ 1440              		.cfi_endproc
+ 1441              	.LFE54:
+ 1443              		.section	.text.lorawan_api_rx_ack_bit_get,"ax",%progbits
+ 1444              		.align	1
+ 1445              		.global	lorawan_api_rx_ack_bit_get
+ 1446              		.syntax unified
+ 1447              		.code	16
+ 1448              		.thumb_func
+ 1449              		.fpu softvfp
+ 1451              	lorawan_api_rx_ack_bit_get:
+ 1452              	.LFB55:
+ 345:smtc_modem_core/lorawan_api/lorawan_api.c **** 
+ 346:smtc_modem_core/lorawan_api/lorawan_api.c **** uint8_t lorawan_api_rx_ack_bit_get( void )
+ 347:smtc_modem_core/lorawan_api/lorawan_api.c **** {
+ 1453              		.loc 1 347 1 is_stmt 1 view -0
+ 1454              		.cfi_startproc
+ 1455              		@ args = 0, pretend = 0, frame = 0
+ 1456              		@ frame_needed = 0, uses_anonymous_args = 0
+ 348:smtc_modem_core/lorawan_api/lorawan_api.c ****     return lr1mac_core_rx_ack_bit_get( );
+ 1457              		.loc 1 348 5 view .LVU248
+ 347:smtc_modem_core/lorawan_api/lorawan_api.c ****     return lr1mac_core_rx_ack_bit_get( );
+ 1458              		.loc 1 347 1 is_stmt 0 view .LVU249
+ 1459 0000 10B5     		push	{r4, lr}
+ 1460              		.cfi_def_cfa_offset 8
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s 			page 32
+
+
+ 1461              		.cfi_offset 4, -8
+ 1462              		.cfi_offset 14, -4
+ 1463              		.loc 1 348 12 view .LVU250
+ 1464 0002 FFF7FEFF 		bl	lr1mac_core_rx_ack_bit_get
+ 1465              	.LVL66:
+ 349:smtc_modem_core/lorawan_api/lorawan_api.c **** }
+ 1466              		.loc 1 349 1 view .LVU251
+ 1467              		@ sp needed
+ 1468 0006 10BD     		pop	{r4, pc}
+ 1469              		.cfi_endproc
+ 1470              	.LFE55:
+ 1472              		.section	.text.lorawan_api_certification_is_enabled,"ax",%progbits
+ 1473              		.align	1
+ 1474              		.global	lorawan_api_certification_is_enabled
+ 1475              		.syntax unified
+ 1476              		.code	16
+ 1477              		.thumb_func
+ 1478              		.fpu softvfp
+ 1480              	lorawan_api_certification_is_enabled:
+ 1481              	.LFB56:
+ 350:smtc_modem_core/lorawan_api/lorawan_api.c **** 
+ 351:smtc_modem_core/lorawan_api/lorawan_api.c **** bool lorawan_api_certification_is_enabled( void )
+ 352:smtc_modem_core/lorawan_api/lorawan_api.c **** {
+ 1482              		.loc 1 352 1 is_stmt 1 view -0
+ 1483              		.cfi_startproc
+ 1484              		@ args = 0, pretend = 0, frame = 0
+ 1485              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1486              		@ link register save eliminated.
+ 353:smtc_modem_core/lorawan_api/lorawan_api.c ****     return is_lorawan_certification_enabled;
+ 1487              		.loc 1 353 5 view .LVU253
+ 1488              		.loc 1 353 12 is_stmt 0 view .LVU254
+ 1489 0000 014B     		ldr	r3, .L51
+ 354:smtc_modem_core/lorawan_api/lorawan_api.c **** }
+ 1490              		.loc 1 354 1 view .LVU255
+ 1491              		@ sp needed
+ 353:smtc_modem_core/lorawan_api/lorawan_api.c ****     return is_lorawan_certification_enabled;
+ 1492              		.loc 1 353 12 view .LVU256
+ 1493 0002 1878     		ldrb	r0, [r3]
+ 1494              		.loc 1 354 1 view .LVU257
+ 1495 0004 7047     		bx	lr
+ 1496              	.L52:
+ 1497 0006 C046     		.align	2
+ 1498              	.L51:
+ 1499 0008 00000000 		.word	.LANCHOR2
+ 1500              		.cfi_endproc
+ 1501              	.LFE56:
+ 1503              		.section	.rodata.lorawan_api_certification.str1.1,"aMS",%progbits,1
+ 1504              	.LC4:
+ 1505 0000 1B5B303B 		.ascii	"\033[0;33m\000"
+ 1505      33336D00 
+ 1506              	.LC6:
+ 1507 0008 5741524E 		.ascii	"WARN : \000"
+ 1507      203A2000 
+ 1508              	.LC8:
+ 1509 0010 43657274 		.ascii	"Certif cmd=%u\012\000"
+ 1509      69662063 
+ 1509      6D643D25 
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s 			page 33
+
+
+ 1509      750A00
+ 1510              	.LC10:
+ 1511 001f 1B5B306D 		.ascii	"\033[0m\000"
+ 1511      00
+ 1512              		.section	.text.lorawan_api_certification,"ax",%progbits
+ 1513              		.align	1
+ 1514              		.global	lorawan_api_certification
+ 1515              		.syntax unified
+ 1516              		.code	16
+ 1517              		.thumb_func
+ 1518              		.fpu softvfp
+ 1520              	lorawan_api_certification:
+ 1521              	.LVL67:
+ 1522              	.LFB57:
+ 355:smtc_modem_core/lorawan_api/lorawan_api.c **** 
+ 356:smtc_modem_core/lorawan_api/lorawan_api.c **** uint8_t lorawan_api_certification( bool new_cmd, uint8_t fport_in, uint8_t* user_fport, uint8_t* ms
+ 357:smtc_modem_core/lorawan_api/lorawan_api.c ****                                    uint8_t* user_rx_payload, uint8_t* user_rx_payload_size, uint8_t
+ 358:smtc_modem_core/lorawan_api/lorawan_api.c ****                                    uint8_t* user_payload_size )
+ 359:smtc_modem_core/lorawan_api/lorawan_api.c **** {
+ 1523              		.loc 1 359 1 is_stmt 1 view -0
+ 1524              		.cfi_startproc
+ 1525              		@ args = 16, pretend = 0, frame = 0
+ 1526              		@ frame_needed = 0, uses_anonymous_args = 0
+ 360:smtc_modem_core/lorawan_api/lorawan_api.c ****     uint32_t        temp;
+ 1527              		.loc 1 360 5 view .LVU259
+ 361:smtc_modem_core/lorawan_api/lorawan_api.c ****     static uint16_t fcnt_dwn_certif  = 0;
+ 1528              		.loc 1 361 5 view .LVU260
+ 362:smtc_modem_core/lorawan_api/lorawan_api.c ****     static uint32_t msg_typePrevious = UNCONF_DATA_UP;
+ 1529              		.loc 1 362 5 view .LVU261
+ 363:smtc_modem_core/lorawan_api/lorawan_api.c ****     uint8_t         i;
+ 1530              		.loc 1 363 5 view .LVU262
+ 364:smtc_modem_core/lorawan_api/lorawan_api.c **** 
+ 365:smtc_modem_core/lorawan_api/lorawan_api.c ****     *user_payload_size = 2;
+ 1531              		.loc 1 365 5 view .LVU263
+ 359:smtc_modem_core/lorawan_api/lorawan_api.c ****     uint32_t        temp;
+ 1532              		.loc 1 359 1 is_stmt 0 view .LVU264
+ 1533 0000 F8B5     		push	{r3, r4, r5, r6, r7, lr}
+ 1534              		.cfi_def_cfa_offset 24
+ 1535              		.cfi_offset 3, -24
+ 1536              		.cfi_offset 4, -20
+ 1537              		.cfi_offset 5, -16
+ 1538              		.cfi_offset 6, -12
+ 1539              		.cfi_offset 7, -8
+ 1540              		.cfi_offset 14, -4
+ 359:smtc_modem_core/lorawan_api/lorawan_api.c ****     uint32_t        temp;
+ 1541              		.loc 1 359 1 view .LVU265
+ 1542 0002 1E00     		movs	r6, r3
+ 1543              		.loc 1 365 24 view .LVU266
+ 1544 0004 0223     		movs	r3, #2
+ 1545              	.LVL68:
+ 359:smtc_modem_core/lorawan_api/lorawan_api.c ****     uint32_t        temp;
+ 1546              		.loc 1 359 1 view .LVU267
+ 1547 0006 1500     		movs	r5, r2
+ 1548              		.loc 1 365 24 view .LVU268
+ 1549 0008 099A     		ldr	r2, [sp, #36]
+ 1550              	.LVL69:
+ 359:smtc_modem_core/lorawan_api/lorawan_api.c ****     uint32_t        temp;
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s 			page 34
+
+
+ 1551              		.loc 1 359 1 view .LVU269
+ 1552 000a 069F     		ldr	r7, [sp, #24]
+ 1553              		.loc 1 365 24 view .LVU270
+ 1554 000c 1370     		strb	r3, [r2]
+ 366:smtc_modem_core/lorawan_api/lorawan_api.c ****     *msg_type          = UNCONF_DATA_UP;
+ 1555              		.loc 1 366 5 is_stmt 1 view .LVU271
+ 1556              		.loc 1 366 24 is_stmt 0 view .LVU272
+ 1557 000e 3370     		strb	r3, [r6]
+ 367:smtc_modem_core/lorawan_api/lorawan_api.c ****     // BSP_DBG_TRACE_ARRAY( "CERTIF PAYLOAD", user_rx_payload, *user_rx_payload_size );
+ 368:smtc_modem_core/lorawan_api/lorawan_api.c **** 
+ 369:smtc_modem_core/lorawan_api/lorawan_api.c ****     if( new_cmd == true || *user_rx_payload_size > 0 )
+ 1558              		.loc 1 369 5 is_stmt 1 view .LVU273
+ 1559 0010 079A     		ldr	r2, [sp, #28]
+ 1560 0012 4B4B     		ldr	r3, .L81
+ 359:smtc_modem_core/lorawan_api/lorawan_api.c ****     uint32_t        temp;
+ 1561              		.loc 1 359 1 is_stmt 0 view .LVU274
+ 1562 0014 089C     		ldr	r4, [sp, #32]
+ 1563 0016 1B88     		ldrh	r3, [r3]
+ 1564 0018 1278     		ldrb	r2, [r2]
+ 1565              		.loc 1 369 7 view .LVU275
+ 1566 001a 0028     		cmp	r0, #0
+ 1567 001c 02D1     		bne	.L54
+ 1568              		.loc 1 369 25 discriminator 1 view .LVU276
+ 1569 001e 002A     		cmp	r2, #0
+ 1570 0020 00D1     		bne	.LCB927
+ 1571 0022 86E0     		b	.L55	@long jump
+ 1572              	.LCB927:
+ 1573              	.L54:
+ 370:smtc_modem_core/lorawan_api/lorawan_api.c ****     {
+ 371:smtc_modem_core/lorawan_api/lorawan_api.c ****         fcnt_dwn_certif++;
+ 1574              		.loc 1 371 9 is_stmt 1 view .LVU277
+ 1575              		.loc 1 371 24 is_stmt 0 view .LVU278
+ 1576 0024 4648     		ldr	r0, .L81
+ 1577              	.LVL70:
+ 1578              		.loc 1 371 24 view .LVU279
+ 1579 0026 0133     		adds	r3, r3, #1
+ 1580 0028 9BB2     		uxth	r3, r3
+ 1581 002a 0380     		strh	r3, [r0]
+ 372:smtc_modem_core/lorawan_api/lorawan_api.c ****         if( *user_rx_payload_size > 0 && fport_in == 224 )
+ 1582              		.loc 1 372 9 is_stmt 1 view .LVU280
+ 1583              		.loc 1 372 11 is_stmt 0 view .LVU281
+ 1584 002c 002A     		cmp	r2, #0
+ 1585 002e 00D1     		bne	.LCB937
+ 1586 0030 7FE0     		b	.L55	@long jump
+ 1587              	.LCB937:
+ 1588              		.loc 1 372 39 discriminator 1 view .LVU282
+ 1589 0032 E029     		cmp	r1, #224
+ 1590 0034 00D0     		beq	.LCB939
+ 1591 0036 7CE0     		b	.L55	@long jump
+ 1592              	.LCB939:
+ 373:smtc_modem_core/lorawan_api/lorawan_api.c ****         {
+ 374:smtc_modem_core/lorawan_api/lorawan_api.c ****             BSP_DBG_TRACE_WARNING( "Certif cmd=%u\n", user_rx_payload[0] );
+ 1593              		.loc 1 374 13 is_stmt 1 view .LVU283
+ 1594              		.loc 1 374 13 view .LVU284
+ 1595 0038 4248     		ldr	r0, .L81+4
+ 1596 003a FFF7FEFF 		bl	bsp_trace_print
+ 1597              	.LVL71:
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s 			page 35
+
+
+ 1598              		.loc 1 374 13 view .LVU285
+ 1599 003e 4248     		ldr	r0, .L81+8
+ 1600 0040 FFF7FEFF 		bl	bsp_trace_print
+ 1601              	.LVL72:
+ 1602              		.loc 1 374 13 view .LVU286
+ 1603 0044 3978     		ldrb	r1, [r7]
+ 1604 0046 4148     		ldr	r0, .L81+12
+ 1605 0048 FFF7FEFF 		bl	bsp_trace_print
+ 1606              	.LVL73:
+ 1607              		.loc 1 374 13 view .LVU287
+ 1608 004c 4048     		ldr	r0, .L81+16
+ 1609 004e FFF7FEFF 		bl	bsp_trace_print
+ 1610              	.LVL74:
+ 1611              		.loc 1 374 13 view .LVU288
+ 1612              		.loc 1 374 75 view .LVU289
+ 375:smtc_modem_core/lorawan_api/lorawan_api.c ****             switch( user_rx_payload[0] )
+ 1613              		.loc 1 375 13 view .LVU290
+ 1614 0052 3878     		ldrb	r0, [r7]
+ 1615 0054 0628     		cmp	r0, #6
+ 1616 0056 12D8     		bhi	.L57
+ 1617 0058 FFF7FEFF 		bl	__gnu_thumb1_case_uqi
+ 1618              	.L59:
+ 1619 005c 04       		.byte	(.L65-.L59)/2
+ 1620 005d 13       		.byte	(.L64-.L59)/2
+ 1621 005e 2E       		.byte	(.L63-.L59)/2
+ 1622 005f 3A       		.byte	(.L62-.L59)/2
+ 1623 0060 3E       		.byte	(.L61-.L59)/2
+ 1624 0061 51       		.byte	(.L60-.L59)/2
+ 1625 0062 58       		.byte	(.L58-.L59)/2
+ 1626 0063 00       		.p2align 1
+ 1627              	.L65:
+ 376:smtc_modem_core/lorawan_api/lorawan_api.c ****             {
+ 377:smtc_modem_core/lorawan_api/lorawan_api.c ****             case 0:  // end of test
+ 378:smtc_modem_core/lorawan_api/lorawan_api.c ****                 *user_fport        = 3;
+ 1628              		.loc 1 378 17 view .LVU291
+ 1629              		.loc 1 378 36 is_stmt 0 view .LVU292
+ 1630 0064 0323     		movs	r3, #3
+ 379:smtc_modem_core/lorawan_api/lorawan_api.c ****                 *user_payload_size = 11;
+ 1631              		.loc 1 379 36 view .LVU293
+ 1632 0066 099A     		ldr	r2, [sp, #36]
+ 378:smtc_modem_core/lorawan_api/lorawan_api.c ****                 *user_payload_size = 11;
+ 1633              		.loc 1 378 36 view .LVU294
+ 1634 0068 2B70     		strb	r3, [r5]
+ 1635              		.loc 1 379 17 is_stmt 1 view .LVU295
+ 1636              		.loc 1 379 36 is_stmt 0 view .LVU296
+ 1637 006a 0833     		adds	r3, r3, #8
+ 1638 006c 1370     		strb	r3, [r2]
+ 380:smtc_modem_core/lorawan_api/lorawan_api.c ****                 for( i = 0; i < 11; i++ )
+ 1639              		.loc 1 380 17 is_stmt 1 view .LVU297
+ 1640              	.LVL75:
+ 1641              		.loc 1 380 29 view .LVU298
+ 379:smtc_modem_core/lorawan_api/lorawan_api.c ****                 *user_payload_size = 11;
+ 1642              		.loc 1 379 36 is_stmt 0 view .LVU299
+ 1643 006e 0023     		movs	r3, #0
+ 1644              	.LVL76:
+ 1645              	.L66:
+ 381:smtc_modem_core/lorawan_api/lorawan_api.c ****                 {
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s 			page 36
+
+
+ 382:smtc_modem_core/lorawan_api/lorawan_api.c ****                     user_payload[i] = i;
+ 1646              		.loc 1 382 21 is_stmt 1 discriminator 3 view .LVU300
+ 1647              		.loc 1 382 37 is_stmt 0 discriminator 3 view .LVU301
+ 1648 0070 E354     		strb	r3, [r4, r3]
+ 380:smtc_modem_core/lorawan_api/lorawan_api.c ****                 for( i = 0; i < 11; i++ )
+ 1649              		.loc 1 380 37 is_stmt 1 discriminator 3 view .LVU302
+ 1650              	.LVL77:
+ 380:smtc_modem_core/lorawan_api/lorawan_api.c ****                 for( i = 0; i < 11; i++ )
+ 1651              		.loc 1 380 29 discriminator 3 view .LVU303
+ 1652 0072 0133     		adds	r3, r3, #1
+ 1653              	.LVL78:
+ 380:smtc_modem_core/lorawan_api/lorawan_api.c ****                 for( i = 0; i < 11; i++ )
+ 1654              		.loc 1 380 17 is_stmt 0 discriminator 3 view .LVU304
+ 1655 0074 0B2B     		cmp	r3, #11
+ 1656 0076 FBD1     		bne	.L66
+ 383:smtc_modem_core/lorawan_api/lorawan_api.c ****                 }
+ 384:smtc_modem_core/lorawan_api/lorawan_api.c ****                 is_lorawan_certification_enabled = false;
+ 1657              		.loc 1 384 17 is_stmt 1 view .LVU305
+ 1658              		.loc 1 384 50 is_stmt 0 view .LVU306
+ 1659 0078 0022     		movs	r2, #0
+ 1660 007a 364B     		ldr	r3, .L81+20
+ 1661              	.LVL79:
+ 1662              		.loc 1 384 50 view .LVU307
+ 1663 007c 1A70     		strb	r2, [r3]
+ 385:smtc_modem_core/lorawan_api/lorawan_api.c ****                 break;
+ 1664              		.loc 1 385 17 is_stmt 1 view .LVU308
+ 1665              	.L57:
+ 386:smtc_modem_core/lorawan_api/lorawan_api.c ****             case 1:
+ 387:smtc_modem_core/lorawan_api/lorawan_api.c ****                 temp = ( user_rx_payload[0] << 24 ) + ( user_rx_payload[1] << 16 ) + ( user_rx_payl
+ 388:smtc_modem_core/lorawan_api/lorawan_api.c ****                        ( user_rx_payload[3] );
+ 389:smtc_modem_core/lorawan_api/lorawan_api.c ****                 if( temp == 0x01010101 )
+ 390:smtc_modem_core/lorawan_api/lorawan_api.c ****                 {
+ 391:smtc_modem_core/lorawan_api/lorawan_api.c ****                     lorawan_api_dr_strategy_set( STATIC_ADR_MODE );
+ 392:smtc_modem_core/lorawan_api/lorawan_api.c ****                     fcnt_dwn_certif                  = 0;
+ 393:smtc_modem_core/lorawan_api/lorawan_api.c ****                     user_payload[0]                  = fcnt_dwn_certif >> 8;
+ 394:smtc_modem_core/lorawan_api/lorawan_api.c ****                     user_payload[1]                  = fcnt_dwn_certif & 0xFF;
+ 395:smtc_modem_core/lorawan_api/lorawan_api.c ****                     is_lorawan_certification_enabled = true;
+ 396:smtc_modem_core/lorawan_api/lorawan_api.c ****                     *user_fport                      = 224;
+ 397:smtc_modem_core/lorawan_api/lorawan_api.c ****                 }
+ 398:smtc_modem_core/lorawan_api/lorawan_api.c ****                 break;
+ 399:smtc_modem_core/lorawan_api/lorawan_api.c ****             case 2:  // Confirmed Uplink
+ 400:smtc_modem_core/lorawan_api/lorawan_api.c ****                 *user_fport      = 224;
+ 401:smtc_modem_core/lorawan_api/lorawan_api.c ****                 *msg_type        = CONF_DATA_UP;
+ 402:smtc_modem_core/lorawan_api/lorawan_api.c ****                 msg_typePrevious = *msg_type;
+ 403:smtc_modem_core/lorawan_api/lorawan_api.c ****                 user_payload[0]  = fcnt_dwn_certif >> 8;
+ 404:smtc_modem_core/lorawan_api/lorawan_api.c ****                 user_payload[1]  = fcnt_dwn_certif & 0xFF;
+ 405:smtc_modem_core/lorawan_api/lorawan_api.c ****                 break;
+ 406:smtc_modem_core/lorawan_api/lorawan_api.c ****             case 3:  // UnConfirmed Uplink
+ 407:smtc_modem_core/lorawan_api/lorawan_api.c ****                 *user_fport      = 224;
+ 408:smtc_modem_core/lorawan_api/lorawan_api.c ****                 *msg_type        = UNCONF_DATA_UP;
+ 409:smtc_modem_core/lorawan_api/lorawan_api.c ****                 msg_typePrevious = *msg_type;
+ 410:smtc_modem_core/lorawan_api/lorawan_api.c ****                 user_payload[0]  = fcnt_dwn_certif >> 8;
+ 411:smtc_modem_core/lorawan_api/lorawan_api.c ****                 user_payload[1]  = fcnt_dwn_certif & 0xFF;
+ 412:smtc_modem_core/lorawan_api/lorawan_api.c ****                 break;
+ 413:smtc_modem_core/lorawan_api/lorawan_api.c ****             case 4:  // echo payload
+ 414:smtc_modem_core/lorawan_api/lorawan_api.c ****                 *user_fport        = 224;
+ 415:smtc_modem_core/lorawan_api/lorawan_api.c ****                 *user_payload_size = *user_rx_payload_size;
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s 			page 37
+
+
+ 416:smtc_modem_core/lorawan_api/lorawan_api.c ****                 user_payload[0]    = 4;
+ 417:smtc_modem_core/lorawan_api/lorawan_api.c ****                 for( i = 1; i < ( *user_payload_size ); i++ )
+ 418:smtc_modem_core/lorawan_api/lorawan_api.c ****                 {
+ 419:smtc_modem_core/lorawan_api/lorawan_api.c ****                     user_payload[i] = user_rx_payload[i] + 1;
+ 420:smtc_modem_core/lorawan_api/lorawan_api.c ****                 }
+ 421:smtc_modem_core/lorawan_api/lorawan_api.c ****                 break;
+ 422:smtc_modem_core/lorawan_api/lorawan_api.c ****             case 5:  // link check request
+ 423:smtc_modem_core/lorawan_api/lorawan_api.c ****                 *user_payload_size = 1;
+ 424:smtc_modem_core/lorawan_api/lorawan_api.c ****                 user_payload[0]    = 2;
+ 425:smtc_modem_core/lorawan_api/lorawan_api.c ****                 *user_fport        = 0;
+ 426:smtc_modem_core/lorawan_api/lorawan_api.c ****                 break;
+ 427:smtc_modem_core/lorawan_api/lorawan_api.c ****             case 6:  // rejoin
+ 428:smtc_modem_core/lorawan_api/lorawan_api.c ****                 lorawan_api_ota_set( OTAA_DEVICE );
+ 429:smtc_modem_core/lorawan_api/lorawan_api.c ****                 lorawan_api_join_status_clear( );
+ 430:smtc_modem_core/lorawan_api/lorawan_api.c ****                 lorawan_api_new_join( );
+ 431:smtc_modem_core/lorawan_api/lorawan_api.c ****                 *user_fport        = 3;
+ 432:smtc_modem_core/lorawan_api/lorawan_api.c ****                 *user_payload_size = 11;
+ 433:smtc_modem_core/lorawan_api/lorawan_api.c ****                 for( i = 0; i < 11; i++ )
+ 434:smtc_modem_core/lorawan_api/lorawan_api.c ****                 {
+ 435:smtc_modem_core/lorawan_api/lorawan_api.c ****                     user_payload[i] = i;
+ 436:smtc_modem_core/lorawan_api/lorawan_api.c ****                 }
+ 437:smtc_modem_core/lorawan_api/lorawan_api.c ****                 return ( 0 );
+ 438:smtc_modem_core/lorawan_api/lorawan_api.c ****             default:
+ 439:smtc_modem_core/lorawan_api/lorawan_api.c ****                 break;
+ 440:smtc_modem_core/lorawan_api/lorawan_api.c ****             }
+ 441:smtc_modem_core/lorawan_api/lorawan_api.c ****         }
+ 442:smtc_modem_core/lorawan_api/lorawan_api.c ****         else
+ 443:smtc_modem_core/lorawan_api/lorawan_api.c ****         {  // for the case of echo cmd
+ 444:smtc_modem_core/lorawan_api/lorawan_api.c ****             *user_fport     = 224;
+ 445:smtc_modem_core/lorawan_api/lorawan_api.c ****             *msg_type       = msg_typePrevious;
+ 446:smtc_modem_core/lorawan_api/lorawan_api.c ****             user_payload[0] = fcnt_dwn_certif >> 8;
+ 447:smtc_modem_core/lorawan_api/lorawan_api.c ****             user_payload[1] = fcnt_dwn_certif & 0xFF;
+ 448:smtc_modem_core/lorawan_api/lorawan_api.c ****         }
+ 449:smtc_modem_core/lorawan_api/lorawan_api.c ****     }
+ 450:smtc_modem_core/lorawan_api/lorawan_api.c ****     else
+ 451:smtc_modem_core/lorawan_api/lorawan_api.c ****     {  // for the case of echo cmd
+ 452:smtc_modem_core/lorawan_api/lorawan_api.c ****         *user_fport     = 224;
+ 453:smtc_modem_core/lorawan_api/lorawan_api.c ****         *msg_type       = msg_typePrevious;
+ 454:smtc_modem_core/lorawan_api/lorawan_api.c ****         user_payload[0] = fcnt_dwn_certif >> 8;
+ 455:smtc_modem_core/lorawan_api/lorawan_api.c ****         user_payload[1] = fcnt_dwn_certif & 0xFF;
+ 456:smtc_modem_core/lorawan_api/lorawan_api.c ****     }
+ 457:smtc_modem_core/lorawan_api/lorawan_api.c **** 
+ 458:smtc_modem_core/lorawan_api/lorawan_api.c ****     return ( user_rx_payload[0] );
+ 1666              		.loc 1 458 5 view .LVU309
+ 1667              		.loc 1 458 29 is_stmt 0 view .LVU310
+ 1668 007e 3878     		ldrb	r0, [r7]
+ 1669 0080 56E0     		b	.L72
+ 1670              	.L64:
+ 387:smtc_modem_core/lorawan_api/lorawan_api.c ****                        ( user_rx_payload[3] );
+ 1671              		.loc 1 387 17 is_stmt 1 view .LVU311
+ 1672              	.LVL80:
+ 389:smtc_modem_core/lorawan_api/lorawan_api.c ****                 {
+ 1673              		.loc 1 389 17 view .LVU312
+ 387:smtc_modem_core/lorawan_api/lorawan_api.c ****                        ( user_rx_payload[3] );
+ 1674              		.loc 1 387 53 is_stmt 0 view .LVU313
+ 1675 0082 8022     		movs	r2, #128
+ 387:smtc_modem_core/lorawan_api/lorawan_api.c ****                        ( user_rx_payload[3] );
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s 			page 38
+
+
+ 1676              		.loc 1 387 72 view .LVU314
+ 1677 0084 7B78     		ldrb	r3, [r7, #1]
+ 1678              	.LVL81:
+ 387:smtc_modem_core/lorawan_api/lorawan_api.c ****                        ( user_rx_payload[3] );
+ 1679              		.loc 1 387 53 view .LVU315
+ 1680 0086 5204     		lsls	r2, r2, #17
+ 387:smtc_modem_core/lorawan_api/lorawan_api.c ****                        ( user_rx_payload[3] );
+ 1681              		.loc 1 387 76 view .LVU316
+ 1682 0088 1B04     		lsls	r3, r3, #16
+ 1683              	.LVL82:
+ 387:smtc_modem_core/lorawan_api/lorawan_api.c ****                        ( user_rx_payload[3] );
+ 1684              		.loc 1 387 53 view .LVU317
+ 1685 008a 9B18     		adds	r3, r3, r2
+ 387:smtc_modem_core/lorawan_api/lorawan_api.c ****                        ( user_rx_payload[3] );
+ 1686              		.loc 1 387 103 view .LVU318
+ 1687 008c BA78     		ldrb	r2, [r7, #2]
+ 1688              	.LVL83:
+ 387:smtc_modem_core/lorawan_api/lorawan_api.c ****                        ( user_rx_payload[3] );
+ 1689              		.loc 1 387 107 view .LVU319
+ 1690 008e 1202     		lsls	r2, r2, #8
+ 1691              	.LVL84:
+ 387:smtc_modem_core/lorawan_api/lorawan_api.c ****                        ( user_rx_payload[3] );
+ 1692              		.loc 1 387 84 view .LVU320
+ 1693 0090 9B18     		adds	r3, r3, r2
+ 388:smtc_modem_core/lorawan_api/lorawan_api.c ****                 if( temp == 0x01010101 )
+ 1694              		.loc 1 388 41 view .LVU321
+ 1695 0092 FA78     		ldrb	r2, [r7, #3]
+ 387:smtc_modem_core/lorawan_api/lorawan_api.c ****                        ( user_rx_payload[3] );
+ 1696              		.loc 1 387 114 view .LVU322
+ 1697 0094 9B18     		adds	r3, r3, r2
+ 389:smtc_modem_core/lorawan_api/lorawan_api.c ****                 {
+ 1698              		.loc 1 389 19 view .LVU323
+ 1699 0096 304A     		ldr	r2, .L81+24
+ 1700 0098 9342     		cmp	r3, r2
+ 1701 009a F0D1     		bne	.L57
+ 391:smtc_modem_core/lorawan_api/lorawan_api.c ****                     fcnt_dwn_certif                  = 0;
+ 1702              		.loc 1 391 21 is_stmt 1 view .LVU324
+ 1703              	.LVL85:
+ 1704              	.LBB10:
+ 1705              	.LBI10:
+ 157:smtc_modem_core/lorawan_api/lorawan_api.c **** {
+ 1706              		.loc 1 157 6 view .LVU325
+ 1707              	.LBB11:
+ 159:smtc_modem_core/lorawan_api/lorawan_api.c **** }
+ 1708              		.loc 1 159 5 view .LVU326
+ 1709 009c 0020     		movs	r0, #0
+ 1710 009e FFF7FEFF 		bl	lr1mac_core_dr_strategy_set
+ 1711              	.LVL86:
+ 159:smtc_modem_core/lorawan_api/lorawan_api.c **** }
+ 1712              		.loc 1 159 5 is_stmt 0 view .LVU327
+ 1713              	.LBE11:
+ 1714              	.LBE10:
+ 392:smtc_modem_core/lorawan_api/lorawan_api.c ****                     user_payload[0]                  = fcnt_dwn_certif >> 8;
+ 1715              		.loc 1 392 21 is_stmt 1 view .LVU328
+ 392:smtc_modem_core/lorawan_api/lorawan_api.c ****                     user_payload[0]                  = fcnt_dwn_certif >> 8;
+ 1716              		.loc 1 392 54 is_stmt 0 view .LVU329
+ 1717 00a2 0023     		movs	r3, #0
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s 			page 39
+
+
+ 1718 00a4 264A     		ldr	r2, .L81
+ 393:smtc_modem_core/lorawan_api/lorawan_api.c ****                     user_payload[1]                  = fcnt_dwn_certif & 0xFF;
+ 1719              		.loc 1 393 54 view .LVU330
+ 1720 00a6 2370     		strb	r3, [r4]
+ 392:smtc_modem_core/lorawan_api/lorawan_api.c ****                     user_payload[0]                  = fcnt_dwn_certif >> 8;
+ 1721              		.loc 1 392 54 view .LVU331
+ 1722 00a8 1380     		strh	r3, [r2]
+ 393:smtc_modem_core/lorawan_api/lorawan_api.c ****                     user_payload[1]                  = fcnt_dwn_certif & 0xFF;
+ 1723              		.loc 1 393 21 is_stmt 1 view .LVU332
+ 394:smtc_modem_core/lorawan_api/lorawan_api.c ****                     is_lorawan_certification_enabled = true;
+ 1724              		.loc 1 394 21 view .LVU333
+ 395:smtc_modem_core/lorawan_api/lorawan_api.c ****                     *user_fport                      = 224;
+ 1725              		.loc 1 395 54 is_stmt 0 view .LVU334
+ 1726 00aa 0122     		movs	r2, #1
+ 394:smtc_modem_core/lorawan_api/lorawan_api.c ****                     is_lorawan_certification_enabled = true;
+ 1727              		.loc 1 394 54 view .LVU335
+ 1728 00ac 6370     		strb	r3, [r4, #1]
+ 395:smtc_modem_core/lorawan_api/lorawan_api.c ****                     *user_fport                      = 224;
+ 1729              		.loc 1 395 21 is_stmt 1 view .LVU336
+ 395:smtc_modem_core/lorawan_api/lorawan_api.c ****                     *user_fport                      = 224;
+ 1730              		.loc 1 395 54 is_stmt 0 view .LVU337
+ 1731 00ae 294B     		ldr	r3, .L81+20
+ 1732 00b0 1A70     		strb	r2, [r3]
+ 396:smtc_modem_core/lorawan_api/lorawan_api.c ****                 }
+ 1733              		.loc 1 396 21 is_stmt 1 view .LVU338
+ 396:smtc_modem_core/lorawan_api/lorawan_api.c ****                 }
+ 1734              		.loc 1 396 54 is_stmt 0 view .LVU339
+ 1735 00b2 E023     		movs	r3, #224
+ 1736              	.L78:
+ 425:smtc_modem_core/lorawan_api/lorawan_api.c ****                 break;
+ 1737              		.loc 1 425 36 view .LVU340
+ 1738 00b4 2B70     		strb	r3, [r5]
+ 426:smtc_modem_core/lorawan_api/lorawan_api.c ****             case 6:  // rejoin
+ 1739              		.loc 1 426 17 is_stmt 1 view .LVU341
+ 1740 00b6 E2E7     		b	.L57
+ 1741              	.L63:
+ 400:smtc_modem_core/lorawan_api/lorawan_api.c ****                 *msg_type        = CONF_DATA_UP;
+ 1742              		.loc 1 400 17 view .LVU342
+ 400:smtc_modem_core/lorawan_api/lorawan_api.c ****                 *msg_type        = CONF_DATA_UP;
+ 1743              		.loc 1 400 34 is_stmt 0 view .LVU343
+ 1744 00b8 E023     		movs	r3, #224
+ 1745 00ba 2B70     		strb	r3, [r5]
+ 401:smtc_modem_core/lorawan_api/lorawan_api.c ****                 msg_typePrevious = *msg_type;
+ 1746              		.loc 1 401 17 is_stmt 1 view .LVU344
+ 401:smtc_modem_core/lorawan_api/lorawan_api.c ****                 msg_typePrevious = *msg_type;
+ 1747              		.loc 1 401 34 is_stmt 0 view .LVU345
+ 1748 00bc DC3B     		subs	r3, r3, #220
+ 1749              	.L80:
+ 409:smtc_modem_core/lorawan_api/lorawan_api.c ****                 user_payload[0]  = fcnt_dwn_certif >> 8;
+ 1750              		.loc 1 409 34 view .LVU346
+ 1751 00be 274A     		ldr	r2, .L81+28
+ 408:smtc_modem_core/lorawan_api/lorawan_api.c ****                 msg_typePrevious = *msg_type;
+ 1752              		.loc 1 408 34 view .LVU347
+ 1753 00c0 3370     		strb	r3, [r6]
+ 409:smtc_modem_core/lorawan_api/lorawan_api.c ****                 user_payload[0]  = fcnt_dwn_certif >> 8;
+ 1754              		.loc 1 409 17 is_stmt 1 view .LVU348
+ 409:smtc_modem_core/lorawan_api/lorawan_api.c ****                 user_payload[0]  = fcnt_dwn_certif >> 8;
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s 			page 40
+
+
+ 1755              		.loc 1 409 34 is_stmt 0 view .LVU349
+ 1756 00c2 1360     		str	r3, [r2]
+ 410:smtc_modem_core/lorawan_api/lorawan_api.c ****                 user_payload[1]  = fcnt_dwn_certif & 0xFF;
+ 1757              		.loc 1 410 17 is_stmt 1 view .LVU350
+ 410:smtc_modem_core/lorawan_api/lorawan_api.c ****                 user_payload[1]  = fcnt_dwn_certif & 0xFF;
+ 1758              		.loc 1 410 34 is_stmt 0 view .LVU351
+ 1759 00c4 1E4B     		ldr	r3, .L81
+ 1760 00c6 1B88     		ldrh	r3, [r3]
+ 1761              	.L79:
+ 454:smtc_modem_core/lorawan_api/lorawan_api.c ****         user_payload[1] = fcnt_dwn_certif & 0xFF;
+ 1762              		.loc 1 454 9 is_stmt 1 view .LVU352
+ 454:smtc_modem_core/lorawan_api/lorawan_api.c ****         user_payload[1] = fcnt_dwn_certif & 0xFF;
+ 1763              		.loc 1 454 25 is_stmt 0 view .LVU353
+ 1764 00c8 1A0A     		lsrs	r2, r3, #8
+ 1765 00ca 2270     		strb	r2, [r4]
+ 455:smtc_modem_core/lorawan_api/lorawan_api.c ****     }
+ 1766              		.loc 1 455 9 is_stmt 1 view .LVU354
+ 455:smtc_modem_core/lorawan_api/lorawan_api.c ****     }
+ 1767              		.loc 1 455 25 is_stmt 0 view .LVU355
+ 1768 00cc 6370     		strb	r3, [r4, #1]
+ 1769 00ce D6E7     		b	.L57
+ 1770              	.L62:
+ 407:smtc_modem_core/lorawan_api/lorawan_api.c ****                 *msg_type        = UNCONF_DATA_UP;
+ 1771              		.loc 1 407 17 is_stmt 1 view .LVU356
+ 407:smtc_modem_core/lorawan_api/lorawan_api.c ****                 *msg_type        = UNCONF_DATA_UP;
+ 1772              		.loc 1 407 34 is_stmt 0 view .LVU357
+ 1773 00d0 E023     		movs	r3, #224
+ 1774 00d2 2B70     		strb	r3, [r5]
+ 408:smtc_modem_core/lorawan_api/lorawan_api.c ****                 msg_typePrevious = *msg_type;
+ 1775              		.loc 1 408 17 is_stmt 1 view .LVU358
+ 408:smtc_modem_core/lorawan_api/lorawan_api.c ****                 msg_typePrevious = *msg_type;
+ 1776              		.loc 1 408 34 is_stmt 0 view .LVU359
+ 1777 00d4 DE3B     		subs	r3, r3, #222
+ 1778 00d6 F2E7     		b	.L80
+ 1779              	.L61:
+ 414:smtc_modem_core/lorawan_api/lorawan_api.c ****                 *user_payload_size = *user_rx_payload_size;
+ 1780              		.loc 1 414 17 is_stmt 1 view .LVU360
+ 414:smtc_modem_core/lorawan_api/lorawan_api.c ****                 *user_payload_size = *user_rx_payload_size;
+ 1781              		.loc 1 414 36 is_stmt 0 view .LVU361
+ 1782 00d8 E023     		movs	r3, #224
+ 1783 00da 2B70     		strb	r3, [r5]
+ 415:smtc_modem_core/lorawan_api/lorawan_api.c ****                 user_payload[0]    = 4;
+ 1784              		.loc 1 415 17 is_stmt 1 view .LVU362
+ 415:smtc_modem_core/lorawan_api/lorawan_api.c ****                 user_payload[0]    = 4;
+ 1785              		.loc 1 415 38 is_stmt 0 view .LVU363
+ 1786 00dc 079B     		ldr	r3, [sp, #28]
+ 415:smtc_modem_core/lorawan_api/lorawan_api.c ****                 user_payload[0]    = 4;
+ 1787              		.loc 1 415 36 view .LVU364
+ 1788 00de 099A     		ldr	r2, [sp, #36]
+ 415:smtc_modem_core/lorawan_api/lorawan_api.c ****                 user_payload[0]    = 4;
+ 1789              		.loc 1 415 38 view .LVU365
+ 1790 00e0 1B78     		ldrb	r3, [r3]
+ 415:smtc_modem_core/lorawan_api/lorawan_api.c ****                 user_payload[0]    = 4;
+ 1791              		.loc 1 415 36 view .LVU366
+ 1792 00e2 1370     		strb	r3, [r2]
+ 416:smtc_modem_core/lorawan_api/lorawan_api.c ****                 for( i = 1; i < ( *user_payload_size ); i++ )
+ 1793              		.loc 1 416 17 is_stmt 1 view .LVU367
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s 			page 41
+
+
+ 416:smtc_modem_core/lorawan_api/lorawan_api.c ****                 for( i = 1; i < ( *user_payload_size ); i++ )
+ 1794              		.loc 1 416 36 is_stmt 0 view .LVU368
+ 1795 00e4 0423     		movs	r3, #4
+ 1796 00e6 2370     		strb	r3, [r4]
+ 417:smtc_modem_core/lorawan_api/lorawan_api.c ****                 {
+ 1797              		.loc 1 417 17 is_stmt 1 view .LVU369
+ 1798              	.LVL87:
+ 417:smtc_modem_core/lorawan_api/lorawan_api.c ****                 {
+ 1799              		.loc 1 417 24 is_stmt 0 view .LVU370
+ 1800 00e8 033B     		subs	r3, r3, #3
+ 1801              	.LVL88:
+ 1802              	.L68:
+ 417:smtc_modem_core/lorawan_api/lorawan_api.c ****                 {
+ 1803              		.loc 1 417 29 is_stmt 1 discriminator 1 view .LVU371
+ 417:smtc_modem_core/lorawan_api/lorawan_api.c ****                 {
+ 1804              		.loc 1 417 17 is_stmt 0 discriminator 1 view .LVU372
+ 1805 00ea 099A     		ldr	r2, [sp, #36]
+ 1806 00ec 1278     		ldrb	r2, [r2]
+ 1807 00ee 9A42     		cmp	r2, r3
+ 1808 00f0 C5D9     		bls	.L57
+ 419:smtc_modem_core/lorawan_api/lorawan_api.c ****                 }
+ 1809              		.loc 1 419 21 is_stmt 1 discriminator 3 view .LVU373
+ 419:smtc_modem_core/lorawan_api/lorawan_api.c ****                 }
+ 1810              		.loc 1 419 58 is_stmt 0 discriminator 3 view .LVU374
+ 1811 00f2 FA5C     		ldrb	r2, [r7, r3]
+ 1812 00f4 0132     		adds	r2, r2, #1
+ 419:smtc_modem_core/lorawan_api/lorawan_api.c ****                 }
+ 1813              		.loc 1 419 37 discriminator 3 view .LVU375
+ 1814 00f6 E254     		strb	r2, [r4, r3]
+ 417:smtc_modem_core/lorawan_api/lorawan_api.c ****                 {
+ 1815              		.loc 1 417 57 is_stmt 1 discriminator 3 view .LVU376
+ 417:smtc_modem_core/lorawan_api/lorawan_api.c ****                 {
+ 1816              		.loc 1 417 58 is_stmt 0 discriminator 3 view .LVU377
+ 1817 00f8 0133     		adds	r3, r3, #1
+ 1818              	.LVL89:
+ 417:smtc_modem_core/lorawan_api/lorawan_api.c ****                 {
+ 1819              		.loc 1 417 58 discriminator 3 view .LVU378
+ 1820 00fa DBB2     		uxtb	r3, r3
+ 1821              	.LVL90:
+ 417:smtc_modem_core/lorawan_api/lorawan_api.c ****                 {
+ 1822              		.loc 1 417 58 discriminator 3 view .LVU379
+ 1823 00fc F5E7     		b	.L68
+ 1824              	.LVL91:
+ 1825              	.L60:
+ 423:smtc_modem_core/lorawan_api/lorawan_api.c ****                 user_payload[0]    = 2;
+ 1826              		.loc 1 423 17 is_stmt 1 view .LVU380
+ 423:smtc_modem_core/lorawan_api/lorawan_api.c ****                 user_payload[0]    = 2;
+ 1827              		.loc 1 423 36 is_stmt 0 view .LVU381
+ 1828 00fe 0123     		movs	r3, #1
+ 1829 0100 099A     		ldr	r2, [sp, #36]
+ 1830 0102 1370     		strb	r3, [r2]
+ 424:smtc_modem_core/lorawan_api/lorawan_api.c ****                 *user_fport        = 0;
+ 1831              		.loc 1 424 17 is_stmt 1 view .LVU382
+ 424:smtc_modem_core/lorawan_api/lorawan_api.c ****                 *user_fport        = 0;
+ 1832              		.loc 1 424 36 is_stmt 0 view .LVU383
+ 1833 0104 DB18     		adds	r3, r3, r3
+ 1834 0106 2370     		strb	r3, [r4]
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s 			page 42
+
+
+ 425:smtc_modem_core/lorawan_api/lorawan_api.c ****                 break;
+ 1835              		.loc 1 425 17 is_stmt 1 view .LVU384
+ 425:smtc_modem_core/lorawan_api/lorawan_api.c ****                 break;
+ 1836              		.loc 1 425 36 is_stmt 0 view .LVU385
+ 1837 0108 0023     		movs	r3, #0
+ 1838 010a D3E7     		b	.L78
+ 1839              	.L58:
+ 428:smtc_modem_core/lorawan_api/lorawan_api.c ****                 lorawan_api_join_status_clear( );
+ 1840              		.loc 1 428 17 is_stmt 1 view .LVU386
+ 1841              	.LVL92:
+ 1842              	.LBB12:
+ 1843              	.LBI12:
+ 212:smtc_modem_core/lorawan_api/lorawan_api.c **** {
+ 1844              		.loc 1 212 6 view .LVU387
+ 1845              	.LBB13:
+ 214:smtc_modem_core/lorawan_api/lorawan_api.c **** }
+ 1846              		.loc 1 214 5 view .LVU388
+ 1847 010c 0020     		movs	r0, #0
+ 1848 010e FFF7FEFF 		bl	lr1mac_core_otaa_set
+ 1849              	.LVL93:
+ 214:smtc_modem_core/lorawan_api/lorawan_api.c **** }
+ 1850              		.loc 1 214 5 is_stmt 0 view .LVU389
+ 1851              	.LBE13:
+ 1852              	.LBE12:
+ 429:smtc_modem_core/lorawan_api/lorawan_api.c ****                 lorawan_api_new_join( );
+ 1853              		.loc 1 429 17 is_stmt 1 view .LVU390
+ 1854              	.LBB14:
+ 1855              	.LBI14:
+ 152:smtc_modem_core/lorawan_api/lorawan_api.c **** {
+ 1856              		.loc 1 152 6 view .LVU391
+ 1857              	.LBB15:
+ 154:smtc_modem_core/lorawan_api/lorawan_api.c **** }
+ 1858              		.loc 1 154 5 view .LVU392
+ 1859 0112 FFF7FEFF 		bl	lr1mac_core_join_status_clear
+ 1860              	.LVL94:
+ 1861              	.LBE15:
+ 1862              	.LBE14:
+ 430:smtc_modem_core/lorawan_api/lorawan_api.c ****                 *user_fport        = 3;
+ 1863              		.loc 1 430 17 view .LVU393
+ 1864              	.LBB16:
+ 1865              	.LBI16:
+ 222:smtc_modem_core/lorawan_api/lorawan_api.c **** {
+ 1866              		.loc 1 222 6 view .LVU394
+ 1867              	.LBB17:
+ 224:smtc_modem_core/lorawan_api/lorawan_api.c **** }
+ 1868              		.loc 1 224 5 view .LVU395
+ 1869 0116 FFF7FEFF 		bl	lr1mac_core_new_join
+ 1870              	.LVL95:
+ 1871              	.LBE17:
+ 1872              	.LBE16:
+ 431:smtc_modem_core/lorawan_api/lorawan_api.c ****                 *user_payload_size = 11;
+ 1873              		.loc 1 431 17 view .LVU396
+ 431:smtc_modem_core/lorawan_api/lorawan_api.c ****                 *user_payload_size = 11;
+ 1874              		.loc 1 431 36 is_stmt 0 view .LVU397
+ 1875 011a 0323     		movs	r3, #3
+ 432:smtc_modem_core/lorawan_api/lorawan_api.c ****                 for( i = 0; i < 11; i++ )
+ 1876              		.loc 1 432 36 view .LVU398
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s 			page 43
+
+
+ 1877 011c 099A     		ldr	r2, [sp, #36]
+ 431:smtc_modem_core/lorawan_api/lorawan_api.c ****                 *user_payload_size = 11;
+ 1878              		.loc 1 431 36 view .LVU399
+ 1879 011e 2B70     		strb	r3, [r5]
+ 432:smtc_modem_core/lorawan_api/lorawan_api.c ****                 for( i = 0; i < 11; i++ )
+ 1880              		.loc 1 432 17 is_stmt 1 view .LVU400
+ 432:smtc_modem_core/lorawan_api/lorawan_api.c ****                 for( i = 0; i < 11; i++ )
+ 1881              		.loc 1 432 36 is_stmt 0 view .LVU401
+ 1882 0120 0833     		adds	r3, r3, #8
+ 1883 0122 1370     		strb	r3, [r2]
+ 433:smtc_modem_core/lorawan_api/lorawan_api.c ****                 {
+ 1884              		.loc 1 433 17 is_stmt 1 view .LVU402
+ 1885              	.LVL96:
+ 433:smtc_modem_core/lorawan_api/lorawan_api.c ****                 {
+ 1886              		.loc 1 433 29 view .LVU403
+ 432:smtc_modem_core/lorawan_api/lorawan_api.c ****                 for( i = 0; i < 11; i++ )
+ 1887              		.loc 1 432 36 is_stmt 0 view .LVU404
+ 1888 0124 0023     		movs	r3, #0
+ 1889              	.LVL97:
+ 1890              	.L71:
+ 435:smtc_modem_core/lorawan_api/lorawan_api.c ****                 }
+ 1891              		.loc 1 435 21 is_stmt 1 discriminator 3 view .LVU405
+ 435:smtc_modem_core/lorawan_api/lorawan_api.c ****                 }
+ 1892              		.loc 1 435 37 is_stmt 0 discriminator 3 view .LVU406
+ 1893 0126 E354     		strb	r3, [r4, r3]
+ 433:smtc_modem_core/lorawan_api/lorawan_api.c ****                 {
+ 1894              		.loc 1 433 37 is_stmt 1 discriminator 3 view .LVU407
+ 1895              	.LVL98:
+ 433:smtc_modem_core/lorawan_api/lorawan_api.c ****                 {
+ 1896              		.loc 1 433 29 discriminator 3 view .LVU408
+ 1897 0128 0133     		adds	r3, r3, #1
+ 1898              	.LVL99:
+ 433:smtc_modem_core/lorawan_api/lorawan_api.c ****                 {
+ 1899              		.loc 1 433 17 is_stmt 0 discriminator 3 view .LVU409
+ 1900 012a 0B2B     		cmp	r3, #11
+ 1901 012c FBD1     		bne	.L71
+ 437:smtc_modem_core/lorawan_api/lorawan_api.c ****             default:
+ 1902              		.loc 1 437 24 view .LVU410
+ 1903 012e 0020     		movs	r0, #0
+ 1904              	.LVL100:
+ 1905              	.L72:
+ 459:smtc_modem_core/lorawan_api/lorawan_api.c **** }
+ 1906              		.loc 1 459 1 view .LVU411
+ 1907              		@ sp needed
+ 1908              	.LVL101:
+ 1909              	.LVL102:
+ 1910              		.loc 1 459 1 view .LVU412
+ 1911 0130 F8BD     		pop	{r3, r4, r5, r6, r7, pc}
+ 1912              	.LVL103:
+ 1913              	.L55:
+ 452:smtc_modem_core/lorawan_api/lorawan_api.c ****         *msg_type       = msg_typePrevious;
+ 1914              		.loc 1 452 9 is_stmt 1 view .LVU413
+ 452:smtc_modem_core/lorawan_api/lorawan_api.c ****         *msg_type       = msg_typePrevious;
+ 1915              		.loc 1 452 25 is_stmt 0 view .LVU414
+ 1916 0132 E022     		movs	r2, #224
+ 1917 0134 2A70     		strb	r2, [r5]
+ 453:smtc_modem_core/lorawan_api/lorawan_api.c ****         user_payload[0] = fcnt_dwn_certif >> 8;
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s 			page 44
+
+
+ 1918              		.loc 1 453 9 is_stmt 1 view .LVU415
+ 453:smtc_modem_core/lorawan_api/lorawan_api.c ****         user_payload[0] = fcnt_dwn_certif >> 8;
+ 1919              		.loc 1 453 25 is_stmt 0 view .LVU416
+ 1920 0136 094A     		ldr	r2, .L81+28
+ 1921 0138 1268     		ldr	r2, [r2]
+ 1922 013a 3270     		strb	r2, [r6]
+ 1923 013c C4E7     		b	.L79
+ 1924              	.L82:
+ 1925 013e C046     		.align	2
+ 1926              	.L81:
+ 1927 0140 00000000 		.word	.LANCHOR3
+ 1928 0144 00000000 		.word	.LC4
+ 1929 0148 08000000 		.word	.LC6
+ 1930 014c 10000000 		.word	.LC8
+ 1931 0150 1F000000 		.word	.LC10
+ 1932 0154 00000000 		.word	.LANCHOR2
+ 1933 0158 01010101 		.word	16843009
+ 1934 015c 00000000 		.word	.LANCHOR4
+ 1935              		.cfi_endproc
+ 1936              	.LFE57:
+ 1938              		.global	LoRaDevAddrInit
+ 1939              		.global	DevEuiInit
+ 1940              		.global	AppEuiInit
+ 1941              		.global	LoRaMacAppKeyInit
+ 1942              		.global	LoRaMacAppSKeyInit
+ 1943              		.global	LoRaMacNwkSKeyInit
+ 1944              		.section	.bss.AppEuiInit,"aw",%nobits
+ 1945              		.align	2
+ 1948              	AppEuiInit:
+ 1949 0000 00000000 		.space	8
+ 1949      00000000 
+ 1950              		.section	.bss.DevEuiInit,"aw",%nobits
+ 1951              		.align	2
+ 1954              	DevEuiInit:
+ 1955 0000 00000000 		.space	8
+ 1955      00000000 
+ 1956              		.section	.bss.LoRaDevAddrInit,"aw",%nobits
+ 1957              		.align	2
+ 1960              	LoRaDevAddrInit:
+ 1961 0000 00000000 		.space	4
+ 1962              		.section	.bss.LoRaMacAppKeyInit,"aw",%nobits
+ 1963              		.align	2
+ 1966              	LoRaMacAppKeyInit:
+ 1967 0000 00000000 		.space	16
+ 1967      00000000 
+ 1967      00000000 
+ 1967      00000000 
+ 1968              		.section	.bss.LoRaMacAppSKeyInit,"aw",%nobits
+ 1969              		.align	2
+ 1972              	LoRaMacAppSKeyInit:
+ 1973 0000 00000000 		.space	16
+ 1973      00000000 
+ 1973      00000000 
+ 1973      00000000 
+ 1974              		.section	.bss.LoRaMacNwkSKeyInit,"aw",%nobits
+ 1975              		.align	2
+ 1978              	LoRaMacNwkSKeyInit:
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s 			page 45
+
+
+ 1979 0000 00000000 		.space	16
+ 1979      00000000 
+ 1979      00000000 
+ 1979      00000000 
+ 1980              		.section	.bss.fcnt_dwn_certif.6428,"aw",%nobits
+ 1981              		.align	1
+ 1982              		.set	.LANCHOR3,. + 0
+ 1985              	fcnt_dwn_certif.6428:
+ 1986 0000 0000     		.space	2
+ 1987              		.section	.bss.is_lorawan_certification_enabled,"aw",%nobits
+ 1988              		.set	.LANCHOR2,. + 0
+ 1991              	is_lorawan_certification_enabled:
+ 1992 0000 00       		.space	1
+ 1993              		.section	.data.LoraWanKeys,"aw"
+ 1994              		.align	2
+ 1995              		.set	.LANCHOR1,. + 0
+ 1998              	LoraWanKeys:
+ 1999 0000 00000000 		.word	LoRaMacNwkSKeyInit
+ 2000 0004 00000000 		.word	LoRaMacAppSKeyInit
+ 2001 0008 00000000 		.word	LoRaMacAppKeyInit
+ 2002 000c 00000000 		.word	AppEuiInit
+ 2003 0010 00000000 		.word	DevEuiInit
+ 2004 0014 00000000 		.word	0
+ 2005 0018 00       		.byte	0
+ 2006 0019 000000   		.space	3
+ 2007              		.section	.data.msg_typePrevious.6429,"aw"
+ 2008              		.align	2
+ 2009              		.set	.LANCHOR4,. + 0
+ 2012              	msg_typePrevious.6429:
+ 2013 0000 02000000 		.word	2
+ 2014              		.section	.data.smtc_region,"aw"
+ 2015              		.align	2
+ 2016              		.set	.LANCHOR0,. + 0
+ 2019              	smtc_region:
+ 2020 0000 00000000 		.word	0
+ 2021 0004 06       		.byte	6
+ 2022 0005 000000   		.space	3
+ 2023              		.text
+ 2024              	.Letext0:
+ 2025              		.file 2 "/Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.external
+ 2026              		.file 3 "/Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.external
+ 2027              		.file 4 "/Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.external
+ 2028              		.file 5 "/Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.external
+ 2029              		.file 6 "/Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.external
+ 2030              		.file 7 "/Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.external
+ 2031              		.file 8 "smtc_ral/src/ral_defs.h"
+ 2032              		.file 9 "lr1mac/src/lr1mac_defs.h"
+ 2033              		.file 10 "lr1mac/src/smtc_real/src/smtc_real_defs.h"
+ 2034              		.file 11 "radio_planner/src/radio_planner_types.h"
+ 2035              		.file 12 "radio_planner/src/radio_planner_stats.h"
+ 2036              		.file 13 "radio_planner/src/radio_planner.h"
+ 2037              		.file 14 "lr1mac/src/lr1mac_core.h"
+ 2038              		.file 15 "smtc_bsp/smtc_bsp_mcu.h"
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s 			page 46
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 lorawan_api.c
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:14     .text.lorawan_api_init:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:22     .text.lorawan_api_init:0000000000000000 lorawan_api_init
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:47     .text.lorawan_api_init:000000000000000c $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:53     .text.lorawan_api_get_region:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:60     .text.lorawan_api_get_region:0000000000000000 lorawan_api_get_region
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:82     .text.lorawan_api_set_region:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:89     .text.lorawan_api_set_region:0000000000000000 lorawan_api_set_region
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:112    .text.lorawan_api_payload_send:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:119    .text.lorawan_api_payload_send:0000000000000000 lorawan_api_payload_send
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:148    .text.lorawan_api_payload_send_at_time:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:155    .text.lorawan_api_payload_send_at_time:0000000000000000 lorawan_api_payload_send_at_time
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:184    .text.lorawan_api_payload_receive:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:191    .text.lorawan_api_payload_receive:0000000000000000 lorawan_api_payload_receive
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:214    .text.lorawan_api_join:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:221    .text.lorawan_api_join:0000000000000000 lorawan_api_join
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:244    .text.lorawan_api_isjoined:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:251    .text.lorawan_api_isjoined:0000000000000000 lorawan_api_isjoined
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:273    .text.lorawan_api_join_status_clear:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:280    .text.lorawan_api_join_status_clear:0000000000000000 lorawan_api_join_status_clear
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:302    .text.lorawan_api_dr_strategy_set:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:309    .text.lorawan_api_dr_strategy_set:0000000000000000 lorawan_api_dr_strategy_set
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:332    .text.lorawan_api_dr_strategy_get:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:339    .text.lorawan_api_dr_strategy_get:0000000000000000 lorawan_api_dr_strategy_get
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:361    .text.lorawan_api_dr_custom_set:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:368    .text.lorawan_api_dr_custom_set:0000000000000000 lorawan_api_dr_custom_set
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:391    .text.lorawan_api_process:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:398    .text.lorawan_api_process:0000000000000000 lorawan_api_process
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:421    .text.lorawan_api_context_load:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:428    .text.lorawan_api_context_load:0000000000000000 lorawan_api_context_load
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:450    .text.lorawan_api_context_save:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:457    .text.lorawan_api_context_save:0000000000000000 lorawan_api_context_save
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:479    .text.lorawan_api_last_snr_get:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:486    .text.lorawan_api_last_snr_get:0000000000000000 lorawan_api_last_snr_get
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:508    .text.lorawan_api_last_rssi_get:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:515    .text.lorawan_api_last_rssi_get:0000000000000000 lorawan_api_last_rssi_get
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:537    .text.lorawan_api_keys_set:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:544    .text.lorawan_api_keys_set:0000000000000000 lorawan_api_keys_set
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:596    .text.lorawan_api_factory_reset:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:603    .text.lorawan_api_factory_reset:0000000000000000 lorawan_api_factory_reset
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:625    .text.lorawan_api_is_ota_device:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:632    .text.lorawan_api_is_ota_device:0000000000000000 lorawan_api_is_ota_device
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:654    .text.lorawan_api_ota_set:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:661    .text.lorawan_api_ota_set:0000000000000000 lorawan_api_ota_set
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:684    .text.lorawan_api_next_max_payload_length_get:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:691    .text.lorawan_api_next_max_payload_length_get:0000000000000000 lorawan_api_next_max_payload_length_get
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:713    .text.lorawan_api_new_join:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:720    .text.lorawan_api_new_join:0000000000000000 lorawan_api_new_join
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:742    .text.lorawan_api_devaddr_get:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:749    .text.lorawan_api_devaddr_get:0000000000000000 lorawan_api_devaddr_get
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:771    .text.lorawan_api_deveui_get:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:778    .text.lorawan_api_deveui_get:0000000000000000 lorawan_api_deveui_get
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:801    .text.lorawan_api_deveui_set:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:808    .text.lorawan_api_deveui_set:0000000000000000 lorawan_api_deveui_set
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:831    .text.lorawan_api_app_key_set:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:838    .text.lorawan_api_app_key_set:0000000000000000 lorawan_api_app_key_set
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s 			page 47
+
+
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:861    .text.lorawan_api_appeui_key_get:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:868    .text.lorawan_api_appeui_key_get:0000000000000000 lorawan_api_appeui_key_get
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:891    .text.lorawan_api_appeui_key_set:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:898    .text.lorawan_api_appeui_key_set:0000000000000000 lorawan_api_appeui_key_set
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:921    .text.lorawan_api_next_power_get:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:928    .text.lorawan_api_next_power_get:0000000000000000 lorawan_api_next_power_get
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:950    .text.lorawan_api_next_dr_get:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:957    .text.lorawan_api_next_dr_get:0000000000000000 lorawan_api_next_dr_get
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:979    .text.lorawan_api_next_frequency_get:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:986    .text.lorawan_api_next_frequency_get:0000000000000000 lorawan_api_next_frequency_get
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:1008   .text.lorawan_api_max_dr_get:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:1015   .text.lorawan_api_max_dr_get:0000000000000000 lorawan_api_max_dr_get
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:1037   .text.lorawan_api_min_dr_get:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:1044   .text.lorawan_api_min_dr_get:0000000000000000 lorawan_api_min_dr_get
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:1066   .text.lorawan_api_state_get:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:1073   .text.lorawan_api_state_get:0000000000000000 lorawan_api_state_get
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:1095   .text.lorawan_api_nb_reset_get:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:1102   .text.lorawan_api_nb_reset_get:0000000000000000 lorawan_api_nb_reset_get
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:1124   .text.lorawan_api_devnonce_get:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:1131   .text.lorawan_api_devnonce_get:0000000000000000 lorawan_api_devnonce_get
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:1153   .text.lorawan_api_apps_key_get:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:1160   .text.lorawan_api_apps_key_get:0000000000000000 lorawan_api_apps_key_get
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:1187   .text.lorawan_api_rx_window_get:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:1194   .text.lorawan_api_rx_window_get:0000000000000000 lorawan_api_rx_window_get
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:1216   .text.lorawan_api_next_join_time_second_get:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:1223   .text.lorawan_api_next_join_time_second_get:0000000000000000 lorawan_api_next_join_time_second_get
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:1245   .text.lorawan_api_next_free_duty_cycle_ms_get:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:1252   .text.lorawan_api_next_free_duty_cycle_ms_get:0000000000000000 lorawan_api_next_free_duty_cycle_ms_get
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:1274   .text.lorawan_api_duty_cycle_enable_set:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:1281   .text.lorawan_api_duty_cycle_enable_set:0000000000000000 lorawan_api_duty_cycle_enable_set
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:1304   .text.lorawan_api_fcnt_up_get:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:1311   .text.lorawan_api_fcnt_up_get:0000000000000000 lorawan_api_fcnt_up_get
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:1333   .text.lorawan_api_rp_hook_id_get:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:1340   .text.lorawan_api_rp_hook_id_get:0000000000000000 lorawan_api_rp_hook_id_get
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:1385   .text.lorawan_api_tx_power_offset_get:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:1392   .text.lorawan_api_tx_power_offset_get:0000000000000000 lorawan_api_tx_power_offset_get
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:1414   .text.lorawan_api_tx_power_offset_set:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:1421   .text.lorawan_api_tx_power_offset_set:0000000000000000 lorawan_api_tx_power_offset_set
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:1444   .text.lorawan_api_rx_ack_bit_get:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:1451   .text.lorawan_api_rx_ack_bit_get:0000000000000000 lorawan_api_rx_ack_bit_get
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:1473   .text.lorawan_api_certification_is_enabled:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:1480   .text.lorawan_api_certification_is_enabled:0000000000000000 lorawan_api_certification_is_enabled
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:1499   .text.lorawan_api_certification_is_enabled:0000000000000008 $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:1513   .text.lorawan_api_certification:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:1520   .text.lorawan_api_certification:0000000000000000 lorawan_api_certification
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:1619   .text.lorawan_api_certification:000000000000005c $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:1927   .text.lorawan_api_certification:0000000000000140 $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:1960   .bss.LoRaDevAddrInit:0000000000000000 LoRaDevAddrInit
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:1954   .bss.DevEuiInit:0000000000000000 DevEuiInit
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:1948   .bss.AppEuiInit:0000000000000000 AppEuiInit
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:1966   .bss.LoRaMacAppKeyInit:0000000000000000 LoRaMacAppKeyInit
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:1972   .bss.LoRaMacAppSKeyInit:0000000000000000 LoRaMacAppSKeyInit
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:1978   .bss.LoRaMacNwkSKeyInit:0000000000000000 LoRaMacNwkSKeyInit
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:1945   .bss.AppEuiInit:0000000000000000 $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:1951   .bss.DevEuiInit:0000000000000000 $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:1957   .bss.LoRaDevAddrInit:0000000000000000 $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:1963   .bss.LoRaMacAppKeyInit:0000000000000000 $d
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s 			page 48
+
+
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:1969   .bss.LoRaMacAppSKeyInit:0000000000000000 $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:1975   .bss.LoRaMacNwkSKeyInit:0000000000000000 $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:1981   .bss.fcnt_dwn_certif.6428:0000000000000000 $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:1985   .bss.fcnt_dwn_certif.6428:0000000000000000 fcnt_dwn_certif.6428
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:1991   .bss.is_lorawan_certification_enabled:0000000000000000 is_lorawan_certification_enabled
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:1992   .bss.is_lorawan_certification_enabled:0000000000000000 $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:1994   .data.LoraWanKeys:0000000000000000 $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:1998   .data.LoraWanKeys:0000000000000000 LoraWanKeys
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:2008   .data.msg_typePrevious.6429:0000000000000000 $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:2012   .data.msg_typePrevious.6429:0000000000000000 msg_typePrevious.6429
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:2015   .data.smtc_region:0000000000000000 $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:2019   .data.smtc_region:0000000000000000 smtc_region
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:1626   .text.lorawan_api_certification:0000000000000063 $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s:1626   .text.lorawan_api_certification:0000000000000064 $t
+
+UNDEFINED SYMBOLS
+lr1mac_core_init
+lr1mac_core_get_region
+lr1mac_core_set_region
+lr1mac_core_payload_send
+lr1mac_core_payload_send_at_time
+lr1mac_core_payload_receive
+lr1mac_core_join
+lr1_mac_joined_status_get
+lr1mac_core_join_status_clear
+lr1mac_core_dr_strategy_set
+lr1mac_core_dr_strategy_get
+lr1mac_core_dr_custom_set
+lr1mac_core_process
+lr1mac_core_context_load
+lr1mac_core_context_save
+lr1mac_core_last_snr_get
+lr1mac_core_last_rssi_get
+lr1mac_core_keys_set
+lr1mac_core_factory_reset
+lr1mac_core_is_otaa_device
+lr1mac_core_otaa_set
+lr1mac_core_next_max_payload_length_get
+lr1mac_core_new_join
+lr1mac_core_devaddr_get
+lr1mac_core_deveui_get
+lr1mac_core_deveui_set
+lr1mac_core_app_key_set
+lr1mac_core_appeui_key_get
+lr1mac_core_appeui_key_set
+lr1mac_core_next_power_get
+lr1mac_core_next_dr_get
+lr1mac_core_next_frequency_get
+lr1mac_core_max_dr_get
+lr1mac_core_min_dr_get
+lr1mac_core_state_get
+lr1mac_core_nb_reset_get
+lr1mac_core_devnonce_get
+lr1mac_core_apps_key_get
+lr1mac_core_rx_window_get
+lr1mac_core_next_join_time_second_get
+lr1mac_core_next_free_duty_cycle_ms_get
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccTCoXdo.s 			page 49
+
+
+lr1mac_core_duty_cycle_enable_set
+lr1mac_core_fcnt_up_get
+lr1mac_core_rp_get
+lr1mac_core_stack_mac_get
+rp_hook_get_id
+lr1mac_core_tx_power_offset_get
+lr1mac_core_tx_power_offset_set
+lr1mac_core_rx_ack_bit_get
+bsp_trace_print
+__gnu_thumb1_case_uqi

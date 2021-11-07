@@ -1,0 +1,1421 @@
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc19SNmv.s 			page 1
+
+
+   1              		.cpu cortex-m0plus
+   2              		.eabi_attribute 23, 1
+   3              		.eabi_attribute 24, 1
+   4              		.eabi_attribute 25, 1
+   5              		.eabi_attribute 26, 1
+   6              		.eabi_attribute 30, 4
+   7              		.eabi_attribute 34, 0
+   8              		.eabi_attribute 18, 4
+   9              		.file	"crypto.c"
+  10              		.text
+  11              	.Ltext0:
+  12              		.cfi_sections	.debug_frame
+  13              		.section	.text.compute_mic,"ax",%progbits
+  14              		.align	1
+  15              		.global	compute_mic
+  16              		.arch armv6s-m
+  17              		.syntax unified
+  18              		.code	16
+  19              		.thumb_func
+  20              		.fpu softvfp
+  22              	compute_mic:
+  23              	.LVL0:
+  24              	.LFB4:
+  25              		.file 1 "smtc_crypto/src/crypto.c"
+   1:smtc_crypto/src/crypto.c **** /*!
+   2:smtc_crypto/src/crypto.c ****  * \file      crypto.c
+   3:smtc_crypto/src/crypto.c ****  *
+   4:smtc_crypto/src/crypto.c ****  * \brief     Implements crypto funtions.
+   5:smtc_crypto/src/crypto.c ****  *
+   6:smtc_crypto/src/crypto.c ****  * Revised BSD License
+   7:smtc_crypto/src/crypto.c ****  * Copyright Semtech Corporation 2020. All rights reserved.
+   8:smtc_crypto/src/crypto.c ****  *
+   9:smtc_crypto/src/crypto.c ****  * Redistribution and use in source and binary forms, with or without
+  10:smtc_crypto/src/crypto.c ****  * modification, are permitted provided that the following conditions are met:
+  11:smtc_crypto/src/crypto.c ****  *     * Redistributions of source code must retain the above copyright
+  12:smtc_crypto/src/crypto.c ****  *       notice, this list of conditions and the following disclaimer.
+  13:smtc_crypto/src/crypto.c ****  *     * Redistributions in binary form must reproduce the above copyright
+  14:smtc_crypto/src/crypto.c ****  *       notice, this list of conditions and the following disclaimer in the
+  15:smtc_crypto/src/crypto.c ****  *       documentation and/or other materials provided with the distribution.
+  16:smtc_crypto/src/crypto.c ****  *     * Neither the name of the Semtech corporation nor the
+  17:smtc_crypto/src/crypto.c ****  *       names of its contributors may be used to endorse or promote products
+  18:smtc_crypto/src/crypto.c ****  *       derived from this software without specific prior written permission.
+  19:smtc_crypto/src/crypto.c ****  *
+  20:smtc_crypto/src/crypto.c ****  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+  21:smtc_crypto/src/crypto.c ****  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+  22:smtc_crypto/src/crypto.c ****  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+  23:smtc_crypto/src/crypto.c ****  * ARE DISCLAIMED. IN NO EVENT SHALL SEMTECH CORPORATION BE LIABLE FOR ANY DIRECT,
+  24:smtc_crypto/src/crypto.c ****  * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+  25:smtc_crypto/src/crypto.c ****  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+  26:smtc_crypto/src/crypto.c ****  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+  27:smtc_crypto/src/crypto.c ****  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  28:smtc_crypto/src/crypto.c ****  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+  29:smtc_crypto/src/crypto.c ****  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  30:smtc_crypto/src/crypto.c ****  */
+  31:smtc_crypto/src/crypto.c **** 
+  32:smtc_crypto/src/crypto.c **** #include <stdlib.h>
+  33:smtc_crypto/src/crypto.c **** #include <stdint.h>
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc19SNmv.s 			page 2
+
+
+  34:smtc_crypto/src/crypto.c **** #include <string.h>
+  35:smtc_crypto/src/crypto.c **** #include "lr1mac_utilities.h"
+  36:smtc_crypto/src/crypto.c **** #include "lr1mac_defs.h"
+  37:smtc_crypto/src/crypto.c **** #include "aes.h"
+  38:smtc_crypto/src/crypto.c **** #include "cmac.h"
+  39:smtc_crypto/src/crypto.c **** #include "crypto.h"
+  40:smtc_crypto/src/crypto.c **** #define FileId 5
+  41:smtc_crypto/src/crypto.c **** /*!
+  42:smtc_crypto/src/crypto.c ****  * CMAC/AES Message Integrity Code (MIC) Block B0 size
+  43:smtc_crypto/src/crypto.c ****  */
+  44:smtc_crypto/src/crypto.c **** #define LORAMAC_MIC_BLOCK_B0_SIZE 16
+  45:smtc_crypto/src/crypto.c **** 
+  46:smtc_crypto/src/crypto.c **** /*!
+  47:smtc_crypto/src/crypto.c ****  * MIC field computation initial data
+  48:smtc_crypto/src/crypto.c ****  */
+  49:smtc_crypto/src/crypto.c **** static uint8_t MicBlockB0[] = {0x49, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+  50:smtc_crypto/src/crypto.c ****                                0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+  51:smtc_crypto/src/crypto.c **** 
+  52:smtc_crypto/src/crypto.c **** /*!
+  53:smtc_crypto/src/crypto.c ****  * Contains the computed MIC field.
+  54:smtc_crypto/src/crypto.c ****  *
+  55:smtc_crypto/src/crypto.c ****  * \remark Only the 4 first bytes are used
+  56:smtc_crypto/src/crypto.c ****  */
+  57:smtc_crypto/src/crypto.c **** static uint8_t Mic[16];
+  58:smtc_crypto/src/crypto.c **** 
+  59:smtc_crypto/src/crypto.c **** /*!
+  60:smtc_crypto/src/crypto.c ****  * Encryption aBlock and sBlock
+  61:smtc_crypto/src/crypto.c ****  */
+  62:smtc_crypto/src/crypto.c **** static uint8_t aBlock[] = {0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+  63:smtc_crypto/src/crypto.c ****                            0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+  64:smtc_crypto/src/crypto.c **** static uint8_t sBlock[] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+  65:smtc_crypto/src/crypto.c ****                            0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+  66:smtc_crypto/src/crypto.c **** 
+  67:smtc_crypto/src/crypto.c **** /*!
+  68:smtc_crypto/src/crypto.c ****  * AES computation context variable
+  69:smtc_crypto/src/crypto.c ****  */
+  70:smtc_crypto/src/crypto.c **** static aes_context AesContext;
+  71:smtc_crypto/src/crypto.c **** 
+  72:smtc_crypto/src/crypto.c **** /*!
+  73:smtc_crypto/src/crypto.c ****  * CMAC computation context variable
+  74:smtc_crypto/src/crypto.c ****  */
+  75:smtc_crypto/src/crypto.c **** static AES_CMAC_CTX AesCmacCtx[1];
+  76:smtc_crypto/src/crypto.c **** 
+  77:smtc_crypto/src/crypto.c **** /*!
+  78:smtc_crypto/src/crypto.c ****  * \brief Computes the LoRaMAC frame MIC field
+  79:smtc_crypto/src/crypto.c ****  *
+  80:smtc_crypto/src/crypto.c ****  * \param [IN]  buffer          Data buffer
+  81:smtc_crypto/src/crypto.c ****  * \param [IN]  size            Data buffer size
+  82:smtc_crypto/src/crypto.c ****  * \param [IN]  key             AES key to be used
+  83:smtc_crypto/src/crypto.c ****  * \param [IN]  address         Frame address
+  84:smtc_crypto/src/crypto.c ****  * \param [IN]  dir             Frame direction [0: uplink, 1: downlink]
+  85:smtc_crypto/src/crypto.c ****  * \param [IN]  sequenceCounter Frame sequence counter
+  86:smtc_crypto/src/crypto.c ****  * \param [OUT] mic Computed MIC field
+  87:smtc_crypto/src/crypto.c ****  */
+  88:smtc_crypto/src/crypto.c **** 
+  89:smtc_crypto/src/crypto.c **** void compute_mic(const uint8_t *buffer, uint16_t size, const uint8_t *key, uint32_t address, uint8_
+  90:smtc_crypto/src/crypto.c **** {
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc19SNmv.s 			page 3
+
+
+  26              		.loc 1 90 1 view -0
+  27              		.cfi_startproc
+  28              		@ args = 12, pretend = 0, frame = 8
+  29              		@ frame_needed = 0, uses_anonymous_args = 0
+  91:smtc_crypto/src/crypto.c **** 
+  92:smtc_crypto/src/crypto.c ****     MicBlockB0[5] = dir;
+  30              		.loc 1 92 5 view .LVU1
+  90:smtc_crypto/src/crypto.c **** 
+  31              		.loc 1 90 1 is_stmt 0 view .LVU2
+  32 0000 F7B5     		push	{r0, r1, r2, r4, r5, r6, r7, lr}
+  33              		.cfi_def_cfa_offset 32
+  34              		.cfi_offset 0, -32
+  35              		.cfi_offset 1, -28
+  36              		.cfi_offset 2, -24
+  37              		.cfi_offset 4, -20
+  38              		.cfi_offset 5, -16
+  39              		.cfi_offset 6, -12
+  40              		.cfi_offset 7, -8
+  41              		.cfi_offset 14, -4
+  90:smtc_crypto/src/crypto.c **** 
+  42              		.loc 1 90 1 view .LVU3
+  43 0002 0D00     		movs	r5, r1
+  44 0004 0700     		movs	r7, r0
+  45 0006 0192     		str	r2, [sp, #4]
+  46 0008 08AA     		add	r2, sp, #32
+  47              	.LVL1:
+  48              		.loc 1 92 19 view .LVU4
+  49 000a 154C     		ldr	r4, .L2
+  90:smtc_crypto/src/crypto.c **** 
+  50              		.loc 1 90 1 view .LVU5
+  51 000c 1178     		ldrb	r1, [r2]
+  52              	.LVL2:
+  93:smtc_crypto/src/crypto.c **** 
+  94:smtc_crypto/src/crypto.c ****     MicBlockB0[6] = (address)&0xFF;
+  95:smtc_crypto/src/crypto.c ****     MicBlockB0[7] = (address >> 8) & 0xFF;
+  96:smtc_crypto/src/crypto.c ****     MicBlockB0[8] = (address >> 16) & 0xFF;
+  97:smtc_crypto/src/crypto.c ****     MicBlockB0[9] = (address >> 24) & 0xFF;
+  98:smtc_crypto/src/crypto.c **** 
+  99:smtc_crypto/src/crypto.c ****     MicBlockB0[10] = (sequenceCounter)&0xFF;
+ 100:smtc_crypto/src/crypto.c ****     MicBlockB0[11] = (sequenceCounter >> 8) & 0xFF;
+ 101:smtc_crypto/src/crypto.c ****     MicBlockB0[12] = (sequenceCounter >> 16) & 0xFF;
+ 102:smtc_crypto/src/crypto.c ****     MicBlockB0[13] = (sequenceCounter >> 24) & 0xFF;
+ 103:smtc_crypto/src/crypto.c **** 
+ 104:smtc_crypto/src/crypto.c ****     MicBlockB0[15] = size & 0xFF;
+ 105:smtc_crypto/src/crypto.c **** 
+ 106:smtc_crypto/src/crypto.c ****     AES_CMAC_Init(AesCmacCtx);
+  53              		.loc 1 106 5 view .LVU6
+  54 000e 154E     		ldr	r6, .L2+4
+  90:smtc_crypto/src/crypto.c **** 
+  55              		.loc 1 90 1 view .LVU7
+  56 0010 099A     		ldr	r2, [sp, #36]
+  57              	.LVL3:
+  92:smtc_crypto/src/crypto.c **** 
+  58              		.loc 1 92 19 view .LVU8
+  59 0012 6171     		strb	r1, [r4, #5]
+  94:smtc_crypto/src/crypto.c ****     MicBlockB0[7] = (address >> 8) & 0xFF;
+  60              		.loc 1 94 5 is_stmt 1 view .LVU9
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc19SNmv.s 			page 4
+
+
+  95:smtc_crypto/src/crypto.c ****     MicBlockB0[8] = (address >> 16) & 0xFF;
+  61              		.loc 1 95 5 view .LVU10
+  94:smtc_crypto/src/crypto.c ****     MicBlockB0[7] = (address >> 8) & 0xFF;
+  62              		.loc 1 94 19 is_stmt 0 view .LVU11
+  63 0014 E380     		strh	r3, [r4, #6]
+  96:smtc_crypto/src/crypto.c ****     MicBlockB0[9] = (address >> 24) & 0xFF;
+  64              		.loc 1 96 5 is_stmt 1 view .LVU12
+  96:smtc_crypto/src/crypto.c ****     MicBlockB0[9] = (address >> 24) & 0xFF;
+  65              		.loc 1 96 30 is_stmt 0 view .LVU13
+  66 0016 190C     		lsrs	r1, r3, #16
+  97:smtc_crypto/src/crypto.c **** 
+  67              		.loc 1 97 30 view .LVU14
+  68 0018 1B0E     		lsrs	r3, r3, #24
+  69              	.LVL4:
+  70              		.loc 1 106 5 view .LVU15
+  71 001a 3000     		movs	r0, r6
+  72              	.LVL5:
+  97:smtc_crypto/src/crypto.c **** 
+  73              		.loc 1 97 19 view .LVU16
+  74 001c 6372     		strb	r3, [r4, #9]
+  99:smtc_crypto/src/crypto.c ****     MicBlockB0[11] = (sequenceCounter >> 8) & 0xFF;
+  75              		.loc 1 99 20 view .LVU17
+  76 001e 6281     		strh	r2, [r4, #10]
+ 101:smtc_crypto/src/crypto.c ****     MicBlockB0[13] = (sequenceCounter >> 24) & 0xFF;
+  77              		.loc 1 101 39 view .LVU18
+  78 0020 130C     		lsrs	r3, r2, #16
+ 102:smtc_crypto/src/crypto.c **** 
+  79              		.loc 1 102 39 view .LVU19
+  80 0022 120E     		lsrs	r2, r2, #24
+ 101:smtc_crypto/src/crypto.c ****     MicBlockB0[13] = (sequenceCounter >> 24) & 0xFF;
+  81              		.loc 1 101 20 view .LVU20
+  82 0024 2373     		strb	r3, [r4, #12]
+ 102:smtc_crypto/src/crypto.c **** 
+  83              		.loc 1 102 20 view .LVU21
+  84 0026 6273     		strb	r2, [r4, #13]
+ 104:smtc_crypto/src/crypto.c **** 
+  85              		.loc 1 104 20 view .LVU22
+  86 0028 E573     		strb	r5, [r4, #15]
+  96:smtc_crypto/src/crypto.c ****     MicBlockB0[9] = (address >> 24) & 0xFF;
+  87              		.loc 1 96 19 view .LVU23
+  88 002a 2172     		strb	r1, [r4, #8]
+  97:smtc_crypto/src/crypto.c **** 
+  89              		.loc 1 97 5 is_stmt 1 view .LVU24
+  99:smtc_crypto/src/crypto.c ****     MicBlockB0[11] = (sequenceCounter >> 8) & 0xFF;
+  90              		.loc 1 99 5 view .LVU25
+ 100:smtc_crypto/src/crypto.c ****     MicBlockB0[12] = (sequenceCounter >> 16) & 0xFF;
+  91              		.loc 1 100 5 view .LVU26
+ 101:smtc_crypto/src/crypto.c ****     MicBlockB0[13] = (sequenceCounter >> 24) & 0xFF;
+  92              		.loc 1 101 5 view .LVU27
+ 102:smtc_crypto/src/crypto.c **** 
+  93              		.loc 1 102 5 view .LVU28
+ 104:smtc_crypto/src/crypto.c **** 
+  94              		.loc 1 104 5 view .LVU29
+  95              		.loc 1 106 5 view .LVU30
+  96 002c FFF7FEFF 		bl	AES_CMAC_Init
+  97              	.LVL6:
+ 107:smtc_crypto/src/crypto.c **** 
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc19SNmv.s 			page 5
+
+
+ 108:smtc_crypto/src/crypto.c ****     AES_CMAC_SetKey(AesCmacCtx, key);
+  98              		.loc 1 108 5 view .LVU31
+  99 0030 3000     		movs	r0, r6
+ 100 0032 0199     		ldr	r1, [sp, #4]
+ 101 0034 FFF7FEFF 		bl	AES_CMAC_SetKey
+ 102              	.LVL7:
+ 109:smtc_crypto/src/crypto.c **** 
+ 110:smtc_crypto/src/crypto.c ****     AES_CMAC_Update(AesCmacCtx, MicBlockB0, LORAMAC_MIC_BLOCK_B0_SIZE);
+ 103              		.loc 1 110 5 view .LVU32
+ 104 0038 3000     		movs	r0, r6
+ 105 003a 2100     		movs	r1, r4
+ 106 003c 1022     		movs	r2, #16
+ 107 003e FFF7FEFF 		bl	AES_CMAC_Update
+ 108              	.LVL8:
+ 111:smtc_crypto/src/crypto.c **** 
+ 112:smtc_crypto/src/crypto.c ****     AES_CMAC_Update(AesCmacCtx, buffer, size & 0xFF);
+ 109              		.loc 1 112 5 view .LVU33
+ 110 0042 EAB2     		uxtb	r2, r5
+ 111 0044 3900     		movs	r1, r7
+ 112 0046 3000     		movs	r0, r6
+ 113 0048 FFF7FEFF 		bl	AES_CMAC_Update
+ 114              	.LVL9:
+ 113:smtc_crypto/src/crypto.c **** 
+ 114:smtc_crypto/src/crypto.c ****     AES_CMAC_Final(Mic, AesCmacCtx);
+ 115              		.loc 1 114 5 view .LVU34
+ 116 004c 064C     		ldr	r4, .L2+8
+ 117 004e 3100     		movs	r1, r6
+ 118 0050 2000     		movs	r0, r4
+ 119 0052 FFF7FEFF 		bl	AES_CMAC_Final
+ 120              	.LVL10:
+ 115:smtc_crypto/src/crypto.c **** 
+ 116:smtc_crypto/src/crypto.c ****     *mic = (uint32_t)((uint32_t)Mic[3] << 24 | (uint32_t)Mic[2] << 16 | (uint32_t)Mic[1] << 8 | (ui
+ 121              		.loc 1 116 5 view .LVU35
+ 122              		.loc 1 116 12 is_stmt 0 view .LVU36
+ 123 0056 2268     		ldr	r2, [r4]
+ 124              		.loc 1 116 10 view .LVU37
+ 125 0058 0A9B     		ldr	r3, [sp, #40]
+ 117:smtc_crypto/src/crypto.c **** }
+ 126              		.loc 1 117 1 view .LVU38
+ 127              		@ sp needed
+ 116:smtc_crypto/src/crypto.c **** }
+ 128              		.loc 1 116 10 view .LVU39
+ 129 005a 1A60     		str	r2, [r3]
+ 130              	.LVL11:
+ 131              		.loc 1 117 1 view .LVU40
+ 132 005c F7BD     		pop	{r0, r1, r2, r4, r5, r6, r7, pc}
+ 133              	.L3:
+ 134 005e C046     		.align	2
+ 135              	.L2:
+ 136 0060 00000000 		.word	.LANCHOR0
+ 137 0064 00000000 		.word	AesCmacCtx
+ 138 0068 00000000 		.word	.LANCHOR1
+ 139              		.cfi_endproc
+ 140              	.LFE4:
+ 142              		.section	.text.lora_crypto_payload_encrypt,"ax",%progbits
+ 143              		.align	1
+ 144              		.global	lora_crypto_payload_encrypt
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc19SNmv.s 			page 6
+
+
+ 145              		.syntax unified
+ 146              		.code	16
+ 147              		.thumb_func
+ 148              		.fpu softvfp
+ 150              	lora_crypto_payload_encrypt:
+ 151              	.LVL12:
+ 152              	.LFB5:
+ 118:smtc_crypto/src/crypto.c **** 
+ 119:smtc_crypto/src/crypto.c **** void lora_crypto_payload_encrypt(const uint8_t *buffer, uint16_t size, const uint8_t *key, uint32_t
+ 120:smtc_crypto/src/crypto.c **** {
+ 153              		.loc 1 120 1 is_stmt 1 view -0
+ 154              		.cfi_startproc
+ 155              		@ args = 12, pretend = 0, frame = 8
+ 156              		@ frame_needed = 0, uses_anonymous_args = 0
+ 121:smtc_crypto/src/crypto.c **** 
+ 122:smtc_crypto/src/crypto.c ****     uint16_t i;
+ 157              		.loc 1 122 5 view .LVU42
+ 123:smtc_crypto/src/crypto.c ****     uint8_t bufferIndex = 0;
+ 158              		.loc 1 123 5 view .LVU43
+ 124:smtc_crypto/src/crypto.c ****     uint16_t ctr = 1;
+ 159              		.loc 1 124 5 view .LVU44
+ 125:smtc_crypto/src/crypto.c **** 
+ 126:smtc_crypto/src/crypto.c ****     memset1(AesContext.ksch, '\0', 240);
+ 160              		.loc 1 126 5 view .LVU45
+ 120:smtc_crypto/src/crypto.c **** 
+ 161              		.loc 1 120 1 is_stmt 0 view .LVU46
+ 162 0000 F7B5     		push	{r0, r1, r2, r4, r5, r6, r7, lr}
+ 163              		.cfi_def_cfa_offset 32
+ 164              		.cfi_offset 0, -32
+ 165              		.cfi_offset 1, -28
+ 166              		.cfi_offset 2, -24
+ 167              		.cfi_offset 4, -20
+ 168              		.cfi_offset 5, -16
+ 169              		.cfi_offset 6, -12
+ 170              		.cfi_offset 7, -8
+ 171              		.cfi_offset 14, -4
+ 120:smtc_crypto/src/crypto.c **** 
+ 172              		.loc 1 120 1 view .LVU47
+ 173 0002 1500     		movs	r5, r2
+ 174 0004 1C00     		movs	r4, r3
+ 175              		.loc 1 126 5 view .LVU48
+ 176 0006 2E4F     		ldr	r7, .L15
+ 120:smtc_crypto/src/crypto.c **** 
+ 177              		.loc 1 120 1 view .LVU49
+ 178 0008 08AB     		add	r3, sp, #32
+ 179              	.LVL13:
+ 120:smtc_crypto/src/crypto.c **** 
+ 180              		.loc 1 120 1 view .LVU50
+ 181 000a 1B78     		ldrb	r3, [r3]
+ 182              	.LVL14:
+ 183              		.loc 1 126 5 view .LVU51
+ 184 000c F022     		movs	r2, #240
+ 185              	.LVL15:
+ 120:smtc_crypto/src/crypto.c **** 
+ 186              		.loc 1 120 1 view .LVU52
+ 187 000e 0091     		str	r1, [sp]
+ 188 0010 0600     		movs	r6, r0
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc19SNmv.s 			page 7
+
+
+ 189              		.loc 1 126 5 view .LVU53
+ 190 0012 0021     		movs	r1, #0
+ 191              	.LVL16:
+ 192              		.loc 1 126 5 view .LVU54
+ 193 0014 3800     		movs	r0, r7
+ 194              	.LVL17:
+ 120:smtc_crypto/src/crypto.c **** 
+ 195              		.loc 1 120 1 view .LVU55
+ 196 0016 0193     		str	r3, [sp, #4]
+ 197              		.loc 1 126 5 view .LVU56
+ 198 0018 FFF7FEFF 		bl	memset1
+ 199              	.LVL18:
+ 127:smtc_crypto/src/crypto.c ****     aes_set_key(key, 16, &AesContext);
+ 200              		.loc 1 127 5 is_stmt 1 view .LVU57
+ 201 001c 2800     		movs	r0, r5
+ 128:smtc_crypto/src/crypto.c **** 
+ 129:smtc_crypto/src/crypto.c ****     aBlock[5] = dir;
+ 130:smtc_crypto/src/crypto.c **** 
+ 131:smtc_crypto/src/crypto.c ****     aBlock[6] = (address)&0xFF;
+ 132:smtc_crypto/src/crypto.c ****     aBlock[7] = (address >> 8) & 0xFF;
+ 133:smtc_crypto/src/crypto.c ****     aBlock[8] = (address >> 16) & 0xFF;
+ 134:smtc_crypto/src/crypto.c ****     aBlock[9] = (address >> 24) & 0xFF;
+ 135:smtc_crypto/src/crypto.c **** 
+ 136:smtc_crypto/src/crypto.c ****     aBlock[10] = (sequenceCounter)&0xFF;
+ 137:smtc_crypto/src/crypto.c ****     aBlock[11] = (sequenceCounter >> 8) & 0xFF;
+ 138:smtc_crypto/src/crypto.c ****     aBlock[12] = (sequenceCounter >> 16) & 0xFF;
+ 139:smtc_crypto/src/crypto.c ****     aBlock[13] = (sequenceCounter >> 24) & 0xFF;
+ 140:smtc_crypto/src/crypto.c **** 
+ 141:smtc_crypto/src/crypto.c ****     while (size >= 16)
+ 202              		.loc 1 141 11 is_stmt 0 view .LVU58
+ 203 001e 0025     		movs	r5, #0
+ 204              	.LVL19:
+ 127:smtc_crypto/src/crypto.c ****     aes_set_key(key, 16, &AesContext);
+ 205              		.loc 1 127 5 view .LVU59
+ 206 0020 3A00     		movs	r2, r7
+ 207 0022 1021     		movs	r1, #16
+ 208 0024 FFF7FEFF 		bl	aes_set_key
+ 209              	.LVL20:
+ 129:smtc_crypto/src/crypto.c **** 
+ 210              		.loc 1 129 5 is_stmt 1 view .LVU60
+ 129:smtc_crypto/src/crypto.c **** 
+ 211              		.loc 1 129 15 is_stmt 0 view .LVU61
+ 212 0028 264A     		ldr	r2, .L15+4
+ 213 002a 019B     		ldr	r3, [sp, #4]
+ 131:smtc_crypto/src/crypto.c ****     aBlock[7] = (address >> 8) & 0xFF;
+ 214              		.loc 1 131 15 view .LVU62
+ 215 002c D480     		strh	r4, [r2, #6]
+ 129:smtc_crypto/src/crypto.c **** 
+ 216              		.loc 1 129 15 view .LVU63
+ 217 002e 5371     		strb	r3, [r2, #5]
+ 131:smtc_crypto/src/crypto.c ****     aBlock[7] = (address >> 8) & 0xFF;
+ 218              		.loc 1 131 5 is_stmt 1 view .LVU64
+ 132:smtc_crypto/src/crypto.c ****     aBlock[8] = (address >> 16) & 0xFF;
+ 219              		.loc 1 132 5 view .LVU65
+ 133:smtc_crypto/src/crypto.c ****     aBlock[9] = (address >> 24) & 0xFF;
+ 220              		.loc 1 133 5 view .LVU66
+ 133:smtc_crypto/src/crypto.c ****     aBlock[9] = (address >> 24) & 0xFF;
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc19SNmv.s 			page 8
+
+
+ 221              		.loc 1 133 26 is_stmt 0 view .LVU67
+ 222 0030 230C     		lsrs	r3, r4, #16
+ 133:smtc_crypto/src/crypto.c ****     aBlock[9] = (address >> 24) & 0xFF;
+ 223              		.loc 1 133 15 view .LVU68
+ 224 0032 1372     		strb	r3, [r2, #8]
+ 134:smtc_crypto/src/crypto.c **** 
+ 225              		.loc 1 134 5 is_stmt 1 view .LVU69
+ 134:smtc_crypto/src/crypto.c **** 
+ 226              		.loc 1 134 26 is_stmt 0 view .LVU70
+ 227 0034 230E     		lsrs	r3, r4, #24
+ 134:smtc_crypto/src/crypto.c **** 
+ 228              		.loc 1 134 15 view .LVU71
+ 229 0036 5372     		strb	r3, [r2, #9]
+ 136:smtc_crypto/src/crypto.c ****     aBlock[11] = (sequenceCounter >> 8) & 0xFF;
+ 230              		.loc 1 136 5 is_stmt 1 view .LVU72
+ 137:smtc_crypto/src/crypto.c ****     aBlock[12] = (sequenceCounter >> 16) & 0xFF;
+ 231              		.loc 1 137 5 view .LVU73
+ 136:smtc_crypto/src/crypto.c ****     aBlock[11] = (sequenceCounter >> 8) & 0xFF;
+ 232              		.loc 1 136 16 is_stmt 0 view .LVU74
+ 233 0038 099B     		ldr	r3, [sp, #36]
+ 234 003a 5381     		strh	r3, [r2, #10]
+ 138:smtc_crypto/src/crypto.c ****     aBlock[13] = (sequenceCounter >> 24) & 0xFF;
+ 235              		.loc 1 138 5 is_stmt 1 view .LVU75
+ 138:smtc_crypto/src/crypto.c ****     aBlock[13] = (sequenceCounter >> 24) & 0xFF;
+ 236              		.loc 1 138 35 is_stmt 0 view .LVU76
+ 237 003c 1B0C     		lsrs	r3, r3, #16
+ 138:smtc_crypto/src/crypto.c ****     aBlock[13] = (sequenceCounter >> 24) & 0xFF;
+ 238              		.loc 1 138 16 view .LVU77
+ 239 003e 1373     		strb	r3, [r2, #12]
+ 139:smtc_crypto/src/crypto.c **** 
+ 240              		.loc 1 139 5 is_stmt 1 view .LVU78
+ 139:smtc_crypto/src/crypto.c **** 
+ 241              		.loc 1 139 35 is_stmt 0 view .LVU79
+ 242 0040 099B     		ldr	r3, [sp, #36]
+ 243 0042 1C0E     		lsrs	r4, r3, #24
+ 244              	.LVL21:
+ 139:smtc_crypto/src/crypto.c **** 
+ 245              		.loc 1 139 35 view .LVU80
+ 246 0044 009B     		ldr	r3, [sp]
+ 139:smtc_crypto/src/crypto.c **** 
+ 247              		.loc 1 139 16 view .LVU81
+ 248 0046 5473     		strb	r4, [r2, #13]
+ 249              		.loc 1 141 5 is_stmt 1 view .LVU82
+ 250 0048 1B09     		lsrs	r3, r3, #4
+ 251 004a 0193     		str	r3, [sp, #4]
+ 252              	.LVL22:
+ 253              	.L5:
+ 254              		.loc 1 141 5 is_stmt 0 view .LVU83
+ 255 004c EBB2     		uxtb	r3, r5
+ 256              		.loc 1 141 11 view .LVU84
+ 257 004e 019A     		ldr	r2, [sp, #4]
+ 258 0050 1C01     		lsls	r4, r3, #4
+ 259 0052 E4B2     		uxtb	r4, r4
+ 260              	.LVL23:
+ 261              		.loc 1 141 11 is_stmt 1 view .LVU85
+ 262 0054 9542     		cmp	r5, r2
+ 263 0056 1DD1     		bne	.L7
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc19SNmv.s 			page 9
+
+
+ 264 0058 1027     		movs	r7, #16
+ 265 005a 7F42     		rsbs	r7, r7, #0
+ 266 005c 6F43     		muls	r7, r5
+ 267 005e 009B     		ldr	r3, [sp]
+ 268 0060 0135     		adds	r5, r5, #1
+ 269              	.LVL24:
+ 270              		.loc 1 141 11 is_stmt 0 view .LVU86
+ 271 0062 DF19     		adds	r7, r3, r7
+ 272 0064 BFB2     		uxth	r7, r7
+ 273 0066 ADB2     		uxth	r5, r5
+ 142:smtc_crypto/src/crypto.c ****     {
+ 143:smtc_crypto/src/crypto.c ****         aBlock[15] = ((ctr)&0xFF);
+ 144:smtc_crypto/src/crypto.c ****         ctr++;
+ 145:smtc_crypto/src/crypto.c ****         aes_encrypt(aBlock, sBlock, &AesContext);
+ 146:smtc_crypto/src/crypto.c ****         for (i = 0; i < 16; i++)
+ 147:smtc_crypto/src/crypto.c ****         {
+ 148:smtc_crypto/src/crypto.c ****             encBuffer[bufferIndex + i] = buffer[bufferIndex + i] ^ sBlock[i];
+ 149:smtc_crypto/src/crypto.c ****         }
+ 150:smtc_crypto/src/crypto.c ****         size -= 16;
+ 151:smtc_crypto/src/crypto.c ****         bufferIndex += 16;
+ 152:smtc_crypto/src/crypto.c ****     }
+ 153:smtc_crypto/src/crypto.c **** 
+ 154:smtc_crypto/src/crypto.c ****     if (size > 0)
+ 274              		.loc 1 154 5 is_stmt 1 view .LVU87
+ 275              		.loc 1 154 8 is_stmt 0 view .LVU88
+ 276 0068 002F     		cmp	r7, #0
+ 277 006a 12D0     		beq	.L4
+ 155:smtc_crypto/src/crypto.c ****     {
+ 156:smtc_crypto/src/crypto.c ****         aBlock[15] = ((ctr)&0xFF);
+ 278              		.loc 1 156 9 is_stmt 1 view .LVU89
+ 279              		.loc 1 156 20 is_stmt 0 view .LVU90
+ 280 006c 1548     		ldr	r0, .L15+4
+ 157:smtc_crypto/src/crypto.c ****         aes_encrypt(aBlock, sBlock, &AesContext);
+ 281              		.loc 1 157 9 view .LVU91
+ 282 006e 144A     		ldr	r2, .L15
+ 156:smtc_crypto/src/crypto.c ****         aes_encrypt(aBlock, sBlock, &AesContext);
+ 283              		.loc 1 156 20 view .LVU92
+ 284 0070 C573     		strb	r5, [r0, #15]
+ 285              		.loc 1 157 9 is_stmt 1 view .LVU93
+ 286 0072 154D     		ldr	r5, .L15+8
+ 287 0074 2900     		movs	r1, r5
+ 288 0076 FFF7FEFF 		bl	aes_encrypt
+ 289              	.LVL25:
+ 158:smtc_crypto/src/crypto.c ****         for (i = 0; i < size; i++)
+ 290              		.loc 1 158 9 view .LVU94
+ 291              		.loc 1 158 21 view .LVU95
+ 292 007a 2300     		movs	r3, r4
+ 293              	.LVL26:
+ 294              	.L9:
+ 159:smtc_crypto/src/crypto.c ****         {
+ 160:smtc_crypto/src/crypto.c ****             encBuffer[bufferIndex + i] = buffer[bufferIndex + i] ^ sBlock[i];
+ 295              		.loc 1 160 13 discriminator 3 view .LVU96
+ 296              		.loc 1 160 40 is_stmt 0 discriminator 3 view .LVU97
+ 297 007c 2978     		ldrb	r1, [r5]
+ 298 007e F25C     		ldrb	r2, [r6, r3]
+ 299 0080 0135     		adds	r5, r5, #1
+ 300 0082 4A40     		eors	r2, r1
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc19SNmv.s 			page 10
+
+
+ 301 0084 0A99     		ldr	r1, [sp, #40]
+ 302 0086 CA54     		strb	r2, [r1, r3]
+ 158:smtc_crypto/src/crypto.c ****         for (i = 0; i < size; i++)
+ 303              		.loc 1 158 31 is_stmt 1 discriminator 3 view .LVU98
+ 304              	.LVL27:
+ 158:smtc_crypto/src/crypto.c ****         for (i = 0; i < size; i++)
+ 305              		.loc 1 158 21 discriminator 3 view .LVU99
+ 306 0088 0133     		adds	r3, r3, #1
+ 307              	.LVL28:
+ 158:smtc_crypto/src/crypto.c ****         for (i = 0; i < size; i++)
+ 308              		.loc 1 158 9 is_stmt 0 discriminator 3 view .LVU100
+ 309 008a 1A1B     		subs	r2, r3, r4
+ 310 008c 92B2     		uxth	r2, r2
+ 311 008e 9742     		cmp	r7, r2
+ 312 0090 F4D8     		bhi	.L9
+ 313              	.L4:
+ 161:smtc_crypto/src/crypto.c ****         }
+ 162:smtc_crypto/src/crypto.c ****     }
+ 163:smtc_crypto/src/crypto.c **** }
+ 314              		.loc 1 163 1 view .LVU101
+ 315              		@ sp needed
+ 316              	.LVL29:
+ 317              	.LVL30:
+ 318              		.loc 1 163 1 view .LVU102
+ 319 0092 F7BD     		pop	{r0, r1, r2, r4, r5, r6, r7, pc}
+ 320              	.LVL31:
+ 321              	.L7:
+ 143:smtc_crypto/src/crypto.c ****         ctr++;
+ 322              		.loc 1 143 9 is_stmt 1 view .LVU103
+ 145:smtc_crypto/src/crypto.c ****         for (i = 0; i < 16; i++)
+ 323              		.loc 1 145 9 is_stmt 0 view .LVU104
+ 324 0094 0C4F     		ldr	r7, .L15+8
+ 143:smtc_crypto/src/crypto.c ****         ctr++;
+ 325              		.loc 1 143 20 view .LVU105
+ 326 0096 0B48     		ldr	r0, .L15+4
+ 145:smtc_crypto/src/crypto.c ****         for (i = 0; i < 16; i++)
+ 327              		.loc 1 145 9 view .LVU106
+ 328 0098 094A     		ldr	r2, .L15
+ 143:smtc_crypto/src/crypto.c ****         ctr++;
+ 329              		.loc 1 143 20 view .LVU107
+ 330 009a 0133     		adds	r3, r3, #1
+ 145:smtc_crypto/src/crypto.c ****         for (i = 0; i < 16; i++)
+ 331              		.loc 1 145 9 view .LVU108
+ 332 009c 3900     		movs	r1, r7
+ 143:smtc_crypto/src/crypto.c ****         ctr++;
+ 333              		.loc 1 143 20 view .LVU109
+ 334 009e C373     		strb	r3, [r0, #15]
+ 144:smtc_crypto/src/crypto.c ****         aes_encrypt(aBlock, sBlock, &AesContext);
+ 335              		.loc 1 144 9 is_stmt 1 view .LVU110
+ 336              	.LVL32:
+ 145:smtc_crypto/src/crypto.c ****         for (i = 0; i < 16; i++)
+ 337              		.loc 1 145 9 view .LVU111
+ 338 00a0 FFF7FEFF 		bl	aes_encrypt
+ 339              	.LVL33:
+ 146:smtc_crypto/src/crypto.c ****         {
+ 340              		.loc 1 146 9 view .LVU112
+ 146:smtc_crypto/src/crypto.c ****         {
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc19SNmv.s 			page 11
+
+
+ 341              		.loc 1 146 21 view .LVU113
+ 342 00a4 2200     		movs	r2, r4
+ 343 00a6 1032     		adds	r2, r2, #16
+ 344              	.LVL34:
+ 345              	.L6:
+ 148:smtc_crypto/src/crypto.c ****         }
+ 346              		.loc 1 148 13 discriminator 3 view .LVU114
+ 148:smtc_crypto/src/crypto.c ****         }
+ 347              		.loc 1 148 40 is_stmt 0 discriminator 3 view .LVU115
+ 348 00a8 3978     		ldrb	r1, [r7]
+ 349 00aa 335D     		ldrb	r3, [r6, r4]
+ 350 00ac 0137     		adds	r7, r7, #1
+ 351 00ae 4B40     		eors	r3, r1
+ 352 00b0 0A99     		ldr	r1, [sp, #40]
+ 353 00b2 0B55     		strb	r3, [r1, r4]
+ 146:smtc_crypto/src/crypto.c ****         {
+ 354              		.loc 1 146 29 is_stmt 1 discriminator 3 view .LVU116
+ 355              	.LVL35:
+ 146:smtc_crypto/src/crypto.c ****         {
+ 356              		.loc 1 146 21 discriminator 3 view .LVU117
+ 357 00b4 0134     		adds	r4, r4, #1
+ 358              	.LVL36:
+ 146:smtc_crypto/src/crypto.c ****         {
+ 359              		.loc 1 146 9 is_stmt 0 discriminator 3 view .LVU118
+ 360 00b6 A242     		cmp	r2, r4
+ 361 00b8 F6D1     		bne	.L6
+ 150:smtc_crypto/src/crypto.c ****         bufferIndex += 16;
+ 362              		.loc 1 150 9 is_stmt 1 view .LVU119
+ 363              	.LVL37:
+ 151:smtc_crypto/src/crypto.c ****     }
+ 364              		.loc 1 151 9 view .LVU120
+ 151:smtc_crypto/src/crypto.c ****     }
+ 365              		.loc 1 151 9 is_stmt 0 view .LVU121
+ 366 00ba 0135     		adds	r5, r5, #1
+ 367              	.LVL38:
+ 151:smtc_crypto/src/crypto.c ****     }
+ 368              		.loc 1 151 9 view .LVU122
+ 369 00bc ADB2     		uxth	r5, r5
+ 370 00be C5E7     		b	.L5
+ 371              	.L16:
+ 372              		.align	2
+ 373              	.L15:
+ 374 00c0 00000000 		.word	AesContext
+ 375 00c4 00000000 		.word	.LANCHOR2
+ 376 00c8 00000000 		.word	.LANCHOR3
+ 377              		.cfi_endproc
+ 378              	.LFE5:
+ 380              		.section	.text.payload_decrypt,"ax",%progbits
+ 381              		.align	1
+ 382              		.global	payload_decrypt
+ 383              		.syntax unified
+ 384              		.code	16
+ 385              		.thumb_func
+ 386              		.fpu softvfp
+ 388              	payload_decrypt:
+ 389              	.LVL39:
+ 390              	.LFB6:
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc19SNmv.s 			page 12
+
+
+ 164:smtc_crypto/src/crypto.c **** 
+ 165:smtc_crypto/src/crypto.c **** void payload_decrypt(const uint8_t *buffer, uint16_t size, const uint8_t *key, uint32_t address, ui
+ 166:smtc_crypto/src/crypto.c **** {
+ 391              		.loc 1 166 1 is_stmt 1 view -0
+ 392              		.cfi_startproc
+ 393              		@ args = 12, pretend = 0, frame = 0
+ 394              		@ frame_needed = 0, uses_anonymous_args = 0
+ 167:smtc_crypto/src/crypto.c **** 
+ 168:smtc_crypto/src/crypto.c ****     lora_crypto_payload_encrypt(buffer, size, key, address, dir, sequenceCounter, decBuffer);
+ 395              		.loc 1 168 5 view .LVU124
+ 166:smtc_crypto/src/crypto.c **** 
+ 396              		.loc 1 166 1 is_stmt 0 view .LVU125
+ 397 0000 30B5     		push	{r4, r5, lr}
+ 398              		.cfi_def_cfa_offset 12
+ 399              		.cfi_offset 4, -12
+ 400              		.cfi_offset 5, -8
+ 401              		.cfi_offset 14, -4
+ 402 0002 85B0     		sub	sp, sp, #20
+ 403              		.cfi_def_cfa_offset 32
+ 404              		.loc 1 168 5 view .LVU126
+ 405 0004 0A9D     		ldr	r5, [sp, #40]
+ 166:smtc_crypto/src/crypto.c **** 
+ 406              		.loc 1 166 1 view .LVU127
+ 407 0006 08AC     		add	r4, sp, #32
+ 408              	.LVL40:
+ 166:smtc_crypto/src/crypto.c **** 
+ 409              		.loc 1 166 1 view .LVU128
+ 410 0008 2478     		ldrb	r4, [r4]
+ 411              	.LVL41:
+ 412              		.loc 1 168 5 view .LVU129
+ 413 000a 0295     		str	r5, [sp, #8]
+ 414 000c 099D     		ldr	r5, [sp, #36]
+ 415 000e 0094     		str	r4, [sp]
+ 416 0010 0195     		str	r5, [sp, #4]
+ 417 0012 FFF7FEFF 		bl	lora_crypto_payload_encrypt
+ 418              	.LVL42:
+ 169:smtc_crypto/src/crypto.c **** }
+ 419              		.loc 1 169 1 view .LVU130
+ 420 0016 05B0     		add	sp, sp, #20
+ 421              		@ sp needed
+ 422 0018 30BD     		pop	{r4, r5, pc}
+ 423              		.cfi_endproc
+ 424              	.LFE6:
+ 426              		.section	.text.join_compute_mic,"ax",%progbits
+ 427              		.align	1
+ 428              		.global	join_compute_mic
+ 429              		.syntax unified
+ 430              		.code	16
+ 431              		.thumb_func
+ 432              		.fpu softvfp
+ 434              	join_compute_mic:
+ 435              	.LVL43:
+ 436              	.LFB7:
+ 170:smtc_crypto/src/crypto.c **** 
+ 171:smtc_crypto/src/crypto.c **** void join_compute_mic(const uint8_t *buffer, uint16_t size, const uint8_t *key, uint32_t *mic)
+ 172:smtc_crypto/src/crypto.c **** {
+ 437              		.loc 1 172 1 is_stmt 1 view -0
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc19SNmv.s 			page 13
+
+
+ 438              		.cfi_startproc
+ 439              		@ args = 0, pretend = 0, frame = 8
+ 440              		@ frame_needed = 0, uses_anonymous_args = 0
+ 173:smtc_crypto/src/crypto.c **** 
+ 174:smtc_crypto/src/crypto.c ****     AES_CMAC_Init(AesCmacCtx);
+ 441              		.loc 1 174 5 view .LVU132
+ 172:smtc_crypto/src/crypto.c **** 
+ 442              		.loc 1 172 1 is_stmt 0 view .LVU133
+ 443 0000 F7B5     		push	{r0, r1, r2, r4, r5, r6, r7, lr}
+ 444              		.cfi_def_cfa_offset 32
+ 445              		.cfi_offset 0, -32
+ 446              		.cfi_offset 1, -28
+ 447              		.cfi_offset 2, -24
+ 448              		.cfi_offset 4, -20
+ 449              		.cfi_offset 5, -16
+ 450              		.cfi_offset 6, -12
+ 451              		.cfi_offset 7, -8
+ 452              		.cfi_offset 14, -4
+ 172:smtc_crypto/src/crypto.c **** 
+ 453              		.loc 1 172 1 view .LVU134
+ 454 0002 1700     		movs	r7, r2
+ 455              		.loc 1 174 5 view .LVU135
+ 456 0004 0C4C     		ldr	r4, .L19
+ 172:smtc_crypto/src/crypto.c **** 
+ 457              		.loc 1 172 1 view .LVU136
+ 458 0006 0600     		movs	r6, r0
+ 459              		.loc 1 174 5 view .LVU137
+ 460 0008 2000     		movs	r0, r4
+ 461              	.LVL44:
+ 172:smtc_crypto/src/crypto.c **** 
+ 462              		.loc 1 172 1 view .LVU138
+ 463 000a 1D00     		movs	r5, r3
+ 464 000c 0191     		str	r1, [sp, #4]
+ 465              		.loc 1 174 5 view .LVU139
+ 466 000e FFF7FEFF 		bl	AES_CMAC_Init
+ 467              	.LVL45:
+ 175:smtc_crypto/src/crypto.c **** 
+ 176:smtc_crypto/src/crypto.c ****     AES_CMAC_SetKey(AesCmacCtx, key);
+ 468              		.loc 1 176 5 is_stmt 1 view .LVU140
+ 469 0012 3900     		movs	r1, r7
+ 470 0014 2000     		movs	r0, r4
+ 471 0016 FFF7FEFF 		bl	AES_CMAC_SetKey
+ 472              	.LVL46:
+ 177:smtc_crypto/src/crypto.c **** 
+ 178:smtc_crypto/src/crypto.c ****     AES_CMAC_Update(AesCmacCtx, buffer, size & 0xFF);
+ 473              		.loc 1 178 5 view .LVU141
+ 474 001a 6B46     		mov	r3, sp
+ 475 001c 3100     		movs	r1, r6
+ 476 001e 1A79     		ldrb	r2, [r3, #4]
+ 477 0020 2000     		movs	r0, r4
+ 478 0022 FFF7FEFF 		bl	AES_CMAC_Update
+ 479              	.LVL47:
+ 179:smtc_crypto/src/crypto.c **** 
+ 180:smtc_crypto/src/crypto.c ****     AES_CMAC_Final(Mic, AesCmacCtx);
+ 480              		.loc 1 180 5 view .LVU142
+ 481 0026 054E     		ldr	r6, .L19+4
+ 482              	.LVL48:
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc19SNmv.s 			page 14
+
+
+ 483              		.loc 1 180 5 is_stmt 0 view .LVU143
+ 484 0028 2100     		movs	r1, r4
+ 485 002a 3000     		movs	r0, r6
+ 486 002c FFF7FEFF 		bl	AES_CMAC_Final
+ 487              	.LVL49:
+ 181:smtc_crypto/src/crypto.c **** 
+ 182:smtc_crypto/src/crypto.c ****     *mic = (uint32_t)((uint32_t)Mic[3] << 24 | (uint32_t)Mic[2] << 16 | (uint32_t)Mic[1] << 8 | (ui
+ 488              		.loc 1 182 5 is_stmt 1 view .LVU144
+ 489              		.loc 1 182 12 is_stmt 0 view .LVU145
+ 490 0030 3368     		ldr	r3, [r6]
+ 183:smtc_crypto/src/crypto.c **** }
+ 491              		.loc 1 183 1 view .LVU146
+ 492              		@ sp needed
+ 182:smtc_crypto/src/crypto.c **** }
+ 493              		.loc 1 182 12 view .LVU147
+ 494 0032 2B60     		str	r3, [r5]
+ 495              	.LVL50:
+ 496              	.LVL51:
+ 497              		.loc 1 183 1 view .LVU148
+ 498 0034 F7BD     		pop	{r0, r1, r2, r4, r5, r6, r7, pc}
+ 499              	.L20:
+ 500 0036 C046     		.align	2
+ 501              	.L19:
+ 502 0038 00000000 		.word	AesCmacCtx
+ 503 003c 00000000 		.word	.LANCHOR1
+ 504              		.cfi_endproc
+ 505              	.LFE7:
+ 507              		.section	.text.join_decrypt,"ax",%progbits
+ 508              		.align	1
+ 509              		.global	join_decrypt
+ 510              		.syntax unified
+ 511              		.code	16
+ 512              		.thumb_func
+ 513              		.fpu softvfp
+ 515              	join_decrypt:
+ 516              	.LVL52:
+ 517              	.LFB8:
+ 184:smtc_crypto/src/crypto.c **** 
+ 185:smtc_crypto/src/crypto.c **** void join_decrypt(const uint8_t *buffer, uint16_t size, const uint8_t *key, uint8_t *decBuffer)
+ 186:smtc_crypto/src/crypto.c **** {
+ 518              		.loc 1 186 1 is_stmt 1 view -0
+ 519              		.cfi_startproc
+ 520              		@ args = 0, pretend = 0, frame = 8
+ 521              		@ frame_needed = 0, uses_anonymous_args = 0
+ 187:smtc_crypto/src/crypto.c **** 
+ 188:smtc_crypto/src/crypto.c ****     memset1(AesContext.ksch, '\0', 240);
+ 522              		.loc 1 188 5 view .LVU150
+ 186:smtc_crypto/src/crypto.c **** 
+ 523              		.loc 1 186 1 is_stmt 0 view .LVU151
+ 524 0000 F7B5     		push	{r0, r1, r2, r4, r5, r6, r7, lr}
+ 525              		.cfi_def_cfa_offset 32
+ 526              		.cfi_offset 0, -32
+ 527              		.cfi_offset 1, -28
+ 528              		.cfi_offset 2, -24
+ 529              		.cfi_offset 4, -20
+ 530              		.cfi_offset 5, -16
+ 531              		.cfi_offset 6, -12
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc19SNmv.s 			page 15
+
+
+ 532              		.cfi_offset 7, -8
+ 533              		.cfi_offset 14, -4
+ 186:smtc_crypto/src/crypto.c **** 
+ 534              		.loc 1 186 1 view .LVU152
+ 535 0002 1700     		movs	r7, r2
+ 536 0004 1D00     		movs	r5, r3
+ 537 0006 0400     		movs	r4, r0
+ 538              		.loc 1 188 5 view .LVU153
+ 539 0008 0D4E     		ldr	r6, .L23
+ 540 000a F022     		movs	r2, #240
+ 541              	.LVL53:
+ 542              		.loc 1 188 5 view .LVU154
+ 543 000c 3000     		movs	r0, r6
+ 544              	.LVL54:
+ 186:smtc_crypto/src/crypto.c **** 
+ 545              		.loc 1 186 1 view .LVU155
+ 546 000e 0191     		str	r1, [sp, #4]
+ 547              		.loc 1 188 5 view .LVU156
+ 548 0010 0021     		movs	r1, #0
+ 549              	.LVL55:
+ 550              		.loc 1 188 5 view .LVU157
+ 551 0012 FFF7FEFF 		bl	memset1
+ 552              	.LVL56:
+ 189:smtc_crypto/src/crypto.c ****     aes_set_key(key, 16, &AesContext);
+ 553              		.loc 1 189 5 is_stmt 1 view .LVU158
+ 554 0016 3200     		movs	r2, r6
+ 555 0018 1021     		movs	r1, #16
+ 556 001a 3800     		movs	r0, r7
+ 557 001c FFF7FEFF 		bl	aes_set_key
+ 558              	.LVL57:
+ 190:smtc_crypto/src/crypto.c ****     aes_encrypt(buffer, decBuffer, &AesContext);
+ 559              		.loc 1 190 5 view .LVU159
+ 560 0020 3200     		movs	r2, r6
+ 561 0022 2900     		movs	r1, r5
+ 562 0024 2000     		movs	r0, r4
+ 563 0026 FFF7FEFF 		bl	aes_encrypt
+ 564              	.LVL58:
+ 191:smtc_crypto/src/crypto.c ****     // Check if optional CFList is included
+ 192:smtc_crypto/src/crypto.c ****     if (size >= 16)
+ 565              		.loc 1 192 5 view .LVU160
+ 566              		.loc 1 192 8 is_stmt 0 view .LVU161
+ 567 002a 019B     		ldr	r3, [sp, #4]
+ 568 002c 0F2B     		cmp	r3, #15
+ 569 002e 06D9     		bls	.L21
+ 193:smtc_crypto/src/crypto.c ****     {
+ 194:smtc_crypto/src/crypto.c ****         aes_encrypt(buffer + 16, decBuffer + 16, &AesContext);
+ 570              		.loc 1 194 9 is_stmt 1 view .LVU162
+ 571 0030 2900     		movs	r1, r5
+ 572 0032 2000     		movs	r0, r4
+ 573 0034 3200     		movs	r2, r6
+ 574 0036 1031     		adds	r1, r1, #16
+ 575 0038 1030     		adds	r0, r0, #16
+ 576 003a FFF7FEFF 		bl	aes_encrypt
+ 577              	.LVL59:
+ 578              	.L21:
+ 195:smtc_crypto/src/crypto.c ****     }
+ 196:smtc_crypto/src/crypto.c **** }
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc19SNmv.s 			page 16
+
+
+ 579              		.loc 1 196 1 is_stmt 0 view .LVU163
+ 580              		@ sp needed
+ 581              	.LVL60:
+ 582              	.LVL61:
+ 583              	.LVL62:
+ 584              		.loc 1 196 1 view .LVU164
+ 585 003e F7BD     		pop	{r0, r1, r2, r4, r5, r6, r7, pc}
+ 586              	.L24:
+ 587              		.align	2
+ 588              	.L23:
+ 589 0040 00000000 		.word	AesContext
+ 590              		.cfi_endproc
+ 591              	.LFE8:
+ 593              		.section	.text.join_compute_skeys,"ax",%progbits
+ 594              		.align	1
+ 595              		.global	join_compute_skeys
+ 596              		.syntax unified
+ 597              		.code	16
+ 598              		.thumb_func
+ 599              		.fpu softvfp
+ 601              	join_compute_skeys:
+ 602              	.LVL63:
+ 603              	.LFB9:
+ 197:smtc_crypto/src/crypto.c **** 
+ 198:smtc_crypto/src/crypto.c **** void join_compute_skeys(const uint8_t *key, const uint8_t *appNonce, uint16_t devNonce, uint8_t *nw
+ 199:smtc_crypto/src/crypto.c **** {
+ 604              		.loc 1 199 1 is_stmt 1 view -0
+ 605              		.cfi_startproc
+ 606              		@ args = 4, pretend = 0, frame = 24
+ 607              		@ frame_needed = 0, uses_anonymous_args = 0
+ 200:smtc_crypto/src/crypto.c **** 
+ 201:smtc_crypto/src/crypto.c ****     uint8_t nonce[16];
+ 608              		.loc 1 201 5 view .LVU166
+ 202:smtc_crypto/src/crypto.c ****     uint8_t *pDevNonce = (uint8_t *)&devNonce;
+ 609              		.loc 1 202 5 view .LVU167
+ 199:smtc_crypto/src/crypto.c **** 
+ 610              		.loc 1 199 1 is_stmt 0 view .LVU168
+ 611 0000 F0B5     		push	{r4, r5, r6, r7, lr}
+ 612              		.cfi_def_cfa_offset 20
+ 613              		.cfi_offset 4, -20
+ 614              		.cfi_offset 5, -16
+ 615              		.cfi_offset 6, -12
+ 616              		.cfi_offset 7, -8
+ 617              		.cfi_offset 14, -4
+ 618 0002 87B0     		sub	sp, sp, #28
+ 619              		.cfi_def_cfa_offset 48
+ 620              	.LVL64:
+ 203:smtc_crypto/src/crypto.c **** 
+ 204:smtc_crypto/src/crypto.c ****     memset1(AesContext.ksch, '\0', 240);
+ 621              		.loc 1 204 5 is_stmt 1 view .LVU169
+ 199:smtc_crypto/src/crypto.c **** 
+ 622              		.loc 1 199 1 is_stmt 0 view .LVU170
+ 623 0004 0093     		str	r3, [sp]
+ 624 0006 6B46     		mov	r3, sp
+ 625              	.LVL65:
+ 199:smtc_crypto/src/crypto.c **** 
+ 626              		.loc 1 199 1 view .LVU171
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc19SNmv.s 			page 17
+
+
+ 627 0008 0700     		movs	r7, r0
+ 628              		.loc 1 204 5 view .LVU172
+ 629 000a 234C     		ldr	r4, .L26
+ 199:smtc_crypto/src/crypto.c **** 
+ 630              		.loc 1 199 1 view .LVU173
+ 631 000c DA80     		strh	r2, [r3, #6]
+ 632 000e 0D00     		movs	r5, r1
+ 633              		.loc 1 204 5 view .LVU174
+ 634 0010 2000     		movs	r0, r4
+ 635              	.LVL66:
+ 636              		.loc 1 204 5 view .LVU175
+ 637 0012 F022     		movs	r2, #240
+ 638              	.LVL67:
+ 639              		.loc 1 204 5 view .LVU176
+ 640 0014 0021     		movs	r1, #0
+ 641              	.LVL68:
+ 199:smtc_crypto/src/crypto.c **** 
+ 642              		.loc 1 199 1 view .LVU177
+ 643 0016 9E1D     		adds	r6, r3, #6
+ 644              	.LVL69:
+ 645              		.loc 1 204 5 view .LVU178
+ 646 0018 FFF7FEFF 		bl	memset1
+ 647              	.LVL70:
+ 205:smtc_crypto/src/crypto.c ****     aes_set_key(key, 16, &AesContext);
+ 648              		.loc 1 205 5 is_stmt 1 view .LVU179
+ 649 001c 2200     		movs	r2, r4
+ 650 001e 1021     		movs	r1, #16
+ 651 0020 3800     		movs	r0, r7
+ 652 0022 FFF7FEFF 		bl	aes_set_key
+ 653              	.LVL71:
+ 206:smtc_crypto/src/crypto.c **** 
+ 207:smtc_crypto/src/crypto.c ****     memset1(nonce, 0, sizeof(nonce));
+ 654              		.loc 1 207 5 view .LVU180
+ 655 0026 02A8     		add	r0, sp, #8
+ 656 0028 1022     		movs	r2, #16
+ 657 002a 0021     		movs	r1, #0
+ 658 002c FFF7FEFF 		bl	memset1
+ 659              	.LVL72:
+ 208:smtc_crypto/src/crypto.c ****     nonce[0] = 0x01;
+ 660              		.loc 1 208 5 view .LVU181
+ 661              		.loc 1 208 14 is_stmt 0 view .LVU182
+ 662 0030 6A46     		mov	r2, sp
+ 663 0032 0123     		movs	r3, #1
+ 664 0034 1372     		strb	r3, [r2, #8]
+ 209:smtc_crypto/src/crypto.c ****     memcpy1(nonce + 1, appNonce, 6);
+ 665              		.loc 1 209 5 is_stmt 1 view .LVU183
+ 666 0036 0833     		adds	r3, r3, #8
+ 667 0038 6B44     		add	r3, r3, sp
+ 668 003a 2900     		movs	r1, r5
+ 669 003c 1800     		movs	r0, r3
+ 670 003e 0622     		movs	r2, #6
+ 671 0040 FFF7FEFF 		bl	memcpy1
+ 672              	.LVL73:
+ 210:smtc_crypto/src/crypto.c ****     memcpy1(nonce + 7, pDevNonce, 2);
+ 673              		.loc 1 210 5 view .LVU184
+ 674 0044 0F23     		movs	r3, #15
+ 675 0046 6B44     		add	r3, r3, sp
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc19SNmv.s 			page 18
+
+
+ 676 0048 1800     		movs	r0, r3
+ 677 004a 3100     		movs	r1, r6
+ 678 004c 0222     		movs	r2, #2
+ 679 004e FFF7FEFF 		bl	memcpy1
+ 680              	.LVL74:
+ 211:smtc_crypto/src/crypto.c ****     aes_encrypt(nonce, nwkSKey, &AesContext);
+ 681              		.loc 1 211 5 view .LVU185
+ 682 0052 2200     		movs	r2, r4
+ 683 0054 0099     		ldr	r1, [sp]
+ 684 0056 02A8     		add	r0, sp, #8
+ 685 0058 FFF7FEFF 		bl	aes_encrypt
+ 686              	.LVL75:
+ 212:smtc_crypto/src/crypto.c **** 
+ 213:smtc_crypto/src/crypto.c ****     memset1(nonce, 0, sizeof(nonce));
+ 687              		.loc 1 213 5 view .LVU186
+ 688 005c 02A8     		add	r0, sp, #8
+ 689 005e 1022     		movs	r2, #16
+ 690 0060 0021     		movs	r1, #0
+ 691 0062 FFF7FEFF 		bl	memset1
+ 692              	.LVL76:
+ 214:smtc_crypto/src/crypto.c ****     nonce[0] = 0x02;
+ 693              		.loc 1 214 5 view .LVU187
+ 694              		.loc 1 214 14 is_stmt 0 view .LVU188
+ 695 0066 0227     		movs	r7, #2
+ 696              	.LVL77:
+ 697              		.loc 1 214 14 view .LVU189
+ 698 0068 6B46     		mov	r3, sp
+ 699 006a 1F72     		strb	r7, [r3, #8]
+ 215:smtc_crypto/src/crypto.c ****     memcpy1(nonce + 1, appNonce, 6);
+ 700              		.loc 1 215 5 is_stmt 1 view .LVU190
+ 701 006c 0923     		movs	r3, #9
+ 702 006e 6B44     		add	r3, r3, sp
+ 703 0070 2900     		movs	r1, r5
+ 704 0072 1800     		movs	r0, r3
+ 705 0074 0622     		movs	r2, #6
+ 706 0076 FFF7FEFF 		bl	memcpy1
+ 707              	.LVL78:
+ 216:smtc_crypto/src/crypto.c ****     memcpy1(nonce + 7, pDevNonce, 2);
+ 708              		.loc 1 216 5 view .LVU191
+ 709 007a 0F23     		movs	r3, #15
+ 710 007c 6B44     		add	r3, r3, sp
+ 711 007e 1800     		movs	r0, r3
+ 712 0080 3A00     		movs	r2, r7
+ 713 0082 3100     		movs	r1, r6
+ 714 0084 FFF7FEFF 		bl	memcpy1
+ 715              	.LVL79:
+ 217:smtc_crypto/src/crypto.c ****     aes_encrypt(nonce, appSKey, &AesContext);
+ 716              		.loc 1 217 5 view .LVU192
+ 717 0088 2200     		movs	r2, r4
+ 718 008a 0C99     		ldr	r1, [sp, #48]
+ 719 008c 02A8     		add	r0, sp, #8
+ 720 008e FFF7FEFF 		bl	aes_encrypt
+ 721              	.LVL80:
+ 218:smtc_crypto/src/crypto.c **** }
+ 722              		.loc 1 218 1 is_stmt 0 view .LVU193
+ 723 0092 07B0     		add	sp, sp, #28
+ 724              	.LVL81:
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc19SNmv.s 			page 19
+
+
+ 725              		.loc 1 218 1 view .LVU194
+ 726              		@ sp needed
+ 727              	.LVL82:
+ 728              	.LVL83:
+ 729              		.loc 1 218 1 view .LVU195
+ 730 0094 F0BD     		pop	{r4, r5, r6, r7, pc}
+ 731              	.L27:
+ 732 0096 C046     		.align	2
+ 733              	.L26:
+ 734 0098 00000000 		.word	AesContext
+ 735              		.cfi_endproc
+ 736              	.LFE9:
+ 738              		.section	.text.lora_crypto_add_mic,"ax",%progbits
+ 739              		.align	1
+ 740              		.global	lora_crypto_add_mic
+ 741              		.syntax unified
+ 742              		.code	16
+ 743              		.thumb_func
+ 744              		.fpu softvfp
+ 746              	lora_crypto_add_mic:
+ 747              	.LVL84:
+ 748              	.LFB10:
+ 219:smtc_crypto/src/crypto.c **** 
+ 220:smtc_crypto/src/crypto.c **** void lora_crypto_add_mic(uint8_t *buffer, uint16_t size, const uint8_t *key, uint32_t address, uint
+ 221:smtc_crypto/src/crypto.c **** {
+ 749              		.loc 1 221 1 is_stmt 1 view -0
+ 750              		.cfi_startproc
+ 751              		@ args = 8, pretend = 0, frame = 8
+ 752              		@ frame_needed = 0, uses_anonymous_args = 0
+ 222:smtc_crypto/src/crypto.c **** 
+ 223:smtc_crypto/src/crypto.c ****     uint32_t mic;
+ 753              		.loc 1 223 5 view .LVU197
+ 224:smtc_crypto/src/crypto.c ****     compute_mic(buffer, size, key, address, dir, sequenceCounter, &mic);
+ 754              		.loc 1 224 5 view .LVU198
+ 221:smtc_crypto/src/crypto.c **** 
+ 755              		.loc 1 221 1 is_stmt 0 view .LVU199
+ 756 0000 70B5     		push	{r4, r5, r6, lr}
+ 757              		.cfi_def_cfa_offset 16
+ 758              		.cfi_offset 4, -16
+ 759              		.cfi_offset 5, -12
+ 760              		.cfi_offset 6, -8
+ 761              		.cfi_offset 14, -4
+ 762 0002 0400     		movs	r4, r0
+ 763 0004 0D00     		movs	r5, r1
+ 764 0006 86B0     		sub	sp, sp, #24
+ 765              		.cfi_def_cfa_offset 40
+ 221:smtc_crypto/src/crypto.c **** 
+ 766              		.loc 1 221 1 view .LVU200
+ 767 0008 0AA9     		add	r1, sp, #40
+ 768              	.LVL85:
+ 221:smtc_crypto/src/crypto.c **** 
+ 769              		.loc 1 221 1 view .LVU201
+ 770 000a 0978     		ldrb	r1, [r1]
+ 771              	.LVL86:
+ 772              		.loc 1 224 5 view .LVU202
+ 773 000c 0B98     		ldr	r0, [sp, #44]
+ 774              	.LVL87:
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc19SNmv.s 			page 20
+
+
+ 775              		.loc 1 224 5 view .LVU203
+ 776 000e 05AE     		add	r6, sp, #20
+ 777 0010 0190     		str	r0, [sp, #4]
+ 778 0012 0091     		str	r1, [sp]
+ 779 0014 2000     		movs	r0, r4
+ 780 0016 2900     		movs	r1, r5
+ 781 0018 0296     		str	r6, [sp, #8]
+ 782 001a FFF7FEFF 		bl	compute_mic
+ 783              	.LVL88:
+ 225:smtc_crypto/src/crypto.c ****     memcpy(&buffer[size], (uint8_t *)&mic, 4);
+ 784              		.loc 1 225 5 is_stmt 1 view .LVU204
+ 785 001e 0422     		movs	r2, #4
+ 786 0020 3100     		movs	r1, r6
+ 787              		.loc 1 225 12 is_stmt 0 view .LVU205
+ 788 0022 6019     		adds	r0, r4, r5
+ 789              		.loc 1 225 5 view .LVU206
+ 790 0024 FFF7FEFF 		bl	memcpy
+ 791              	.LVL89:
+ 226:smtc_crypto/src/crypto.c **** }
+ 792              		.loc 1 226 1 view .LVU207
+ 793 0028 06B0     		add	sp, sp, #24
+ 794              		@ sp needed
+ 795              	.LVL90:
+ 796              		.loc 1 226 1 view .LVU208
+ 797 002a 70BD     		pop	{r4, r5, r6, pc}
+ 798              		.cfi_endproc
+ 799              	.LFE10:
+ 801              		.section	.text.check_mic,"ax",%progbits
+ 802              		.align	1
+ 803              		.global	check_mic
+ 804              		.syntax unified
+ 805              		.code	16
+ 806              		.thumb_func
+ 807              		.fpu softvfp
+ 809              	check_mic:
+ 810              	.LVL91:
+ 811              	.LFB11:
+ 227:smtc_crypto/src/crypto.c **** 
+ 228:smtc_crypto/src/crypto.c **** int check_mic(uint8_t *buffer, uint16_t size, const uint8_t *key, uint32_t address, uint32_t sequen
+ 229:smtc_crypto/src/crypto.c **** {
+ 812              		.loc 1 229 1 is_stmt 1 view -0
+ 813              		.cfi_startproc
+ 814              		@ args = 8, pretend = 0, frame = 8
+ 815              		@ frame_needed = 0, uses_anonymous_args = 0
+ 230:smtc_crypto/src/crypto.c ****     uint32_t mic;
+ 816              		.loc 1 230 5 view .LVU210
+ 231:smtc_crypto/src/crypto.c ****     int status = -1;
+ 817              		.loc 1 231 5 view .LVU211
+ 232:smtc_crypto/src/crypto.c ****     compute_mic(buffer, size, key, address, 1, sequenceCounter, &mic);
+ 818              		.loc 1 232 5 view .LVU212
+ 229:smtc_crypto/src/crypto.c ****     uint32_t mic;
+ 819              		.loc 1 229 1 is_stmt 0 view .LVU213
+ 820 0000 10B5     		push	{r4, lr}
+ 821              		.cfi_def_cfa_offset 8
+ 822              		.cfi_offset 4, -8
+ 823              		.cfi_offset 14, -4
+ 824 0002 86B0     		sub	sp, sp, #24
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc19SNmv.s 			page 21
+
+
+ 825              		.cfi_def_cfa_offset 32
+ 826              		.loc 1 232 5 view .LVU214
+ 827 0004 05AC     		add	r4, sp, #20
+ 828 0006 0294     		str	r4, [sp, #8]
+ 829 0008 089C     		ldr	r4, [sp, #32]
+ 830 000a 0194     		str	r4, [sp, #4]
+ 831 000c 0124     		movs	r4, #1
+ 832 000e 0094     		str	r4, [sp]
+ 833 0010 FFF7FEFF 		bl	compute_mic
+ 834              	.LVL92:
+ 233:smtc_crypto/src/crypto.c ****     if (mic == micIn)
+ 835              		.loc 1 233 5 is_stmt 1 view .LVU215
+ 836              		.loc 1 233 8 is_stmt 0 view .LVU216
+ 837 0014 059B     		ldr	r3, [sp, #20]
+ 838 0016 099A     		ldr	r2, [sp, #36]
+ 839 0018 981A     		subs	r0, r3, r2
+ 840 001a 431E     		subs	r3, r0, #1
+ 841 001c 9841     		sbcs	r0, r0, r3
+ 842 001e 4042     		rsbs	r0, r0, #0
+ 843              	.LVL93:
+ 234:smtc_crypto/src/crypto.c ****     {
+ 235:smtc_crypto/src/crypto.c ****         status = 0;
+ 236:smtc_crypto/src/crypto.c ****     }
+ 237:smtc_crypto/src/crypto.c ****     return (status);
+ 844              		.loc 1 237 5 is_stmt 1 view .LVU217
+ 238:smtc_crypto/src/crypto.c **** }
+ 845              		.loc 1 238 1 is_stmt 0 view .LVU218
+ 846 0020 06B0     		add	sp, sp, #24
+ 847              		@ sp needed
+ 848 0022 10BD     		pop	{r4, pc}
+ 849              		.cfi_endproc
+ 850              	.LFE11:
+ 852              		.section	.text.check_join_mic,"ax",%progbits
+ 853              		.align	1
+ 854              		.global	check_join_mic
+ 855              		.syntax unified
+ 856              		.code	16
+ 857              		.thumb_func
+ 858              		.fpu softvfp
+ 860              	check_join_mic:
+ 861              	.LVL94:
+ 862              	.LFB12:
+ 239:smtc_crypto/src/crypto.c **** int check_join_mic(const uint8_t *buffer, uint16_t size, const uint8_t *key, uint32_t micIn)
+ 240:smtc_crypto/src/crypto.c **** {
+ 863              		.loc 1 240 1 is_stmt 1 view -0
+ 864              		.cfi_startproc
+ 865              		@ args = 0, pretend = 0, frame = 8
+ 866              		@ frame_needed = 0, uses_anonymous_args = 0
+ 241:smtc_crypto/src/crypto.c ****     uint32_t mic;
+ 867              		.loc 1 241 5 view .LVU220
+ 242:smtc_crypto/src/crypto.c ****     int status = -1;
+ 868              		.loc 1 242 5 view .LVU221
+ 243:smtc_crypto/src/crypto.c ****     join_compute_mic(buffer, size, key, &mic);
+ 869              		.loc 1 243 5 view .LVU222
+ 240:smtc_crypto/src/crypto.c ****     uint32_t mic;
+ 870              		.loc 1 240 1 is_stmt 0 view .LVU223
+ 871 0000 13B5     		push	{r0, r1, r4, lr}
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc19SNmv.s 			page 22
+
+
+ 872              		.cfi_def_cfa_offset 16
+ 873              		.cfi_offset 0, -16
+ 874              		.cfi_offset 1, -12
+ 875              		.cfi_offset 4, -8
+ 876              		.cfi_offset 14, -4
+ 240:smtc_crypto/src/crypto.c ****     uint32_t mic;
+ 877              		.loc 1 240 1 view .LVU224
+ 878 0002 1C00     		movs	r4, r3
+ 879              		.loc 1 243 5 view .LVU225
+ 880 0004 01AB     		add	r3, sp, #4
+ 881              	.LVL95:
+ 882              		.loc 1 243 5 view .LVU226
+ 883 0006 FFF7FEFF 		bl	join_compute_mic
+ 884              	.LVL96:
+ 244:smtc_crypto/src/crypto.c ****     if (mic == micIn)
+ 885              		.loc 1 244 5 is_stmt 1 view .LVU227
+ 886              		.loc 1 244 8 is_stmt 0 view .LVU228
+ 887 000a 019B     		ldr	r3, [sp, #4]
+ 245:smtc_crypto/src/crypto.c ****     {
+ 246:smtc_crypto/src/crypto.c ****         status = 0;
+ 247:smtc_crypto/src/crypto.c ****     }
+ 248:smtc_crypto/src/crypto.c ****     return (status);
+ 249:smtc_crypto/src/crypto.c **** }
+ 888              		.loc 1 249 1 view .LVU229
+ 889              		@ sp needed
+ 244:smtc_crypto/src/crypto.c ****     if (mic == micIn)
+ 890              		.loc 1 244 8 view .LVU230
+ 891 000c 181B     		subs	r0, r3, r4
+ 892 000e 431E     		subs	r3, r0, #1
+ 893 0010 9841     		sbcs	r0, r0, r3
+ 894 0012 4042     		rsbs	r0, r0, #0
+ 895              	.LVL97:
+ 248:smtc_crypto/src/crypto.c **** }
+ 896              		.loc 1 248 5 is_stmt 1 view .LVU231
+ 897              	.LVL98:
+ 898              		.loc 1 249 1 is_stmt 0 view .LVU232
+ 899 0014 16BD     		pop	{r1, r2, r4, pc}
+ 900              		.cfi_endproc
+ 901              	.LFE12:
+ 903              		.section	.bss.AesCmacCtx,"aw",%nobits
+ 904              		.align	2
+ 907              	AesCmacCtx:
+ 908 0000 00000000 		.space	280
+ 908      00000000 
+ 908      00000000 
+ 908      00000000 
+ 908      00000000 
+ 909              		.section	.bss.AesContext,"aw",%nobits
+ 910              		.align	2
+ 913              	AesContext:
+ 914 0000 00000000 		.space	241
+ 914      00000000 
+ 914      00000000 
+ 914      00000000 
+ 914      00000000 
+ 915              		.section	.bss.Mic,"aw",%nobits
+ 916              		.align	2
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc19SNmv.s 			page 23
+
+
+ 917              		.set	.LANCHOR1,. + 0
+ 920              	Mic:
+ 921 0000 00000000 		.space	16
+ 921      00000000 
+ 921      00000000 
+ 921      00000000 
+ 922              		.section	.bss.sBlock,"aw",%nobits
+ 923              		.align	2
+ 924              		.set	.LANCHOR3,. + 0
+ 927              	sBlock:
+ 928 0000 00000000 		.space	16
+ 928      00000000 
+ 928      00000000 
+ 928      00000000 
+ 929              		.section	.data.MicBlockB0,"aw"
+ 930              		.align	2
+ 931              		.set	.LANCHOR0,. + 0
+ 934              	MicBlockB0:
+ 935 0000 49000000 		.ascii	"I\000\000\000\000\000\000\000\000\000\000\000\000\000"
+ 935      00000000 
+ 935      00000000 
+ 935      0000
+ 936 000e 0000     		.ascii	"\000\000"
+ 937              		.section	.data.aBlock,"aw"
+ 938              		.align	2
+ 939              		.set	.LANCHOR2,. + 0
+ 942              	aBlock:
+ 943 0000 01000000 		.ascii	"\001\000\000\000\000\000\000\000\000\000\000\000\000"
+ 943      00000000 
+ 943      00000000 
+ 943      00
+ 944 000d 000000   		.ascii	"\000\000\000"
+ 945              		.text
+ 946              	.Letext0:
+ 947              		.file 2 "/Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.external
+ 948              		.file 3 "/Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.external
+ 949              		.file 4 "/Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.external
+ 950              		.file 5 "/Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.external
+ 951              		.file 6 "/Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.external
+ 952              		.file 7 "/Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.external
+ 953              		.file 8 "/Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.external
+ 954              		.file 9 "smtc_crypto/src/aes.h"
+ 955              		.file 10 "smtc_crypto/src/cmac.h"
+ 956              		.file 11 "lr1mac/src/lr1mac_defs.h"
+ 957              		.file 12 "/Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.externa
+ 958              		.file 13 "lr1mac/src/lr1mac_utilities.h"
+ 959              		.file 14 "smtc_ral/src/ral_defs.h"
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc19SNmv.s 			page 24
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 crypto.c
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc19SNmv.s:14     .text.compute_mic:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc19SNmv.s:22     .text.compute_mic:0000000000000000 compute_mic
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc19SNmv.s:136    .text.compute_mic:0000000000000060 $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc19SNmv.s:907    .bss.AesCmacCtx:0000000000000000 AesCmacCtx
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc19SNmv.s:143    .text.lora_crypto_payload_encrypt:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc19SNmv.s:150    .text.lora_crypto_payload_encrypt:0000000000000000 lora_crypto_payload_encrypt
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc19SNmv.s:374    .text.lora_crypto_payload_encrypt:00000000000000c0 $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc19SNmv.s:913    .bss.AesContext:0000000000000000 AesContext
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc19SNmv.s:381    .text.payload_decrypt:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc19SNmv.s:388    .text.payload_decrypt:0000000000000000 payload_decrypt
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc19SNmv.s:427    .text.join_compute_mic:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc19SNmv.s:434    .text.join_compute_mic:0000000000000000 join_compute_mic
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc19SNmv.s:502    .text.join_compute_mic:0000000000000038 $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc19SNmv.s:508    .text.join_decrypt:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc19SNmv.s:515    .text.join_decrypt:0000000000000000 join_decrypt
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc19SNmv.s:589    .text.join_decrypt:0000000000000040 $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc19SNmv.s:594    .text.join_compute_skeys:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc19SNmv.s:601    .text.join_compute_skeys:0000000000000000 join_compute_skeys
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc19SNmv.s:734    .text.join_compute_skeys:0000000000000098 $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc19SNmv.s:739    .text.lora_crypto_add_mic:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc19SNmv.s:746    .text.lora_crypto_add_mic:0000000000000000 lora_crypto_add_mic
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc19SNmv.s:802    .text.check_mic:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc19SNmv.s:809    .text.check_mic:0000000000000000 check_mic
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc19SNmv.s:853    .text.check_join_mic:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc19SNmv.s:860    .text.check_join_mic:0000000000000000 check_join_mic
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc19SNmv.s:904    .bss.AesCmacCtx:0000000000000000 $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc19SNmv.s:910    .bss.AesContext:0000000000000000 $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc19SNmv.s:916    .bss.Mic:0000000000000000 $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc19SNmv.s:920    .bss.Mic:0000000000000000 Mic
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc19SNmv.s:923    .bss.sBlock:0000000000000000 $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc19SNmv.s:927    .bss.sBlock:0000000000000000 sBlock
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc19SNmv.s:930    .data.MicBlockB0:0000000000000000 $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc19SNmv.s:934    .data.MicBlockB0:0000000000000000 MicBlockB0
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc19SNmv.s:938    .data.aBlock:0000000000000000 $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cc19SNmv.s:942    .data.aBlock:0000000000000000 aBlock
+
+UNDEFINED SYMBOLS
+AES_CMAC_Init
+AES_CMAC_SetKey
+AES_CMAC_Update
+AES_CMAC_Final
+memset1
+aes_set_key
+aes_encrypt
+memcpy1
+memcpy

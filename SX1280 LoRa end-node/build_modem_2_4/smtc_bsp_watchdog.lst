@@ -1,0 +1,301 @@
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccj4Rz3c.s 			page 1
+
+
+   1              		.cpu cortex-m0plus
+   2              		.eabi_attribute 23, 1
+   3              		.eabi_attribute 24, 1
+   4              		.eabi_attribute 25, 1
+   5              		.eabi_attribute 26, 1
+   6              		.eabi_attribute 30, 4
+   7              		.eabi_attribute 34, 0
+   8              		.eabi_attribute 18, 4
+   9              		.file	"smtc_bsp_watchdog.c"
+  10              		.text
+  11              	.Ltext0:
+  12              		.cfi_sections	.debug_frame
+  13              		.section	.text.bsp_watchdog_init,"ax",%progbits
+  14              		.align	1
+  15              		.global	bsp_watchdog_init
+  16              		.arch armv6s-m
+  17              		.syntax unified
+  18              		.code	16
+  19              		.thumb_func
+  20              		.fpu softvfp
+  22              	bsp_watchdog_init:
+  23              	.LFB47:
+  24              		.file 1 "smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c"
+   1:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c **** /*!
+   2:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c ****  * \file      smtc_bsp_watchdog.h
+   3:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c ****  *
+   4:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c ****  * \brief     Board specific package WATCHDOG management API definition.
+   5:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c ****  *
+   6:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c ****  * Revised BSD License
+   7:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c ****  * Copyright Semtech Corporation 2020. All rights reserved.
+   8:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c ****  *
+   9:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c ****  * Redistribution and use in source and binary forms, with or without
+  10:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c ****  * modification, are permitted provided that the following conditions are met:
+  11:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c ****  *     * Redistributions of source code must retain the above copyright
+  12:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c ****  *       notice, this list of conditions and the following disclaimer.
+  13:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c ****  *     * Redistributions in binary form must reproduce the above copyright
+  14:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c ****  *       notice, this list of conditions and the following disclaimer in the
+  15:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c ****  *       documentation and/or other materials provided with the distribution.
+  16:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c ****  *     * Neither the name of the Semtech corporation nor the
+  17:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c ****  *       names of its contributors may be used to endorse or promote products
+  18:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c ****  *       derived from this software without specific prior written permission.
+  19:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c ****  *
+  20:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c ****  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+  21:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c ****  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+  22:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c ****  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+  23:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c ****  * ARE DISCLAIMED. IN NO EVENT SHALL SEMTECH CORPORATION BE LIABLE FOR ANY DIRECT,
+  24:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c ****  * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+  25:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c ****  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+  26:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c ****  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+  27:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c ****  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  28:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c ****  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+  29:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c ****  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  30:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c ****  */
+  31:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c **** 
+  32:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c **** /*
+  33:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c ****  * -----------------------------------------------------------------------------
+  34:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c ****  * --- DEPENDENCIES ------------------------------------------------------------
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccj4Rz3c.s 			page 2
+
+
+  35:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c ****  */
+  36:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c **** 
+  37:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c **** #include <stdint.h>   // C99 types
+  38:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c **** #include <stdbool.h>  // bool type
+  39:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c **** 
+  40:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c **** #include "stm32l0xx_hal.h"
+  41:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c **** #include "smtc_bsp_watchdog.h"
+  42:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c **** 
+  43:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c **** /*
+  44:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c ****  * -----------------------------------------------------------------------------
+  45:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c ****  * --- PRIVATE MACROS-----------------------------------------------------------
+  46:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c ****  */
+  47:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c **** 
+  48:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c **** /*
+  49:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c ****  * -----------------------------------------------------------------------------
+  50:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c ****  * --- PRIVATE CONSTANTS -------------------------------------------------------
+  51:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c ****  */
+  52:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c **** 
+  53:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c **** /*
+  54:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c ****  * -----------------------------------------------------------------------------
+  55:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c ****  * --- PRIVATE TYPES -----------------------------------------------------------
+  56:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c ****  */
+  57:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c **** 
+  58:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c **** /*
+  59:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c ****  * -----------------------------------------------------------------------------
+  60:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c ****  * --- PRIVATE VARIABLES -------------------------------------------------------
+  61:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c ****  */
+  62:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c **** 
+  63:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c **** static IWDG_HandleTypeDef iwdg_handle;
+  64:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c **** 
+  65:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c **** /*
+  66:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c ****  * -----------------------------------------------------------------------------
+  67:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c ****  * --- PRIVATE FUNCTIONS DECLARATION -------------------------------------------
+  68:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c ****  */
+  69:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c **** 
+  70:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c **** /*
+  71:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c ****  * -----------------------------------------------------------------------------
+  72:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c ****  * --- PUBLIC FUNCTIONS DEFINITION ---------------------------------------------
+  73:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c ****  */
+  74:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c **** 
+  75:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c **** void bsp_watchdog_init( void )
+  76:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c **** {
+  25              		.loc 1 76 1 view -0
+  26              		.cfi_startproc
+  27              		@ args = 0, pretend = 0, frame = 0
+  28              		@ frame_needed = 0, uses_anonymous_args = 0
+  29              		@ link register save eliminated.
+  77:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c ****     iwdg_handle.Instance       = IWDG;
+  30              		.loc 1 77 5 view .LVU1
+  78:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c ****     iwdg_handle.Init.Prescaler = IWDG_PRESCALER_256;
+  31              		.loc 1 78 32 is_stmt 0 view .LVU2
+  32 0000 0620     		movs	r0, #6
+  77:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c ****     iwdg_handle.Instance       = IWDG;
+  33              		.loc 1 77 32 view .LVU3
+  34 0002 0C49     		ldr	r1, .L6
+  35 0004 0C4B     		ldr	r3, .L6+4
+  79:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c ****     iwdg_handle.Init.Window    = IWDG_WINDOW_DISABLE;
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccj4Rz3c.s 			page 3
+
+
+  36              		.loc 1 79 32 view .LVU4
+  37 0006 0D4A     		ldr	r2, .L6+8
+  77:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c ****     iwdg_handle.Instance       = IWDG;
+  38              		.loc 1 77 32 view .LVU5
+  39 0008 0B60     		str	r3, [r1]
+  78:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c ****     iwdg_handle.Init.Prescaler = IWDG_PRESCALER_256;
+  40              		.loc 1 78 5 is_stmt 1 view .LVU6
+  78:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c ****     iwdg_handle.Init.Prescaler = IWDG_PRESCALER_256;
+  41              		.loc 1 78 32 is_stmt 0 view .LVU7
+  42 000a 4860     		str	r0, [r1, #4]
+  43              		.loc 1 79 5 is_stmt 1 view .LVU8
+  44              		.loc 1 79 32 is_stmt 0 view .LVU9
+  45 000c CA60     		str	r2, [r1, #12]
+  80:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c ****     iwdg_handle.Init.Reload    = 0xFFF;
+  46              		.loc 1 80 5 is_stmt 1 view .LVU10
+  47              		.loc 1 80 32 is_stmt 0 view .LVU11
+  48 000e 8A60     		str	r2, [r1, #8]
+  81:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c **** 
+  82:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c ****     // Enable IWDG. LSI is turned on automaticaly.
+  83:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c ****     __HAL_IWDG_START( &iwdg_handle );
+  49              		.loc 1 83 5 is_stmt 1 view .LVU12
+  50 0010 0B49     		ldr	r1, .L6+12
+  51 0012 1960     		str	r1, [r3]
+  84:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c **** 
+  85:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c ****     // Enable write access to IWDG_PR, IWDG_RLR and IWDG_WINR registers by
+  86:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c ****     // writing 0x5555 in KR
+  87:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c ****     IWDG_ENABLE_WRITE_ACCESS( &iwdg_handle );
+  52              		.loc 1 87 5 view .LVU13
+  53 0014 0B49     		ldr	r1, .L6+16
+  54 0016 1960     		str	r1, [r3]
+  88:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c ****     // Write to IWDG registers the Prescaler & Reload values to work with.
+  89:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c ****     iwdg_handle.Instance->PR  = iwdg_handle.Init.Prescaler;
+  55              		.loc 1 89 5 view .LVU14
+  56              		.loc 1 89 31 is_stmt 0 view .LVU15
+  57 0018 5860     		str	r0, [r3, #4]
+  90:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c ****     iwdg_handle.Instance->RLR = iwdg_handle.Init.Reload;
+  58              		.loc 1 90 5 is_stmt 1 view .LVU16
+  59              		.loc 1 90 31 is_stmt 0 view .LVU17
+  60 001a 9A60     		str	r2, [r3, #8]
+  91:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c **** 
+  92:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c ****     // Wait for register to be updated.
+  93:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c ****     while( iwdg_handle.Instance->SR != RESET )
+  61              		.loc 1 93 5 is_stmt 1 view .LVU18
+  62              	.L2:
+  94:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c ****     {
+  95:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c ****     }
+  63              		.loc 1 95 5 discriminator 1 view .LVU19
+  93:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c ****     {
+  64              		.loc 1 93 10 discriminator 1 view .LVU20
+  93:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c ****     {
+  65              		.loc 1 93 32 is_stmt 0 discriminator 1 view .LVU21
+  66 001c D968     		ldr	r1, [r3, #12]
+  93:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c ****     {
+  67              		.loc 1 93 10 discriminator 1 view .LVU22
+  68 001e 0029     		cmp	r1, #0
+  69 0020 FCD1     		bne	.L2
+  96:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c **** 
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccj4Rz3c.s 			page 4
+
+
+  97:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c ****     // If window parameter is different than current value, modify window
+  98:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c ****     // register.
+  99:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c ****     if( iwdg_handle.Instance->WINR != iwdg_handle.Init.Window )
+  70              		.loc 1 99 5 is_stmt 1 view .LVU23
+  71              		.loc 1 99 29 is_stmt 0 view .LVU24
+  72 0022 1969     		ldr	r1, [r3, #16]
+  73              		.loc 1 99 7 view .LVU25
+  74 0024 9142     		cmp	r1, r2
+  75 0026 01D0     		beq	.L3
+ 100:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c ****     {
+ 101:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c ****         // Write to IWDG WINR the IWDG_Window value to compare with. In any
+ 102:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c ****         // case, even if window feature is disabled, Watchdog will be reloaded
+ 103:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c ****         // by writing windows register.
+ 104:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c ****         iwdg_handle.Instance->WINR = iwdg_handle.Init.Window;
+  76              		.loc 1 104 9 is_stmt 1 view .LVU26
+  77              		.loc 1 104 36 is_stmt 0 view .LVU27
+  78 0028 1A61     		str	r2, [r3, #16]
+  79              	.L1:
+ 105:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c ****     }
+ 106:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c ****     else
+ 107:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c ****     {
+ 108:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c ****         // Reload IWDG counter with value defined in the reload register.
+ 109:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c ****         __HAL_IWDG_RELOAD_COUNTER( &iwdg_handle );
+ 110:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c ****     }
+ 111:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c **** }
+  80              		.loc 1 111 1 view .LVU28
+  81              		@ sp needed
+  82 002a 7047     		bx	lr
+  83              	.L3:
+ 109:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c ****     }
+  84              		.loc 1 109 9 is_stmt 1 view .LVU29
+  85 002c 064A     		ldr	r2, .L6+20
+  86 002e 1A60     		str	r2, [r3]
+  87              		.loc 1 111 1 is_stmt 0 view .LVU30
+  88 0030 FBE7     		b	.L1
+  89              	.L7:
+  90 0032 C046     		.align	2
+  91              	.L6:
+  92 0034 00000000 		.word	.LANCHOR0
+  93 0038 00300040 		.word	1073754112
+  94 003c FF0F0000 		.word	4095
+  95 0040 CCCC0000 		.word	52428
+  96 0044 55550000 		.word	21845
+  97 0048 AAAA0000 		.word	43690
+  98              		.cfi_endproc
+  99              	.LFE47:
+ 101              		.section	.text.bsp_watchdog_reload,"ax",%progbits
+ 102              		.align	1
+ 103              		.global	bsp_watchdog_reload
+ 104              		.syntax unified
+ 105              		.code	16
+ 106              		.thumb_func
+ 107              		.fpu softvfp
+ 109              	bsp_watchdog_reload:
+ 110              	.LFB48:
+ 112:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c **** 
+ 113:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c **** void bsp_watchdog_reload( void )
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccj4Rz3c.s 			page 5
+
+
+ 114:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c **** {
+ 111              		.loc 1 114 1 is_stmt 1 view -0
+ 112              		.cfi_startproc
+ 113              		@ args = 0, pretend = 0, frame = 0
+ 114              		@ frame_needed = 0, uses_anonymous_args = 0
+ 115              		@ link register save eliminated.
+ 115:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c ****     __HAL_IWDG_RELOAD_COUNTER( &iwdg_handle );
+ 116              		.loc 1 115 5 view .LVU32
+ 117 0000 024B     		ldr	r3, .L9
+ 118 0002 034A     		ldr	r2, .L9+4
+ 119 0004 1B68     		ldr	r3, [r3]
+ 116:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c **** }
+ 120              		.loc 1 116 1 is_stmt 0 view .LVU33
+ 121              		@ sp needed
+ 115:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_watchdog.c ****     __HAL_IWDG_RELOAD_COUNTER( &iwdg_handle );
+ 122              		.loc 1 115 5 view .LVU34
+ 123 0006 1A60     		str	r2, [r3]
+ 124              		.loc 1 116 1 view .LVU35
+ 125 0008 7047     		bx	lr
+ 126              	.L10:
+ 127 000a C046     		.align	2
+ 128              	.L9:
+ 129 000c 00000000 		.word	.LANCHOR0
+ 130 0010 AAAA0000 		.word	43690
+ 131              		.cfi_endproc
+ 132              	.LFE48:
+ 134              		.section	.bss.iwdg_handle,"aw",%nobits
+ 135              		.align	2
+ 136              		.set	.LANCHOR0,. + 0
+ 139              	iwdg_handle:
+ 140 0000 00000000 		.space	16
+ 140      00000000 
+ 140      00000000 
+ 140      00000000 
+ 141              		.text
+ 142              	.Letext0:
+ 143              		.file 2 "/Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.external
+ 144              		.file 3 "/Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.external
+ 145              		.file 4 "user_app/mcu_core/system_stm32l0xx.h"
+ 146              		.file 5 "user_app/mcu_core/stm32l073xx.h"
+ 147              		.file 6 "smtc_bsp/arm/stm32/stm32_hal/STM32L0xx_HAL_Driver/Inc/stm32l0xx_hal_iwdg.h"
+ 148              		.file 7 "smtc_bsp/arm/stm32/stm32_hal/STM32L0xx_HAL_Driver/Inc/stm32l0xx_hal.h"
+ 149              		.file 8 "user_app/mcu_core/stm32l0xx.h"
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccj4Rz3c.s 			page 6
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 smtc_bsp_watchdog.c
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccj4Rz3c.s:14     .text.bsp_watchdog_init:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccj4Rz3c.s:22     .text.bsp_watchdog_init:0000000000000000 bsp_watchdog_init
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccj4Rz3c.s:92     .text.bsp_watchdog_init:0000000000000034 $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccj4Rz3c.s:102    .text.bsp_watchdog_reload:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccj4Rz3c.s:109    .text.bsp_watchdog_reload:0000000000000000 bsp_watchdog_reload
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccj4Rz3c.s:129    .text.bsp_watchdog_reload:000000000000000c $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccj4Rz3c.s:135    .bss.iwdg_handle:0000000000000000 $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccj4Rz3c.s:139    .bss.iwdg_handle:0000000000000000 iwdg_handle
+
+NO UNDEFINED SYMBOLS

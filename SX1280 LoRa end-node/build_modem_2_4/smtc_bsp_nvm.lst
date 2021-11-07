@@ -1,0 +1,294 @@
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cci6SNkt.s 			page 1
+
+
+   1              		.cpu cortex-m0plus
+   2              		.eabi_attribute 23, 1
+   3              		.eabi_attribute 24, 1
+   4              		.eabi_attribute 25, 1
+   5              		.eabi_attribute 26, 1
+   6              		.eabi_attribute 30, 4
+   7              		.eabi_attribute 34, 0
+   8              		.eabi_attribute 18, 4
+   9              		.file	"smtc_bsp_nvm.c"
+  10              		.text
+  11              	.Ltext0:
+  12              		.cfi_sections	.debug_frame
+  13              		.section	.text.bsp_nvm_context_restore,"ax",%progbits
+  14              		.align	1
+  15              		.global	bsp_nvm_context_restore
+  16              		.arch armv6s-m
+  17              		.syntax unified
+  18              		.code	16
+  19              		.thumb_func
+  20              		.fpu softvfp
+  22              	bsp_nvm_context_restore:
+  23              	.LVL0:
+  24              	.LFB47:
+  25              		.file 1 "smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_nvm.c"
+   1:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_nvm.c **** /*!
+   2:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_nvm.c ****  * \file      smtc_bsp_nvm.c
+   3:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_nvm.c ****  *
+   4:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_nvm.c ****  * \brief     Board specific package NVM API implementation.
+   5:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_nvm.c ****  *
+   6:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_nvm.c ****  * Revised BSD License
+   7:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_nvm.c ****  * Copyright Semtech Corporation 2020. All rights reserved.
+   8:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_nvm.c ****  *
+   9:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_nvm.c ****  * Redistribution and use in source and binary forms, with or without
+  10:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_nvm.c ****  * modification, are permitted provided that the following conditions are met:
+  11:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_nvm.c ****  *     * Redistributions of source code must retain the above copyright
+  12:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_nvm.c ****  *       notice, this list of conditions and the following disclaimer.
+  13:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_nvm.c ****  *     * Redistributions in binary form must reproduce the above copyright
+  14:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_nvm.c ****  *       notice, this list of conditions and the following disclaimer in the
+  15:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_nvm.c ****  *       documentation and/or other materials provided with the distribution.
+  16:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_nvm.c ****  *     * Neither the name of the Semtech corporation nor the
+  17:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_nvm.c ****  *       names of its contributors may be used to endorse or promote products
+  18:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_nvm.c ****  *       derived from this software without specific prior written permission.
+  19:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_nvm.c ****  *
+  20:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_nvm.c ****  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+  21:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_nvm.c ****  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+  22:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_nvm.c ****  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+  23:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_nvm.c ****  * ARE DISCLAIMED. IN NO EVENT SHALL SEMTECH CORPORATION BE LIABLE FOR ANY DIRECT,
+  24:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_nvm.c ****  * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+  25:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_nvm.c ****  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+  26:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_nvm.c ****  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+  27:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_nvm.c ****  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  28:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_nvm.c ****  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+  29:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_nvm.c ****  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  30:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_nvm.c ****  */
+  31:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_nvm.c **** 
+  32:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_nvm.c **** /*
+  33:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_nvm.c ****  * -----------------------------------------------------------------------------
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cci6SNkt.s 			page 2
+
+
+  34:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_nvm.c ****  * --- DEPENDENCIES ------------------------------------------------------------
+  35:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_nvm.c ****  */
+  36:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_nvm.c **** 
+  37:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_nvm.c **** #include <stdint.h>   // C99 types
+  38:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_nvm.c **** #include <stdbool.h>  // bool type
+  39:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_nvm.c **** 
+  40:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_nvm.c **** #include "stm32l0xx_hal.h"
+  41:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_nvm.c **** #include "smtc_bsp_nvm.h"
+  42:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_nvm.c **** 
+  43:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_nvm.c **** /*
+  44:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_nvm.c ****  * -----------------------------------------------------------------------------
+  45:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_nvm.c ****  * --- PRIVATE MACROS-----------------------------------------------------------
+  46:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_nvm.c ****  */
+  47:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_nvm.c **** 
+  48:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_nvm.c **** /*
+  49:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_nvm.c ****  * -----------------------------------------------------------------------------
+  50:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_nvm.c ****  * --- PRIVATE CONSTANTS -------------------------------------------------------
+  51:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_nvm.c ****  */
+  52:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_nvm.c **** 
+  53:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_nvm.c **** /*
+  54:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_nvm.c ****  * -----------------------------------------------------------------------------
+  55:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_nvm.c ****  * --- PRIVATE TYPES -----------------------------------------------------------
+  56:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_nvm.c ****  */
+  57:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_nvm.c **** 
+  58:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_nvm.c **** /*
+  59:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_nvm.c ****  * -----------------------------------------------------------------------------
+  60:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_nvm.c ****  * --- PRIVATE VARIABLES -------------------------------------------------------
+  61:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_nvm.c ****  */
+  62:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_nvm.c **** 
+  63:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_nvm.c **** /*
+  64:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_nvm.c ****  * -----------------------------------------------------------------------------
+  65:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_nvm.c ****  * --- PRIVATE FUNCTIONS DECLARATION -------------------------------------------
+  66:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_nvm.c ****  */
+  67:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_nvm.c **** 
+  68:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_nvm.c **** /*
+  69:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_nvm.c ****  * -----------------------------------------------------------------------------
+  70:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_nvm.c ****  * --- PUBLIC FUNCTIONS DEFINITION ---------------------------------------------
+  71:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_nvm.c ****  */
+  72:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_nvm.c **** 
+  73:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_nvm.c **** int32_t bsp_nvm_context_restore( const uint32_t addr, uint8_t* buffer, const uint32_t size )
+  74:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_nvm.c **** {
+  26              		.loc 1 74 1 view -0
+  27              		.cfi_startproc
+  28              		@ args = 0, pretend = 0, frame = 0
+  29              		@ frame_needed = 0, uses_anonymous_args = 0
+  75:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_nvm.c ****     assert_param( ( DATA_EEPROM_BASE + addr ) >= DATA_EEPROM_BASE );
+  30              		.loc 1 75 5 view .LVU1
+  76:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_nvm.c ****     assert_param( buffer != NULL );
+  31              		.loc 1 76 5 view .LVU2
+  77:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_nvm.c ****     assert_param( size < ( DATA_EEPROM_BANK2_END - DATA_EEPROM_BASE ) );
+  32              		.loc 1 77 5 view .LVU3
+  78:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_nvm.c **** 
+  79:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_nvm.c ****     memcpy( buffer, ( uint8_t* ) ( DATA_EEPROM_BASE + addr ), size );
+  33              		.loc 1 79 5 view .LVU4
+  74:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_nvm.c ****     assert_param( ( DATA_EEPROM_BASE + addr ) >= DATA_EEPROM_BASE );
+  34              		.loc 1 74 1 is_stmt 0 view .LVU5
+  35 0000 0B00     		movs	r3, r1
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cci6SNkt.s 			page 3
+
+
+  36 0002 10B5     		push	{r4, lr}
+  37              		.cfi_def_cfa_offset 8
+  38              		.cfi_offset 4, -8
+  39              		.cfi_offset 14, -4
+  40              		.loc 1 79 53 view .LVU6
+  41 0004 0349     		ldr	r1, .L2
+  42              	.LVL1:
+  80:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_nvm.c ****     return 0;
+  81:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_nvm.c **** }
+  43              		.loc 1 81 1 view .LVU7
+  44              		@ sp needed
+  79:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_nvm.c ****     return 0;
+  45              		.loc 1 79 53 view .LVU8
+  46 0006 4118     		adds	r1, r0, r1
+  79:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_nvm.c ****     return 0;
+  47              		.loc 1 79 5 view .LVU9
+  48 0008 1800     		movs	r0, r3
+  49              	.LVL2:
+  79:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_nvm.c ****     return 0;
+  50              		.loc 1 79 5 view .LVU10
+  51 000a FFF7FEFF 		bl	memcpy
+  52              	.LVL3:
+  80:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_nvm.c ****     return 0;
+  53              		.loc 1 80 5 is_stmt 1 view .LVU11
+  54              		.loc 1 81 1 is_stmt 0 view .LVU12
+  55 000e 0020     		movs	r0, #0
+  56 0010 10BD     		pop	{r4, pc}
+  57              	.L3:
+  58 0012 C046     		.align	2
+  59              	.L2:
+  60 0014 00000808 		.word	134742016
+  61              		.cfi_endproc
+  62              	.LFE47:
+  64              		.section	.text.bsp_nvm_context_store,"ax",%progbits
+  65              		.align	1
+  66              		.global	bsp_nvm_context_store
+  67              		.syntax unified
+  68              		.code	16
+  69              		.thumb_func
+  70              		.fpu softvfp
+  72              	bsp_nvm_context_store:
+  73              	.LVL4:
+  74              	.LFB48:
+  82:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_nvm.c **** 
+  83:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_nvm.c **** int32_t bsp_nvm_context_store( uint32_t const addr, const uint8_t* buffer, uint32_t const size )
+  84:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_nvm.c **** {
+  75              		.loc 1 84 1 is_stmt 1 view -0
+  76              		.cfi_startproc
+  77              		@ args = 0, pretend = 0, frame = 0
+  78              		@ frame_needed = 0, uses_anonymous_args = 0
+  85:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_nvm.c ****     HAL_StatusTypeDef res = HAL_OK;
+  79              		.loc 1 85 5 view .LVU14
+  86:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_nvm.c **** 
+  87:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_nvm.c ****     HAL_FLASHEx_DATAEEPROM_Unlock( );
+  80              		.loc 1 87 5 view .LVU15
+  84:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_nvm.c ****     HAL_StatusTypeDef res = HAL_OK;
+  81              		.loc 1 84 1 is_stmt 0 view .LVU16
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cci6SNkt.s 			page 4
+
+
+  82 0000 70B5     		push	{r4, r5, r6, lr}
+  83              		.cfi_def_cfa_offset 16
+  84              		.cfi_offset 4, -16
+  85              		.cfi_offset 5, -12
+  86              		.cfi_offset 6, -8
+  87              		.cfi_offset 14, -4
+  84:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_nvm.c ****     HAL_StatusTypeDef res = HAL_OK;
+  88              		.loc 1 84 1 view .LVU17
+  89 0002 0500     		movs	r5, r0
+  90 0004 0E00     		movs	r6, r1
+  91 0006 1400     		movs	r4, r2
+  92              		.loc 1 87 5 view .LVU18
+  93 0008 FFF7FEFF 		bl	HAL_FLASHEx_DATAEEPROM_Unlock
+  94              	.LVL5:
+  88:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_nvm.c ****     for( uint32_t i = 0; i < ( size ); i++ )
+  95              		.loc 1 88 5 is_stmt 1 view .LVU19
+  96              	.LBB2:
+  97              		.loc 1 88 10 view .LVU20
+  98              		.loc 1 88 19 is_stmt 0 view .LVU21
+  99 000c 0023     		movs	r3, #0
+ 100              	.LVL6:
+ 101              	.L5:
+ 102              		.loc 1 88 26 is_stmt 1 discriminator 1 view .LVU22
+ 103              		.loc 1 88 5 is_stmt 0 discriminator 1 view .LVU23
+ 104 000e A342     		cmp	r3, r4
+ 105 0010 03D1     		bne	.L6
+ 106              	.LBE2:
+  89:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_nvm.c ****     {
+  90:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_nvm.c ****         *( ( uint8_t* ) ( DATA_EEPROM_BASE + addr ) + i ) = *( ( uint8_t* ) ( buffer ) + i );
+  91:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_nvm.c ****     }
+  92:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_nvm.c **** 
+  93:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_nvm.c ****     HAL_FLASHEx_DATAEEPROM_Lock( );
+ 107              		.loc 1 93 5 is_stmt 1 view .LVU24
+ 108 0012 FFF7FEFF 		bl	HAL_FLASHEx_DATAEEPROM_Lock
+ 109              	.LVL7:
+  94:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_nvm.c **** 
+  95:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_nvm.c ****     return ( res );
+ 110              		.loc 1 95 5 view .LVU25
+  96:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_nvm.c **** }
+ 111              		.loc 1 96 1 is_stmt 0 view .LVU26
+ 112              		@ sp needed
+ 113 0016 0020     		movs	r0, #0
+ 114              	.LVL8:
+ 115              	.LVL9:
+ 116              	.LVL10:
+ 117              		.loc 1 96 1 view .LVU27
+ 118 0018 70BD     		pop	{r4, r5, r6, pc}
+ 119              	.LVL11:
+ 120              	.L6:
+ 121              	.LBB3:
+  90:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_nvm.c ****     }
+ 122              		.loc 1 90 9 is_stmt 1 discriminator 3 view .LVU28
+  90:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_nvm.c ****     }
+ 123              		.loc 1 90 59 is_stmt 0 discriminator 3 view .LVU29
+ 124 001a 0348     		ldr	r0, .L7
+  90:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_nvm.c ****     }
+ 125              		.loc 1 90 61 discriminator 3 view .LVU30
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cci6SNkt.s 			page 5
+
+
+ 126 001c F15C     		ldrb	r1, [r6, r3]
+  90:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_nvm.c ****     }
+ 127              		.loc 1 90 59 discriminator 3 view .LVU31
+ 128 001e 5A19     		adds	r2, r3, r5
+ 129 0020 1218     		adds	r2, r2, r0
+ 130 0022 1170     		strb	r1, [r2]
+  88:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_nvm.c ****     {
+ 131              		.loc 1 88 40 is_stmt 1 discriminator 3 view .LVU32
+  88:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_nvm.c ****     {
+ 132              		.loc 1 88 41 is_stmt 0 discriminator 3 view .LVU33
+ 133 0024 0133     		adds	r3, r3, #1
+ 134              	.LVL12:
+  88:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_nvm.c ****     {
+ 135              		.loc 1 88 41 discriminator 3 view .LVU34
+ 136 0026 F2E7     		b	.L5
+ 137              	.L8:
+ 138              		.align	2
+ 139              	.L7:
+ 140 0028 00000808 		.word	134742016
+ 141              	.LBE3:
+ 142              		.cfi_endproc
+ 143              	.LFE48:
+ 145              		.text
+ 146              	.Letext0:
+ 147              		.file 2 "/Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.external
+ 148              		.file 3 "/Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.external
+ 149              		.file 4 "user_app/mcu_core/system_stm32l0xx.h"
+ 150              		.file 5 "smtc_bsp/arm/stm32/stm32_hal/STM32L0xx_HAL_Driver/Inc/stm32l0xx_hal_def.h"
+ 151              		.file 6 "smtc_bsp/arm/stm32/stm32_hal/STM32L0xx_HAL_Driver/Inc/stm32l0xx_hal.h"
+ 152              		.file 7 "/Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.external
+ 153              		.file 8 "/Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.external
+ 154              		.file 9 "/Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.external
+ 155              		.file 10 "/Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.externa
+ 156              		.file 11 "smtc_bsp/arm/stm32/stm32_hal/STM32L0xx_HAL_Driver/Inc/stm32l0xx_hal_flash_ex.h"
+ 157              		.file 12 "/Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.externa
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cci6SNkt.s 			page 6
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 smtc_bsp_nvm.c
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cci6SNkt.s:14     .text.bsp_nvm_context_restore:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cci6SNkt.s:22     .text.bsp_nvm_context_restore:0000000000000000 bsp_nvm_context_restore
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cci6SNkt.s:60     .text.bsp_nvm_context_restore:0000000000000014 $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cci6SNkt.s:65     .text.bsp_nvm_context_store:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cci6SNkt.s:72     .text.bsp_nvm_context_store:0000000000000000 bsp_nvm_context_store
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//cci6SNkt.s:140    .text.bsp_nvm_context_store:0000000000000028 $d
+
+UNDEFINED SYMBOLS
+memcpy
+HAL_FLASHEx_DATAEEPROM_Unlock
+HAL_FLASHEx_DATAEEPROM_Lock

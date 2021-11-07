@@ -1,0 +1,743 @@
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccxG8Xfc.s 			page 1
+
+
+   1              		.cpu cortex-m0plus
+   2              		.eabi_attribute 23, 1
+   3              		.eabi_attribute 24, 1
+   4              		.eabi_attribute 25, 1
+   5              		.eabi_attribute 26, 1
+   6              		.eabi_attribute 30, 4
+   7              		.eabi_attribute 34, 0
+   8              		.eabi_attribute 18, 4
+   9              		.file	"smtc_bsp_tmr.c"
+  10              		.text
+  11              	.Ltext0:
+  12              		.cfi_sections	.debug_frame
+  13              		.section	.text.bsp_tmr_init,"ax",%progbits
+  14              		.align	1
+  15              		.global	bsp_tmr_init
+  16              		.arch armv6s-m
+  17              		.syntax unified
+  18              		.code	16
+  19              		.thumb_func
+  20              		.fpu softvfp
+  22              	bsp_tmr_init:
+  23              	.LFB47:
+  24              		.file 1 "smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c"
+   1:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c **** /*!
+   2:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c ****  * \file      smtc_bsp_tmr.c
+   3:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c ****  *
+   4:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c ****  * \brief     Board specific package HW timer API implementation.
+   5:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c ****  *
+   6:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c ****  * Revised BSD License
+   7:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c ****  * Copyright Semtech Corporation 2020. All rights reserved.
+   8:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c ****  *
+   9:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c ****  * Redistribution and use in source and binary forms, with or without
+  10:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c ****  * modification, are permitted provided that the following conditions are met:
+  11:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c ****  *     * Redistributions of source code must retain the above copyright
+  12:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c ****  *       notice, this list of conditions and the following disclaimer.
+  13:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c ****  *     * Redistributions in binary form must reproduce the above copyright
+  14:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c ****  *       notice, this list of conditions and the following disclaimer in the
+  15:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c ****  *       documentation and/or other materials provided with the distribution.
+  16:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c ****  *     * Neither the name of the Semtech corporation nor the
+  17:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c ****  *       names of its contributors may be used to endorse or promote products
+  18:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c ****  *       derived from this software without specific prior written permission.
+  19:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c ****  *
+  20:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c ****  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+  21:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c ****  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+  22:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c ****  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+  23:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c ****  * ARE DISCLAIMED. IN NO EVENT SHALL SEMTECH CORPORATION BE LIABLE FOR ANY DIRECT,
+  24:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c ****  * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+  25:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c ****  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+  26:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c ****  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+  27:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c ****  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  28:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c ****  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+  29:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c ****  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  30:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c ****  */
+  31:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c **** 
+  32:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c **** /*
+  33:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c ****  * -----------------------------------------------------------------------------
+  34:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c ****  * --- DEPENDENCIES ------------------------------------------------------------
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccxG8Xfc.s 			page 2
+
+
+  35:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c ****  */
+  36:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c **** 
+  37:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c **** #include <stdint.h>   // C99 types
+  38:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c **** #include <stdbool.h>  // bool type
+  39:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c **** 
+  40:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c **** #include "stm32l0xx_hal.h"
+  41:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c **** #include "smtc_bsp_mcu.h"
+  42:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c **** #include "smtc_bsp_tmr.h"
+  43:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c **** 
+  44:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c **** /*
+  45:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c ****  * -----------------------------------------------------------------------------
+  46:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c ****  * --- PRIVATE MACROS-----------------------------------------------------------
+  47:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c ****  */
+  48:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c **** 
+  49:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c **** /*
+  50:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c ****  * -----------------------------------------------------------------------------
+  51:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c ****  * --- PRIVATE CONSTANTS -------------------------------------------------------
+  52:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c ****  */
+  53:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c **** 
+  54:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c **** /*
+  55:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c ****  * -----------------------------------------------------------------------------
+  56:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c ****  * --- PRIVATE TYPES -----------------------------------------------------------
+  57:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c ****  */
+  58:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c **** 
+  59:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c **** /*
+  60:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c ****  * -----------------------------------------------------------------------------
+  61:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c ****  * --- PRIVATE VARIABLES -------------------------------------------------------
+  62:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c ****  */
+  63:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c **** 
+  64:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c **** static LPTIM_HandleTypeDef lptim_handle;
+  65:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c **** 
+  66:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c **** static bsp_tmr_irq_t lptim_tmr_irq = { .context = NULL, .callback = NULL };
+  67:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c **** 
+  68:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c **** /*
+  69:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c ****  * -----------------------------------------------------------------------------
+  70:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c ****  * --- PRIVATE FUNCTIONS DECLARATION -------------------------------------------
+  71:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c ****  */
+  72:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c **** 
+  73:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c **** /*
+  74:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c ****  * -----------------------------------------------------------------------------
+  75:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c ****  * --- PUBLIC FUNCTIONS DEFINITION ---------------------------------------------
+  76:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c ****  */
+  77:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c **** 
+  78:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c **** void bsp_tmr_init( void )
+  79:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c **** {
+  25              		.loc 1 79 1 view -0
+  26              		.cfi_startproc
+  27              		@ args = 0, pretend = 0, frame = 0
+  28              		@ frame_needed = 0, uses_anonymous_args = 0
+  80:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c ****     lptim_handle.Instance             = LPTIM1;
+  29              		.loc 1 80 5 view .LVU1
+  30              		.loc 1 80 39 is_stmt 0 view .LVU2
+  31 0000 0C48     		ldr	r0, .L6
+  32 0002 0D4B     		ldr	r3, .L6+4
+  79:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c ****     lptim_handle.Instance             = LPTIM1;
+  33              		.loc 1 79 1 view .LVU3
+  34 0004 10B5     		push	{r4, lr}
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccxG8Xfc.s 			page 3
+
+
+  35              		.cfi_def_cfa_offset 8
+  36              		.cfi_offset 4, -8
+  37              		.cfi_offset 14, -4
+  38              		.loc 1 80 39 view .LVU4
+  39 0006 0360     		str	r3, [r0]
+  81:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c ****     lptim_handle.Init.Clock.Source    = LPTIM_CLOCKSOURCE_APBCLOCK_LPOSC;
+  40              		.loc 1 81 5 is_stmt 1 view .LVU5
+  82:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c ****     lptim_handle.Init.Clock.Prescaler = LPTIM_PRESCALER_DIV16;
+  41              		.loc 1 82 39 is_stmt 0 view .LVU6
+  42 0008 8023     		movs	r3, #128
+  43 000a 1B01     		lsls	r3, r3, #4
+  44 000c 8360     		str	r3, [r0, #8]
+  83:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c ****     lptim_handle.Init.Trigger.Source  = LPTIM_TRIGSOURCE_SOFTWARE;
+  45              		.loc 1 83 39 view .LVU7
+  46 000e 0B4B     		ldr	r3, .L6+8
+  84:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c ****     lptim_handle.Init.OutputPolarity  = LPTIM_OUTPUTPOLARITY_HIGH;
+  47              		.loc 1 84 39 view .LVU8
+  48 0010 0022     		movs	r2, #0
+  83:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c ****     lptim_handle.Init.Trigger.Source  = LPTIM_TRIGSOURCE_SOFTWARE;
+  49              		.loc 1 83 39 view .LVU9
+  50 0012 4361     		str	r3, [r0, #20]
+  51              		.loc 1 84 39 view .LVU10
+  52 0014 0023     		movs	r3, #0
+  81:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c ****     lptim_handle.Init.Clock.Prescaler = LPTIM_PRESCALER_DIV16;
+  53              		.loc 1 81 39 view .LVU11
+  54 0016 0024     		movs	r4, #0
+  55              		.loc 1 84 39 view .LVU12
+  56 0018 0262     		str	r2, [r0, #32]
+  57 001a 4362     		str	r3, [r0, #36]
+  81:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c ****     lptim_handle.Init.Clock.Prescaler = LPTIM_PRESCALER_DIV16;
+  58              		.loc 1 81 39 view .LVU13
+  59 001c 4460     		str	r4, [r0, #4]
+  82:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c ****     lptim_handle.Init.Trigger.Source  = LPTIM_TRIGSOURCE_SOFTWARE;
+  60              		.loc 1 82 5 is_stmt 1 view .LVU14
+  83:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c ****     lptim_handle.Init.OutputPolarity  = LPTIM_OUTPUTPOLARITY_HIGH;
+  61              		.loc 1 83 5 view .LVU15
+  62              		.loc 1 84 5 view .LVU16
+  85:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c ****     lptim_handle.Init.UpdateMode      = LPTIM_UPDATE_IMMEDIATE;
+  63              		.loc 1 85 5 view .LVU17
+  86:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c ****     lptim_handle.Init.CounterSource   = LPTIM_COUNTERSOURCE_INTERNAL;
+  64              		.loc 1 86 5 view .LVU18
+  65              		.loc 1 86 39 is_stmt 0 view .LVU19
+  66 001e 8462     		str	r4, [r0, #40]
+  87:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c **** 
+  88:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c ****     if( HAL_LPTIM_Init( &lptim_handle ) != HAL_OK )
+  67              		.loc 1 88 5 is_stmt 1 view .LVU20
+  68              		.loc 1 88 9 is_stmt 0 view .LVU21
+  69 0020 FFF7FEFF 		bl	HAL_LPTIM_Init
+  70              	.LVL0:
+  71              		.loc 1 88 7 view .LVU22
+  72 0024 A042     		cmp	r0, r4
+  73 0026 01D0     		beq	.L2
+  89:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c ****     {
+  90:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c ****         bsp_mcu_panic( );
+  74              		.loc 1 90 9 is_stmt 1 view .LVU23
+  75 0028 FFF7FEFF 		bl	bsp_mcu_panic
+  76              	.LVL1:
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccxG8Xfc.s 			page 4
+
+
+  77              	.L2:
+  91:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c ****     }
+  92:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c ****     lptim_tmr_irq = ( bsp_tmr_irq_t ){ .context = NULL, .callback = NULL };
+  78              		.loc 1 92 5 view .LVU24
+  79              		.loc 1 92 19 is_stmt 0 view .LVU25
+  80 002c 044B     		ldr	r3, .L6+12
+  93:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c **** }
+  81              		.loc 1 93 1 view .LVU26
+  82              		@ sp needed
+  92:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c **** }
+  83              		.loc 1 92 19 view .LVU27
+  84 002e 1C60     		str	r4, [r3]
+  85 0030 5C60     		str	r4, [r3, #4]
+  86              		.loc 1 93 1 view .LVU28
+  87 0032 10BD     		pop	{r4, pc}
+  88              	.L7:
+  89              		.align	2
+  90              	.L6:
+  91 0034 00000000 		.word	.LANCHOR0
+  92 0038 007C0040 		.word	1073773568
+  93 003c FFFF0000 		.word	65535
+  94 0040 00000000 		.word	.LANCHOR1
+  95              		.cfi_endproc
+  96              	.LFE47:
+  98              		.global	__aeabi_uldivmod
+  99              		.global	__aeabi_ldivmod
+ 100              		.section	.text.bsp_tmr_start,"ax",%progbits
+ 101              		.align	1
+ 102              		.global	bsp_tmr_start
+ 103              		.syntax unified
+ 104              		.code	16
+ 105              		.thumb_func
+ 106              		.fpu softvfp
+ 108              	bsp_tmr_start:
+ 109              	.LVL2:
+ 110              	.LFB48:
+  94:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c **** 
+  95:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c **** void bsp_tmr_start( const uint32_t milliseconds, const bsp_tmr_irq_t* tmr_irq )
+  96:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c **** {
+ 111              		.loc 1 96 1 is_stmt 1 view -0
+ 112              		.cfi_startproc
+ 113              		@ args = 0, pretend = 0, frame = 0
+ 114              		@ frame_needed = 0, uses_anonymous_args = 0
+  97:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c ****     uint32_t delay_ms_2_tick = 0;
+ 115              		.loc 1 97 5 view .LVU30
+  98:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c **** 
+  99:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c ****     // Remark LSE_VALUE / LPTIM_PRESCALER_DIV16
+ 100:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c ****     delay_ms_2_tick = ( uint32_t )( ( ( uint64_t ) milliseconds * ( LSE_VALUE >> 4 ) ) / 1000 );
+ 116              		.loc 1 100 5 view .LVU31
+ 117              		.loc 1 100 88 is_stmt 0 view .LVU32
+ 118 0000 FA22     		movs	r2, #250
+ 119 0002 0023     		movs	r3, #0
+  96:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c ****     uint32_t delay_ms_2_tick = 0;
+ 120              		.loc 1 96 1 view .LVU33
+ 121 0004 10B5     		push	{r4, lr}
+ 122              		.cfi_def_cfa_offset 8
+ 123              		.cfi_offset 4, -8
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccxG8Xfc.s 			page 5
+
+
+ 124              		.cfi_offset 14, -4
+ 125              		.loc 1 100 88 view .LVU34
+ 126 0006 9200     		lsls	r2, r2, #2
+  96:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c ****     uint32_t delay_ms_2_tick = 0;
+ 127              		.loc 1 96 1 view .LVU35
+ 128 0008 0C00     		movs	r4, r1
+ 129              		.loc 1 100 65 view .LVU36
+ 130 000a 410D     		lsrs	r1, r0, #21
+ 131              	.LVL3:
+ 132              		.loc 1 100 65 view .LVU37
+ 133 000c C002     		lsls	r0, r0, #11
+ 134              	.LVL4:
+ 135              		.loc 1 100 88 view .LVU38
+ 136 000e FFF7FEFF 		bl	__aeabi_uldivmod
+ 137              	.LVL5:
+ 101:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c **** 
+ 102:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c ****     // check if delay_ms_2_tick is not greater than 0xFFFF and clamp it if it is the case
+ 103:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c ****     if( delay_ms_2_tick > 0xFFFF )
+ 104:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c ****     {
+ 105:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c ****         delay_ms_2_tick = 0xFFFF;
+ 106:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c ****     }
+ 107:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c **** 
+ 108:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c ****     // Auto reload period is set to max value 0xFFFF
+ 109:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c ****     HAL_LPTIM_TimeOut_Start_IT( &lptim_handle, 0xFFFF, delay_ms_2_tick );
+ 138              		.loc 1 109 5 view .LVU39
+ 139 0012 8023     		movs	r3, #128
+ 100:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c **** 
+ 140              		.loc 1 100 88 view .LVU40
+ 141 0014 0200     		movs	r2, r0
+ 142              	.LVL6:
+ 103:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c ****     {
+ 143              		.loc 1 103 5 is_stmt 1 view .LVU41
+ 144              		.loc 1 109 5 view .LVU42
+ 145              		.loc 1 109 5 is_stmt 0 view .LVU43
+ 146 0016 5B02     		lsls	r3, r3, #9
+ 147 0018 9842     		cmp	r0, r3
+ 148 001a 00D3     		bcc	.L9
+ 149 001c 044A     		ldr	r2, .L10
+ 150              	.L9:
+ 151 001e 0449     		ldr	r1, .L10
+ 152 0020 0448     		ldr	r0, .L10+4
+ 153              	.LVL7:
+ 154              		.loc 1 109 5 view .LVU44
+ 155 0022 FFF7FEFF 		bl	HAL_LPTIM_TimeOut_Start_IT
+ 156              	.LVL8:
+ 110:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c ****     lptim_tmr_irq = *tmr_irq;
+ 157              		.loc 1 110 5 is_stmt 1 view .LVU45
+ 158              		.loc 1 110 19 is_stmt 0 view .LVU46
+ 159 0026 044B     		ldr	r3, .L10+8
+ 111:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c **** }
+ 160              		.loc 1 111 1 view .LVU47
+ 161              		@ sp needed
+ 110:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c ****     lptim_tmr_irq = *tmr_irq;
+ 162              		.loc 1 110 19 view .LVU48
+ 163 0028 06CC     		ldmia	r4!, {r1, r2}
+ 164 002a 06C3     		stmia	r3!, {r1, r2}
+ 165              	.LVL9:
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccxG8Xfc.s 			page 6
+
+
+ 166              	.LVL10:
+ 167              		.loc 1 111 1 view .LVU49
+ 168 002c 10BD     		pop	{r4, pc}
+ 169              	.L11:
+ 170 002e C046     		.align	2
+ 171              	.L10:
+ 172 0030 FFFF0000 		.word	65535
+ 173 0034 00000000 		.word	.LANCHOR0
+ 174 0038 00000000 		.word	.LANCHOR1
+ 175              		.cfi_endproc
+ 176              	.LFE48:
+ 178              		.section	.text.bsp_tmr_stop,"ax",%progbits
+ 179              		.align	1
+ 180              		.global	bsp_tmr_stop
+ 181              		.syntax unified
+ 182              		.code	16
+ 183              		.thumb_func
+ 184              		.fpu softvfp
+ 186              	bsp_tmr_stop:
+ 187              	.LFB49:
+ 112:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c **** 
+ 113:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c **** void bsp_tmr_stop( void )
+ 114:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c **** {
+ 188              		.loc 1 114 1 is_stmt 1 view -0
+ 189              		.cfi_startproc
+ 190              		@ args = 0, pretend = 0, frame = 0
+ 191              		@ frame_needed = 0, uses_anonymous_args = 0
+ 115:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c ****     HAL_LPTIM_TimeOut_Stop_IT( &lptim_handle );
+ 192              		.loc 1 115 5 view .LVU51
+ 114:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c ****     HAL_LPTIM_TimeOut_Stop_IT( &lptim_handle );
+ 193              		.loc 1 114 1 is_stmt 0 view .LVU52
+ 194 0000 10B5     		push	{r4, lr}
+ 195              		.cfi_def_cfa_offset 8
+ 196              		.cfi_offset 4, -8
+ 197              		.cfi_offset 14, -4
+ 198              		.loc 1 115 5 view .LVU53
+ 199 0002 0248     		ldr	r0, .L13
+ 200 0004 FFF7FEFF 		bl	HAL_LPTIM_TimeOut_Stop_IT
+ 201              	.LVL11:
+ 116:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c **** }
+ 202              		.loc 1 116 1 view .LVU54
+ 203              		@ sp needed
+ 204 0008 10BD     		pop	{r4, pc}
+ 205              	.L14:
+ 206 000a C046     		.align	2
+ 207              	.L13:
+ 208 000c 00000000 		.word	.LANCHOR0
+ 209              		.cfi_endproc
+ 210              	.LFE49:
+ 212              		.section	.text.bsp_tmr_get_time_ms,"ax",%progbits
+ 213              		.align	1
+ 214              		.global	bsp_tmr_get_time_ms
+ 215              		.syntax unified
+ 216              		.code	16
+ 217              		.thumb_func
+ 218              		.fpu softvfp
+ 220              	bsp_tmr_get_time_ms:
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccxG8Xfc.s 			page 7
+
+
+ 221              	.LFB50:
+ 117:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c **** 
+ 118:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c **** uint32_t bsp_tmr_get_time_ms( void )
+ 119:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c **** {
+ 222              		.loc 1 119 1 is_stmt 1 view -0
+ 223              		.cfi_startproc
+ 224              		@ args = 0, pretend = 0, frame = 0
+ 225              		@ frame_needed = 0, uses_anonymous_args = 0
+ 120:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c ****     return HAL_LPTIM_ReadCounter( &lptim_handle );
+ 226              		.loc 1 120 5 view .LVU56
+ 119:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c ****     return HAL_LPTIM_ReadCounter( &lptim_handle );
+ 227              		.loc 1 119 1 is_stmt 0 view .LVU57
+ 228 0000 10B5     		push	{r4, lr}
+ 229              		.cfi_def_cfa_offset 8
+ 230              		.cfi_offset 4, -8
+ 231              		.cfi_offset 14, -4
+ 232              		.loc 1 120 12 view .LVU58
+ 233 0002 0248     		ldr	r0, .L16
+ 234 0004 FFF7FEFF 		bl	HAL_LPTIM_ReadCounter
+ 235              	.LVL12:
+ 121:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c **** }
+ 236              		.loc 1 121 1 view .LVU59
+ 237              		@ sp needed
+ 238 0008 10BD     		pop	{r4, pc}
+ 239              	.L17:
+ 240 000a C046     		.align	2
+ 241              	.L16:
+ 242 000c 00000000 		.word	.LANCHOR0
+ 243              		.cfi_endproc
+ 244              	.LFE50:
+ 246              		.section	.text.bsp_tmr_irq_enable,"ax",%progbits
+ 247              		.align	1
+ 248              		.global	bsp_tmr_irq_enable
+ 249              		.syntax unified
+ 250              		.code	16
+ 251              		.thumb_func
+ 252              		.fpu softvfp
+ 254              	bsp_tmr_irq_enable:
+ 255              	.LFB51:
+ 122:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c **** 
+ 123:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c **** void bsp_tmr_irq_enable( void )
+ 124:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c **** {
+ 256              		.loc 1 124 1 is_stmt 1 view -0
+ 257              		.cfi_startproc
+ 258              		@ args = 0, pretend = 0, frame = 0
+ 259              		@ frame_needed = 0, uses_anonymous_args = 0
+ 125:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c ****     HAL_NVIC_EnableIRQ( LPTIM1_IRQn );
+ 260              		.loc 1 125 5 view .LVU61
+ 124:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c ****     HAL_NVIC_EnableIRQ( LPTIM1_IRQn );
+ 261              		.loc 1 124 1 is_stmt 0 view .LVU62
+ 262 0000 10B5     		push	{r4, lr}
+ 263              		.cfi_def_cfa_offset 8
+ 264              		.cfi_offset 4, -8
+ 265              		.cfi_offset 14, -4
+ 266              		.loc 1 125 5 view .LVU63
+ 267 0002 0D20     		movs	r0, #13
+ 268 0004 FFF7FEFF 		bl	HAL_NVIC_EnableIRQ
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccxG8Xfc.s 			page 8
+
+
+ 269              	.LVL13:
+ 126:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c **** }
+ 270              		.loc 1 126 1 view .LVU64
+ 271              		@ sp needed
+ 272 0008 10BD     		pop	{r4, pc}
+ 273              		.cfi_endproc
+ 274              	.LFE51:
+ 276              		.section	.text.bsp_tmr_irq_disable,"ax",%progbits
+ 277              		.align	1
+ 278              		.global	bsp_tmr_irq_disable
+ 279              		.syntax unified
+ 280              		.code	16
+ 281              		.thumb_func
+ 282              		.fpu softvfp
+ 284              	bsp_tmr_irq_disable:
+ 285              	.LFB52:
+ 127:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c **** 
+ 128:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c **** void bsp_tmr_irq_disable( void )
+ 129:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c **** {
+ 286              		.loc 1 129 1 is_stmt 1 view -0
+ 287              		.cfi_startproc
+ 288              		@ args = 0, pretend = 0, frame = 0
+ 289              		@ frame_needed = 0, uses_anonymous_args = 0
+ 130:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c ****     HAL_NVIC_DisableIRQ( LPTIM1_IRQn );
+ 290              		.loc 1 130 5 view .LVU66
+ 129:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c ****     HAL_NVIC_DisableIRQ( LPTIM1_IRQn );
+ 291              		.loc 1 129 1 is_stmt 0 view .LVU67
+ 292 0000 10B5     		push	{r4, lr}
+ 293              		.cfi_def_cfa_offset 8
+ 294              		.cfi_offset 4, -8
+ 295              		.cfi_offset 14, -4
+ 296              		.loc 1 130 5 view .LVU68
+ 297 0002 0D20     		movs	r0, #13
+ 298 0004 FFF7FEFF 		bl	HAL_NVIC_DisableIRQ
+ 299              	.LVL14:
+ 131:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c **** }
+ 300              		.loc 1 131 1 view .LVU69
+ 301              		@ sp needed
+ 302 0008 10BD     		pop	{r4, pc}
+ 303              		.cfi_endproc
+ 304              	.LFE52:
+ 306              		.section	.text.LPTIM1_IRQHandler,"ax",%progbits
+ 307              		.align	1
+ 308              		.global	LPTIM1_IRQHandler
+ 309              		.syntax unified
+ 310              		.code	16
+ 311              		.thumb_func
+ 312              		.fpu softvfp
+ 314              	LPTIM1_IRQHandler:
+ 315              	.LFB53:
+ 132:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c **** 
+ 133:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c **** void LPTIM1_IRQHandler( void )
+ 134:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c **** {
+ 316              		.loc 1 134 1 is_stmt 1 view -0
+ 317              		.cfi_startproc
+ 318              		@ args = 0, pretend = 0, frame = 0
+ 319              		@ frame_needed = 0, uses_anonymous_args = 0
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccxG8Xfc.s 			page 9
+
+
+ 135:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c ****     HAL_LPTIM_IRQHandler( &lptim_handle );
+ 320              		.loc 1 135 5 view .LVU71
+ 134:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c ****     HAL_LPTIM_IRQHandler( &lptim_handle );
+ 321              		.loc 1 134 1 is_stmt 0 view .LVU72
+ 322 0000 10B5     		push	{r4, lr}
+ 323              		.cfi_def_cfa_offset 8
+ 324              		.cfi_offset 4, -8
+ 325              		.cfi_offset 14, -4
+ 326              		.loc 1 135 5 view .LVU73
+ 327 0002 074C     		ldr	r4, .L25
+ 328 0004 2000     		movs	r0, r4
+ 329 0006 FFF7FEFF 		bl	HAL_LPTIM_IRQHandler
+ 330              	.LVL15:
+ 136:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c ****     HAL_LPTIM_TimeOut_Stop( &lptim_handle );
+ 331              		.loc 1 136 5 is_stmt 1 view .LVU74
+ 332 000a 2000     		movs	r0, r4
+ 333 000c FFF7FEFF 		bl	HAL_LPTIM_TimeOut_Stop
+ 334              	.LVL16:
+ 137:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c **** 
+ 138:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c ****     if( lptim_tmr_irq.callback != NULL )
+ 335              		.loc 1 138 5 view .LVU75
+ 336              		.loc 1 138 22 is_stmt 0 view .LVU76
+ 337 0010 044A     		ldr	r2, .L25+4
+ 338 0012 5368     		ldr	r3, [r2, #4]
+ 339              		.loc 1 138 7 view .LVU77
+ 340 0014 002B     		cmp	r3, #0
+ 341 0016 01D0     		beq	.L20
+ 139:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c ****     {
+ 140:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c ****         lptim_tmr_irq.callback( lptim_tmr_irq.context );
+ 342              		.loc 1 140 9 is_stmt 1 view .LVU78
+ 343 0018 1068     		ldr	r0, [r2]
+ 344 001a 9847     		blx	r3
+ 345              	.LVL17:
+ 346              	.L20:
+ 141:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c ****     }
+ 142:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c **** }
+ 347              		.loc 1 142 1 is_stmt 0 view .LVU79
+ 348              		@ sp needed
+ 349 001c 10BD     		pop	{r4, pc}
+ 350              	.L26:
+ 351 001e C046     		.align	2
+ 352              	.L25:
+ 353 0020 00000000 		.word	.LANCHOR0
+ 354 0024 00000000 		.word	.LANCHOR1
+ 355              		.cfi_endproc
+ 356              	.LFE53:
+ 358              		.section	.text.HAL_LPTIM_MspInit,"ax",%progbits
+ 359              		.align	1
+ 360              		.global	HAL_LPTIM_MspInit
+ 361              		.syntax unified
+ 362              		.code	16
+ 363              		.thumb_func
+ 364              		.fpu softvfp
+ 366              	HAL_LPTIM_MspInit:
+ 367              	.LVL18:
+ 368              	.LFB54:
+ 143:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c **** 
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccxG8Xfc.s 			page 10
+
+
+ 144:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c **** void HAL_LPTIM_MspInit( LPTIM_HandleTypeDef* lptimhandle )
+ 145:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c **** {
+ 369              		.loc 1 145 1 is_stmt 1 view -0
+ 370              		.cfi_startproc
+ 371              		@ args = 0, pretend = 0, frame = 0
+ 372              		@ frame_needed = 0, uses_anonymous_args = 0
+ 146:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c ****     if( lptimhandle->Instance == LPTIM1 )
+ 373              		.loc 1 146 5 view .LVU81
+ 374              		.loc 1 146 7 is_stmt 0 view .LVU82
+ 375 0000 094B     		ldr	r3, .L29
+ 376 0002 0268     		ldr	r2, [r0]
+ 145:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c ****     if( lptimhandle->Instance == LPTIM1 )
+ 377              		.loc 1 145 1 view .LVU83
+ 378 0004 10B5     		push	{r4, lr}
+ 379              		.cfi_def_cfa_offset 8
+ 380              		.cfi_offset 4, -8
+ 381              		.cfi_offset 14, -4
+ 382              		.loc 1 146 7 view .LVU84
+ 383 0006 9A42     		cmp	r2, r3
+ 384 0008 0DD1     		bne	.L27
+ 147:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c ****     {
+ 148:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c ****         __HAL_RCC_LPTIM1_CLK_ENABLE( );
+ 385              		.loc 1 148 9 is_stmt 1 view .LVU85
+ 386 000a 8023     		movs	r3, #128
+ 387 000c 074A     		ldr	r2, .L29+4
+ 388 000e 1B06     		lsls	r3, r3, #24
+ 389 0010 916B     		ldr	r1, [r2, #56]
+ 149:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c ****         HAL_NVIC_SetPriority( LPTIM1_IRQn, 0, 0 );
+ 390              		.loc 1 149 9 is_stmt 0 view .LVU86
+ 391 0012 0D20     		movs	r0, #13
+ 392              	.LVL19:
+ 148:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c ****         HAL_NVIC_SetPriority( LPTIM1_IRQn, 0, 0 );
+ 393              		.loc 1 148 9 view .LVU87
+ 394 0014 0B43     		orrs	r3, r1
+ 395 0016 9363     		str	r3, [r2, #56]
+ 396              		.loc 1 149 9 is_stmt 1 view .LVU88
+ 397 0018 0022     		movs	r2, #0
+ 398 001a 1100     		movs	r1, r2
+ 399 001c FFF7FEFF 		bl	HAL_NVIC_SetPriority
+ 400              	.LVL20:
+ 150:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c ****         HAL_NVIC_EnableIRQ( LPTIM1_IRQn );
+ 401              		.loc 1 150 9 view .LVU89
+ 402 0020 0D20     		movs	r0, #13
+ 403 0022 FFF7FEFF 		bl	HAL_NVIC_EnableIRQ
+ 404              	.LVL21:
+ 405              	.L27:
+ 151:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c ****     }
+ 152:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c **** }
+ 406              		.loc 1 152 1 is_stmt 0 view .LVU90
+ 407              		@ sp needed
+ 408 0026 10BD     		pop	{r4, pc}
+ 409              	.L30:
+ 410              		.align	2
+ 411              	.L29:
+ 412 0028 007C0040 		.word	1073773568
+ 413 002c 00100240 		.word	1073876992
+ 414              		.cfi_endproc
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccxG8Xfc.s 			page 11
+
+
+ 415              	.LFE54:
+ 417              		.section	.text.HAL_LPTIM_MspDeInit,"ax",%progbits
+ 418              		.align	1
+ 419              		.global	HAL_LPTIM_MspDeInit
+ 420              		.syntax unified
+ 421              		.code	16
+ 422              		.thumb_func
+ 423              		.fpu softvfp
+ 425              	HAL_LPTIM_MspDeInit:
+ 426              	.LVL22:
+ 427              	.LFB55:
+ 153:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c **** 
+ 154:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c **** void HAL_LPTIM_MspDeInit( LPTIM_HandleTypeDef* lptimhandle )
+ 155:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c **** {
+ 428              		.loc 1 155 1 is_stmt 1 view -0
+ 429              		.cfi_startproc
+ 430              		@ args = 0, pretend = 0, frame = 0
+ 431              		@ frame_needed = 0, uses_anonymous_args = 0
+ 156:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c ****     if( lptimhandle->Instance == LPTIM1 )
+ 432              		.loc 1 156 5 view .LVU92
+ 433              		.loc 1 156 7 is_stmt 0 view .LVU93
+ 434 0000 064B     		ldr	r3, .L33
+ 435 0002 0268     		ldr	r2, [r0]
+ 155:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c ****     if( lptimhandle->Instance == LPTIM1 )
+ 436              		.loc 1 155 1 view .LVU94
+ 437 0004 10B5     		push	{r4, lr}
+ 438              		.cfi_def_cfa_offset 8
+ 439              		.cfi_offset 4, -8
+ 440              		.cfi_offset 14, -4
+ 441              		.loc 1 156 7 view .LVU95
+ 442 0006 9A42     		cmp	r2, r3
+ 443 0008 07D1     		bne	.L31
+ 157:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c ****     {
+ 158:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c ****         __HAL_RCC_LPTIM1_CLK_DISABLE( );
+ 444              		.loc 1 158 9 is_stmt 1 view .LVU96
+ 445 000a 054A     		ldr	r2, .L33+4
+ 159:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c ****         HAL_NVIC_DisableIRQ( LPTIM1_IRQn );
+ 446              		.loc 1 159 9 is_stmt 0 view .LVU97
+ 447 000c 0D20     		movs	r0, #13
+ 448              	.LVL23:
+ 158:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c ****         HAL_NVIC_DisableIRQ( LPTIM1_IRQn );
+ 449              		.loc 1 158 9 view .LVU98
+ 450 000e 936B     		ldr	r3, [r2, #56]
+ 451 0010 5B00     		lsls	r3, r3, #1
+ 452 0012 5B08     		lsrs	r3, r3, #1
+ 453 0014 9363     		str	r3, [r2, #56]
+ 454              		.loc 1 159 9 is_stmt 1 view .LVU99
+ 455 0016 FFF7FEFF 		bl	HAL_NVIC_DisableIRQ
+ 456              	.LVL24:
+ 457              	.L31:
+ 160:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c ****     }
+ 161:smtc_bsp/arm/stm32/stm32l0xx/smtc_bsp_tmr.c **** }
+ 458              		.loc 1 161 1 is_stmt 0 view .LVU100
+ 459              		@ sp needed
+ 460 001a 10BD     		pop	{r4, pc}
+ 461              	.L34:
+ 462              		.align	2
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccxG8Xfc.s 			page 12
+
+
+ 463              	.L33:
+ 464 001c 007C0040 		.word	1073773568
+ 465 0020 00100240 		.word	1073876992
+ 466              		.cfi_endproc
+ 467              	.LFE55:
+ 469              		.section	.bss.lptim_handle,"aw",%nobits
+ 470              		.align	3
+ 471              		.set	.LANCHOR0,. + 0
+ 474              	lptim_handle:
+ 475 0000 00000000 		.space	48
+ 475      00000000 
+ 475      00000000 
+ 475      00000000 
+ 475      00000000 
+ 476              		.section	.bss.lptim_tmr_irq,"aw",%nobits
+ 477              		.align	2
+ 478              		.set	.LANCHOR1,. + 0
+ 481              	lptim_tmr_irq:
+ 482 0000 00000000 		.space	8
+ 482      00000000 
+ 483              		.text
+ 484              	.Letext0:
+ 485              		.file 2 "/Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.external
+ 486              		.file 3 "/Applications/STM32CubeIDE.app/Contents/Eclipse/plugins/com.st.stm32cube.ide.mcu.external
+ 487              		.file 4 "user_app/mcu_core/system_stm32l0xx.h"
+ 488              		.file 5 "user_app/mcu_core/stm32l073xx.h"
+ 489              		.file 6 "smtc_bsp/arm/stm32/stm32_hal/STM32L0xx_HAL_Driver/Inc/stm32l0xx_hal_def.h"
+ 490              		.file 7 "smtc_bsp/arm/stm32/stm32_hal/STM32L0xx_HAL_Driver/Inc/stm32l0xx_hal_lptim.h"
+ 491              		.file 8 "smtc_bsp/arm/stm32/stm32_hal/STM32L0xx_HAL_Driver/Inc/stm32l0xx_hal.h"
+ 492              		.file 9 "smtc_bsp/smtc_bsp_tmr.h"
+ 493              		.file 10 "smtc_bsp/arm/stm32/stm32_hal/STM32L0xx_HAL_Driver/Inc/stm32l0xx_hal_cortex.h"
+ 494              		.file 11 "smtc_bsp/smtc_bsp_mcu.h"
+ARM GAS  /var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccxG8Xfc.s 			page 13
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 smtc_bsp_tmr.c
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccxG8Xfc.s:14     .text.bsp_tmr_init:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccxG8Xfc.s:22     .text.bsp_tmr_init:0000000000000000 bsp_tmr_init
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccxG8Xfc.s:91     .text.bsp_tmr_init:0000000000000034 $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccxG8Xfc.s:101    .text.bsp_tmr_start:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccxG8Xfc.s:108    .text.bsp_tmr_start:0000000000000000 bsp_tmr_start
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccxG8Xfc.s:172    .text.bsp_tmr_start:0000000000000030 $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccxG8Xfc.s:179    .text.bsp_tmr_stop:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccxG8Xfc.s:186    .text.bsp_tmr_stop:0000000000000000 bsp_tmr_stop
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccxG8Xfc.s:208    .text.bsp_tmr_stop:000000000000000c $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccxG8Xfc.s:213    .text.bsp_tmr_get_time_ms:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccxG8Xfc.s:220    .text.bsp_tmr_get_time_ms:0000000000000000 bsp_tmr_get_time_ms
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccxG8Xfc.s:242    .text.bsp_tmr_get_time_ms:000000000000000c $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccxG8Xfc.s:247    .text.bsp_tmr_irq_enable:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccxG8Xfc.s:254    .text.bsp_tmr_irq_enable:0000000000000000 bsp_tmr_irq_enable
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccxG8Xfc.s:277    .text.bsp_tmr_irq_disable:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccxG8Xfc.s:284    .text.bsp_tmr_irq_disable:0000000000000000 bsp_tmr_irq_disable
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccxG8Xfc.s:307    .text.LPTIM1_IRQHandler:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccxG8Xfc.s:314    .text.LPTIM1_IRQHandler:0000000000000000 LPTIM1_IRQHandler
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccxG8Xfc.s:353    .text.LPTIM1_IRQHandler:0000000000000020 $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccxG8Xfc.s:359    .text.HAL_LPTIM_MspInit:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccxG8Xfc.s:366    .text.HAL_LPTIM_MspInit:0000000000000000 HAL_LPTIM_MspInit
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccxG8Xfc.s:412    .text.HAL_LPTIM_MspInit:0000000000000028 $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccxG8Xfc.s:418    .text.HAL_LPTIM_MspDeInit:0000000000000000 $t
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccxG8Xfc.s:425    .text.HAL_LPTIM_MspDeInit:0000000000000000 HAL_LPTIM_MspDeInit
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccxG8Xfc.s:464    .text.HAL_LPTIM_MspDeInit:000000000000001c $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccxG8Xfc.s:470    .bss.lptim_handle:0000000000000000 $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccxG8Xfc.s:474    .bss.lptim_handle:0000000000000000 lptim_handle
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccxG8Xfc.s:477    .bss.lptim_tmr_irq:0000000000000000 $d
+/var/folders/bq/yv49bw8j2kd6w3hsq868qv180000gn/T//ccxG8Xfc.s:481    .bss.lptim_tmr_irq:0000000000000000 lptim_tmr_irq
+
+UNDEFINED SYMBOLS
+HAL_LPTIM_Init
+bsp_mcu_panic
+__aeabi_uldivmod
+__aeabi_ldivmod
+HAL_LPTIM_TimeOut_Start_IT
+HAL_LPTIM_TimeOut_Stop_IT
+HAL_LPTIM_ReadCounter
+HAL_NVIC_EnableIRQ
+HAL_NVIC_DisableIRQ
+HAL_LPTIM_IRQHandler
+HAL_LPTIM_TimeOut_Stop
+HAL_NVIC_SetPriority
